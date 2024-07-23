@@ -1,4 +1,4 @@
 package com.clio.ondo.domain.member.repository;
 
-public class MemberRepository {
+public interface MemberRepository {
 }
