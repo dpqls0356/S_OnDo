@@ -2,11 +2,14 @@ package com.clio.ondo.domain.chatbot.controller;
 
 import java.time.LocalDateTime;
 
+import com.clio.ondo.domain.chatbot.model.ChatInput;
+import com.clio.ondo.domain.chatbot.model.openaiDto.ChatCompletion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.chatbot.model.ChatbotChatting;
@@ -22,17 +25,22 @@ public class ChatbotController {
 	private final ChatbotServiceImpl chatbotService;
 
 	@PostMapping("/api/v1/chatbot/insert/{memberId}")
-	public ResponseEntity<?> insert(@PathVariable("memberId") Long memberId) {
+	public ResponseEntity<?> insert(@PathVariable("memberId") Long memberId, @RequestBody ChatInput chatInput) {
 		try{
-			ChatbotChatting chatting = new ChatbotChatting("testid", "testContent", "bot", LocalDateTime.now(), memberId);
+			ChatbotChatting requestChatting = new ChatbotChatting(null, chatInput.getMessage(), "user", LocalDateTime.now(), memberId);
+			chatbotService.createChatting(requestChatting);
 
-			ChatbotChatting result = chatbotService.createChatting(chatting);
+			ChatCompletion responseChatCompletion = chatbotService.getResponseFromOpenAIChatCompletion(chatInput.getMessage());
+			String responseString = responseChatCompletion.getChoices().get(0).getChoiceMessage().getContent();
+			ChatbotChatting responseChatting = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now(), memberId);
+			chatbotService.createChatting(responseChatting);
+
 			return ResponseEntity.status(HttpStatus.OK)
-				.body(new Result<>(true,HttpStatus.OK.value(), result));
+				.body(new Result<>(true,HttpStatus.OK.value(), responseString));
 		}catch(Exception e){
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new Result<>(true, HttpStatus.BAD_REQUEST.value(), "저장 실패"));
+				.body(new Result<>(false, HttpStatus.BAD_REQUEST.value(), "메세지 입력 실패"));
 		}
 	}
 

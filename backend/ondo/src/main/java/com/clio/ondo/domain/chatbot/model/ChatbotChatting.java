@@ -2,6 +2,7 @@ package com.clio.ondo.domain.chatbot.model;
 
 import java.time.LocalDateTime;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.persistence.Id;
@@ -13,7 +14,7 @@ import lombok.Getter;
 @Getter
 public class ChatbotChatting {
 	@Id
-	private String id;
+	private ObjectId id;
 	private String content;
 	private String sender;
 	private LocalDateTime createdAt;
