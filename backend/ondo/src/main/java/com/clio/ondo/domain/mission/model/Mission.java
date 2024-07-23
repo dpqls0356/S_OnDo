@@ -2,14 +2,15 @@ package com.clio.ondo.domain.mission.model;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Getter;
+import lombok.*;
 
 @Document(collection="mission")
 @Getter
+@Setter
+@Builder
 public class Mission {
 
 	@Id
