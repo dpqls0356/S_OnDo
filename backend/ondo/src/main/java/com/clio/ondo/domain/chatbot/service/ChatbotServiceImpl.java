@@ -7,7 +7,7 @@ import com.clio.ondo.domain.chatbot.model.ChatbotChatting;
 import com.clio.ondo.domain.chatbot.repository.ChatbotRepository;
 
 @Service
-public class ChatBotServiceImpl implements ChatbotService{
+public class ChatbotServiceImpl implements ChatbotService{
 	@Autowired
 	private ChatbotRepository chatbotRepository;
 
