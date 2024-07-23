@@ -10,8 +10,6 @@ spring:
       host: localhost
       port: 27017
       database: ondo
-      username: clio
-      password: clio
 
   jpa:
     hibernate:
