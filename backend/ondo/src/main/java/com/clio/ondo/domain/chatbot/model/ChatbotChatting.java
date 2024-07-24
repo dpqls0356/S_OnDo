@@ -9,7 +9,8 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Document(collection = "chatbot")
+
+@Document
 @AllArgsConstructor
 @Getter
 public class ChatbotChatting {
