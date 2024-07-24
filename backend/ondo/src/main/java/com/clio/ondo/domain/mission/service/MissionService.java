@@ -1,5 +1,7 @@
 package com.clio.ondo.domain.mission.service;
 
+import static java.time.LocalDateTime.*;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
@@ -37,8 +39,8 @@ public class MissionService {
 			.map(detail->new Mission(
 				null,
 				false,
-				null,
-				-1,
+				now(),
+				22,
 				detail.getTitle(),
 				detail.getContent(),
 				detail.getType(),
@@ -48,6 +50,11 @@ public class MissionService {
 			.toList();
 
 		missionRepository.saveAll(newMissions);
+	}
+
+	public List<Mission> getTypicalMission(){
+		List<Mission> typicalMission=missionRepository.findByCompleteFlag(false);
+		return typicalMission;
 	}
 
 

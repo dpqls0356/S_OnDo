@@ -9,6 +9,7 @@ import lombok.*;
 @Document(collection="missionDetail")
 @Getter
 @Builder
+@ToString
 public class MissionDetail {
 
 	@Id
