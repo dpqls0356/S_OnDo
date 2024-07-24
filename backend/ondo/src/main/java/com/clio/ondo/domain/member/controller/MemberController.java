@@ -17,11 +17,6 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
 	private final MemberRepository memberRepository;
-	private final MemberService memberService;:sq
-
-	@PostMapping("/join")
-	public Long createMember(@RequestBody Member member) {
-		return memberService.saveMember(member);
-	}
+	private final MemberService memberService;
 
 }

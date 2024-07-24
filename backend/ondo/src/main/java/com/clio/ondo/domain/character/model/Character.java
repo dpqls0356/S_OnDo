@@ -2,17 +2,12 @@ package com.clio.ondo.domain.character.model;
 
 import com.clio.ondo.domain.member.model.Member;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name = "characters")
 public class Character {
 
 	@Id
@@ -20,13 +15,25 @@ public class Character {
 	@Column(name = "character_id")
 	private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "member_id", nullable = false)
+	@OneToOne(mappedBy = "character", orphanRemoval = true)
 	private Member member;
 
-	@JoinColumn(nullable = false)
+	@Column(nullable = false)
 	private String name;
 
-	@JoinColumn(nullable = false)
+	@Column(nullable = false)
 	private int level;
+
+	@Column(nullable = false)
+	private int exp;
+
+	public void updateName(String name) {
+		this.name = name;
+	}
+
+	public void increaseExp(int additionalExp) {
+		this.exp += additionalExp;
+	}
+
+
 }

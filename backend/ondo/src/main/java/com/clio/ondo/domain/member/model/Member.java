@@ -4,16 +4,7 @@ import java.util.Date;
 
 import com.clio.ondo.domain.character.model.Character;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
@@ -48,21 +39,35 @@ public class Member {
 	@Column(name = "profile_url")
 	private String profileUrl;
 
-	@OneToOne(mappedBy = "character")
-	private Character character;
-
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
 	@Column(name = "birth_date")
 	private Date birthDate;
 
-	public static void updateNickName(Member member, String newNickname) {
+	// 부모 객체인 Member에서 Character의 생명주기를 관리한다.
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "charcter_id")
+	private Character character;
+
+	public void updateNickName(Member member, String newNickname) {
 		member.nickname = newNickname;
 	}
 
-	public static void updateProfileUrl(Member member, String newProfileUrl) {
+	public void updateProfileUrl(Member member, String newProfileUrl) {
 		member.profileUrl = newProfileUrl;
+	}
+
+	public void increaseCharacterExp(int additionalExp) {
+		if (character != null) {
+			character.increaseExp(additionalExp);
+		}
+	}
+
+	public void changeCharacterName(String name) {
+		if (character != null) {
+			character.updateName(name);
+		}
 	}
 
 }
