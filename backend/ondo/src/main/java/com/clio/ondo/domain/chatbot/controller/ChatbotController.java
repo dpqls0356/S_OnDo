@@ -27,16 +27,10 @@ public class ChatbotController {
 	@PostMapping("/api/v1/chatbot/insert/{memberId}")
 	public ResponseEntity<?> insert(@PathVariable("memberId") Long memberId, @RequestBody ChatInput chatInput) {
 		try{
-			ChatbotChatting requestChatting = new ChatbotChatting(null, chatInput.getMessage(), "user", LocalDateTime.now(), memberId);
-			chatbotService.createChatting(requestChatting);
-
-			ChatCompletion responseChatCompletion = chatbotService.getResponseFromOpenAIChatCompletion(chatInput.getMessage());
-			String responseString = responseChatCompletion.getChoices().get(0).getChoiceMessage().getContent();
-			ChatbotChatting responseChatting = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now(), memberId);
-			chatbotService.createChatting(responseChatting);
+			String responseChatting = chatbotService.getResponseFromOpenAIChatCompletion(memberId, chatInput.getMessage());
 
 			return ResponseEntity.status(HttpStatus.OK)
-				.body(new Result<>(true,HttpStatus.OK.value(), responseString));
+				.body(new Result<>(true,HttpStatus.OK.value(), responseChatting));
 		}catch(Exception e){
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
