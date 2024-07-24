@@ -24,7 +24,7 @@ public class MissionTest {
 	@BeforeEach
 	public void setup() {
 		mission = Mission.builder()
-			.id(1L)
+			.id(null)
 			.completeFlag(false)
 			.completeTime(LocalDateTime.now())
 			.memberId(123L)

@@ -2,6 +2,7 @@ package com.clio.ondo.domain.mission.model;
 
 import java.time.LocalDateTime;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,7 +15,7 @@ import lombok.*;
 public class Mission {
 
 	@Id
-	private long id; //미션아이디
+	private ObjectId id; //미션아이디
 	private boolean completeFlag; //완료여부
 	private LocalDateTime completeTime; //완료시간
 	private long memberId; //멤버 아이디

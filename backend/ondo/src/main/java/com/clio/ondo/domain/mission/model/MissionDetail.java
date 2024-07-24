@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.mission.model;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,7 +12,7 @@ import lombok.*;
 public class MissionDetail {
 
 	@Id
-	private long id; //미션디테일아이디
+	private ObjectId id; //미션디테일아이디
 
 	private String title; //제목
 	private String content; //내용
