@@ -34,7 +34,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	// Document를 새로 생성하는 함수
 	@Transactional
 	public ChattingDocument createChattingDocument(Long memberId) {
-		ChattingDocument chattingDocument = new ChattingDocument(null, memberId, null);
+		ChattingDocument chattingDocument = new ChattingDocument(null, memberId, new ArrayList<>());
 		return chatbotRepository.save(chattingDocument);
 	}
 
@@ -46,15 +46,22 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 	// Document에 채팅을 추가하는 함수
 	@Transactional
-	public void addChatting(ObjectId objectId, Long memeberId, ChatbotChatting chatbotChatting) {
-		chatbotRepository.addChatting(objectId, chatbotChatting);
+	public void addChatting(Long memberId, ChatbotChatting chatbotChatting) {
+		// 처음에 비어있으면 Document 생성 이후에 더한다.
+		List<ChattingDocument> chattingDocuments = chatbotRepository.findByMemberId(memberId);
+
+		if(chattingDocuments.isEmpty()){
+			this.initChatting(memberId);
+		}
+
+		chatbotRepository.addChatting(memberId, chatbotChatting);
 	}
 
 	// 사용자가 대화를 입력했을 경우 동작하는 함수
 	@Transactional
 	public String getResponseFromOpenAIChatCompletion(Long memberId, String text) {
 		ChatbotChatting requestChatting = new ChatbotChatting(null, "user", text, LocalDateTime.now(), memberId);
-		this.addChatting(requestChatting);
+		this.addChatting(memberId, requestChatting);
 
 		WebClient webClient = WebClient.builder().build();
 		String url = "https://api.openai.com/v1/chat/completions";
@@ -78,7 +85,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 		ChatCompletion responseChatCompletion = responseBody.getBody();
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 		ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", responseString, LocalDateTime.now(), memberId);
-		this.addChatting(responseChatting);
+		this.addChatting(memberId, responseChatting);
 
 		return responseString;
 	}
