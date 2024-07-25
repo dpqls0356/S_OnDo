@@ -2,6 +2,7 @@ package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.repository.BoardRepositoryImpl;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,14 @@ public class BoardService implements BoardServiceImpl {
   @Override
   public Board saveArticle(Board board) {
     return boardRepositoryImpl.save(board);
+  }
+
+  /*
+  게시글 삭제
+   */
+  @Override
+  public void deleteArticle(ObjectId articleId) {
+    boardRepositoryImpl.deleteById(articleId);
   }
 }
 

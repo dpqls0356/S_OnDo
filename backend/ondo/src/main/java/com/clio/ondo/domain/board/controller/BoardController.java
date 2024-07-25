@@ -3,6 +3,7 @@ package com.clio.ondo.domain.board.controller;
 import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,5 +52,13 @@ public class BoardController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
+  /*
+게시글 삭제
+ */
+  @DeleteMapping("/{articleId}")
+  public ResponseEntity<Void> deleteArticle(@PathVariable ObjectId articleId) {
+    boardService.deleteArticle(articleId);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
 
 }

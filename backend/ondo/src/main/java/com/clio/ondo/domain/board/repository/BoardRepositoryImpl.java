@@ -2,7 +2,9 @@ package com.clio.ondo.domain.board.repository;
 
 
 import com.clio.ondo.domain.board.model.Board;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface BoardRepositoryImpl extends MongoRepository<Board, String> {
+//Board 도메인 객체를 처리할 때 ID를 ObjectId로 처리
+public interface BoardRepositoryImpl extends MongoRepository<Board, ObjectId> {
 }
