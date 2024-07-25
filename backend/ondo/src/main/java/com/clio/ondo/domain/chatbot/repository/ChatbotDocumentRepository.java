@@ -13,7 +13,7 @@ import com.clio.ondo.domain.chatbot.model.ChattingDocument;
 
 import java.util.List;
 
-public interface ChatbotDocumentRepository extends MongoRepository<ChattingDocument, String>, CustomChatbotDocumentRepository {
+public interface ChatbotDocumentRepository extends MongoRepository<ChattingDocument, ObjectId>, CustomChatbotDocumentRepository {
 	@Query(value = "{ 'memberId': ?0 }")
 	List<ChattingDocument> findByMemberId(Long memberId);
 }
