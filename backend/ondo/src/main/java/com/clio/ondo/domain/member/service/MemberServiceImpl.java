@@ -18,8 +18,14 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 
 	@Transactional
-	public Member join(Member member) {
-		return memberRepository.save(member);
+	public Long join(Member member) {
+		// 중복 이메일 검증
+		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
+		if (memberOptional.isPresent()) {
+			throw new IllegalStateException("회원가입에 실패했습니다.");
+		}
+		memberRepository.save(member);
+		return member.getId();
 	}
 
 	@Override
@@ -43,6 +49,16 @@ public class MemberServiceImpl implements MemberService {
 			member.updateNickName(newNickname);
 		} else {
 			throw new IllegalStateException("별명 변경이 실패했습니다.");
+		}
+	}
+
+	@Override
+	public Member findOne(Long memberId) {
+		Optional<Member> memberOptional = memberRepository.findById(memberId);
+		if (memberOptional.isPresent()) {
+			return memberOptional.get();
+		} else {
+			throw new IllegalStateException("회원 조회가 실패했습니다.");
 		}
 	}
 

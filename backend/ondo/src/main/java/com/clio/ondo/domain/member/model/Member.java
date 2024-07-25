@@ -16,9 +16,11 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Member {
 
 	@Id
@@ -68,5 +70,14 @@ public class Member {
 
 	public void updatePassword(String newPassword) {
 		this.password = newPassword;
+	}
+
+	public Member(String email, String password, String name, String nickname, Role role) {
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.nickname = nickname;
+		this.joinDate = new Date();
+		this.role = role;
 	}
 }
