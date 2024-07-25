@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BoardServiceImpl {
 
@@ -17,4 +19,6 @@ public interface BoardServiceImpl {
   void deleteArticle(ObjectId articleId);
 
   void upadteArticle(ObjectId articleId, Board modifiedArticle);
+
+    Optional<Board> getArticle(ObjectId articleId);
 }

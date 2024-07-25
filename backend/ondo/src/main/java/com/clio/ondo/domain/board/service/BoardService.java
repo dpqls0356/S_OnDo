@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class BoardService implements BoardServiceImpl {
 
@@ -49,8 +51,13 @@ public class BoardService implements BoardServiceImpl {
 
   @Override
   public void upadteArticle(ObjectId articleId, Board modifiedArticle) {
-    //오는 값이 비밀번호, 닉네임, 비밀번호 + 닉네임 일 수 있기에 어떻게 처리할까
+    //오는 값이 제목, 글, 제목+글 일 수 있기에 어떻게 처리할까
     customBoardRepositoryImpl.updateArticle(articleId,modifiedArticle);
+  }
+
+  @Override
+  public Optional<Board> getArticle(ObjectId articleId) {
+    return boardRepository.findById(articleId);
   }
 }
 
