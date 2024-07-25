@@ -1,4 +1,8 @@
 package com.clio.ondo.domain.board.repository;
 
-public interface BoardRepositoryImpl {
+
+import com.clio.ondo.domain.board.model.Board;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface BoardRepositoryImpl extends MongoRepository<Board, String> {
 }

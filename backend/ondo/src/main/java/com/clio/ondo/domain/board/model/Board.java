@@ -4,6 +4,7 @@ import jakarta.persistence.Id;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection ="articles")
@@ -11,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 public class Board {
     @Id
-    private String id; //식별자
+    private ObjectId id; //식별자
     private String title;   //제목
     private String content; //내용
     private Date created_at;    //작성일
