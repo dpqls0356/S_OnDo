@@ -3,8 +3,10 @@ package com.clio.ondo.domain.chatbot.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.clio.ondo.domain.chatbot.model.ChattingDocument;
+import com.clio.ondo.domain.chatbot.model.ChattingReadDto;
 import com.clio.ondo.domain.chatbot.model.openaiDto.ChatCompletion;
 import com.clio.ondo.domain.chatbot.model.openaiDto.OpenAiRequestDto;
 import com.clio.ondo.domain.chatbot.model.openaiDto.RoleContentMessage;
@@ -62,6 +64,13 @@ public class ChatbotServiceImpl implements ChatbotService{
 		chatbotRepository.upsertByMemberId(memberId, responseChatting);
 
 		return responseString;
+	}
+
+	public List<ChattingReadDto> getChatbotChattings(Long memberId, int page, int size) {
+		List<ChatbotChatting> chatbotChattings = chatbotRepository.getChattingsByPage(memberId, page, size);
+		return chatbotChattings.stream()
+			.map(a -> new ChattingReadDto(a.getContent(), a.getSender(), a.getCreatedAt()))
+			.collect(Collectors.toList());
 	}
 }
 

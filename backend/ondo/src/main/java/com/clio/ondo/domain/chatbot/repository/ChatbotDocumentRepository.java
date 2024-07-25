@@ -14,12 +14,6 @@ import com.clio.ondo.domain.chatbot.model.ChattingDocument;
 import java.util.List;
 
 public interface ChatbotDocumentRepository extends MongoRepository<ChattingDocument, String>, CustomChatbotDocumentRepository {
-	// @Modifying
-	// @Transactional
-	// @Query(value = "{ 'memberid': ?0 }")
-	// @Update(update = "{ '$push': { 'chattings': ?1 } }")
-	// void addChatting(Long memberId, ChatbotChatting newChat);
-
 	@Query(value = "{ 'memberId': ?0 }")
 	List<ChattingDocument> findByMemberId(Long memberId);
 }
