@@ -61,4 +61,14 @@ public class BoardController {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
+  /*
+게시글 수정
+*/
+  @PatchMapping("/{articleId}")
+  public ResponseEntity<Void> updateArticle(@PathVariable ObjectId articleId, @RequestBody Board modifiedArticle) {
+    boardService.upadteArticle(articleId,modifiedArticle);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+
 }

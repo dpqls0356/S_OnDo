@@ -4,7 +4,9 @@ import com.clio.ondo.domain.board.model.Board;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface BoardServiceImpl {
 
   //    public List<Board> getAricles();
@@ -13,4 +15,6 @@ public interface BoardServiceImpl {
   Board saveArticle(Board board);
 
   void deleteArticle(ObjectId articleId);
+
+  void upadteArticle(ObjectId articleId, Board modifiedArticle);
 }

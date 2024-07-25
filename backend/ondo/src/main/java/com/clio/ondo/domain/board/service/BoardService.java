@@ -1,7 +1,8 @@
 package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Board;
-import com.clio.ondo.domain.board.repository.BoardRepositoryImpl;
+import com.clio.ondo.domain.board.repository.BoardRepository;
+import com.clio.ondo.domain.board.repository.CustomBoardRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,9 @@ public class BoardService implements BoardServiceImpl {
 
 
   @Autowired
-  BoardRepositoryImpl boardRepositoryImpl;
+  CustomBoardRepository customBoardRepositoryImpl;
+  @Autowired
+  BoardRepository boardRepository;
 
     /*
     모든 게시글 가져오기
@@ -28,12 +31,12 @@ public class BoardService implements BoardServiceImpl {
   모든 게시글 가져오기 - 무한 스크롤 기능
    */
   public Page<Board> getArticles(Pageable pageble){
-    return boardRepositoryImpl.findAll(pageble);
+    return boardRepository.findAll(pageble);
   }
 
   @Override
   public Board saveArticle(Board board) {
-    return boardRepositoryImpl.save(board);
+    return boardRepository.save(board);
   }
 
   /*
@@ -41,7 +44,13 @@ public class BoardService implements BoardServiceImpl {
    */
   @Override
   public void deleteArticle(ObjectId articleId) {
-    boardRepositoryImpl.deleteById(articleId);
+    boardRepository.deleteById(articleId);
+  }
+
+  @Override
+  public void upadteArticle(ObjectId articleId, Board modifiedArticle) {
+    //오는 값이 비밀번호, 닉네임, 비밀번호 + 닉네임 일 수 있기에 어떻게 처리할까
+    customBoardRepositoryImpl.updateArticle(articleId,modifiedArticle);
   }
 }
 
