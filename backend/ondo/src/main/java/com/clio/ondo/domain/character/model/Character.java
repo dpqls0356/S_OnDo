@@ -15,7 +15,8 @@ public class Character {
 	@Column(name = "character_id")
 	private Long id;
 
-	@OneToOne(mappedBy = "character", orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
 
 	@Column(nullable = false)
@@ -34,6 +35,5 @@ public class Character {
 	public void increaseExp(int additionalExp) {
 		this.exp += additionalExp;
 	}
-
 
 }
