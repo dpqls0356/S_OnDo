@@ -16,7 +16,7 @@ public interface BoardService {
 
   void deleteArticle(ObjectId articleId);
 
-  void upadteArticle(ObjectId articleId, Board modifiedArticle);
+  void updateArticle(ObjectId articleId, Board modifiedArticle);
 
   Optional<Board> getArticle(ObjectId articleId);
 }

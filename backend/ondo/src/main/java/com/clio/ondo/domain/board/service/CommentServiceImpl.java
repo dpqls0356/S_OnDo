@@ -24,7 +24,7 @@ public class CommentServiceImpl implements CommentService {
     commentRepository.deleteById(commentId);
   }
 
-  public void upadteComment(ObjectId commentId, Board modifiedCommentId) {
-
+  public void updateComment(ObjectId commentId, Comment modifiedComment) {
+    customCommentRepositoryImpl.updateComment(commentId,modifiedComment);
   }
 }

@@ -46,8 +46,7 @@ public class BoardServiceImpl implements BoardService {
     boardRepository.deleteById(articleId);
   }
 
-  public void upadteArticle(ObjectId articleId, Board modifiedArticle) {
-    //오는 값이 제목, 글, 제목+글 일 수 있기에 어떻게 처리할까
+  public void updateArticle(ObjectId articleId, Board modifiedArticle) {
     customBoardRepositoryImpl.updateArticle(articleId,modifiedArticle);
   }
 

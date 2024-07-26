@@ -46,8 +46,8 @@ public class CommentController {
 */
   @PatchMapping("/{commentId}")
 
-  public ResponseEntity<Void> updateComment(@PathVariable ObjectId commentId, @RequestBody Board modifiedCommentId) {
-    commentServiceImpl.upadteComment(commentId,modifiedCommentId);
+  public ResponseEntity<Void> updateComment(@PathVariable ObjectId commentId, @RequestBody Comment modifiedComment) {
+    commentServiceImpl.updateComment(commentId,modifiedComment);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
