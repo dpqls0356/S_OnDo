@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@ToString
+
 public class Mission {
 
 	@Id

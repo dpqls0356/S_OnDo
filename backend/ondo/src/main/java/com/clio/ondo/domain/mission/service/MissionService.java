@@ -57,5 +57,10 @@ public class MissionService {
 		return typicalMission;
 	}
 
+	public List<MissionDetail> getDailyMission(){
+		List<MissionDetail> dailyMission=missionDetailRepository.findByType("daily"); //데일리 미션 가져오기
+		return dailyMission;
+	}
+
 
 }

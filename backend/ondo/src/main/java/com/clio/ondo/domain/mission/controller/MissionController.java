@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.mission.model.Mission;
+import com.clio.ondo.domain.mission.model.MissionDetail;
+import com.clio.ondo.domain.mission.model.MissionDto;
 import com.clio.ondo.domain.mission.service.MissionService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,15 @@ public class MissionController {
 			System.out.println(m);
 		}
 		return "특별미션 가져오기";
+	}
+
+	@PostMapping("/dailyMission")
+	public String getDailyMission(){
+		List<MissionDetail> dailyMission=missionService.getDailyMission();
+		for(MissionDetail md:dailyMission){
+			System.out.println(md);
+		}
+		return "데일리미션 가져오기";
 	}
 
 }
