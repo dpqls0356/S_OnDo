@@ -1,0 +1,67 @@
+package com.clio.ondo.domain.board.controller;
+
+import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.Comment;
+import com.clio.ondo.domain.board.service.CommentServiceImpl;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/board/comment")
+@Slf4j
+public class CommentController {
+
+  @Autowired
+  CommentServiceImpl commentServiceImpl;
+
+    /*
+        댓글 불러오기
+     */
+    @GetMapping("")
+    public ResponseEntity<Page<Comment>> getComments(
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size)  {
+      Pageable pageable = PageRequest.of(page, size);
+      Page<Comment> comments = commentServiceImpl.getComments(pageable);
+      return ResponseEntity.ok(comments);
+    }
+
+  /*
+      댓글 작성하기
+  */
+  @PostMapping("")
+  public ResponseEntity<Void> createComment(@RequestBody Comment comment) {
+    commentServiceImpl.saveComment(comment);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+  /*
+      댓글 삭제
+ */
+  @DeleteMapping("/{commentId}")
+  public ResponseEntity<Void> deleteComment(@PathVariable ObjectId commentId) {
+    commentServiceImpl.deleteComment(commentId);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  /*
+      댓글 수정
+*/
+  @PatchMapping("/{commentId}")
+
+  public ResponseEntity<Void> updateComment(@PathVariable ObjectId commentId, @RequestBody Comment modifiedComment) {
+    commentServiceImpl.updateComment(commentId,modifiedComment);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+
+}
