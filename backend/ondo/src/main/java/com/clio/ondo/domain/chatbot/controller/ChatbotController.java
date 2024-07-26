@@ -31,7 +31,7 @@ public class ChatbotController {
 	@PostMapping("/api/v1/chatbot/insert/{memberId}")
 	public ResponseEntity<?> insert(@PathVariable("memberId") Long memberId, @RequestBody ChatInput chatInput) {
 		try{
-			String responseChatting = chatbotService.getResponseFromOpenAIChatCompletion(memberId, chatInput.getMessage());
+			List<String> responseChatting = chatbotService.getResponseFromOpenAIChatCompletion(memberId, chatInput.getMessage());
 
 			return ResponseEntity.status(HttpStatus.OK)
 				.body(new Result<>(true,HttpStatus.OK.value(), responseChatting));

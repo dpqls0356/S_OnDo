@@ -21,7 +21,6 @@ public class CustomChatbotDocumentRepositoryImpl implements CustomChatbotDocumen
 	@Override
 	public void upsertByMemberId(Long memberId, ChatbotChatting chatbotChatting) {
 		Query query = new Query(Criteria.where("memberId").is(memberId));
-		//Update update = new Update().push("chattings", chatbotChatting);
 		Update update = new Update().push("chattings").atPosition(0).value(chatbotChatting);
 		mongoTemplate.upsert(query, update, ChattingDocument.class);
 	}

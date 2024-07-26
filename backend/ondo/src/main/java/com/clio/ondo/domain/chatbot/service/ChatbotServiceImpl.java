@@ -32,10 +32,11 @@ public class ChatbotServiceImpl implements ChatbotService{
 	String api;
 
 	private final ChatbotDocumentRepository chatbotRepository;
+	private final StringParsingServiceImpl stringParsingService;
 
 	// 사용자가 대화를 입력했을 경우 동작하는 함수
 	@Transactional
-	public String getResponseFromOpenAIChatCompletion(Long memberId, String text) {
+	public List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
 		ChatbotChatting requestChatting = new ChatbotChatting(null, "user", text, LocalDateTime.now(), memberId);
 		chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
@@ -60,10 +61,14 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 		ChatCompletion responseChatCompletion = responseBody.getBody();
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
-		ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", responseString, LocalDateTime.now(), memberId);
-		chatbotRepository.upsertByMemberId(memberId, responseChatting);
 
-		return responseString;
+		List<String> parsedStrings = stringParsingService.parseLine(responseString);
+		for(String parsedString : parsedStrings){
+			ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", parsedString, LocalDateTime.now(), memberId);
+			chatbotRepository.upsertByMemberId(memberId, responseChatting);
+		}
+
+		return parsedStrings;
 	}
 
 	public List<ChattingReadDto> getChatbotChattings(Long memberId, int page, int size) {
