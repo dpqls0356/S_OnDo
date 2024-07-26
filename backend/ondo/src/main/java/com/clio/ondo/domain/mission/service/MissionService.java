@@ -27,6 +27,7 @@ public class MissionService {
 
 	private Random random = new Random();
 
+	//MissionDetail 에서 특별 미션 랜덤3개 추출 후 mission에 저장
 	public void createRandomMission(){
 
 		List<MissionDetail> allMissionDetails=missionDetailRepository.findByType("typical"); //특별미션만 추출
@@ -39,8 +40,8 @@ public class MissionService {
 			.map(detail->new Mission(
 				null,
 				false,
-				now(),
-				22,
+				null,
+				0,
 				detail.getTitle(),
 				detail.getContent(),
 				detail.getType(),
@@ -52,13 +53,41 @@ public class MissionService {
 		missionRepository.saveAll(newMissions);
 	}
 
+	//MissionDetail 에서 daily 미션을 가져와서 mission에 저장
+	public void saveDailyMission(){
+		List<MissionDetail> dailyMissionDetail=missionDetailRepository.findByType("daily");
+		System.out.println("check) "+dailyMissionDetail);
+		List<Mission> dailyMission=dailyMissionDetail.stream()
+			.map(detail->new Mission(
+				null,
+				false,
+				null,
+				0,
+				detail.getTitle(),
+				detail.getContent(),
+				detail.getType(),
+				detail.getExp(),
+				detail.getLevel()
+			)).toList();
+
+		missionRepository.saveAll(dailyMission);
+	}
+
+	//Mission에서 완료하지 않은 특별미션 가져오기
 	public List<Mission> getTypicalMission(){
-		List<Mission> typicalMission=missionRepository.findByCompleteFlag(false);
+		List<Mission> unCompleteMission = missionRepository.findByCompleteFlag(false);
+		List<Mission> typicalMission = unCompleteMission.stream()
+			.filter(mission -> "typical".equals(mission.getType()))
+			.collect(Collectors.toList());
 		return typicalMission;
 	}
 
-	public List<MissionDetail> getDailyMission(){
-		List<MissionDetail> dailyMission=missionDetailRepository.findByType("daily"); //데일리 미션 가져오기
+	//Mission에서 완료하지 않은 데일리미션 가져오기
+	public List<Mission> getDailyMission(){
+		List<Mission> unCompleteMission = missionRepository.findByCompleteFlag(false);
+		List<Mission> dailyMission = unCompleteMission.stream()
+			.filter(mission -> "daily".equals(mission.getType()))
+			.collect(Collectors.toList());
 		return dailyMission;
 	}
 
