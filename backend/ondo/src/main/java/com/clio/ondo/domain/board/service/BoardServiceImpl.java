@@ -3,14 +3,13 @@ package com.clio.ondo.domain.board.service;
 import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.repository.BoardRepository;
 import com.clio.ondo.domain.board.repository.CustomBoardRepository;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -28,7 +27,6 @@ public class BoardServiceImpl implements BoardService {
 //    List<Board> articles=boardRepositoryImpl.findAll();
 //    return articles;
 //  }
-
 
   /*
   모든 게시글 가져오기 - 무한 스크롤 기능
@@ -56,6 +54,7 @@ public class BoardServiceImpl implements BoardService {
   public Optional<Board> getArticle(ObjectId articleId) {
     return boardRepository.findById(articleId);
   }
+
 }
 
 

@@ -1,12 +1,10 @@
 package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Board;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 public interface BoardService {
 
