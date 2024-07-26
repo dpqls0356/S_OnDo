@@ -56,7 +56,6 @@ public class MissionService {
 	//MissionDetail 에서 daily 미션을 가져와서 mission에 저장
 	public void saveDailyMission(){
 		List<MissionDetail> dailyMissionDetail=missionDetailRepository.findByType("daily");
-		System.out.println("check) "+dailyMissionDetail);
 		List<Mission> dailyMission=dailyMissionDetail.stream()
 			.map(detail->new Mission(
 				null,
