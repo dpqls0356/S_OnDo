@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/board")
+@RequestMapping("/api/v1/board/comment")
 @Slf4j
 public class CommentController {
 
@@ -26,7 +26,7 @@ public class CommentController {
   /*
       댓글 작성하기
   */
-  @PostMapping("/comment")
+  @PostMapping("")
   public ResponseEntity<Void> createComment(@RequestBody Comment comment) {
     commentServiceImpl.saveComment(comment);
     return ResponseEntity.status(HttpStatus.CREATED).build();
