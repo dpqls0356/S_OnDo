@@ -13,7 +13,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
   @Autowired
   private MongoTemplate mongoTemplate;
 
-  @Override
   public void updateArticle(ObjectId articleId, Board modifiedArticle) {
     //id로 데이터 받아와서 modifiedArticle의 값이 null아닌 경우 setter사용해 값을 바꾸고 그걸 savs
     /*
