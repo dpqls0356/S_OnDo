@@ -14,14 +14,14 @@ public class CommentServiceImpl implements CommentService {
   @Autowired
   CommentRepository commentRepository;
   @Autowired
-  CustomCommentRepositoryImpl customCommentRepository;
+  CustomCommentRepositoryImpl customCommentRepositoryImpl;
 
   public void saveComment(Comment comment) {
     commentRepository.save(comment);
   }
 
   public void deleteComment(ObjectId commentId) {
-
+    commentRepository.deleteById(commentId);
   }
 
   public void upadteComment(ObjectId commentId, Board modifiedCommentId) {
