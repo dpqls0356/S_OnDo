@@ -4,8 +4,11 @@ import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.model.Comment;
 import com.clio.ondo.domain.board.repository.CommentRepository;
 import com.clio.ondo.domain.board.repository.CustomCommentRepositoryImpl;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,4 +30,9 @@ public class CommentServiceImpl implements CommentService {
   public void updateComment(ObjectId commentId, Comment modifiedComment) {
     customCommentRepositoryImpl.updateComment(commentId,modifiedComment);
   }
+
+  public Page<Comment> getComments(Pageable pageble){
+    return commentRepository.findAll(pageble);
+  }
+
 }

@@ -3,9 +3,13 @@ package com.clio.ondo.domain.board.controller;
 import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.model.Comment;
 import com.clio.ondo.domain.board.service.CommentServiceImpl;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,14 @@ public class CommentController {
     /*
         댓글 불러오기
      */
+    @GetMapping("")
+    public ResponseEntity<Page<Comment>> getComments(
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size)  {
+      Pageable pageable = PageRequest.of(page, size);
+      Page<Comment> comments = commentServiceImpl.getComments(pageable);
+      return ResponseEntity.ok(comments);
+    }
 
   /*
       댓글 작성하기
