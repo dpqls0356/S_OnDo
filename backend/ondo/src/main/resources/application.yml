@@ -21,4 +21,10 @@ spring:
 logging:
   level:
     org.hibernate.sql: debug
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
     # org.hibernate.type: trace
