@@ -3,6 +3,8 @@ package com.clio.ondo.domain.mission.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,27 +25,22 @@ public class MissionController {
 	private MissionService missionService;
 
 	@PostMapping("/random")
-	public String getRandomMission(){
+	public ResponseEntity<Void> getRandomMission(){
 		missionService.createRandomMission();
-		return "정상적으로 생성";
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@PostMapping("/typicalMission")
-	public String getTypicalMission(){
+	public List<Mission>  getTypicalMission(){
 		List<Mission> typicalMission=missionService.getTypicalMission();
-		for(Mission m:typicalMission){
-			System.out.println(m);
-		}
-		return "특별미션 가져오기";
+
+		return typicalMission;
 	}
 
 	@PostMapping("/dailyMission")
-	public String getDailyMission(){
+	public List<MissionDetail> getDailyMission(){
 		List<MissionDetail> dailyMission=missionService.getDailyMission();
-		for(MissionDetail md:dailyMission){
-			System.out.println(md);
-		}
-		return "데일리미션 가져오기";
+		return dailyMission;
 	}
 
 }
