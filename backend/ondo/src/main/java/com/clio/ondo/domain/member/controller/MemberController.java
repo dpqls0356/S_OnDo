@@ -15,5 +15,11 @@ public class MemberController {
 
 	private final MemberRepository memberRepository;
 	private final MemberService memberService;
-	
+
+	// @GetMapping("/내정보불러오기")
+	// public ResponseEntity<?> getCurrentUser() {
+	// 	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	// 	UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+	// 	return ResponseEntity.ok(userDetails);
+	// }
 }
