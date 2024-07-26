@@ -1,5 +1,7 @@
 package com.clio.ondo.domain.mission.model;
 
+import org.bson.types.ObjectId;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class MissionDetailDto {
 
-	private long id; //미션디테일아이디
+	private ObjectId _id; //미션디테일아이디
 	private String title; //제목
 	private String content; //내용
 	private String type; //데일리 or 특별

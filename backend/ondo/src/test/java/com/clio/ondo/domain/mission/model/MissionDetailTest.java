@@ -21,7 +21,7 @@ class MissionDetailTest {
 	@BeforeEach
 	public void setup(){
 		missionDetail=MissionDetail.builder()
-			.id(324)
+			.id(null)
 			.title("Test Mission Detail")
 			.content("This is a test missionDetail")
 			.type("typical")
