@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.member.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.clio.ondo.domain.character.model.Character;
@@ -15,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -55,7 +57,7 @@ public class Member {
 	private Gender gender;
 
 	@Column(name = "birth_date")
-	private Date birthDate;
+	private LocalDate birthDate;
 
 	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
 	private Character character;
@@ -72,12 +74,15 @@ public class Member {
 		this.password = newPassword;
 	}
 
-	public Member(String email, String password, String name, String nickname, Role role) {
+	@Builder
+	public Member(String email, String password, String name, String nickname, Role role, LocalDate birthDate, Gender gender) {
 		this.email = email;
 		this.password = password;
 		this.name = name;
 		this.nickname = nickname;
 		this.joinDate = new Date();
 		this.role = role;
+		this.birthDate = birthDate;
+		this.gender = gender;
 	}
 }

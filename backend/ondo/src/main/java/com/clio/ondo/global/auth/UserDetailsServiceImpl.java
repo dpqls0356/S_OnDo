@@ -8,8 +8,10 @@ import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
+@Component
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private final MemberRepository memberRepository;
