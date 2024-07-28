@@ -5,9 +5,10 @@ import com.clio.ondo.domain.board.model.Comment;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 @Component
 public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
@@ -20,14 +21,10 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
      */
   @Override
   public void updateComment(ObjectId commentId, Comment modifiedComment) {
-    Comment existingComment = mongoTemplate.findById(commentId,Comment.class);
-    if(existingComment!=null){
-      existingComment.changeContent(modifiedComment.getContent());
-      mongoTemplate.save(existingComment);
-    }
-    else{
-      // 존재하지않은 댓글에 대한 요청은 예외처리
-    }
+    Query query = new Query(Criteria.where("_id").is(commentId));
+    Update update = new Update()
+            .set("content", modifiedComment.getContent());
+    mongoTemplate.updateFirst(query, update, Comment.class);
   }
 
 }

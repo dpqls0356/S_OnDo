@@ -58,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
     if (existingArticleOpt.isPresent()) {
       //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
       Board existingArticle = existingArticleOpt.get();
-      if(existingArticle.getId().equals(existingArticle.getId())){
+      if(existingArticle.getMember_id().equals(existingArticle.getMember_id())){
         boardRepository.deleteById(articleId);
       }
       else{
@@ -84,7 +84,7 @@ public class BoardServiceImpl implements BoardService {
     if (existingArticleOpt.isPresent()) {
       //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
       Board existingArticle = existingArticleOpt.get();
-      if(existingArticle.getId().equals(existingArticle.getId())){
+      if(existingArticle.getMember_id().equals(existingArticle.getMember_id())){
         customBoardRepositoryImpl.updateArticle(articleId,modifiedArticle);
       }
       else{

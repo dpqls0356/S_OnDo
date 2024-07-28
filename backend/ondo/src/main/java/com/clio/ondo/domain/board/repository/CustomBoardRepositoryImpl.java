@@ -1,8 +1,10 @@
 package com.clio.ondo.domain.board.repository;
 import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.Comment;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -23,16 +25,18 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
    */
   @Override
   public void updateArticle(ObjectId articleId, Board modifiedArticle) {
-    Board existingArticle = mongoTemplate.findById(articleId, Board.class);
-      if (modifiedArticle.getTitle() != null) {
-        existingArticle.changeTitle(modifiedArticle.getTitle());
-      }
-      if (modifiedArticle.getContent() != null) {
-        existingArticle.changeContent(modifiedArticle.getContent());
-      }
-      // 수정된 게시글 저장
-      mongoTemplate.save(existingArticle);
+    Query query = new Query(Criteria.where("_id").is(articleId));
+    Update update = new Update();
+
+    if (modifiedArticle.getTitle() != null) {
+      update.set("title", modifiedArticle.getTitle());
+    }
+    if (modifiedArticle.getContent() != null) {
+      update.set("content", modifiedArticle.getContent());
+    }
+    mongoTemplate.updateFirst(query, update, Board.class);
   }
+
 
   /*
   게시글 검색
@@ -42,7 +46,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
   public List<Board> searchArticles(String searchWord) {
     Query query = new Query();
     query.addCriteria(new Criteria().orOperator(
-            Criteria.where("author").regex(searchWord, "i"),
+            Criteria.where("member_id").regex(searchWord, "i"),
             Criteria.where("title").regex(searchWord, "i")
     ));
     return mongoTemplate.find(query, Board.class);
