@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 @Component
-public class CustomCommentRepositoryImpl {
+public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
   @Autowired
   private MongoTemplate mongoTemplate;
@@ -18,11 +18,11 @@ public class CustomCommentRepositoryImpl {
     /*
       에러 : id로 검색 시 해당 댓글이 없는 경우
      */
-
+  @Override
   public void updateComment(ObjectId commentId, Comment modifiedComment) {
     Comment existingComment = mongoTemplate.findById(commentId,Comment.class);
     if(existingComment!=null){
-      existingComment.setContent(modifiedComment.getContent());
+      existingComment.changeContent(modifiedComment.getContent());
       mongoTemplate.save(existingComment);
     }
     else{

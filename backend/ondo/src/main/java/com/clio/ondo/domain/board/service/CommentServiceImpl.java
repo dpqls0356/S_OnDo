@@ -19,18 +19,22 @@ public class CommentServiceImpl implements CommentService {
   @Autowired
   CustomCommentRepositoryImpl customCommentRepositoryImpl;
 
+  @Override
   public void saveComment(Comment comment) {
     commentRepository.save(comment);
   }
 
+  @Override
   public void deleteComment(ObjectId commentId) {
     commentRepository.deleteById(commentId);
   }
 
+  @Override
   public void updateComment(ObjectId commentId, Comment modifiedComment) {
     customCommentRepositoryImpl.updateComment(commentId,modifiedComment);
   }
 
+  @Override
   public Page<Comment> getComments(Pageable pageble){
     return commentRepository.findAll(pageble);
   }
