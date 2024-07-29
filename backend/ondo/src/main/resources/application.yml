@@ -25,7 +25,7 @@ spring:
   jwt:
     secret: jwtsecrettoken
     # 30분 1800000
-    access-token-expiration: 20000
+    access-token-expiration: 1800000
     # 2주일 1209600000
     refresh-token-expiration: 1209600000
 

@@ -4,23 +4,22 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -44,7 +43,6 @@ public class JwtTokenProvider {
 		secret = Base64.getEncoder().encodeToString(secret.getBytes());
 	}
 
-	// Access Token은 claim에 type이 추가 됨.
 	public String generateAccessToken(Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		Claims claims = Jwts.claims().setSubject(userDetails.getEmail());
@@ -86,6 +84,10 @@ public class JwtTokenProvider {
 
 	public Claims decodeJwt(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+	}
+
+	public boolean isTokenBlacklisted(String token) {
+		return redisTemplate.opsForValue().get("blacklist:" + token) == null;
 	}
 
 	public boolean validateToken(String token) {
@@ -130,5 +132,10 @@ public class JwtTokenProvider {
 
 	public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
 		response.setHeader("refreshToken", "bearer "+ refreshToken);
+	}
+
+	public long getExpirationTime(String token) {
+		Claims claims = decodeJwt(token);
+		return claims.getExpiration().getTime();
 	}
 }

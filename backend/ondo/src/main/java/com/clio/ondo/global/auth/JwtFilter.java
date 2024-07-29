@@ -2,23 +2,21 @@ package com.clio.ondo.global.auth;
 
 import java.io.IOException;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.RedisConnectionFailureException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.clio.ondo.global.exception.auth.JwtTokenNotValidException;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,21 +31,21 @@ public class JwtFilter extends OncePerRequestFilter {
 		try {
 			if (token != null) {
 				Claims claims = jwtTokenProvider.decodeJwt(token);
-				if (jwtTokenProvider.validateToken(token)) {
+				if (jwtTokenProvider.validateToken(token) && jwtTokenProvider.isTokenBlacklisted(token)) {
 					if (jwtTokenProvider.hasClaim(claims, "type", "access")) {
 						Authentication authentication = jwtTokenProvider.getAuthentication(token);
 						SecurityContextHolder.getContext().setAuthentication(authentication);
 					} else {
 						handleRefreshToken(request, response, filterChain, claims);
-						log.error("refresh 토큰 처리완료");
 						return;
 					}
+				} else {
+					throw new JwtTokenNotValidException("Token is not valid");
 				}
 			}
 		} catch (ExpiredJwtException e) {
 			handleExpiredToken(request, response, token, e);
 		} catch (RedisConnectionFailureException e) {
-			log.error("Redis 연결 오류 시 로그아웃");
 			SecurityContextHolder.clearContext();
 		}
 		filterChain.doFilter(request, response);

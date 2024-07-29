@@ -1,6 +1,9 @@
-package com.clio.ondo.domain.member.model;
+package com.clio.ondo.domain.member.model.dto;
 
 
+import com.clio.ondo.domain.member.model.Gender;
+import com.clio.ondo.domain.member.model.Member;
+import com.clio.ondo.domain.member.model.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +18,7 @@ public class JoinRequestDto {
     private String password;
     private LocalDate birthDate;
     private String gender;
+    private String profileUrl;
 
     public Member toEntity() {
         return Member.builder()
@@ -25,6 +29,7 @@ public class JoinRequestDto {
                 .birthDate(birthDate)
                 .gender(Gender.valueOf(gender))
                 .role(Role.valueOf("USER"))
+                .profileUrl(profileUrl)
                 .build();
     }
 }
