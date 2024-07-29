@@ -8,19 +8,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.*;
 
-@Document(collection="mission")
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
-
 public class Mission {
 
-	@Id
-	private ObjectId id; //미션아이디
+	//Mission 완료 여부 확인 용
 	private boolean completeFlag; //완료여부
 	private LocalDateTime completeTime; //완료시간
-	private long memberId; //멤버 아이디
 
+	//MissionDetail의 내용
 	private String title; //제목
 	private String content; //내용
 	private String type; //데일리 or 특별
