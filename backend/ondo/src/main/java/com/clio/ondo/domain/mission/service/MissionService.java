@@ -45,9 +45,8 @@ public class MissionService {
 	}
 
 
-
 	//오늘의 특별+데일리 미션 todayMission에 저장
-	public void TodayTypicalMission(){
+	public void TodayMission(Long memberId){
 
 		//특별 미션 랜덤 3개 추출
 		List<MissionDetail> typicalMissions=createRandomMission(); //랜덤 특별미션 3개
@@ -68,15 +67,24 @@ public class MissionService {
 				detail.getLevel()
 			))
 			.toList();
-		
-		TodayMission todayMission = TodayMission.builder()
-			.id(null)
-			.memberId(0L)
-			.missions(randMissions)
-			.build();
 
-		
-		todayMissionRepository.save(todayMission);
+		// 해당 memberId로 TodayMission이 있는지 확인
+		TodayMission existingTodayMission = todayMissionRepository.findByMemberId(memberId);
+
+		if (existingTodayMission != null) {
+			// 기존 TodayMission이 있는 경우, missions 추가
+			existingTodayMission.getMissions().addAll(randMissions);
+			todayMissionRepository.save(existingTodayMission);
+		} else {
+			// 새로운 TodayMission 생성
+			TodayMission newTodayMission = TodayMission.builder()
+				.id(null)
+				.memberId(memberId)
+				.missions(randMissions)
+				.build();
+
+			todayMissionRepository.save(newTodayMission);
+		}
 	}
 
 
