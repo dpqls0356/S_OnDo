@@ -2,18 +2,23 @@ package com.clio.ondo.domain.mission.model;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-@Document(collection="CompleteMission")
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="completeMission")
 @Getter
 @Builder
-public class CompleteMission extends MissionBase{
+@AllArgsConstructor
+public class CompleteMission {
 
-	public CompleteMission(ObjectId id, Long memberId, List<Mission> missions) {
-		super(id, memberId, missions);
-	}
+	@Id
+	private ObjectId id;
+	private Long memberId;
+	private List<Mission> missions;
+
 }

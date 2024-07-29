@@ -23,9 +23,10 @@ public class SecurityConfig {
 		http.httpBasic((authorize) ->  authorize.disable())
 			.csrf((authorize) -> authorize.disable())
 			.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeRequests().requestMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
+			.authorizeRequests().requestMatchers("/**").permitAll()
+			//.authorizeRequests().requestMatchers("/api/v1/member/join", "/api/v1/member/login").permitAll()
 			.anyRequest().authenticated();
-			// .addFilterBefore(JwtFilter, UsernamePasswordAuthenticationFilter.class);
+		// .addFilterBefore(JwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 }
