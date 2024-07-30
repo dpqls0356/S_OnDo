@@ -3,8 +3,6 @@ package com.clio.ondo.global.auth;
 import java.util.Collection;
 import java.util.List;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,6 +17,8 @@ public class CustomUserDetails implements UserDetails {
 	private String name;
 	private String nickname;
 	private String password;
+	private String profileUrl;
+	private String gender;
 	private final String role;
 	private final String email;
 
@@ -27,9 +27,12 @@ public class CustomUserDetails implements UserDetails {
 		this.role = role;
 	}
 	public CustomUserDetails(Member member) {
+		this.id = member.getId();
 		this.name = member.getName();
 		this.nickname = member.getNickname();
 		this.password = member.getPassword();
+		this.profileUrl = member.getProfileUrl();
+		this.gender = member.getGender().toString();
 		this.role = member.getRole().toString();
 		this.email = member.getEmail();
 	}

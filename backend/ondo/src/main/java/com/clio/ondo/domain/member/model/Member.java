@@ -19,9 +19,11 @@ import jakarta.persistence.TemporalType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
+@ToString
 @NoArgsConstructor
 public class Member {
 
@@ -75,7 +77,8 @@ public class Member {
 	}
 
 	@Builder
-	public Member(String email, String password, String name, String nickname, Role role, LocalDate birthDate, Gender gender) {
+	public Member(String email, String password, String name, String nickname, Role role, LocalDate birthDate,
+		Gender gender, String profileUrl) {
 		this.email = email;
 		this.password = password;
 		this.name = name;
@@ -84,5 +87,6 @@ public class Member {
 		this.role = role;
 		this.birthDate = birthDate;
 		this.gender = gender;
+		this.profileUrl = profileUrl;
 	}
 }

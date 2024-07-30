@@ -4,23 +4,22 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -44,7 +43,6 @@ public class JwtTokenProvider {
 		secret = Base64.getEncoder().encodeToString(secret.getBytes());
 	}
 
-	// Access Token은 claim에 type이 추가 됨.
 	public String generateAccessToken(Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		Claims claims = Jwts.claims().setSubject(userDetails.getEmail());
@@ -53,6 +51,7 @@ public class JwtTokenProvider {
 
 		return Jwts.builder()
 			.setClaims(claims)
+			.claim("id", userDetails.getId())
 			.claim("role", userDetails.getRole())
 			.claim("type", "access")
 			.setIssuedAt(now)
@@ -69,6 +68,7 @@ public class JwtTokenProvider {
 
 		String refreshToken = Jwts.builder()
 			.setClaims(claims)
+			.claim("id", userDetails.getId())
 			.claim("role", userDetails.getRole())
 			.setIssuedAt(now)
 			.setExpiration(expireDate)
@@ -88,6 +88,10 @@ public class JwtTokenProvider {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
+	public boolean isTokenBlacklisted(String token) {
+		return redisTemplate.opsForValue().get("blacklist:" + token) == null;
+	}
+
 	public boolean validateToken(String token) {
 		try {
 			Claims claims = decodeJwt(token);
@@ -105,17 +109,13 @@ public class JwtTokenProvider {
 		return null;
 	}
 
-	public String getUsernameFromToken(String token) {
-		Claims claims = Jwts.parser()
-				.setSigningKey(secret)
-				.parseClaimsJws(token)
-				.getBody();
-
-		return claims.getSubject();
+	// 토큰에서 id 가져오는 함수.
+	public Long getIdFromToken(String token) {
+		return decodeJwt(token).get("id", Long.class);
 	}
 
 	public Authentication getAuthentication(String token) {
-		String username = getUsernameFromToken(token);
+		String username = decodeJwt(token).getSubject();
 		CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}
@@ -130,5 +130,10 @@ public class JwtTokenProvider {
 
 	public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
 		response.setHeader("refreshToken", "bearer "+ refreshToken);
+	}
+
+	public long getExpirationTime(String token) {
+		Claims claims = decodeJwt(token);
+		return claims.getExpiration().getTime();
 	}
 }
