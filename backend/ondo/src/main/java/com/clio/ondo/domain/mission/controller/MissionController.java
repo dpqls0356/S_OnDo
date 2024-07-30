@@ -67,6 +67,12 @@ public class MissionController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+	//멤버별 완료한 특별미션 전체조회
+	@GetMapping("/getCompleteMission/{memberId}")
+	public List<Mission> getCompleteMission(@PathVariable Long memberId) {
+		return missionService.getCompleteMission(memberId);
+	}
+
 
 
 

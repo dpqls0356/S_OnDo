@@ -153,7 +153,7 @@ public class MissionService {
 
 			completeMissionRepository.save(newCompleteMission);
 		}
-	
+
 		//그 외의 미션 todayMission에서 삭제
 		todayMission.getMissions().clear();
 
@@ -162,6 +162,12 @@ public class MissionService {
 
 	}
 
+	//멤버별 완료한 특별미션 전체조회
+	public List<Mission> getCompleteMission(Long memberId){
+		CompleteMission completeMission=completeMissionRepository.findByMemberId(memberId);
+		List<Mission> missionList=completeMission.getMissions();
+		return missionList;
+	}
 
 }
 
