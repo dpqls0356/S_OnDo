@@ -6,6 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FCMToken {
-    private Long memberId;
     private String token;
 }

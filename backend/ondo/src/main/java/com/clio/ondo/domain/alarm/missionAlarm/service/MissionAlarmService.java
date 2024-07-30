@@ -20,7 +20,7 @@ public class MissionAlarmService {
 	private RedisTemplate redisTemplate;
 
 	@Transactional
-	public void saveToken(FCMToken fcmToken) {
-		redisTemplate.opsForList().rightPush(fcmToken.getMemberId(), fcmToken.getToken());
+	public void saveToken(Long memberId, FCMToken fcmToken) {
+		redisTemplate.opsForList().rightPush(memberId, fcmToken.getToken());
 	}
 }

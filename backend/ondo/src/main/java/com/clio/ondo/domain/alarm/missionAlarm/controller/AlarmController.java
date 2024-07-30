@@ -21,7 +21,7 @@ public class AlarmController {
     @PostMapping("/api/v1/alarm/token/{memberId}")
     public ResponseEntity<?> setToken(@PathVariable("memberId") Long memberId, @RequestBody FCMToken FCMToken) {
         try{
-            missionAlarmService.saveToken(FCMToken);
+            missionAlarmService.saveToken(memberId, FCMToken);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new Result<>(true,HttpStatus.OK.value(), "저장에 성공했습니다."));
