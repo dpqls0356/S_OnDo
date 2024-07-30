@@ -14,20 +14,27 @@ import lombok.Getter;
 public class CustomUserDetails implements UserDetails {
 
 	private Long id;
-	private final String name;
-	private final String nickname;
-	private final String password;
+	private String name;
+	private String nickname;
+	private String password;
+	private String profileUrl;
+	private String gender;
 	private final String role;
 	private final String email;
-	private final Long characterId;
 
+	public CustomUserDetails(String email, String role) {
+		this.email = email;
+		this.role = role;
+	}
 	public CustomUserDetails(Member member) {
+		this.id = member.getId();
 		this.name = member.getName();
 		this.nickname = member.getNickname();
 		this.password = member.getPassword();
+		this.profileUrl = member.getProfileUrl();
+		this.gender = member.getGender().toString();
 		this.role = member.getRole().toString();
 		this.email = member.getEmail();
-		this.characterId = member.getCharacter().getId();
 	}
 
 	@Override
