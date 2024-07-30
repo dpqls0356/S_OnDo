@@ -8,7 +8,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection ="articles")
-@Setter
 @Getter
 public class Board {
     @Id
@@ -18,5 +17,14 @@ public class Board {
     private Date created_at;    //작성일
     private int views;  //조회수
     private String member_id;   //작성자
+    // 제목을 바꾸는 메서드
+    public void changeTitle(String newTitle) {
+        this.title = newTitle;
+    }
+
+    // 내용을 바꾸는 메서드
+    public void changeContent(String newContent) {
+        this.content = newContent;
+    }
 
 }

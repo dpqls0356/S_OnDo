@@ -3,11 +3,14 @@ package com.clio.ondo.domain.board.service;
 import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.repository.BoardRepository;
 import com.clio.ondo.domain.board.repository.CustomBoardRepository;
+
+import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -31,6 +34,7 @@ public class BoardServiceImpl implements BoardService {
   /*
   모든 게시글 가져오기 - 무한 스크롤 기능
    */
+  @Override
   public Page<Board> getArticles(Pageable pageble){
     return boardRepository.findAll(pageble);
   }
@@ -42,16 +46,70 @@ public class BoardServiceImpl implements BoardService {
   /*
   게시글 삭제
    */
+  /*
+  글이 존재할때 - 완
+  글쓴이가 일치할 떄 => 시큐리티로 하기
+  삭제 요청 - 완
+  예외처리
+   */
+  @Override
   public void deleteArticle(ObjectId articleId) {
-    boardRepository.deleteById(articleId);
+    Optional<Board> existingArticleOpt = boardRepository.findById(articleId);
+    if (existingArticleOpt.isPresent()) {
+      //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
+      Board existingArticle = existingArticleOpt.get();
+      if(existingArticle.getMember_id().equals(existingArticle.getMember_id())){
+        boardRepository.deleteById(articleId);
+      }
+      else{
+        //소유주가 아니기에 예외처리
+      }
+    } else {
+      // 게시글이 존재하지 않을 경우 예외 처리
+    }
   }
 
+  /*
+  게시글 수정
+   */
+  /*
+  글이 존재할때 - 완
+  글쓴이가 일치할 떄 => 시큐리티로 하기
+  업데이트 요청 - 완
+  예외처리
+   */
+  @Override
   public void updateArticle(ObjectId articleId, Board modifiedArticle) {
-    customBoardRepositoryImpl.updateArticle(articleId,modifiedArticle);
+    Optional<Board> existingArticleOpt = boardRepository.findById(articleId);
+    if (existingArticleOpt.isPresent()) {
+      //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
+      Board existingArticle = existingArticleOpt.get();
+      if(existingArticle.getMember_id().equals(existingArticle.getMember_id())){
+        customBoardRepositoryImpl.updateArticle(articleId,modifiedArticle);
+      }
+      else{
+        //소유주가 아니기에 예외처리
+      }
+    } else {
+      // 게시글이 존재하지 않을 경우 예외 처리
+    }
   }
 
+  /*
+  게시글 상세보기
+   */
+  @Override
   public Optional<Board> getArticle(ObjectId articleId) {
     return boardRepository.findById(articleId);
+  }
+
+  /*
+    게시글 검색
+    검색어 기반으로 이름이랑 제목 다 찾아야함
+ */
+  @Override
+  public List<Board> searchArticles(String searchWord)  {
+    return customBoardRepositoryImpl.searchArticles(searchWord);
   }
 
 }
