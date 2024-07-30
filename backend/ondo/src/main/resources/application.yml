@@ -24,9 +24,9 @@ spring:
 
   jwt:
     secret: jwtsecrettoken
-    # 30분
+    # 30분 1800000
     access-token-expiration: 1800000
-    # 2주일
+    # 2주일 1209600000
     refresh-token-expiration: 1209600000
 
 logging:
@@ -34,6 +34,7 @@ logging:
     org.hibernate.sql: debug
     org:
       springframework:
+        web: debug
         data:
           mongodb:
             core:
