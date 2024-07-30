@@ -60,5 +60,14 @@ public class MissionController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+	//완료한 특별 미션 completeMission에 넣기 + 나머지 삭제
+	@GetMapping("/clearMission/{memberId}")
+	public ResponseEntity<Void> clearMission(@PathVariable Long memberId) {
+		missionService.putCompleteMission(memberId);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+
+
 
 }
