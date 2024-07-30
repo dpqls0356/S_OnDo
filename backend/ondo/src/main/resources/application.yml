@@ -29,6 +29,10 @@ spring:
     # 2주일 1209600000
     refresh-token-expiration: 1209600000
 
+  batch:
+    job:
+      enabled: false
+
 logging:
   level:
     org.hibernate.sql: debug

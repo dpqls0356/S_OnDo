@@ -41,7 +41,7 @@ import com.clio.ondo.domain.mission.repository.MissionRepository;
 
 @Configuration
 @EnableConfigurationProperties(BatchProperties.class)
-public class BatchConfig extends DefaultBatchConfiguration {
+class AlarmBatchConfig extends DefaultBatchConfiguration {
 	@Autowired
 	private DataSource dataSource;
 	@Autowired
@@ -111,8 +111,8 @@ public class BatchConfig extends DefaultBatchConfiguration {
 			cm.add(new CompleteMission(new ObjectId() , (long)4, dummyMission));
 
 			List<Mission> missions = new ArrayList<>();
-			if(!mbm.isEmpty()){
-				missions = mbm.get(0).getMissions();
+			if(!cm.isEmpty()){
+				missions = cm.get(0).getMissions();
 				System.out.println(missions);
 			}
 
