@@ -1,5 +1,6 @@
 package com.clio.ondo.global.config;
 
+import com.clio.ondo.global.auth.OAuth.OAuth2SuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.clio.ondo.global.auth.CustomOAuth2UserService;
+import com.clio.ondo.global.auth.OAuth.CustomOAuth2UserService;
 import com.clio.ondo.global.auth.jwtUtil.JwtAccessDeniedHandler;
 import com.clio.ondo.global.auth.jwtUtil.JwtAuthenticationEntryPoint;
 import com.clio.ondo.global.auth.jwtUtil.JwtFilter;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -50,8 +52,12 @@ public class SecurityConfig {
             .csrf((authorize) -> authorize.disable())
             .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue", "/error").permitAll()
+                .requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue", "/error", "/**").permitAll()
                 .anyRequest().authenticated())
+                .oauth2Login(oauth ->
+                        oauth.userInfoEndpoint(c -> c.userService(customOAuth2UserService))
+                                .successHandler(oAuth2SuccessHandler)
+                )
             .exceptionHandling((exceptionHandling) -> exceptionHandling
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler))
