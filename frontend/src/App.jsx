@@ -1,15 +1,19 @@
-import './index.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import CounselorHome from "./counselorWeb/counselorHome";
+import CounselingRoom from "./counselorWeb/counselingRoom";
 
 function App() {
-  // const [count, setCount] = useState(0)
-
   return (
-    <>
-      <h1 className="text-4xl font-bold text-center text-blue-500">
-        Hello world!
-      </h1>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/counselor/home" element={<CounselorHome />}></Route>
+        <Route
+          path="/counselor/counselingroom"
+          element={<CounselingRoom />}
+        ></Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

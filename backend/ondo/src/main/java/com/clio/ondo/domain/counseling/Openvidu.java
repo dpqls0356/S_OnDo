@@ -30,7 +30,6 @@ public class Openvidu {
   @Value("${openvidu.url}")
   private String OPENVIDU_URL;
 
-
   @Value("${openvidu.secret}")
   private String OPENVIDU_SECRET;
 
@@ -41,27 +40,18 @@ public class Openvidu {
     this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
   }
 
-  /**
-   * @param params The Session properties
-   * @return The Session ID
-   */
   @PostMapping("/api/sessions")
   public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
-      throws OpenViduJavaClientException, OpenViduHttpException {
+          throws OpenViduJavaClientException, OpenViduHttpException {
     SessionProperties properties = SessionProperties.fromJson(params).build();
     Session session = openvidu.createSession(properties);
     return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
   }
 
-  /**
-   * @param sessionId The Session in which to create the Connection
-   * @param params    The Connection properties
-   * @return The Token associated to the Connection
-   */
   @PostMapping("/api/sessions/{sessionId}/connections")
   public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
-      @RequestBody(required = false) Map<String, Object> params)
-      throws OpenViduJavaClientException, OpenViduHttpException {
+                                                 @RequestBody(required = false) Map<String, Object> params)
+          throws OpenViduJavaClientException, OpenViduHttpException {
     Session session = openvidu.getActiveSession(sessionId);
     if (session == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -71,4 +61,16 @@ public class Openvidu {
     return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
   }
 
+  @PostMapping("/api/sessions/{sessionId}/leave")
+  public ResponseEntity<Void> leaveSession(@PathVariable("sessionId") String sessionId,
+                                           @RequestBody Map<String, Object> params)
+          throws OpenViduJavaClientException, OpenViduHttpException {
+    Session session = openvidu.getActiveSession(sessionId);
+    if (session == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    String user = (String) params.get("user");
+    session.forceDisconnect(user);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
 }
