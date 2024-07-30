@@ -1,4 +1,4 @@
-package com.clio.ondo.global.auth;
+package com.clio.ondo.global.auth.jwtUtil;
 
 import java.util.Base64;
 import java.util.Date;
@@ -10,6 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import com.clio.ondo.global.auth.CustomUserDetails;
+import com.clio.ondo.global.auth.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

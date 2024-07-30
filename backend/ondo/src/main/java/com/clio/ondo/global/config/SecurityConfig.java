@@ -3,6 +3,7 @@ package com.clio.ondo.global.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,10 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.clio.ondo.global.auth.JwtAccessDeniedHandler;
-import com.clio.ondo.global.auth.JwtAuthenticationEntryPoint;
-import com.clio.ondo.global.auth.JwtFilter;
-import com.clio.ondo.global.auth.JwtTokenProvider;
+import com.clio.ondo.global.auth.CustomOAuth2UserService;
+import com.clio.ondo.global.auth.jwtUtil.JwtAccessDeniedHandler;
+import com.clio.ondo.global.auth.jwtUtil.JwtAuthenticationEntryPoint;
+import com.clio.ondo.global.auth.jwtUtil.JwtFilter;
+import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,10 +26,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,13 +50,13 @@ public class SecurityConfig {
             .csrf((authorize) -> authorize.disable())
             .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue").permitAll()
+                .requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue", "/error").permitAll()
                 .anyRequest().authenticated())
             .exceptionHandling((exceptionHandling) -> exceptionHandling
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler))
-            .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-            //.cors(Customizer.withDefaults());
+            .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+            .cors(Customizer.withDefaults());
 
         return http.build();
     }
