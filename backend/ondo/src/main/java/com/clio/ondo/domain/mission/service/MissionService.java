@@ -47,7 +47,7 @@ public class MissionService {
 	}
 
 	//오늘의 특별+데일리 미션 todayMission에 저장
-	public void TodayMission(Long memberId) {
+	public void UpdateTodayMission(Long memberId) {
 
 		//특별 미션 랜덤 3개 추출
 		List<MissionDetail> typicalMissions = createRandomMission(); //랜덤 특별미션 3개
@@ -89,7 +89,7 @@ public class MissionService {
 	}
 
 	//해당하는 멤버의 미션 가져오기
-	public List<Mission> todayMission(Long memberId) {
+	public List<Mission> getTodayMission(Long memberId) {
 
 		try {
 			TodayMission todayMission = todayMissionRepository.findByMemberId(memberId);
@@ -168,6 +168,8 @@ public class MissionService {
 		List<Mission> missionList=completeMission.getMissions();
 		return missionList;
 	}
+
+	//미션디테일에서 멤버
 
 }
 

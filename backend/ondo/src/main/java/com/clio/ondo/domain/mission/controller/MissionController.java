@@ -25,7 +25,7 @@ public class MissionController {
 	//3개의 랜덤 특별 미션 + 데일리 미션 todayMission에 저장
 	@GetMapping("/update/{memberId}")
 	public ResponseEntity<Void> updateTodayMission(@PathVariable Long memberId){
-		missionService.TodayMission(memberId);
+		missionService.UpdateTodayMission(memberId);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
@@ -33,7 +33,7 @@ public class MissionController {
 	//오늘의 특별미션 가져오기
 	@GetMapping("/todayTypical/{memberId}")
 	public List<Mission> getTodayTypical(@PathVariable Long memberId){
-		List<Mission> todayMission= missionService.todayMission(memberId);
+		List<Mission> todayMission= missionService.getTodayMission(memberId);
 		List<Mission> typicalMissions = todayMission.stream()
 			.filter(mission -> "typical".equals(mission.getType()))
 			.toList();
