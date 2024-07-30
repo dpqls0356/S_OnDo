@@ -1,17 +1,25 @@
 package com.clio.ondo.domain.member.controller;
 
-import com.clio.ondo.domain.member.model.*;
-import com.clio.ondo.domain.member.model.dto.*;
-import io.jsonwebtoken.JwtException;
-import org.hibernate.sql.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.clio.ondo.domain.member.model.Member;
+import com.clio.ondo.global.ResponseVO;
+import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
+import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
+import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
+import com.clio.ondo.domain.member.model.dto.MemberResponseDto;
+import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.member.service.MemberService;
 import com.clio.ondo.global.auth.CustomUserDetails;
@@ -21,6 +29,7 @@ import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
 import com.clio.ondo.global.exception.member.MemberException;
 import com.clio.ondo.global.exception.member.MemberNotFoundException;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,12 +45,11 @@ public class MemberController {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 
-
 	@PostMapping("/login")
 	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto) {
 		try {
 			TokenDto token = memberService.login(loginRequestdto);
-			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success(token));
+			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
 		}
@@ -71,33 +79,42 @@ public class MemberController {
 		}
 	}
 
+	@GetMapping("/id")
+	public ResponseEntity<ResponseVO<Long>> getMyId(HttpServletRequest request) {
+		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		Long id = jwtTokenProvider.getIdFromToken(token);
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("id", id));
+	}
+
 	@GetMapping("/me")
 	public ResponseEntity<ResponseVO<MemberResponseDto>> getMyInfo(HttpServletRequest request) {
 		try {
 			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 			Authentication authentication = jwtTokenProvider.getAuthentication(token);
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-			Member user = memberRepository.findByEmail(userDetails.getEmail()).orElseThrow(MemberNotFoundException::new);
+			CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
+			Member user = memberRepository.findByEmail(userDetails.getEmail())
+				.orElseThrow(MemberNotFoundException::new);
 			MemberResponseDto memberResponseDto = MemberResponseDto.builder()
-					.name(user.getName())
-					.nickname(user.getNickname())
-					.email(user.getEmail())
-					.role(String.valueOf(user.getRole()))
-					.profileUrl(user.getProfileUrl())
-					.gender(String.valueOf(user.getGender()))
-					.birthDate(user.getBirthDate())
-					.profileUrl(user.getProfileUrl())
-					.build();
-			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success(memberResponseDto));
+				.id(user.getId())
+				.name(user.getName())
+				.nickname(user.getNickname())
+				.email(user.getEmail())
+				.role(String.valueOf(user.getRole()))
+				.profileUrl(user.getProfileUrl())
+				.gender(String.valueOf(user.getGender()))
+				.birthDate(user.getBirthDate())
+				.profileUrl(user.getProfileUrl())
+				.build();
+			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("user", memberResponseDto));
 		} catch (AuthenticationException | JwtException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("내정보 조회 실패"));
 		}
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<ResponseVO<String>> update(@RequestBody UpdateRequestDto updateRequestDto, HttpServletRequest request) {
+	public ResponseEntity<ResponseVO<String>> update(@RequestBody UpdateRequestDto updateRequestDto,
+		HttpServletRequest request) {
 		try {
-			updateRequestDto.setPassword(passwordEncoder.encode(updateRequestDto.getPassword()));
 			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 			memberService.updateMember(updateRequestDto, token);
 		} catch (MemberNotFoundException e) {
@@ -107,9 +124,9 @@ public class MemberController {
 	}
 
 	@DeleteMapping("/delete")
-	public ResponseEntity<ResponseVO<String>> delete(@RequestBody DeleteRequestDto deleteRequestDto, HttpServletRequest request) {
+	public ResponseEntity<ResponseVO<String>> delete(@RequestBody DeleteRequestDto deleteRequestDto,
+		HttpServletRequest request) {
 		try {
-			//deleteRequestDto.setPassword(passwordEncoder.encode(deleteRequestDto.getPassword()));
 			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 			memberService.deleteMember(deleteRequestDto, token);
 		} catch (MemberNotFoundException e) {

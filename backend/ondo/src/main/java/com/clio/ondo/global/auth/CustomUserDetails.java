@@ -27,6 +27,7 @@ public class CustomUserDetails implements UserDetails {
 		this.role = role;
 	}
 	public CustomUserDetails(Member member) {
+		this.id = member.getId();
 		this.name = member.getName();
 		this.nickname = member.getNickname();
 		this.password = member.getPassword();

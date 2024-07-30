@@ -51,6 +51,7 @@ public class JwtTokenProvider {
 
 		return Jwts.builder()
 			.setClaims(claims)
+			.claim("id", userDetails.getId())
 			.claim("role", userDetails.getRole())
 			.claim("type", "access")
 			.setIssuedAt(now)
@@ -67,6 +68,7 @@ public class JwtTokenProvider {
 
 		String refreshToken = Jwts.builder()
 			.setClaims(claims)
+			.claim("id", userDetails.getId())
 			.claim("role", userDetails.getRole())
 			.setIssuedAt(now)
 			.setExpiration(expireDate)
@@ -107,17 +109,13 @@ public class JwtTokenProvider {
 		return null;
 	}
 
-	public String getUsernameFromToken(String token) {
-		Claims claims = Jwts.parser()
-				.setSigningKey(secret)
-				.parseClaimsJws(token)
-				.getBody();
-
-		return claims.getSubject();
+	// 토큰에서 id 가져오는 함수.
+	public Long getIdFromToken(String token) {
+		return decodeJwt(token).get("id", Long.class);
 	}
 
 	public Authentication getAuthentication(String token) {
-		String username = getUsernameFromToken(token);
+		String username = decodeJwt(token).getSubject();
 		CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}

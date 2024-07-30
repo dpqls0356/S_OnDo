@@ -10,7 +10,9 @@ import com.clio.ondo.domain.member.model.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByEmail(String email);
+
 	Optional<Member> findByNickname(String nickname);
+
 	@Query("SELECT m.id FROM Member m WHERE m.email = :email")
 	Long findIdByEmail(@Param("email") String email);
 }

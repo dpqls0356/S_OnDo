@@ -4,8 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
-import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,10 +13,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import com.clio.ondo.domain.member.model.Member;
+import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
-import com.clio.ondo.domain.member.model.Member;
+import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.global.auth.CustomUserDetails;
 import com.clio.ondo.global.auth.JwtTokenProvider;
@@ -30,7 +31,6 @@ import com.clio.ondo.global.exception.member.MemberNotFoundException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -111,6 +111,7 @@ public class MemberServiceImpl implements MemberService {
 		String user = claims.getSubject();
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
 		if (passwordEncoder.matches(deleteRequestDto.getPassword(), findMember.getPassword())) {
+			logout(accessToken);
 			memberRepository.delete(findMember);
 		} else {
 			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
@@ -125,6 +126,7 @@ public class MemberServiceImpl implements MemberService {
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
 		boolean isUpdated = false;
 		if (StringUtils.hasText(updateRequestDto.getPassword())) {
+			updateRequestDto.setPassword(passwordEncoder.encode(updateRequestDto.getPassword()));
 			findMember.updatePassword(updateRequestDto.getPassword());
 			isUpdated = true;
 		}
@@ -147,11 +149,13 @@ public class MemberServiceImpl implements MemberService {
 		Claims claims = jwtTokenProvider.decodeJwt(refreshToken);
 		String key = "refresh-token:" + claims.getSubject();
 		try {
-			if (Objects.equals(redisTemplate.opsForValue().get(key), refreshToken) && jwtTokenProvider.isTokenBlacklisted(
+			if (Objects.equals(redisTemplate.opsForValue().get(key), refreshToken)
+				&& jwtTokenProvider.isTokenBlacklisted(
 				refreshToken)) {
-				String user = claims.getSubject();
-				String role = claims.get("role", String.class);
-				CustomUserDetails userDetails = new CustomUserDetails(user, role);
+				Long id = claims.get("id", Long.class);
+				Member member = findOne(id);
+				log.error(member.toString());
+				CustomUserDetails userDetails = new CustomUserDetails(member);
 				return jwtTokenProvider.generateAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null));
 			}
 		} catch (MemberException e) {

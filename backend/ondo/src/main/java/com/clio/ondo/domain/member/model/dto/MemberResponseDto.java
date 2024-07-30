@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class MemberResponseDto {
+	private Long id;
 	private String name;
 	private String nickname;
 	private String role;

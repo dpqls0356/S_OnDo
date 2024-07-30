@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
 						return;
 					}
 				} else {
-					throw new JwtTokenNotValidException("Token is not valid");
+					throw new JwtTokenNotValidException("유효하지 않은 토큰입니다.");
 				}
 			}
 		} catch (ExpiredJwtException e) {
