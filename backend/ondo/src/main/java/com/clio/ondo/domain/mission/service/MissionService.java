@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import com.clio.ondo.domain.mission.model.CompleteMission;
@@ -22,6 +24,8 @@ import com.clio.ondo.domain.mission.repository.MissionDetailRepository;
 import com.clio.ondo.domain.mission.repository.MissionRepository;
 import com.clio.ondo.domain.mission.repository.TodayMissionRepository;
 
+@Configuration
+@EnableScheduling
 @Service
 public class MissionService {
 
@@ -168,10 +172,11 @@ public class MissionService {
 		List<Mission> missionList=completeMission.getMissions();
 		return missionList;
 	}
-
-	//미션디테일에서 멤버
+	
+	//미션디테일에서 캐릭터의 레벨 이하의 미션 디테일 가져오기
 
 }
+
 
 
 
