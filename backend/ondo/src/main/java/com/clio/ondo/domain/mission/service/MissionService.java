@@ -102,6 +102,27 @@ public class MissionService {
 		}
 	}
 
+	//완료한 미션 업데이트 및 포인트 추출
+	public void updateCompleteMission(Long memberId,String title){
+		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
+		List<Mission> missionList=todayMission.getMissions();
+		int completExp=0; //캐릭터에게 전달할 exp
+
+		for (Mission mission : missionList) {
+			if (mission.getTitle().equals(title)) {
+				System.out.println(mission);
+				mission.setCompleteFlag(true);
+				mission.setCompleteTime(now());
+				completExp=mission.getExp();
+			}
+		}
+		
+		//todayMission 업데이트
+		todayMissionRepository.save(todayMission);
+	}
+
+
+
 
 }
 

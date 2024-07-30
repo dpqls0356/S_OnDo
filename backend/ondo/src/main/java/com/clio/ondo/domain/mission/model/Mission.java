@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @ToString
 @AllArgsConstructor

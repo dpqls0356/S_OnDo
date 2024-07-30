@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.mission.model.Mission;
@@ -49,6 +50,14 @@ public class MissionController {
 			.toList();
 
 		return dailyMissions;
+	}
+
+	//완료한 미션 완료처리
+	@GetMapping("/completeMission")
+	public ResponseEntity<Void> completeMission(@RequestParam Long memberId,
+		@RequestParam String title){
+		missionService.updateCompleteMission(memberId, title);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 
