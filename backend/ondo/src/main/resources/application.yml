@@ -40,3 +40,12 @@ logging:
             core:
               MongoTemplate: DEBUG
     # org.hibernate.type: trace
+
+server:
+  port: 5001
+  ssl:
+    enabled: false
+
+openvidu:
+  url: ${OPENVIDU_URL}
+  secret: ${OPENVIDU_SECRET}
