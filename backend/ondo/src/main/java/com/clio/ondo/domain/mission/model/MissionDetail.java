@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.*;
 
-@Document(collection="missionDetail")
+@Document(collection="MissionDetail")
 @Getter
 @Builder
 @ToString
