@@ -1,0 +1,135 @@
+.BoardDetail{
+  /* height: 100%;
+  width: 80%; */
+  border: 1px black solid;
+  width: 85%;
+  margin: 0 auto;
+  margin-top: 10%;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: -4px 6px 0px 0px #001429;
+}
+
+#boardtitle{
+  width: 180%;
+}
+
+.DetailTitle{
+  font-size: 25px;
+  padding: 10px 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.DetailUserInfo p{
+  margin: 0px 4px;
+  width: 100%;
+}
+.DetailUserInfo img{
+  margin: 0px 4px;
+  border-radius: 100%;
+  width: 20%;
+}
+
+
+.DetailCreate *{
+  font-size: 90%;
+  margin: 0px 4px;
+}
+
+.DetailDate{
+  padding: 10px 20px;
+  border-top: 1px black solid;
+  border-bottom: 1px black solid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.DetailDate * {
+  display: flex;
+  align-items: center;
+}
+
+.DetailContent{
+  padding: 15px 30px;
+}
+
+.CommentList{
+  height: 100%;
+  width: 80%;
+  margin: 20px auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.CmtList{
+  width: 90%;
+}
+
+#comment-line{
+  border-left: 6px dashed #6ABFB4;
+  /* height: 500px; */
+  /* left: 50%; */
+  /* margin-left: -3px; */
+  /* top: 0; */
+}
+
+
+.CommentForm{
+  /* position: ; */
+  top: 100px;
+  width: 86%;
+  background-color: white;
+  margin: 0 auto;
+  padding: 10px 20px;
+  border: 4px #FDA79A solid;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.CommentForm > textarea {
+  padding: 0px 10px;
+  font-size: 18px;
+  width: 90%;
+  resize: none;
+}
+
+.CommentForm ::-webkit-scrollbar {
+  display: none;
+}
+
+.CommentForm > textarea:focus{
+  outline: none;
+}
+
+/* 댓글 스크롤 */
+/* 스크롤바 구현하는 중 조금 더 손 봐야함 */
+
+#CommentScroll{
+  overflow-y: scroll;
+  /* display: grid; */
+}
+/* 
+body {
+  font-family: system-ui;
+  background: #f06d06;
+  color: white;
+  text-align: center;
+} */
+#CommentScroll {
+  /* width: 100%; */
+  height: 60vh;
+  /* margin: 0 auto; */
+  overflow-y: scroll;
+  /* gap: 25px; */
+}
+
+
+
+.CommentList ::-webkit-scrollbar {
+  display: none;
+}
