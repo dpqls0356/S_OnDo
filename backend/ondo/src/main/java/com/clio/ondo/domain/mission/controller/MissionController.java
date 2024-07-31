@@ -33,6 +33,13 @@ public class MissionController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+	//완료한 특별 미션 completeMission에 넣기 + 나머지 삭제
+	@GetMapping("/clearMission/{memberId}")
+	public ResponseEntity<Void> clearMission(@PathVariable Long memberId) {
+		missionService.putCompleteMission(memberId);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
 
 	//오늘의 특별미션 가져오기
 	@GetMapping("/todayTypical/{memberId}")
@@ -64,12 +71,6 @@ public class MissionController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	//완료한 특별 미션 completeMission에 넣기 + 나머지 삭제
-	@GetMapping("/clearMission/{memberId}")
-	public ResponseEntity<Void> clearMission(@PathVariable Long memberId) {
-		missionService.putCompleteMission(memberId);
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
 
 	//멤버별 완료한 특별미션 전체조회
 	@GetMapping("/getCompleteMission/{memberId}")

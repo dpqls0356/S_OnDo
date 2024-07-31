@@ -24,8 +24,6 @@ import com.clio.ondo.domain.mission.repository.MissionDetailRepository;
 import com.clio.ondo.domain.mission.repository.MissionRepository;
 import com.clio.ondo.domain.mission.repository.TodayMissionRepository;
 
-@Configuration
-@EnableScheduling
 @Service
 public class MissionService {
 
