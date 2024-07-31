@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+body * {
+  font-family: "PFStardust";
+  font-size: 100%;
+}
+#root {
+  width: 100vw;
+  height: fit-content;
+  position: relative;
+}
+html,
+body {
+  margin: 0px;
+  width: 100%;
+  background-color: rgb(246, 246, 246);
+}
+
+.NotfoundPage {
+  padding: 17%;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
