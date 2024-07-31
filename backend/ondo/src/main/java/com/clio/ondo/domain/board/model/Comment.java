@@ -8,7 +8,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection ="comments")
-@Setter
 @Getter
 public class Comment {
   @Id
@@ -17,6 +16,9 @@ public class Comment {
   private Date created_at;    //작성일
   private String member_id;   //작성자
   private String article_id;   //작성자
-
+  // 내용을 바꾸는 메서드
+  public void changeContent(String newContent) {
+    this.content = newContent;
+  }
 
 }
