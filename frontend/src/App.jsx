@@ -13,6 +13,13 @@ import BoardDetailpage from './pages/app/BoardDetailpage';
 import BoardCreatepage from './pages/app/BoardCreatepage';
 import BoardUpdatepage from './pages/app/BoardUpdatepage';
 
+import Join from '../src/pages/app/Join'
+import Mission from '../src/pages/app/Mission'
+import CounselorList from '../src/pages/app/CounselorList'
+import CounselorMain from '../src/pages/app/CounselorMain';
+import CounselorReservation from '../src/pages/app/CounselorReservation'
+
+
 function App() {
   return (
     <Router>
@@ -32,6 +39,12 @@ function App() {
         <Route path='/board/:id/update' element={<BoardUpdatepage/>} />
         <Route path='/board/:id' element={<BoardDetailpage/>} />
         <Route path='*' element={<Notfoundpage />} />
+
+        <Route path="/member/join" element={<Join />}/>
+        <Route path="/mission/list" element={<Mission />} />
+        <Route path="/counseling/list" element={<CounselorList />} />
+        <Route path="/counseling/main" element={<CounselorMain />} />
+        <Route path="/counseling/apply" element={<CounselorReservation />} />
       </Routes>
     </Router>
   );
