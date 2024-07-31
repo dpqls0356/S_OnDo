@@ -1,18 +1,20 @@
 package com.clio.ondo.domain.mission.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.clio.ondo.global.auth.JwtTokenProvider;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class MissionScheduler {
 
+	@Autowired
 	MissionService missionService;
-	Long memberId=21L;
 
-	// 생성자 주입을 통해 MissionService 의존성 주입
-	public MissionScheduler(MissionService missionService) {
-		this.missionService = missionService;
-	}
+	Long memberId=21L;
 
 	@Scheduled(cron="0 0 6 1/1 * *") //매일 오전 6시에 실행
 	public void missionSchedule(){
