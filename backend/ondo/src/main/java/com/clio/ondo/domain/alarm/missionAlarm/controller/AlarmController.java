@@ -1,7 +1,9 @@
 package com.clio.ondo.domain.alarm.missionAlarm.controller;
 
 import com.clio.ondo.domain.alarm.missionAlarm.model.FCMToken;
+import com.clio.ondo.domain.alarm.missionAlarm.service.FCMService;
 import com.clio.ondo.domain.alarm.missionAlarm.service.MissionAlarmService;
+import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import com.clio.ondo.domain.chatbot.controller.ChatbotController;
 import com.clio.ondo.domain.chatbot.model.ChattingReadDto;
 import lombok.Builder;
@@ -16,12 +18,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class AlarmController {
-    private final MissionAlarmService missionAlarmService;
+    private final ScheduledAlarmService scheduledAlarmService;
 
-    @PostMapping("/api/v1/alarm/token/{memberId}")
-    public ResponseEntity<?> setToken(@PathVariable("memberId") Long memberId, @RequestBody FCMToken FCMToken) {
+    @PostMapping("/api/v1/alarm/fcmtoken/{memberId}")
+    public ResponseEntity<?> setToken(@PathVariable("memberId") Long memberId, @RequestBody FCMToken fcmToken) {
         try{
-            missionAlarmService.saveToken(memberId, FCMToken);
+            scheduledAlarmService.saveToken(memberId, fcmToken);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new Result<>(true,HttpStatus.OK.value(), "저장에 성공했습니다."));

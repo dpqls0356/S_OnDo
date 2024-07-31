@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.clio.ondo.domain.chatbot.model.ChatbotChatting;
 import com.clio.ondo.domain.chatbot.repository.ChatbotDocumentRepository;
+import com.clio.ondo.domain.mission.repository.MissionRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,11 +31,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 @PropertySource("classpath:openaiapi.properties")
 public class ChatbotServiceImpl implements ChatbotService{
+	private final MissionRepository missionRepository;
 	@Value("${api.key}")
 	String api;
 
 	String conversationCommand = "\"You are a friendly and empathetic companion who speaks casually and informally,like a close friend." +
-			"Your job is to provide a listening ear, offer comforting conversation, and help users feel less alone.\"";
+			"Your job is to provide a listening ear, offer comforting conversation, and help users feel less alone. Don't respond formally.\"";
 
 	
 	// 미션 디테일 가져오는게 만들어지면 그걸 더하는 식으로 가야됨 일단은 하드코딩
@@ -47,7 +49,10 @@ public class ChatbotServiceImpl implements ChatbotService{
 			"17. 산책, 18. 가족이나 친구에게 안부묻기, 19. 마트 구경가기, 20. 카페가기, 21. 좋아하는 음식 만들어 먹기, 22. 도서관에 방문해 책 대여하기, 23. 도서관 방문해 독서하기," +
 			"24. 자기소개서 작성하기, 25. 입사 지원하기, 26. 상담신청하기, 27. 영화관 방문해 영화보기, 28. 취업 지원 센터 방문하기, 29. 봉사활동 하기, 30. 자격증 취득하기]\"";
 
-	String missionAlarmCommand = "\"You need to generate a conversation where you suggest an action to the user based on the content they provide about the mission.\"";
+	String missionAlarmCommand = "\"You are a friendly and empathetic companion who speaks casually and informally,like a close friend."
+		+ "Your job is to provide a listening ear, offer comforting conversation, and help users feel less alone."
+		+ "When the user provides you with the details of a mission, you should formulate it as if you are suggesting the mission yourself."
+		+ "Make sure to do it in Korean. Don't respond formally. Don't be rude\"";
 
 	private final ChatbotDocumentRepository chatbotRepository;
 	private final StringParsingServiceImpl stringParsingService;
@@ -61,12 +66,9 @@ public class ChatbotServiceImpl implements ChatbotService{
 		WebClient webClient = WebClient.builder().build();
 		String url = "https://api.openai.com/v1/chat/completions";
 
-		// 여기도 최근 미션 리스트를 받아오는 부분이 들어간다. 일단은 하드코딩
-		List<Integer> recentMissions = new ArrayList<>(Arrays.asList(1, 3, 2, 19, 7));
-
 		List<RoleContentMessage> roleContentMessages = new ArrayList<>();
 		roleContentMessages.add(new RoleContentMessage("system", conversationCommand));
-		roleContentMessages.add(new RoleContentMessage("user", recentMissions.toString()));
+		roleContentMessages.add(new RoleContentMessage("user", text));
 		OpenAiRequestDto dto = new OpenAiRequestDto("gpt-4o-mini", roleContentMessages);
 
 		ResponseEntity<ChatCompletion> responseBody = webClient.post()
@@ -104,9 +106,11 @@ public class ChatbotServiceImpl implements ChatbotService{
 		WebClient webClient = WebClient.builder().build();
 		String url = "https://api.openai.com/v1/chat/completions";
 
+		List<Integer> recentMissions = new ArrayList<>(Arrays.asList(1, 3, 2, 19, 7));
+
 		List<RoleContentMessage> roleContentMessages = new ArrayList<>();
 		roleContentMessages.add(new RoleContentMessage("system", recommendCommand));
-		roleContentMessages.add(new RoleContentMessage("user", recommendCommand));
+		roleContentMessages.add(new RoleContentMessage("user", recentMissions.toString()));
 		OpenAiRequestDto dto = new OpenAiRequestDto("gpt-4o-mini", roleContentMessages);
 
 		ResponseEntity<ChatCompletion> responseBody = webClient.post()
@@ -122,11 +126,11 @@ public class ChatbotServiceImpl implements ChatbotService{
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
 		// 문자열을 리스트로 파싱하기
-		String[] parts = responseString.split(", ");
-		List<Integer> numbers = new ArrayList<>();
-		for (String part : parts) {
-			numbers.add(Integer.parseInt(part));
-		}
+		// String[] parts = responseString.split(", ");
+		// List<Integer> numbers = new ArrayList<>();
+		// for (String part : parts) {
+		// 	numbers.add(Integer.parseInt(part));
+		// }
 
 		// 여기도 Mission을 숫자에 따라서 Mission을 가져오는 부분이 되겠는데? 일단 하드코딩
 		List<Mission> recommendedMissions = new ArrayList<>();
@@ -141,12 +145,10 @@ public class ChatbotServiceImpl implements ChatbotService{
 		WebClient webClient = WebClient.builder().build();
 		String url = "https://api.openai.com/v1/chat/completions";
 
-		// 여기도 최근 미션 리스트를 받아오는 부분이 들어간다. 일단은 하드코딩
-		String firstMissionContent = "";
-		if(!recommendedMissions.isEmpty()){
-			firstMissionContent = recommendedMissions.get(0).getContent();
-		}
-		else return null;
+		// 생성된 미션을 DB에 저장하는 부분
+		//missionRepository.save(memberId, recommendedMissions);
+
+		String firstMissionContent = recommendedMissions.get(0).getContent();
 
 		List<RoleContentMessage> roleContentMessages = new ArrayList<>();
 		roleContentMessages.add(new RoleContentMessage("system", missionAlarmCommand));

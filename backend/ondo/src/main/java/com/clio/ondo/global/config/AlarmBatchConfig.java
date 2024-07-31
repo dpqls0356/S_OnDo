@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.bson.types.ObjectId;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -31,13 +32,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.StringUtils;
 
+import com.clio.ondo.domain.alarm.missionAlarm.model.FCMResultDto;
+import com.clio.ondo.domain.alarm.missionAlarm.service.MissionAlarmService;
+import com.clio.ondo.domain.chatbot.service.ChatbotServiceImpl;
+import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.mission.model.CompleteMission;
 import com.clio.ondo.domain.mission.model.Mission;
 import com.clio.ondo.domain.mission.repository.MissionRepository;
+
+import lombok.Builder;
+import lombok.Data;
 
 @Configuration
 @EnableConfigurationProperties(BatchProperties.class)
@@ -46,11 +55,18 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 	private DataSource dataSource;
 	@Autowired
 	private MissionRepository missionRepository;
+	@Autowired
+	private ChatbotServiceImpl chatbotService;
+	@Autowired
+	private MissionAlarmService missionAlarmService;
+
+	private int chunk = 10;
 
 	// 미션 알람을 보내는 일련의 작업을 Job이라고 만들어 놓는다.
-	// Schedulign에서 이 Job을 호출해서 실행하면 된다.
+	// Scheduling에서 이 Job을 호출해서 실행하면 된다.
 	@Bean
-	public Job missionAlarmJob(JobRepository jobRepository, Step getMemberIds) {
+	public Job missionAlarmJob(JobRepository jobRepository,
+								Step getMemberIds) {
 		return new JobBuilder("missionAlarmJob", jobRepository)
 			.start(getMemberIds)
 			.build();
@@ -59,16 +75,14 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 	// Job의 작은 작업 단위인 Step이다. 모든 사람의 memberId를 먼저 가져온다.
 	@Bean
 	public Step getMemberIds(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-		return new StepBuilder("sampleStep", jobRepository)
-			.<Long, List<Mission>>chunk(10, transactionManager)
+		return new StepBuilder("getMemberIds", jobRepository)
+			.<Long, List<String>>chunk(chunk, transactionManager)
 			.reader(memberIdReader())
 			.processor(mongoMemberInfoProcessor())
-			.writer(memberIdWriter())
-			.allowStartIfComplete(true)
+			.writer(list -> {})
 			.build();
 	}
 
-	// Batch를 위해서 멤버 ID를 모두 가져오는 Reader
 	@Bean
 	public JdbcPagingItemReader<Long> memberIdReader() {
 		JdbcPagingItemReader<Long> reader = new JdbcPagingItemReader<>();
@@ -91,10 +105,13 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 		return reader;
 	}
 
-	// 몽고디비 리더
 	@Bean
-	public ItemProcessor<Long, List<Mission>> mongoMemberInfoProcessor() {
+	public ItemProcessor<Long, List<String>> mongoMemberInfoProcessor() {
 		return memberId -> {
+			// 멤버 아이디 먼저
+			StringBuilder sb = new StringBuilder();
+			sb.append(memberId).append("\n");
+			
 			// 몽고디비에서 멤버별 완료 미션을 가져온다.
 			//List<CompleteMission> cm =  missionRepository.findMissionByMemberId(memberId);
 			List<CompleteMission> cm = new ArrayList<>();
@@ -108,32 +125,21 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 				100,
 				1
 			));
-			cm.add(new CompleteMission(new ObjectId() , (long)4, dummyMission));
+			cm.add(new CompleteMission(new ObjectId() , (long)8, dummyMission));
+
 
 			List<Mission> missions = new ArrayList<>();
 			if(!cm.isEmpty()){
 				missions = cm.get(0).getMissions();
-				System.out.println(missions);
 			}
 
-			return missions;
-		};
-	}
+			List<Mission> recommendedMissions = chatbotService.getRecommendFromChatbot(memberId, missions);
 
-	@Bean
-	public ItemWriter<List<Mission>> memberIdWriter(){
-		return items -> {
-			for (List<Mission> missions : items) {
-				if (missions != null) {
-					for (Mission mission : missions) {
-						//System.out.println(mission.toString());
-					}
-					//System.out.println("비었음");
-				}
-				else {
-					//System.out.println("비었나봐");
-				}
-			}
+			List<String> messages = chatbotService.createRecommendMessage(memberId, recommendedMissions);
+
+			List<FCMResultDto> result = missionAlarmService.sendFcmAlarm(memberId, messages.get(0));
+
+			return messages;
 		};
 	}
 
@@ -148,5 +154,12 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 			runner.setJobName(jobNames);
 		}
 		return runner;
+	}
+
+	@Data
+	@Builder
+	static class MemberForMission {
+		Long memberId;
+		List<Mission> missions;
 	}
 }
