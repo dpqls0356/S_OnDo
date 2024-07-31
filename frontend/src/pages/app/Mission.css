@@ -1,0 +1,51 @@
+.mission-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .mission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .mission-button {
+    padding: 15px;
+    font-size: 16px;
+    text-align: left;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .mission-button.completed {
+    background-color: #4CAF50;
+    color: white;
+  }

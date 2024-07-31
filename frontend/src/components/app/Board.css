@@ -1,0 +1,29 @@
+.BoardCard {
+  margin: 0 auto;
+  margin-top: 25px;
+  width: 70%;
+  height: 130px;
+  border: 1px black solid;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0px 5px 0px 0px #6ABFB4;
+}
+
+.BoardTitle * {
+  display: flex;
+  align-items: center;
+}
+
+.BoardTitle {
+  padding: 7px 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.BoardContent{
+  font-size: 85%;
+  border-top: 1px black solid;
+  padding: 7px 17px;
+}
+
