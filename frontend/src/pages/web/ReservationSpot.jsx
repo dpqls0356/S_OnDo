@@ -4,47 +4,56 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import Reservation from "./components/reservation";
 const View = styled.div`
+  padding: 70px 50px;
   width: 50%;
   height: 100%;
   display: flex;
-`;
-const CreateCounselingRoomBtn = styled.button`
-  background-color: #f7867a;
+  flex-direction: column;
 `;
 
+const Header = styled.div`
+  font-weight: 700;
+  font-size: 25px;
+  margin-bottom: 30px;
+`;
+const Search = styled.div`
+  display: flex;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+  border-bottom: 3px solid black;
+  & > input {
+    width: 60%;
+    margin-right: 30px;
+  }
+  & > button {
+    width: 80px;
+    color: white;
+    background-color: #121481;
+  }
+`;
+const ReservationList = styled.div``;
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/";
 
 function ReservationSpot() {
-  const navigate = useNavigate();
-  const [sessionId, setSessionId] = useState("SessionA");
-
-  const createCounselingRoom = async () => {
-    try {
-      // 세션 생성
-      const sessionResponse = await axios.post(
-        `${APPLICATION_SERVER_URL}api/sessions`,
-        { customSessionId: sessionId },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      setSessionId(sessionResponse.data);
-
-      // /counselor/counselingroom로 이동하면서 세션 ID 전달
-      navigate("counselingroom", { state: { sessionId } });
-    } catch (error) {
-      console.error("Error creating counseling room:", error);
-    }
-  };
-
   return (
     <View>
-      <CreateCounselingRoomBtn onClick={createCounselingRoom}>
-        상담방 생성하기
-      </CreateCounselingRoomBtn>
+      <Header>전체 상담 관리</Header>
+      <Search>
+        <input type="text" />
+        <button>검색</button>
+      </Search>
+      <ReservationList>
+        {true ? (
+          <Reservation />
+        ) : (
+          <div>
+            <div>예약된 상담 일정이 없습니다.</div>
+          </div>
+        )}
+      </ReservationList>
     </View>
   );
 }
