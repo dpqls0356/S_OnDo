@@ -9,11 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.mission.model.Mission;
+import com.clio.ondo.domain.mission.model.dto.CompleteRequestDto;
 import com.clio.ondo.domain.mission.repository.TodayMissionRepository;
 import com.clio.ondo.domain.mission.service.MissionService;
 import com.clio.ondo.global.ResponseVO;
@@ -78,18 +81,19 @@ public class MissionController {
 	}
 
 	//완료한 미션 완료처리
-	@GetMapping("/completeMission")
+	@PostMapping("/complete")
 	public ResponseEntity<ResponseVO<Void>> completeMission(HttpServletRequest request,
-		@RequestParam String title){
+		@RequestBody CompleteRequestDto completeRequest){
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
+		String title=completeRequest.getTitle();
 		missionService.updateCompleteMission(memberId, title);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("미션 완료 처리"));
 	}
 
 	//멤버별 완료한 특별미션 전체조회
-	@GetMapping("/getCompleteMission")
+	@GetMapping("/getComplete")
 	public ResponseEntity<ResponseVO<List<Mission>>> getCompleteMission(HttpServletRequest request) {
 
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
