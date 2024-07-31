@@ -1,8 +1,8 @@
 import "./Loginpage.css"
 
-import Button from "../../components/app/Button";
-import kakaologin from './../../assets/images/kakaologin.png'
-import naverlogin from './../../assets/images/naverlogin.png'
+import Button from "../../../components/app/Button";
+import kakaologin from './../../../assets/images/kakaologin.png'
+import naverlogin from './../../../assets/images/naverlogin.png'
 
 import { useNavigate } from "react-router-dom";
 

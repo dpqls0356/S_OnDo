@@ -1,8 +1,8 @@
 import "./Homepage.css"
 
-import Footer from "../../components/app/Footer"
-import character from './../../assets/images/공통_캐릭터.png'
-import chat from './../../assets/images/chat.png'
+import Footer from "../../../components/app/Footer"
+import character from './../../../assets/images/공통_캐릭터.png'
+import chat from './../../../assets/images/chat.png'
 
 import { useNavigate } from "react-router-dom"
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Mission.css';
-import Footer from '../../components/app/Footer'
+import Footer from '../../../components/app/Footer'
 
 const Mission = () => {
   const [missions, setMissions] = useState([

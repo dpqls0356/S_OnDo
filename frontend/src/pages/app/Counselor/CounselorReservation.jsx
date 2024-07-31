@@ -1,10 +1,10 @@
 // import 해야 함
 import { useState } from 'react'
-import ProfileCard from "../../components/app/ProfileCard";
-import Calendar from '../../components/app/Calendar'
-import TimeSlots from '../../components/app/TimeSlots'
-import NoteInput from '../../components/app/NoteInput'
-import Footer from '../../components/app/Footer'
+import ProfileCard from "./../../../components/app/ProfileCard";
+import Calendar from '../../../components/app/Calendar'
+import TimeSlots from '../../../components/app/TimeSlots'
+import NoteInput from '../../../components/app/NoteInput'
+import Footer from '../../../components/app/Footer'
 
 const Reservation = () => {
     const [selectedDate, setSelectedDate] = useState(null);

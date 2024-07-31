@@ -2,8 +2,8 @@ import './BoardCreatepage.css'
 
 import { useNavigate } from 'react-router-dom'
 
-import Button from '../../components/app/Button'
-import Footer from "../../components/app/Footer"
+import Button from '../../../components/app/Button'
+import Footer from "../../../components/app/Footer"
 
 const BoardCreatepage = () => {
   const nav = useNavigate()

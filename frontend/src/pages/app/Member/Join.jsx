@@ -1,10 +1,17 @@
-import Button from '../../components/app/Button.jsx'
-import Input from '../../components/app/Input'
-import InputImg from '../../components/app/InputImg'
+import Button from '../../../components/app/Button.jsx'
+import Input from '../../../components/app/Input'
+import InputImg from '../../../components/app/InputImg'
+
+import { useNavigate } from 'react-router-dom';
 
 const JoinForm = () => {
+  const nav = useNavigate()
+
+  const onClickLogin = () => {
+    nav('/login')
+  }
   return (
-    <div className="max-w-md mx-auto p-6 rounded-lg shadow-lg">
+    <div className="max-w-md mx-auto p-6 rounded-lg">
       <InputImg />
       <Input label="이름" placeholder="이름을 입력해주세요" />
       <Input label="별명" placeholder="별명을 입력해주세요" />
@@ -17,7 +24,7 @@ const JoinForm = () => {
         <Button color="teal">여</Button>
       </div>
       <Button color="pink">회원가입하기</Button>
-      <p className="text-center text-sm text-gray-500 mt-4">로그인하러가기</p>
+      <p onClick={onClickLogin} style={{cursor: 'pointer'}} className="text-center text-sm text-gray-500 mt-4">로그인하러가기</p>
     </div>
   );
 };

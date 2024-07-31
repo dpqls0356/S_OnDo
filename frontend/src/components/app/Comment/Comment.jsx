@@ -1,7 +1,7 @@
 import './Comment.css'
 import { useNavigate } from 'react-router-dom'
 
-import profile from './../../assets/images/test.png'
+import profile from './../../../assets/images/test.png'
 
 const Comment = () => {
 

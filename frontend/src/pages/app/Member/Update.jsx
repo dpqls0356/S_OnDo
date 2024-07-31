@@ -1,6 +1,6 @@
-import Button from '../../components/app/Button.jsx'
-import Input from '../../components/app/Input'
-import InputImg from '../../components/app/InputImg'
+import Button from '../../../components/app/Button.jsx'
+import Input from '../../../components/app/Input.jsx'
+import InputImg from '../../../components/app/InputImg.jsx'
 
 // 수정 관련으로 바꿔야 함
 const UpdateForm = () => {

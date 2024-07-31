@@ -1,4 +1,4 @@
-import Footer from "../../components/app/Footer"
+import Footer from "../../../components/app/Footer"
 
 const BoardUpdatepage = () => {
   return (

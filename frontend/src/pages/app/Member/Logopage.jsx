@@ -1,22 +1,19 @@
 import './Logopage.css'
 
-import Logo from './../../assets/images/onDo로고_그림자.png'
-import Button from '../../components/app/Button';
+import Logo from './../../../assets/images/onDo로고_그림자.png'
+import Button from '../../../components/app/Button';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Logopage = () => {
   const nav = useNavigate();
 
-  const onClickMember = () => {
-    return(
-      nav('/member')
-    )
+  const onClickLogin = () => {
+    nav('/login')
+
   }
 
-  const onClickLogin = () => {
-    return(
-      nav('/login')
-    )
+  const onClickJoin = () => {
+    nav('/join')
   }
 
   return (
@@ -31,7 +28,7 @@ const Logopage = () => {
       <h4 style={{color: 'gray'}}>당신의 매일이 달라질 거예요.</h4>
       <Button text={"로그인 하기"} onClick={onClickLogin}/>
       <br />
-      <p onClick={onClickMember} style={{cursor: 'pointer', color: 'gray'}}>회원가입하기</p>
+      <p onClick={onClickJoin} style={{cursor: 'pointer', color: 'gray'}}>회원가입하기</p>
     </main>
   )
 }

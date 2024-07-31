@@ -1,4 +1,4 @@
-import ProfileCard from '../../components/app/ProfileCard';
+import ProfileCard from '../../../components/app/ProfileCard';
 
 const CounselorList = () => {
   // 카드 데이터 배열

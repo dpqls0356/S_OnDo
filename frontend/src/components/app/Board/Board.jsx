@@ -3,7 +3,7 @@ import './Board.css'
 
 import { useNavigate } from 'react-router-dom'
 
-import calendar from './../../assets/images/calendar.png'
+import calendar from './../../../assets/images/calendar.png'
 
 const Board = () => {
   // 단일게시글 정보 입력받아야 함

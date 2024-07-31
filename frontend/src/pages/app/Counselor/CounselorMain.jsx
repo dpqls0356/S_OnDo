@@ -1,7 +1,7 @@
-import ProfileCard from '../../components/app/ProfileCard';
-import FilterButtons from '../../components/app/FilterButtons';
-import CounselorSearchBar from '../../components/app/CounselorSearchBar';
-import Footer from '../../components/app/Footer';
+import ProfileCard from '../../../components/app/ProfileCard';
+import FilterButtons from '../../../components/app/FilterButtons';
+import CounselorSearchBar from '../../../components/app/CounselorSearchBar';
+import Footer from '../../../components/app/Footer';
 
 const CounselorMain = () => {
   return (

@@ -3,12 +3,12 @@ import "./Boardpage.css"
 import { useRef } from "react"
 import { useNavigate } from "react-router-dom"
 
-import BoardList from "../../components/app/BoardList"
-import Footer from "../../components/app/Footer"
+import BoardList from "../../../components/app/Board/BoardList"
+import Footer from "../../../components/app/Footer"
 
-import create from './../../assets/images/new.png'
-import filter from './../../assets/images/filter.png'
-import search from './../../assets/images/search.png'
+import create from './../../../assets/images/new.png'
+import filter from './../../../assets/images/filter.png'
+import search from './../../../assets/images/search.png'
 
 
 const Boardpage = () => {
