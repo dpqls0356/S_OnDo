@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.clio.ondo.domain.member.model.Member;
-import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
@@ -22,7 +21,8 @@ import com.clio.ondo.domain.member.model.dto.MemberResponseDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.member.service.MemberService;
-import com.clio.ondo.global.auth.CustomUserDetails;
+import com.clio.ondo.global.ResponseVO;
+import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
@@ -91,8 +91,8 @@ public class MemberController {
 		try {
 			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 			Authentication authentication = jwtTokenProvider.getAuthentication(token);
-			CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
-			Member user = memberRepository.findByEmail(userDetails.getEmail())
+			PrincipalDetails userDetails = (PrincipalDetails)authentication.getPrincipal();
+			Member user = memberRepository.findByEmail(userDetails.getMember().getEmail())
 				.orElseThrow(MemberNotFoundException::new);
 			MemberResponseDto memberResponseDto = MemberResponseDto.builder()
 				.id(user.getId())
@@ -146,4 +146,12 @@ public class MemberController {
 		}
 	}
 
+	@GetMapping("/oauth-success")
+	public ResponseEntity<ResponseVO<TokenDto>> oauthSuccess(TokenDto token) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
+		} catch (AuthenticationException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
+		}
+	}
 }

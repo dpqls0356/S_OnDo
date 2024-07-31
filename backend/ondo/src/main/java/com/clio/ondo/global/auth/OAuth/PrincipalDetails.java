@@ -1,17 +1,19 @@
 package com.clio.ondo.global.auth.OAuth;
 
-import com.clio.ondo.domain.member.model.Member;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import com.clio.ondo.domain.member.model.Member;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -20,6 +22,10 @@ public class PrincipalDetails implements OAuth2User, UserDetails {
     private Member member;
     private Map<String, Object> attributes;
     private String attributeKey;
+
+    public PrincipalDetails(Member member) {
+        this.member = member;
+    }
 
     @Override
     public Map<String, Object> getAttribute(String name) {

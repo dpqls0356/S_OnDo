@@ -21,7 +21,7 @@ import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
-import com.clio.ondo.global.auth.CustomUserDetails;
+import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
@@ -155,7 +155,7 @@ public class MemberServiceImpl implements MemberService {
 				Long id = claims.get("id", Long.class);
 				Member member = findOne(id);
 				log.error(member.toString());
-				CustomUserDetails userDetails = new CustomUserDetails(member);
+				PrincipalDetails userDetails = new PrincipalDetails(member);
 				return jwtTokenProvider.generateAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null));
 			}
 		} catch (MemberException e) {

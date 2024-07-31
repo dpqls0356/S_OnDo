@@ -1,16 +1,16 @@
 package com.clio.ondo.global.auth.OAuth;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.Role;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -48,16 +48,17 @@ public class OAuth2UserInfo {
 
     private static OAuth2UserInfo ofNaver(String provider,
                                            Map<String, Object> attributes) {
-        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        String birthdate = response.get("birthyear").toString() + "-" + response.get("birthday").toString();
+        String gender = response.get("gender").toString().equals("M") ? "MALE" : "FEMALE";
 
         return OAuth2UserInfo.builder()
-                .name((String) account.get("name"))
-                .nickname((String) profile.get("nickname"))
-                .gender(account.get("gender").toString().toUpperCase())
-                .profileUrl((String) profile.get("profile_image_url"))
-                .email((String) account.get("email"))
-                .birthDate(convertToBirthDate(account.get("birthyear").toString(), account.get("birthday").toString()))
+                .name((String) response.get("name"))
+                .nickname((String) response.get("nickname"))
+                .gender(gender)
+                .profileUrl((String) response.get("profile_image"))
+                .email((String) response.get("email"))
+                .birthDate(LocalDate.parse(birthdate, DateTimeFormatter.ISO_DATE))
                 .build();
     }
 
