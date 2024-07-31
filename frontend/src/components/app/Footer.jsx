@@ -10,21 +10,21 @@ import profile from "./../../assets/images/profile.png";
 const Footer = () => {
   return (
     <footer>
-      <Link to={"/counseling"} style={{ display: "inline-block" }}>
+      <Link to={"/member/counseling"} style={{ display: "inline-block" }}>
         <img src={calendar} />
       </Link>
-      <Link to={"/board"} style={{ display: "inline-block" }}>
+      <Link to={"/member/board"} style={{ display: "inline-block" }}>
         <img src={edit} />
       </Link>
-      <Link to={"/home"} style={{ display: "inline-block" }}>
+      <Link to={"/member/home"} style={{ display: "inline-block" }}>
         <div className="footerHome">
           <img src={home} />
         </div>
       </Link>
-      <Link to={"/mission"} style={{ display: "inline-block" }}>
+      <Link to={"/member/mission/list"} style={{ display: "inline-block" }}>
         <img src={mission} />
       </Link>
-      <Link to={"/profile"} style={{ display: "inline-block" }}>
+      <Link to={"/member/profile"} style={{ display: "inline-block" }}>
         <img src={profile} />
       </Link>
     </footer>

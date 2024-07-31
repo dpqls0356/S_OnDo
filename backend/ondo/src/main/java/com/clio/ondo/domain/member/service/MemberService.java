@@ -7,7 +7,7 @@ import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
-import com.clio.ondo.global.auth.TokenDto;
+import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 public interface MemberService {
 	void join(JoinRequestDto joinRequestDto);

@@ -2,18 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'PFStardust';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/PFStardust.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
 body * {
-  font-family: 'PFStardust';
+  font-family: "PFStardust";
   font-size: 100%;
 }
-
+#root {
+  width: 100vw;
+  height: fit-content;
+  position: relative;
+}
 html,
 body {
   margin: 0px;
@@ -21,25 +18,7 @@ body {
   background-color: rgb(246, 246, 246);
 }
 
-#wrap{
-  min-height: 100vh;
-  position: relative;
-  padding-bottom: 100px;
-}
-
-#root {
-  background-color: #FFF9E9;
-  max-width: 390px;
-  width: 100%;
-  margin: 0 auto;
-  min-height: 100vh;
-  height: 100%;
-  box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 29px 0px;
-}
-
-
-.NotfoundPage
-{
+.NotfoundPage {
   padding: 17%;
 }
 

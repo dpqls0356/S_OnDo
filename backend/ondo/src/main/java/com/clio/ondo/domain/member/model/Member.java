@@ -2,6 +2,7 @@ package com.clio.ondo.domain.member.model;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.UUID;
 
 import com.clio.ondo.domain.character.model.Character;
 
@@ -88,5 +89,15 @@ public class Member {
 		this.birthDate = birthDate;
 		this.gender = gender;
 		this.profileUrl = profileUrl;
+	}
+
+	public void setDefaultPasswordIfNotSet() {
+		if (this.password == null) {
+			this.password = generateRandomPassword();
+		}
+	}
+
+	private String generateRandomPassword() {
+		return UUID.randomUUID().toString();
 	}
 }
