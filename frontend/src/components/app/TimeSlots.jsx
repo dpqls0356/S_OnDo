@@ -14,7 +14,7 @@ const TimeSlots = ({ selectedTime, setSelectedTime }) => {
   );
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 no-outline">
       <h3 className="font-bold mb-2">오전</h3>
       <div className="grid grid-cols-3 gap-2 mb-4">
         {['9:00', '10:00', '11:00'].map(renderTimeButton)}

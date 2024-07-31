@@ -1,7 +1,9 @@
-import Footer from '../components/app/Footer.jsx';
+import Footer from '../../../components/app/Footer';
 
 const CounselorDetail = () => (
-  <div className="bg-cream-100 min-h-screen pb-16">    <div className="bg-white rounded-lg p-4 m-4 shadow-md">
+  <div className="bg-cream-100 min-h-screen pb-16">
+    <h2 className="font-bold text-xl mb-2">상담사 소개</h2>
+    <div className="bg-white rounded-lg p-4 m-4 shadow-md">
       <h2 className="font-bold text-xl mb-2">정유진 상담사(여)</h2>
       <img className="w-24 h-24 mx-auto mb-4" src="/placeholder-avatar.png" alt="상담사 프로필" />
       <p className="font-bold mb-2">분야</p>
@@ -19,4 +21,4 @@ const CounselorDetail = () => (
   </div>
 );
 
-export default CounselorDetail
+export default CounselorDetail;

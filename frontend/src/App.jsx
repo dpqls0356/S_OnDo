@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CounselorHome from "./pages/web/counselorHome";
 import CounselingRoom from "./pages/web/counselingRoom";
@@ -20,6 +20,7 @@ import Join from "../src/pages/app/Member/Join";
 import Mission from "./pages/app/Mission/Mission";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
+import CounselorDetail from '../src/pages/app/Counselor/CouselorDetail'
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="mission/list" element={<Mission />} />
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
+          <Route path="counseling/detail" element={<CounselorDetail />} />
           <Route path="counseling/apply" element={<CounselorReservation />} />
         </Route>
       </Routes>
