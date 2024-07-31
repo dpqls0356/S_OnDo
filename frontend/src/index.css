@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "PFStardust";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/PFStardust.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-
 body * {
   font-family: "PFStardust";
   font-size: 100%;
