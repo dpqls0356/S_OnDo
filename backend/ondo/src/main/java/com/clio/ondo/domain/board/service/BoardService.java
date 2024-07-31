@@ -17,7 +17,7 @@ public interface BoardService {
 
   Board saveArticle(Board board);
 
-  void deleteArticle(ObjectId articleId);
+  void deleteArticle(ObjectId articleId,Long   memberId);
 
   void updateArticle(ObjectId articleId, Board modifiedArticle);
 

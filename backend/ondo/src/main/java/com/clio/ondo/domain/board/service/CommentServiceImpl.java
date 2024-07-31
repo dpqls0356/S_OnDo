@@ -7,6 +7,8 @@ import com.clio.ondo.domain.board.repository.CustomCommentRepositoryImpl;
 import java.util.List;
 import java.util.Optional;
 
+import com.clio.ondo.global.exception.member.NotFoundException;
+import com.clio.ondo.global.exception.member.UnauthorizedException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,14 +38,13 @@ public class CommentServiceImpl implements CommentService {
       if(existingComment.getMember_id().equals(existingComment.getMember_id())){
         commentRepository.deleteById(commentId);
       }
-      //댓글 소유주가 아닐때
       else{
-
+        //소유주가 아니기에 예외처리
+        throw new UnauthorizedException("잘못된 접근입니다.");
       }
-    }
-    //댓글이 존재하지 않을 때
-    else{
-
+    } else {
+      // 게시글이 존재하지 않을 경우 예외 처리
+      throw new NotFoundException("존재하지 않은 댓글입니다.");
     }
     commentRepository.deleteById(commentId);
   }
@@ -58,14 +59,13 @@ public class CommentServiceImpl implements CommentService {
       if(existingComment.getMember_id().equals(existingComment.getMember_id())){
         customCommentRepositoryImpl.updateComment(commentId,modifiedComment);
       }
-      //댓글 소유주가 아닐때
       else{
-
+        //소유주가 아니기에 예외처리
+        throw new UnauthorizedException("잘못된 접근입니다.");
       }
-    }
-    //댓글이 존재하지 않을 때
-    else{
-
+    } else {
+      // 게시글이 존재하지 않을 경우 예외 처리
+      throw new NotFoundException("존재하지 않은 댓글입니다.");
     }
   }
 

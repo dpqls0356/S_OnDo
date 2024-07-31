@@ -2,9 +2,16 @@ package com.clio.ondo.domain.board.controller;
 
 import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.service.BoardService;
+import com.clio.ondo.domain.mission.model.Mission;
+import com.clio.ondo.global.ResponseVO;
+import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
+import com.clio.ondo.global.exception.member.NotFoundException;
+import com.clio.ondo.global.exception.member.UnauthorizedException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +34,8 @@ public class BoardController {
 
   @Autowired
   private BoardService boardService;
+  @Autowired
+  private JwtTokenProvider jwtTokenProvider;
 
   /*
   모든 게시글 가져오기 - 무한 스크롤 구현
@@ -37,48 +46,64 @@ public class BoardController {
   //ResponseEntity: pring의 HTTP 응답을 나타내는 클래스
   //Pageable: 데이터베이스 쿼리에서 페이징을 적용하는 데 사용
   @GetMapping("/list")
-  public ResponseEntity<Page<Board>> getArticles(
-      @RequestParam(name = "page", defaultValue = "0") int page,
-      @RequestParam(name = "size", defaultValue = "10") int size)  {
+  public ResponseEntity<ResponseVO<Page<Board>>> getArticles(
+          @RequestParam(name = "page", defaultValue = "0") int page,
+          @RequestParam(name = "size", defaultValue = "10") int size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Board> list = boardService.getArticles(pageable);
-    return ResponseEntity.ok(list);
+    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("boardList", list));
   }
 
   /*
   글 작성하기
    */
   @PostMapping("/article")
-  public ResponseEntity<Void> createArticle(@RequestBody Board board) {
+  public ResponseEntity<ResponseVO<Void>> createArticle(@RequestBody Board board ) {
     boardService.saveArticle(board);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
   }
 
   /*
 게시글 삭제
  */
   @DeleteMapping("/{articleId}")
-  public ResponseEntity<Void> deleteArticle(@PathVariable ObjectId articleId) {
-    boardService.deleteArticle(articleId);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  public ResponseEntity<ResponseVO<Void>> deleteArticle(@PathVariable ObjectId articleId,HttpServletRequest request) {
+    try{
+      String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+      Long memberId = jwtTokenProvider.getIdFromToken(token);
+      boardService.deleteArticle(articleId,memberId);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
+    }catch (UnauthorizedException e){
+     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));
+    }catch (NotFoundException e){
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 존재하지 않은 게시글에 대한 요청입니다."));
+    }
   }
 
   /*
 게시글 수정
 */
   @PatchMapping("/{articleId}")
-  public ResponseEntity<Void> updateArticle(@PathVariable ObjectId articleId, @RequestBody Board modifiedArticle) {
-    boardService.updateArticle(articleId,modifiedArticle);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  public ResponseEntity<ResponseVO<Void>>  updateArticle(@PathVariable ObjectId articleId, @RequestBody Board modifiedArticle,HttpServletRequest request) {
+    try{
+      String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+      Long memberId = jwtTokenProvider.getIdFromToken(token);
+      boardService.updateArticle(articleId,modifiedArticle);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
+    }catch (UnauthorizedException e){
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));
+    }catch (NotFoundException e){
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 존재하지 않은 게시글에 대한 요청입니다."));
+    }
   }
 
   /*
   게시글 검색
    */
   @GetMapping("/search") //search가 없으면 searchWord에 list라는 단어가 들어갔을때 문제 발생
-  public ResponseEntity<List<Board>> searchArticles( @RequestParam(name = "searchWord")String searchWord){
+  public  ResponseEntity<ResponseVO<List<Board>>> searchArticles( @RequestParam(name = "searchWord")String searchWord){
     List<Board> list = boardService.searchArticles(searchWord);
-    return ResponseEntity.ok(list);
+    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("boardList", list));
   }
 
 }
