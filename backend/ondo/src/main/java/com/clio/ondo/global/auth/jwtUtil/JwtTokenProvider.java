@@ -1,4 +1,4 @@
-package com.clio.ondo.global.auth;
+package com.clio.ondo.global.auth.jwtUtil;
 
 import java.util.Base64;
 import java.util.Date;
@@ -10,6 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
+import com.clio.ondo.global.auth.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -44,15 +47,15 @@ public class JwtTokenProvider {
 	}
 
 	public String generateAccessToken(Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		Claims claims = Jwts.claims().setSubject(userDetails.getEmail());
+		PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+		Claims claims = Jwts.claims().setSubject(userDetails.getMember().getEmail());
 		Date now = new Date();
 		Date expireDate = new Date(now.getTime() + accessTokenExpirationTime);
 
 		return Jwts.builder()
 			.setClaims(claims)
-			.claim("id", userDetails.getId())
-			.claim("role", userDetails.getRole())
+			.claim("id", userDetails.getMember().getId())
+			.claim("role", userDetails.getMember().getRole())
 			.claim("type", "access")
 			.setIssuedAt(now)
 			.setExpiration(expireDate)
@@ -61,20 +64,20 @@ public class JwtTokenProvider {
 	}
 
 	public String generateRefreshToken(Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		Claims claims = Jwts.claims().setSubject(userDetails.getEmail());
+		PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+		Claims claims = Jwts.claims().setSubject(userDetails.getMember().getEmail());
 		Date now = new Date();
 		Date expireDate = new Date(now.getTime() + refreshTokenExpirationTime);
 
 		String refreshToken = Jwts.builder()
 			.setClaims(claims)
-			.claim("id", userDetails.getId())
-			.claim("role", userDetails.getRole())
+			.claim("id", userDetails.getMember().getId())
+			.claim("role", userDetails.getMember().getRole())
 			.setIssuedAt(now)
 			.setExpiration(expireDate)
 			.signWith(SignatureAlgorithm.HS512, secret)
 			.compact();
-		String key = "refresh-token:" + userDetails.getEmail();
+		String key = "refresh-token:" + userDetails.getMember().getEmail();
 		redisTemplate.opsForValue().set(
 			key,
 			refreshToken,
@@ -116,7 +119,7 @@ public class JwtTokenProvider {
 
 	public Authentication getAuthentication(String token) {
 		String username = decodeJwt(token).getSubject();
-		CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+		PrincipalDetails userDetails = (PrincipalDetails) userDetailsService.loadUserByUsername(username);
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}
 

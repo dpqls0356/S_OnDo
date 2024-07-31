@@ -8,6 +8,7 @@ footer {
   padding-right: 5%;
   align-items: center;
   background-color: #ed9c9f;
+  position: sticky;
   transform: translateY(0%);
   display: flex;
   justify-content: center;

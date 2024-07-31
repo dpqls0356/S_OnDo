@@ -5,6 +5,7 @@ import Calendar from '../../../components/app/Calendar'
 import TimeSlots from '../../../components/app/TimeSlots'
 import NoteInput from '../../../components/app/NoteInput'
 import Footer from '../../../components/app/Footer'
+import BorderImg from '../../../assets/images/구분선.png'
 
 const Reservation = () => {
     const [selectedDate, setSelectedDate] = useState(null);
@@ -20,19 +21,21 @@ const Reservation = () => {
     };
   
     return (
-      <div className="flex flex-col min-h-screen">
-        <div className="bg-[#a8e6cf] rounded-2xl flex-grow pb-16 p-4">
-          <ProfileCard />
-          <h2 className="text-lg font-bold mt-4 mb-2">예약일지</h2>
-          <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-          <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+      <div className="flex flex-col h-screen overflow-hidden">
+        <div className="flex-grow overflow-auto">
+          <div className="bg-[#a8e6cf] rounded-2xl p-4 mb-4">
+            <ProfileCard />
+            <h1 className="text-2xl font-bold mb-4">예약일지</h1>
+            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+            <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+          </div>
+          <img src={BorderImg} alt="" className="w-full" />
+          <div className="p-4">
+            <NoteInput note={note} setNote={setNote} />
+            <Button text="예약 확정하기" onClick={handleReservation} />
+          </div>
         </div>
-        <img src="src/assets/images/구분선.png" alt="" />
-        <div className="bg-white">
-          <NoteInput note={note} setNote={setNote} />
-          <Button text="예약 확정하기" onClick={handleReservation} />
-          <Footer />
-        </div>
+        <Footer />
       </div>
     );
   };

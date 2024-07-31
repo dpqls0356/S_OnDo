@@ -27,27 +27,29 @@ const Mission = () => {
   };
 
   return (
-    <div className="mission-page">
-      <h1>오늘의 미션</h1>
-      <form onSubmit={handleAddMission}>
-        <input 
-          type="text" 
-          value={newMission} 
-          onChange={(e) => setNewMission(e.target.value)}
-          placeholder="새 미션 입력"
-        />
-        <button type="submit">추가</button>
-      </form>
-      <div className="mission-list">
-        {missions.map(mission => (
-          <button 
-            key={mission.id} 
-            className={`mission-button ${mission.completed ? 'completed' : ''}`}
-            onClick={() => handleMissionComplete(mission.id)}
-          >
-            {mission.text}
-          </button>
-        ))}
+    <div className="flex flex-col min-h-screen"> 
+      <div className="flex-grow mission-page"> 
+        <h1 className="text-2xl font-bold mb-4">오늘의 미션</h1>
+        <form onSubmit={handleAddMission}>
+          <input 
+            type="text" 
+            value={newMission} 
+            onChange={(e) => setNewMission(e.target.value)}
+            placeholder="새 미션 입력"
+          />
+          <button type="submit">추가</button>
+        </form>
+        <div className="mission-list">
+          {missions.map(mission => (
+            <button 
+              key={mission.id} 
+              className={`mission-button ${mission.completed ? 'completed' : ''}`}
+              onClick={() => handleMissionComplete(mission.id)}
+            >
+              {mission.text}
+            </button>
+          ))}
+        </div>
       </div>
       <Footer />
     </div>

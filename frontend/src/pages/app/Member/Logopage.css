@@ -1,15 +1,15 @@
-.Title{
+.Title {
   font-size: 175%;
   text-align: left;
   /* padding-left: 10%; */
-  padding-top: 15%
+  padding-top: 15%;
 }
 
-#logo{
+#logo {
   margin: 10% 0;
 }
 
-Button{
+Button {
   width: 100%;
   margin: 3% 0;
 }
@@ -18,8 +18,8 @@ Button{
   text-align: center;
   justify-content: center;
   padding: 7% 13%;
-  margin-top: 20%;
-  /* margin-bottom: 20%; */
+  padding-top: 20%;
+  padding-bottom: 20%;
 }
 
 #Logopage * {

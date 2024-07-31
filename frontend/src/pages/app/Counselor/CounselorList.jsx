@@ -24,19 +24,23 @@ const CounselorList = () => {
   ];
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-2xl font-bold mb-4">상담 메인</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {profiles.map(profile => (
-          <ProfileCard
-            key={profile.id}
-            date={profile.date}
-            name={profile.name}
-            position={profile.position}
-            message={profile.message}
-            daysLeft={profile.daysLeft}
-          />
-        ))}
+    <div className="flex flex-col min-h-screen">
+      <div className="container mx-auto flex-grow">
+        <div className="w-full">
+          <h1 className="text-2xl font-bold mb-4">상담 예약 내역</h1>
+          <div className="ml-8 space-y-4">
+            {profiles.map(profile => (
+              <ProfileCard
+                key={profile.id}
+                date={profile.date}
+                name={profile.name}
+                position={profile.position}
+                message={profile.message}
+                daysLeft={profile.daysLeft}
+              />
+            ))}
+          </div>
+        </div>
       </div>
       <Footer />
     </div>
