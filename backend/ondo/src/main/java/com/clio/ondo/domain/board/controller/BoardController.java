@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1/board")
@@ -35,12 +37,12 @@ public class BoardController {
   //ResponseEntity: pring의 HTTP 응답을 나타내는 클래스
   //Pageable: 데이터베이스 쿼리에서 페이징을 적용하는 데 사용
   @GetMapping("/list")
-  public ResponseEntity<Page<Board>> getAricles(
+  public ResponseEntity<Page<Board>> getArticles(
       @RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "10") int size)  {
     Pageable pageable = PageRequest.of(page, size);
-    Page<Board> items = boardService.getArticles(pageable);
-    return ResponseEntity.ok(items);
+    Page<Board> list = boardService.getArticles(pageable);
+    return ResponseEntity.ok(list);
   }
 
   /*
@@ -70,5 +72,13 @@ public class BoardController {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
+  /*
+  게시글 검색
+   */
+  @GetMapping("/search") //search가 없으면 searchWord에 list라는 단어가 들어갔을때 문제 발생
+  public ResponseEntity<List<Board>> searchArticles( @RequestParam(name = "searchWord")String searchWord){
+    List<Board> list = boardService.searchArticles(searchWord);
+    return ResponseEntity.ok(list);
+  }
 
 }
