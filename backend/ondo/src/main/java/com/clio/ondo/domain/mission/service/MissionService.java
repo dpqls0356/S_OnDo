@@ -36,6 +36,8 @@ public class MissionService {
 
 	private Random random = new Random();
 
+	//스케줄링 된 메서드
+	//--------------------------------------------------------------------
 	//모든 멤버별 미션 업데이트
 	public void updateMission(){
 		List<Member> members=memberRepository.findAll();

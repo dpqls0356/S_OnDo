@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clio.ondo.domain.mission.model.Mission;
 import com.clio.ondo.domain.mission.repository.TodayMissionRepository;
 import com.clio.ondo.domain.mission.service.MissionService;
+import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.JwtTokenProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +50,7 @@ public class MissionController {
 
 	//오늘의 특별미션 가져오기
 	@GetMapping("/todayTypical")
-	public List<Mission> getTodayTypical(HttpServletRequest request){
+	public ResponseEntity<ResponseVO<List<Mission>>> getTodayTypical(HttpServletRequest request){
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
@@ -58,12 +59,12 @@ public class MissionController {
 			.filter(mission -> "typical".equals(mission.getType()))
 			.toList();
 
-		return typicalMissions;
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("typicalMission", typicalMissions));
 	}
 
 	//오늘의 데일리미션 가져오기
 	@GetMapping("/todayDaily")
-	public List<Mission> getTodayDaily(HttpServletRequest request){
+	public ResponseEntity<ResponseVO<List<Mission>>> getTodayDaily(HttpServletRequest request){
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
@@ -72,26 +73,32 @@ public class MissionController {
 			.filter(mission -> "daily".equals(mission.getType()))
 			.toList();
 
-		return dailyMissions;
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("dailyMission", dailyMissions));
+
 	}
 
 	//완료한 미션 완료처리
 	@GetMapping("/completeMission")
-	public ResponseEntity<Void> completeMission(HttpServletRequest request,
+	public ResponseEntity<ResponseVO<Void>> completeMission(HttpServletRequest request,
 		@RequestParam String title){
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 		missionService.updateCompleteMission(memberId, title);
-		return ResponseEntity.status(HttpStatus.OK).build();
+		
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("미션 완료 처리"));
 	}
 
 	//멤버별 완료한 특별미션 전체조회
 	@GetMapping("/getCompleteMission")
-	public List<Mission> getCompleteMission(HttpServletRequest request) {
+	public ResponseEntity<ResponseVO<List<Mission>>> getCompleteMission(HttpServletRequest request) {
 
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
-		return missionService.getCompleteMission(memberId);
+
+		List<Mission> completeMisison=missionService.getCompleteMission(memberId);
+
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("completeMission", completeMisison));
+
 	}
 
 
