@@ -1,4 +1,4 @@
-package com.clio.ondo.global.auth;
+package com.clio.ondo.global.auth.jwtUtil;
 
 import java.io.IOException;
 
