@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CounselorHome from "./counselorWeb/counselorHome";
-import CounselingRoom from "./counselorWeb/counselingRoom";
+import CounselorHome from "./pages/web/counselorHome";
+import CounselingRoom from "./pages/web/counselingRoom";
 
 import Logopage from './pages/app/Member/Logopage';
 import Loginpage from './pages/app/Member/Loginpage';
@@ -17,6 +17,7 @@ import Join from '../src/pages/app/Member/Join'
 import Mission from './pages/app/Mission/Mission'
 import CounselorList from '../src/pages/app/Counselor/CounselorList'
 import CounselorMain from '../src/pages/app/Counselor/CounselorMain';
+import CounselorDetail from "./pages/app/Counselor/CouselorDetail";
 import CounselorReservation from '../src/pages/app/Counselor/CounselorReservation'
 
 
@@ -44,6 +45,7 @@ function App() {
         <Route path="/mission/list" element={<Mission />} />
         <Route path="/counseling/list" element={<CounselorList />} />
         <Route path="/counseling/main" element={<CounselorMain />} />
+        <Route path="/counseling/detail" element={<CounselorDetail />} />
         <Route path="/counseling/apply" element={<CounselorReservation />} />
       </Routes>
     </Router>

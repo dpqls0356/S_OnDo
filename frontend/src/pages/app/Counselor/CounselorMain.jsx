@@ -5,7 +5,7 @@ import Footer from '../../../components/app/Footer';
 
 const CounselorMain = () => {
   return (
-    <div className="bg-[#a8e6cf] min-h-screen p-4">
+    <div className="bg-[#a8e6cf] min-h-screen">
       {/* Carousel로 예약된 상담사 표시인데 안했네...? */}
       <ProfileCard />
       <FilterButtons />

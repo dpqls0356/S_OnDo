@@ -1,4 +1,5 @@
 import ProfileCard from '../../../components/app/ProfileCard';
+import Footer from '../../../components/app/Footer'
 
 const CounselorList = () => {
   // 카드 데이터 배열
@@ -23,7 +24,7 @@ const CounselorList = () => {
   ];
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">상담 메인</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {profiles.map(profile => (
@@ -37,6 +38,7 @@ const CounselorList = () => {
           />
         ))}
       </div>
+      <Footer />
     </div>
   );
 };
