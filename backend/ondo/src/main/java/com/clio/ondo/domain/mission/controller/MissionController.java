@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clio.ondo.domain.mission.model.Mission;
 import com.clio.ondo.domain.mission.model.dto.CompleteRequestDto;
 import com.clio.ondo.domain.mission.service.MissionService;
-import com.clio.ondo.domain.mission.service.MissionServiceImpl;
 import com.clio.ondo.global.ResponseVO;
-import com.clio.ondo.global.auth.JwtTokenProvider;
+import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 

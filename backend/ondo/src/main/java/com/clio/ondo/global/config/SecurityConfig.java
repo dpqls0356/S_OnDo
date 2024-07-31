@@ -55,7 +55,8 @@ public class SecurityConfig {
 			.logout(AbstractHttpConfigurer::disable)
 			.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeRequests((authorize) -> authorize
-				.requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue", "/api/v1/member/oauth-success")
+				.requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue",
+					"/api/v1/member/oauth-success")
 				.permitAll()
 				.anyRequest().authenticated())
 			.oauth2Login(oauth ->
@@ -67,23 +68,6 @@ public class SecurityConfig {
 				.accessDeniedHandler(jwtAccessDeniedHandler))
 			.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.cors(Customizer.withDefaults());
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .httpBasic((authorize) -> authorize.disable())
-            .csrf((authorize) -> authorize.disable())
-            .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue").permitAll()
-                //.requestMatchers("/**").permitAll()
-                .anyRequest().authenticated())
-            .exceptionHandling((exceptionHandling) -> exceptionHandling
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler))
-            .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-            //.cors(Customizer.withDefaults());
-
-        return http.build();
-    }
+		return http.build();
+	}
 }
