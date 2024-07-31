@@ -44,3 +44,6 @@ logging:
             core:
               MongoTemplate: DEBUG
     # org.hibernate.type: trace
+openvidu:
+  url: "http://localhost:4443/"
+  secret: "ondo_project_openvidu"
