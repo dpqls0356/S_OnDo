@@ -53,6 +53,9 @@ public class MissionService {
 	public void putCompleteMission(Long memberId){
 
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
+
+		if(todayMission == null) return;
+
 		List<Mission> missionList=todayMission.getMissions(); //현재 멤버의 오늘의 미션
 		List<Mission> completeList=new ArrayList<>(); //완료한 특별미션
 

@@ -39,7 +39,7 @@ public class MissionController {
 	//3개의 랜덤 특별 미션 + 데일리 미션 todayMission에 저장
 	// @GetMapping("/update/{memberId}")
 	// public ResponseEntity<Void> updateTodayMission(@PathVariable Long memberId){
-	// 	missionService.UpdateTodayMission(memberId);
+	// 	missionService.createTodayMission(memberId);
 	// 	return ResponseEntity.status(HttpStatus.OK).build();
 	// }
 	//
