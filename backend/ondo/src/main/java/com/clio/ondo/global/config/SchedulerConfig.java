@@ -1,4 +1,4 @@
-package com.clio.ondo.domain.mission.service;
+package com.clio.ondo.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

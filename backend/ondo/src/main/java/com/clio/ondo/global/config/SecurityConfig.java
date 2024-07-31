@@ -55,8 +55,9 @@ public class SecurityConfig {
 			.logout(AbstractHttpConfigurer::disable)
 			.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeRequests((authorize) -> authorize
-				// .requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue")
-				.requestMatchers("/**", "/favicon.ico").permitAll()
+				.requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue",
+					"/api/v1/member/oauth-success")
+				.permitAll()
 				.anyRequest().authenticated())
 			.oauth2Login(oauth ->
 				oauth.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
@@ -67,7 +68,6 @@ public class SecurityConfig {
 				.accessDeniedHandler(jwtAccessDeniedHandler))
 			.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.cors(Customizer.withDefaults());
-
 		return http.build();
 	}
 }
