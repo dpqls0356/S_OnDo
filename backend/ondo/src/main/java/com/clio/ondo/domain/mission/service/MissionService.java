@@ -2,26 +2,21 @@ package com.clio.ondo.domain.mission.service;
 
 import static java.time.LocalDateTime.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
+import com.clio.ondo.domain.member.model.Member;
+import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.mission.model.CompleteMission;
 import com.clio.ondo.domain.mission.model.Mission;
 import com.clio.ondo.domain.mission.model.MissionDetail;
 import com.clio.ondo.domain.mission.model.TodayMission;
 import com.clio.ondo.domain.mission.repository.CompleteMissionRepository;
 import com.clio.ondo.domain.mission.repository.MissionDetailRepository;
-import com.clio.ondo.domain.mission.repository.MissionRepository;
 import com.clio.ondo.domain.mission.repository.TodayMissionRepository;
 
 @Service
@@ -36,11 +31,25 @@ public class MissionService {
 	@Autowired
 	private CompleteMissionRepository completeMissionRepository;
 
+	@Autowired
+	private MemberRepository memberRepository;
+
 	private Random random = new Random();
 
-	//완료한 특별미션 completeMission에 넣기 -> 스케줄링
+	//모든 멤버별 미션 업데이트
+	public void updateMission(){
+		List<Member> members=memberRepository.findAll();
+		for(Member member:members){
+			Long memberId=member.getId();
+			putCompleteMission(memberId);
+			createTodayMission(memberId);
+		}
+	}
+
+	//완료한 특별미션 completeMission에 넣기
 	//완료하지 않은 특별 미션 + 데일리 미션 삭제
 	public void putCompleteMission(Long memberId){
+
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
 		List<Mission> missionList=todayMission.getMissions(); //현재 멤버의 오늘의 미션
 		List<Mission> completeList=new ArrayList<>(); //완료한 특별미션
@@ -89,7 +98,7 @@ public class MissionService {
 	}
 
 	//오늘의 특별+데일리 미션 todayMission에 저장
-	public void UpdateTodayMission(Long memberId) {
+	public void createTodayMission(Long memberId) {
 
 		//특별 미션 랜덤 3개 추출
 		List<MissionDetail> typicalMissions = createRandomMission(); //랜덤 특별미션 3개
@@ -129,6 +138,8 @@ public class MissionService {
 			todayMissionRepository.save(newTodayMission);
 		}
 	}
+
+	//---------------------------------------------------------------------------------------
 
 	//해당하는 멤버의 미션 가져오기
 	public List<Mission> getTodayMission(Long memberId) {
