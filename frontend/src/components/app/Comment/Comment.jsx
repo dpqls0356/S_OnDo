@@ -8,7 +8,7 @@ const Comment = () => {
   const nav = useNavigate()
   const onClickCommentDelete = () => {
     console.log('댓글 삭제 완료')
-    nav('/board/게시글 아이디/comment 아이디')
+    nav('/member/board/게시글 아이디/comment 아이디')
   }
 
   return(

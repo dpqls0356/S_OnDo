@@ -39,6 +39,107 @@ const Board = () => {
           <p>내용</p>
         </div>
       </div>
+
+
+
+
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        {/* onClickBoard(게시글 번호 혹은 게시글 객체 넘기기) */}
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          {/* 보이는 글자수 제한 해야 함 */}
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        {/* onClickBoard(게시글 번호 혹은 게시글 객체 넘기기) */}
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          {/* 보이는 글자수 제한 해야 함 */}
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        {/* onClickBoard(게시글 번호 혹은 게시글 객체 넘기기) */}
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          {/* 보이는 글자수 제한 해야 함 */}
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        {/* onClickBoard(게시글 번호 혹은 게시글 객체 넘기기) */}
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          {/* 보이는 글자수 제한 해야 함 */}
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        {/* onClickBoard(게시글 번호 혹은 게시글 객체 넘기기) */}
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          {/* 보이는 글자수 제한 해야 함 */}
+          <p>내용</p>
+        </div>
+      </div>
+
+      
     </>
   );
 };

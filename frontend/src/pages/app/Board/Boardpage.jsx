@@ -30,7 +30,7 @@ const Boardpage = () => {
   };
 
   return (
-    <>
+    <div className="BoardScroll">
       {/* 헤더 */}
       <div className="BoardHeader">
         <p>온도의 소통공간</p>
@@ -59,9 +59,13 @@ const Boardpage = () => {
 
       {/* 게시글 목록 */}
       <BoardList />
+
+      <div className="emptybox3">
+         
+         </div>
       {/* 하단 바 */}
       <Footer />
-    </>
+    </div>
   );
 };
 
