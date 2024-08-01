@@ -17,6 +17,7 @@ import BoardCreatepage from "./pages/app/Board/BoardCreatepage";
 import BoardUpdatepage from "./pages/app/Board/BoardUpdatepage";
 
 import Join from "../src/pages/app/Member/Join";
+import MyPage from '../src/pages/app/Member/MyPage'
 import Mission from "./pages/app/Mission/Mission";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
@@ -44,6 +45,7 @@ function App() {
           <Route path="board/:id" element={<BoardDetailpage />} />
           <Route path="*" element={<Notfoundpage />} />
           <Route path="join" element={<Join />} />
+          <Route path="profile" element={<MyPage />} />
           <Route path="mission/list" element={<Mission />} />
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
