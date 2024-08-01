@@ -32,6 +32,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -43,6 +45,8 @@ import com.clio.ondo.domain.chatbot.service.ChatbotServiceImpl;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.mission.model.CompleteMission;
 import com.clio.ondo.domain.mission.model.Mission;
+import com.clio.ondo.domain.mission.model.MissionDetail;
+import com.clio.ondo.domain.mission.repository.CompleteMissionRepository;
 import com.clio.ondo.domain.mission.repository.MissionRepository;
 
 import lombok.Builder;
@@ -54,7 +58,7 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 	@Autowired
 	private DataSource dataSource;
 	@Autowired
-	private MissionRepository missionRepository;
+	private CompleteMissionRepository completeMissionRepository;
 	@Autowired
 	private ChatbotServiceImpl chatbotService;
 	@Autowired
@@ -76,7 +80,7 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 	@Bean
 	public Step getMemberIds(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
 		return new StepBuilder("getMemberIds", jobRepository)
-			.<Long, List<String>>chunk(chunk, transactionManager)
+			.<Long, String>chunk(chunk, transactionManager)
 			.reader(memberIdReader())
 			.processor(mongoMemberInfoProcessor())
 			.writer(list -> {})
@@ -106,40 +110,29 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 	}
 
 	@Bean
-	public ItemProcessor<Long, List<String>> mongoMemberInfoProcessor() {
+	public ItemProcessor<Long, String> mongoMemberInfoProcessor() {
 		return memberId -> {
-			// 멤버 아이디 먼저
-			StringBuilder sb = new StringBuilder();
-			sb.append(memberId).append("\n");
-			
 			// 몽고디비에서 멤버별 완료 미션을 가져온다.
-			//List<CompleteMission> cm =  missionRepository.findMissionByMemberId(memberId);
-			List<CompleteMission> cm = new ArrayList<>();
-			List<Mission> dummyMission = new ArrayList<>();
-			dummyMission.add(new Mission(
-				true,
-				LocalDateTime.of(2023, 7, 15, 10, 30),
-				"Daily Exercise",
-				"Complete 30 minutes of cardio exercise.",
-				"Special",
-				100,
-				1
-			));
-			cm.add(new CompleteMission(new ObjectId() , (long)8, dummyMission));
-
-
-			List<Mission> missions = new ArrayList<>();
-			if(!cm.isEmpty()){
-				missions = cm.get(0).getMissions();
+			CompleteMission cm =  completeMissionRepository.findByMemberId(memberId);
+			List<Mission> missions;
+			try{
+				missions = cm.getMissions();
+				if (missions.size() > 6) {
+					missions.subList(3, missions.size()).clear();
+				}
+				System.out.println(missions);
+			}
+			catch(Exception e){
+				missions = new ArrayList<>();
 			}
 
-			List<Mission> recommendedMissions = chatbotService.getRecommendFromChatbot(memberId, missions);
+			String returnConversation = chatbotService.getRecommendFromChatbot(memberId, missions);
 
-			List<String> messages = chatbotService.createRecommendMessage(memberId, recommendedMissions);
+			//List<String> messages = chatbotService.createRecommendMessage(memberId, recommendedMissions);
 
-			List<FCMResultDto> result = missionAlarmService.sendFcmAlarm(memberId, messages.get(0));
+			List<FCMResultDto> result = missionAlarmService.sendFcmAlarm(memberId, returnConversation);
 
-			return messages;
+			return returnConversation;
 		};
 	}
 

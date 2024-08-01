@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.mission.model.CompleteMission;
 import com.clio.ondo.domain.mission.model.Mission;
@@ -47,6 +48,7 @@ public class MissionService {
 	}
 
 	//오늘의 특별+데일리 미션 todayMission에 저장
+	@Transactional
 	public void TodayMission(Long memberId) {
 
 		//특별 미션 랜덤 3개 추출
@@ -105,6 +107,7 @@ public class MissionService {
 	}
 
 	//완료한 미션 업데이트 및 포인트 추출
+	@Transactional
 	public void updateCompleteMission(Long memberId,String title){
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
 		List<Mission> missionList=todayMission.getMissions();
@@ -124,6 +127,7 @@ public class MissionService {
 
 	//완료한 특별미션 completeMission에 넣기 -> 스케줄링
 	//완료하지 않은 특별 미션 + 데일리 미션 삭제
+	@Transactional
 	public void putCompleteMission(Long memberId){
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId); 
 		List<Mission> missionList=todayMission.getMissions(); //현재 멤버의 오늘의 미션
@@ -169,6 +173,23 @@ public class MissionService {
 		return missionList;
 	}
 
+	@Transactional
+	public void addCompleteMission(Long memberId, List<MissionDetail> missionDetails){
+		List<Mission> missions = new ArrayList<>();
+		for(MissionDetail missionDetail : missionDetails) {
+			Mission mission = Mission.builder()
+				.completeFlag(false)
+				.completeTime(null)
+				.title(missionDetail.getTitle())
+				.content(missionDetail.getContent())
+				.type(missionDetail.getType())
+				.exp(missionDetail.getExp())
+				.level(missionDetail.getLevel())
+				.build();
+			missions.add(mission);
+		}
+		todayMissionRepository.upsertByMemberId(memberId, missions);
+	}
 }
 
 
