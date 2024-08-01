@@ -7,4 +7,5 @@ public interface CharacterService {
 	 Character getCharacters(Long memberId);
 	 void updateExp(Long memberId, int exp);
 	 void changeName(Long memberId,String newName);
+	 void updateLevel(Long memberId, int level);
 }

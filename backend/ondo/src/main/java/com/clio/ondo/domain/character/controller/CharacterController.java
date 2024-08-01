@@ -1,8 +1,5 @@
 package com.clio.ondo.domain.character.controller;
 
-import java.util.Optional;
-
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,16 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.character.model.Character;
 import com.clio.ondo.domain.character.model.dto.ChangeRequestDto;
-import com.clio.ondo.domain.character.repository.CharacterRepository;
+import com.clio.ondo.domain.character.model.dto.CharacterResponseDto;
 import com.clio.ondo.domain.character.service.CharacterService;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,13 +30,14 @@ public class CharacterController {
 
 	//현재 멤버의 캐릭터 가져오기
 	@GetMapping("/getCharacter")
-	public ResponseEntity<ResponseVO<Character>> getCharacter(HttpServletRequest request){
+	public ResponseEntity<ResponseVO<CharacterResponseDto>> getCharacter(HttpServletRequest request){
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
-		Character ch=characterService.getCharacters(memberId);
+		Character character = characterService.getCharacters(memberId);
+		CharacterResponseDto res = new CharacterResponseDto(character.getName(), character.getExp(), character.getLevel());
 
-		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("character", ch));
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("character", res));
 	}
 
 	//현재 멤버의 캐릭터 이름 바꾸기
