@@ -39,6 +39,7 @@ public class MissionServiceImpl implements MissionService{
 	//스케줄링 된 메서드
 	//--------------------------------------------------------------------
 	//모든 멤버별 미션 업데이트
+	@Override
 	public void updateMission(){
 		List<Member> members=memberRepository.findAll();
 		for(Member member:members){
@@ -50,6 +51,7 @@ public class MissionServiceImpl implements MissionService{
 
 	//완료한 특별미션 completeMission에 넣기
 	//완료하지 않은 특별 미션 + 데일리 미션 삭제
+	@Override
 	public void putCompleteMission(Long memberId){
 
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
@@ -92,7 +94,9 @@ public class MissionServiceImpl implements MissionService{
 
 	}
 
+
 	//MissionDetail에서 특별미션 랜덤 3개 추출
+	@Override
 	public List<MissionDetail> createRandomMission() {
 		List<MissionDetail> allMissionDetails = missionDetailRepository.findByType("typical"); //특별미션만 추출
 		List<MissionDetail> selectedMissionDetails = allMissionDetails.stream()
@@ -102,7 +106,9 @@ public class MissionServiceImpl implements MissionService{
 		return selectedMissionDetails;
 	}
 
+
 	//오늘의 특별+데일리 미션 todayMission에 저장
+	@Override
 	public void createTodayMission(Long memberId) {
 
 		//특별 미션 랜덤 3개 추출
@@ -146,7 +152,9 @@ public class MissionServiceImpl implements MissionService{
 
 	//---------------------------------------------------------------------------------------
 
+
 	//해당하는 멤버의 미션 가져오기
+	@Override
 	public List<Mission> getTodayMission(Long memberId) {
 
 		try {
@@ -163,6 +171,7 @@ public class MissionServiceImpl implements MissionService{
 	}
 
 	//완료한 미션 업데이트 및 포인트 추출
+	@Override
 	public void updateCompleteMission(Long memberId,String title){
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
 		List<Mission> missionList=todayMission.getMissions();
@@ -181,8 +190,8 @@ public class MissionServiceImpl implements MissionService{
 	}
 
 
-
 	//멤버별 완료한 특별미션 전체조회
+	@Override
 	public List<Mission> getCompleteMission(Long memberId){
 		CompleteMission completeMission=completeMissionRepository.findByMemberId(memberId);
 		List<Mission> missionList=completeMission.getMissions();
