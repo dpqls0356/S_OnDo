@@ -70,7 +70,7 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 	// Scheduling에서 이 Job을 호출해서 실행하면 된다.
 	@Bean
 	public Job missionAlarmJob(JobRepository jobRepository,
-								Step getMemberIds) {
+		Step getMemberIds) {
 		return new JobBuilder("missionAlarmJob", jobRepository)
 			.start(getMemberIds)
 			.build();
@@ -126,13 +126,13 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 				missions = new ArrayList<>();
 			}
 
-			String returnConversation = chatbotService.getRecommendFromChatbot(memberId, missions);
+			List<MissionDetail> recommendedMissionDetails = chatbotService.getRecommendFromChatbot(memberId, missions);
 
-			//List<String> messages = chatbotService.createRecommendMessage(memberId, recommendedMissions);
+			List<String> messages = chatbotService.createRecommendMessage(memberId, recommendedMissionDetails);
 
-			List<FCMResultDto> result = missionAlarmService.sendFcmAlarm(memberId, returnConversation);
+			List<FCMResultDto> result = missionAlarmService.sendFcmAlarm(memberId, messages.get(0));
 
-			return returnConversation;
+			return "완료";
 		};
 	}
 

@@ -41,12 +41,12 @@ public class ScheduledAlarmService {
 		}
 
 		redisTemplate.opsForList().rightPush(key, fcmToken.getFcmtoken());
-		// 만료 기간을 설정하는 것 초단위로 구체적으로 해보자
-		redisTemplate.expire(key, 6000, TimeUnit.SECONDS);
+		// redis 만료기간 1시간
+		redisTemplate.expire(key, 3600, TimeUnit.SECONDS);
 	}
 
-	//@Scheduled(cron = "0 0 8 * * *")
-	@Scheduled(fixedDelay = 60000)
+	@Scheduled(cron = "0 0 8 * * *")
+	//@Scheduled(fixedDelay = 60000)
 	public void createSpecialMission(){
 		try{
 			JobParameters jobParameters = new JobParametersBuilder()
