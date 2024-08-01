@@ -15,8 +15,7 @@ public class Character {
 	@Column(name = "character_id")
 	private Long id;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false)
+	@OneToOne(mappedBy = "character", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Member member;
 
 	@Column(nullable = false)
@@ -27,13 +26,26 @@ public class Character {
 
 	@Column(nullable = false)
 	private int exp;
-
+	
+	public Character() {
+		this.name = "다람이";
+		this.level = 1;
+		this.exp = 0;
+	}
+	
 	public void updateName(String name) {
 		this.name = name;
+	}
+
+	public void updateLevel(int level) {
+		this.level = level;
 	}
 
 	public void increaseExp(int additionalExp) {
 		this.exp += additionalExp;
 	}
 
+	public void setMember(Member member) {
+		this.member = member;
+	}
 }

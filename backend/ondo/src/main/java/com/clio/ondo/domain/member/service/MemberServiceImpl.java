@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.member.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -15,12 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.repository.CharacterRepository;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
+import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
@@ -39,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberRepository memberRepository;
+	private final CharacterRepository characterRepository;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManager authenticationManager;
@@ -51,6 +56,8 @@ public class MemberServiceImpl implements MemberService {
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
 		}
+		Character character = member.getCharacter();
+		characterRepository.save(character);
 		memberRepository.save(member);
 	}
 
@@ -162,5 +169,11 @@ public class MemberServiceImpl implements MemberService {
 			throw new MemberException("토큰 재발급을 실패했습니다.");
 		}
 		return "유효하지 않은 토큰입니다";
+	}
+
+	public List<Reservation> getReservationsForMember(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberNotFoundException("Member not found"));
+		return member.getReservations();
 	}
 }

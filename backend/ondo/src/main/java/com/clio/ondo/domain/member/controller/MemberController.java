@@ -1,5 +1,7 @@
 package com.clio.ondo.domain.member.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,7 @@ import com.clio.ondo.domain.member.model.dto.MemberResponseDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.member.service.MemberService;
+import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
@@ -152,6 +155,18 @@ public class MemberController {
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
+		}
+	}
+
+	@GetMapping("/reservations")
+	public ResponseEntity<ResponseVO<List<Reservation>>> getReservations(HttpServletRequest request) {
+		try {
+			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+			Long id = jwtTokenProvider.getIdFromToken(token);
+			List<Reservation> reservations = memberService.getReservationsForMember(id);
+			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("reservations", reservations));
+		} catch (AuthenticationException | MemberException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("예약 목록 불러오기 실패"));
 		}
 	}
 }
