@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.repository.CharacterRepository;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
@@ -39,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberRepository memberRepository;
+	private final CharacterRepository characterRepository;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManager authenticationManager;
@@ -51,6 +54,8 @@ public class MemberServiceImpl implements MemberService {
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
 		}
+		Character character = member.getCharacter();
+		characterRepository.save(character);
 		memberRepository.save(member);
 	}
 
