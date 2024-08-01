@@ -7,6 +7,7 @@ import Footer from "../../../components/app/Footer";
 import character from "./../../../assets/images/공통_캐릭터.png";
 import chat from "./../../../assets/images/chat.png";
 
+import back_img from './../../../assets/images/home_back.jpg'
 
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +20,7 @@ const Homepage = () => {
 
   return (
     <div className="homepage">
+    {/* <img src={back_img} /> */}
       <div className="charaInfo">
         <p>이름</p>
         <p>Lv.5</p>

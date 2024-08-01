@@ -55,30 +55,33 @@ const BoardDetailpage = () => {
         </div>
 
         {/* 댓글 목록 */}
-        <div className="CommentList">
-          <div id="comment-line"></div>
-          <div className="CmtList">
-            <CommentList />
+        <div className="BD-center">
+
+          <div className="CommentList">
+            <div id="comment-line"></div>
+            <div className="CmtList">
+              <CommentList />
+            </div>
+          </div>
+          {/* 댓글 작성 */}
+          <form className="CommentForm">
+            <textarea
+              ref={comment}
+              maxLength={100}
+              name=""
+              id=""
+              placeholder="댓글을 달아보세요."
+            ></textarea>
+            <img
+              onClick={onClickCreateComment}
+              src={commentbtn}
+              style={{ cursor: "pointer" }}
+            />
+          </form>
+          <div className="emptybox2">
+          
           </div>
         </div>
-        {/* 댓글 작성 */}
-        <form className="CommentForm">
-          <textarea
-            ref={comment}
-            maxLength={100}
-            name=""
-            id=""
-            placeholder="댓글을 달아보세요."
-          ></textarea>
-          <img
-            onClick={onClickCreateComment}
-            src={commentbtn}
-            style={{ cursor: "pointer" }}
-          />
-        </form>
-        <div className="emptybox2">
-         
-         </div>
 
         <Footer />
       </div>

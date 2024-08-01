@@ -1,8 +1,13 @@
 /* 기본적으로 페이지 전체를 Flexbox로 설정 */
 .homepage {
+  /* background-image: url(./../../../assets/images/home_back.png); */
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* 페이지 전체 높이를 차지하도록 설정 */
+  /* height: 100vh;
+  width: 100vw;
+  background-repeat : no-repeat;
+  background-size : cover; */
 }
 
 /* 중심 콘텐츠가 Flex-grow로 확장되도록 설정 */

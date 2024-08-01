@@ -6,8 +6,16 @@
 }
 
 /* 페이지의 컨텐츠 영역을 Flex-grow로 설정 */
-.BoardContent {
+.BoardContentContainer {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.BoardContentList {
+  flex-grow: 1;
+  overflow-y: auto; /* 스크롤 가능하게 설정 */
 }
 
 .BoardHeader {
@@ -74,10 +82,6 @@
 .emptybox3 {
   height: 2vh;
   background-color: #fff9e900;
-}
-
-.BoardScroll::-webkit-scrollbar {
-  display: none;
 }
 
 .BoardScroll::-webkit-scrollbar {
