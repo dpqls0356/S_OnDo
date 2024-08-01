@@ -6,17 +6,14 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
-import com.clio.ondo.domain.mission.model.MissionDetailList;
 import com.clio.ondo.domain.chatbot.model.ChattingReadDto;
 import com.clio.ondo.domain.chatbot.model.openaiDto.ChatCompletion;
 import com.clio.ondo.domain.chatbot.model.openaiDto.OpenAiRequestDto;
 import com.clio.ondo.domain.chatbot.model.openaiDto.RoleContentMessage;
 import com.clio.ondo.domain.mission.model.Mission;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +90,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 
 	// 사용자가 대화를 입력했을 경우 동작하는 함수
+	@Override
 	@Transactional
 	public List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
 		ChatbotChatting requestChatting = new ChatbotChatting(null, "user", text, LocalDateTime.now(), memberId);
@@ -128,6 +126,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	}
 
 	// 이전 채팅 내역을 page 단위로 가져오는 함수
+	@Override
 	public List<ChattingReadDto> getChatbotChattings(Long memberId, int page, int size) {
 		List<ChatbotChatting> chatbotChattings = chatbotRepository.getChattingsByPage(memberId, page, size);
 		return chatbotChattings.stream()
@@ -136,6 +135,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	}
 
 	// 미션을 추천 받는 함수
+	@Override
 	@Transactional
 	public List<MissionDetail> getRecommendFromChatbot(Long memberId, List<Mission> missions) {
 		WebClient webClient = WebClient.builder().build();
@@ -160,7 +160,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 		ChatCompletion responseChatCompletion = responseBody.getBody();
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-		System.out.println(responseString);
+		//System.out.println(responseString);
 
 		StringTokenizer st = new StringTokenizer(responseString.substring(1, responseString.length() - 1), ",");
 		List<Integer> numbers = new ArrayList<>();
@@ -178,6 +178,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	}
 
 	//추천 받은 미션을 저장하고 챗봇 메시지 생성하는 부분
+	@Override
 	@Transactional
 	public List<String> createRecommendMessage(Long memberId, List<MissionDetail> recommendedMissions) {
 		WebClient webClient = WebClient.builder().build();
@@ -203,7 +204,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 		ChatCompletion responseChatCompletion = responseBody.getBody();
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-		System.out.println(responseString);
+		//System.out.println(responseString);
 
 		List<String> parsedStrings = stringParsingService.parseLine(responseString);
 		for(String parsedString : parsedStrings){
