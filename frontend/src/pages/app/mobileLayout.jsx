@@ -9,6 +9,7 @@ const View = styled.div`
   background-color: #fff9e9;
   width: 100%;
   max-width: 420px;
+  // max-height: 1000px;
   margin: auto;
   height: 100vh;
   overflow-y: hidden;

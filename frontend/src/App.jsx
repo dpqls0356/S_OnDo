@@ -23,6 +23,8 @@ import Mission from "./pages/app/Mission/Mission";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
+import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
+
 
 function App() {
   return (
@@ -51,6 +53,7 @@ function App() {
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
           <Route path="counseling/apply" element={<CounselorReservation />} />
+          <Route path="counseling/:id/detail" element={<CounselorDetail />} />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>
       </Routes>
