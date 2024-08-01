@@ -5,12 +5,14 @@ import Footer from '../../../components/app/Footer';
 
 const CounselorMain = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-[#a8e6cf]">
+    <div className="flex flex-col min-h-screen bg-[#a8e6cf]" id='CounselorMainScroll'>
       <div className="flex-grow">
         {/* Carousel로 예약된 상담사 표시인데 안했네...? */}
         <ProfileCard />
         <FilterGender />
         <CounselorSearchBar />
+        <ProfileCard />
+        <ProfileCard />
         <ProfileCard />
       </div>
       <Footer />

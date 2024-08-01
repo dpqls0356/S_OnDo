@@ -38,7 +38,9 @@ const Homepage = () => {
       <div className="chatBtn">
         <img onClick={onClickChat} src={chat} style={{ cursor: "pointer" }} />
       </div>
-      <Footer />
+      <div id="footer">
+        <Footer />
+      </div>
     </div>
   );
 };

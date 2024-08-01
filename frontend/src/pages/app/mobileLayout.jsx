@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 const View = styled.div`
   position: relative;
   background-color: #fff9e9;
-  width: 390px;
+  width: 100%;
+  max-width: 420px;
   margin: auto;
   height: 100vh;
   overflow-y: hidden;
