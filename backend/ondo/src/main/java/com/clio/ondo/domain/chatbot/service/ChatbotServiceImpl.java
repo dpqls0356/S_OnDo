@@ -162,14 +162,6 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 		System.out.println(responseString);
 
-		// List<String> parsedStrings = stringParsingService.parseLine(responseString);
-		// for(int i = 0; i < parsedStrings.size()-1; i++){
-		// 	String parsedString = parsedStrings.get(i);
-		// 	ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", parsedString, LocalDateTime.now(), memberId);
-		// 	chatbotRepository.upsertByMemberId(memberId, responseChatting);
-		// }
-		//
-		//StringTokenizer st = new StringTokenizer(parsedStrings.get(parsedStrings.size()-1).substring(1, parsedStrings.get(parsedStrings.size()-1).length() - 1), ", ");
 		StringTokenizer st = new StringTokenizer(responseString.substring(1, responseString.length() - 1), ",");
 		List<Integer> numbers = new ArrayList<>();
 		while(st.hasMoreTokens()) {
