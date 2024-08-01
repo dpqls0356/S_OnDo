@@ -1,10 +1,8 @@
 package com.clio.ondo.domain.board.service;
 
-import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.model.Comment;
 import com.clio.ondo.domain.board.repository.CommentRepository;
 import com.clio.ondo.domain.board.repository.CustomCommentRepositoryImpl;
-import java.util.List;
 import java.util.Optional;
 
 import com.clio.ondo.global.exception.member.NotFoundException;
@@ -29,16 +27,15 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void deleteComment(ObjectId commentId,Long memberId) {
+  public void deleteComment(ObjectId commentId, Long memberId) {
     Optional<Comment> existingCommentOpt = commentRepository.findById(commentId);
 
     //존재하는 댓글일 때
-    if(existingCommentOpt.isPresent()){
+    if (existingCommentOpt.isPresent()) {
       Comment existingComment = existingCommentOpt.get();
-      if(existingComment.getMember_id().equals(memberId.toString())){
+      if (existingComment.getMemberId().equals(memberId.toString())) {
         commentRepository.deleteById(commentId);
-      }
-      else{
+      } else {
         //소유주가 아니기에 예외처리
         throw new UnauthorizedException("잘못된 접근입니다.");
       }
@@ -50,16 +47,15 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void updateComment(ObjectId commentId, Comment modifiedComment,Long memberId) {
+  public void updateComment(ObjectId commentId, Comment modifiedComment, Long memberId) {
     Optional<Comment> existingCommentOpt = commentRepository.findById(commentId);
 
     //존재하는 댓글일 때
-    if(existingCommentOpt.isPresent()){
+    if (existingCommentOpt.isPresent()) {
       Comment existingComment = existingCommentOpt.get();
-      if(existingComment.getMember_id().equals(memberId.toString())){
-        customCommentRepositoryImpl.updateComment(commentId,modifiedComment);
-      }
-      else{
+      if (existingComment.getMemberId().equals(memberId.toString())) {
+        customCommentRepositoryImpl.updateComment(commentId, modifiedComment);
+      } else {
         //소유주가 아니기에 예외처리
         throw new UnauthorizedException("잘못된 접근입니다.");
       }
@@ -70,8 +66,7 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public Page<Comment> getComments(Pageable pageble){
-    return commentRepository.findAll(pageble);
+  public Page<Comment> getComments(Pageable pageable, String articleId) {
+    return commentRepository.findByArticleId(articleId, pageable);
   }
-
 }

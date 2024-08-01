@@ -13,5 +13,5 @@ public interface CommentService {
 
   void updateComment(ObjectId commentId, Comment modifiedComment,Long memberId);
 
-  public Page<Comment> getComments(Pageable pageble);
+  public Page<Comment> getComments(Pageable pageble,String articleId);
 }
