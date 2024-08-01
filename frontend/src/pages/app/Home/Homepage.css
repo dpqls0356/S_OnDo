@@ -1,0 +1,47 @@
+.homepage{
+  height: 100px;
+}
+
+.center{
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.centerChara{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* justify-content: center; */
+  flex-direction: column;
+  
+}
+
+.chatBtn{
+  padding-left: 80%;
+}
+
+.ballon {
+  /* display: none; */
+  /* position: absolute; */
+  width: 205px;
+  height: 40px;
+  left: 448px;
+  bottom: 62px;
+  background: #484848;
+  color: white;
+  border-radius: 5px;
+  padding: 12px 12.8px;
+}
+
+/* 
+.ballon:after {
+  border-top: 10px solid #484848;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 0px solid transparent;
+  content: "";
+  position: absolute;
+  top: 40px;
+  left: 160px;
+} */
