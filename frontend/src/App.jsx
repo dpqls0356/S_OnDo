@@ -15,6 +15,7 @@ import Boardpage from "./pages/app/Board/Boardpage";
 import BoardDetailpage from "./pages/app/Board/BoardDetailpage";
 import BoardCreatepage from "./pages/app/Board/BoardCreatepage";
 import BoardUpdatepage from "./pages/app/Board/BoardUpdatepage";
+import MyUpdateForm from "./pages/app/Member/MyUpdatepage";
 
 import Join from "../src/pages/app/Member/Join";
 import MyPage from '../src/pages/app/Member/MyPage'
@@ -50,6 +51,7 @@ function App() {
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
           <Route path="counseling/apply" element={<CounselorReservation />} />
+          <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>
       </Routes>
     </Router>

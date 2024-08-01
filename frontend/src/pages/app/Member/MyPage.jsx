@@ -1,32 +1,54 @@
 // 챗알림, MemberProfileCard, footer, Button*2(로그아웃, 회원정보수정)&연결
-import MemberProfileCard from '../../../components/app/MemberProfileCard'
+// import MemberProfileCard from '../../../components/app/MemberProfileCard'
+import './Mypage.css'
+
+import { useNavigate } from 'react-router-dom';
+
 import Button from "../../../components/app/Button";
 import Footer from '../../../components/app/Footer'
 
-const dummyProfileData = {
-  name: "유싸피",
-  nickname: "뽀용",
-  email: "apple@gmail.com"
-};
+import profile from './../../../assets/images/test.png'
+import notice from './../../../assets/images/notice.png'
+
+// const dummyProfileData = {
+//   name: "유싸피",
+//   nickname: "뽀용",
+//   email: "apple@gmail.com"
+//};
 
 
 const MyPage = () => {
+  const nav = useNavigate()
+
+  const onClickInfoEdit = () => {
+    nav('/member/info/유저아이디/update')
+  }
+
+  const onClickLogout = () => {
+    console.log('로그아웃!')
+    console.log('로그아웃로직 추가해야 함')
+  }
+  
   return (
-    <div>
-      <div className="w-80 h-300 rounded-3xl p-2 flex flex-col" style={{ backgroundColor: 'rgba(106, 191, 180, 0.84)' }}>
-        <div className="flex justify-between items-center mb-4">
-        <MemberProfileCard 
-            name={dummyProfileData.name}
-            nickname={dummyProfileData.nickname}
-            email={dummyProfileData.email}
-          />
+    <div className='Mypage'>
+      <div className="UserCardBack">
+        <div id='My-notice'>
+          <p>My Page</p>
+          <img src={notice} />
         </div>
-        
-        
+        <div className="UserCard">
+          <img src={profile} />
+          <div className='UserInfo'>
+            <p id='MP-UserName'>이싸피 님(별명)</p>
+            <p id='MP-Email'>Leessafy@gmail.com</p>
+          </div>
+        </div>
       </div>
-        <Button text="내 정보 수정"/>
-        <br />
-        <Button text="로그아웃"/> 
+
+      <div className='MypageCenter'>
+        <Button onClick={onClickInfoEdit} text="내 정보 수정"/>
+        <Button onClick={onClickLogout} text="로그아웃"/> 
+      </div>
       <Footer/>
     </div>
   );

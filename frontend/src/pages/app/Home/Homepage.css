@@ -1,13 +1,24 @@
-.homepage{
-  height: 100px;
+/* 기본적으로 페이지 전체를 Flexbox로 설정 */
+.homepage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 페이지 전체 높이를 차지하도록 설정 */
 }
 
-.center{
+/* 중심 콘텐츠가 Flex-grow로 확장되도록 설정 */
+.center {
   padding: 30px;
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-grow: 1; /* 중심 콘텐츠가 남은 공간을 채우도록 설정 */
 }
+
+/* 하단에 고정된 Footer */
+#footer {
+  flex-shrink: 0; /* Footer가 축소되지 않도록 설정 */
+}
+
 .centerChara{
   display: flex;
   justify-content: center;
@@ -45,3 +56,9 @@
   top: 40px;
   left: 160px;
 } */
+
+#footer{
+  /* position: fixed; */
+  /* left: 96%; */
+  /* top: 100px; */
+}

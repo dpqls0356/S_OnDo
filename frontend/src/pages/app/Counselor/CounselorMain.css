@@ -1,0 +1,24 @@
+#CounselorMainScroll{
+  overflow-y: scroll;
+  /* display: grid; */
+}
+/* 
+body {
+  font-family: system-ui;
+  background: #f06d06;
+  color: white;
+  text-align: center;
+} */
+#CounselorMainScroll {
+  /* width: 100%; */
+  height: 100vh;
+  /* margin: 0 auto; */
+  overflow-y: scroll;
+  /* gap: 25px; */
+}
+
+
+
+#CounselorMainScroll ::-webkit-scrollbar {
+  display: none;
+}
