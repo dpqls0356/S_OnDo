@@ -1,4 +1,4 @@
-import ProfileCard from '../../../components/app/ProfileCard';
+import ProfileCard from '../../../components/app/CounselorProfileCard';
 import FilterGender from '../../../components/app/FilterGender';
 import CounselorSearchBar from '../../../components/app/CounselorSearchBar';
 import Footer from '../../../components/app/Footer';
