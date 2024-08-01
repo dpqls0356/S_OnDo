@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.counselor.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.clio.ondo.domain.member.model.Gender;
@@ -50,7 +51,7 @@ public class Counselor {
 	private String profileUrl;
 
 	@OneToMany(mappedBy = "counselor")
-	private List<Reservation> reservations;
+	private List<Reservation> reservations = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "schedule_id")

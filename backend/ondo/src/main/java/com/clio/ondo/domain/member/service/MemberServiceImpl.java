@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.member.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +24,7 @@ import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
+import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
@@ -167,5 +169,11 @@ public class MemberServiceImpl implements MemberService {
 			throw new MemberException("토큰 재발급을 실패했습니다.");
 		}
 		return "유효하지 않은 토큰입니다";
+	}
+
+	public List<Reservation> getReservationsForMember(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberNotFoundException("Member not found"));
+		return member.getReservations();
 	}
 }

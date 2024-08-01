@@ -1,6 +1,7 @@
 package com.clio.ondo.domain.member.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -8,7 +9,6 @@ import java.util.UUID;
 import com.clio.ondo.domain.character.model.Character;
 import com.clio.ondo.domain.reservation.model.Reservation;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -71,8 +71,8 @@ public class Member {
 	@JoinColumn(name = "character_id", nullable = false)
 	private Character character;
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Reservation> reservations;
+	@OneToMany(mappedBy = "member")
+	private List<Reservation> reservations = new ArrayList<>();
 
 	public void updateNickName(String newNickname) {
 		this.nickname = newNickname;
