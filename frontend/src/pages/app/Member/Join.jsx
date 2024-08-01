@@ -1,6 +1,7 @@
 import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
 import InputImg from "../../../components/app/InputImg";
+import './Join.css'
 
 import { useNavigate } from "react-router-dom";
 
@@ -12,26 +13,26 @@ const JoinForm = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col h-screen overflow-auto hide-scrollbar">
       <div className="flex-grow overflow-auto">
         <div className="max-w-md mx-auto p-6 rounded-lg">
           <InputImg />
-          <Input label="이름" placeholder="이름을 입력해주세요" />
-          <Input label="별명" placeholder="별명을 입력해주세요" />
-          <Input label="이메일" placeholder="이메일을 입력해주세요" type="email" />
+          <Input label="이름" placeholder=" 이름을 입력해주세요" />
+          <Input label="별명" placeholder=" 별명을 입력해주세요" />
+          <Input label="이메일" placeholder=" 이메일을 입력해주세요" type="email" />
           <Input
             label="비밀번호"
-            placeholder="비밀번호를 입력해주세요"
+            placeholder=" 비밀번호를 입력해주세요"
             type="password"
           />
           <Input
             label="비밀번호 확인"
-            placeholder="비밀번호를 다시 입력해주세요"
+            placeholder=" 비밀번호를 다시 입력해주세요"
             type="password"
           />
           <Input
             label="생년월일"
-            placeholder="생년월일을 입력해주세요"
+            placeholder=" 생년월일을 입력해주세요"
             type="date"
           />
           <div className="flex gap-2 mb-4">

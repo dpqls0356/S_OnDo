@@ -17,6 +17,7 @@ const ProfileCard = ({ date, name, position, message, daysLeft }) => {
           D-{daysLeft}
         </span>
       </div>
+      <button className="text-blue-500" onClick={() => alert('상담사 상세 정보')}>더보기</button>
     </div>
   );
 };

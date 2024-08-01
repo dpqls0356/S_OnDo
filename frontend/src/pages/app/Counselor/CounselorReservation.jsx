@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Button from '../../../components/app/Button'
-import ProfileCard from "./../../../components/app/ProfileCard";
+import ProfileCard from "../../../components/app/CounselorProfileCard";
 import Calendar from '../../../components/app/Calendar'
 import TimeSlots from '../../../components/app/TimeSlots'
 import NoteInput from '../../../components/app/NoteInput'
