@@ -29,13 +29,13 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void deleteComment(ObjectId commentId) {
+  public void deleteComment(ObjectId commentId,Long memberId) {
     Optional<Comment> existingCommentOpt = commentRepository.findById(commentId);
 
     //존재하는 댓글일 때
     if(existingCommentOpt.isPresent()){
       Comment existingComment = existingCommentOpt.get();
-      if(existingComment.getMember_id().equals(existingComment.getMember_id())){
+      if(existingComment.getMember_id().equals(memberId.toString())){
         commentRepository.deleteById(commentId);
       }
       else{
@@ -50,13 +50,13 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void updateComment(ObjectId commentId, Comment modifiedComment) {
+  public void updateComment(ObjectId commentId, Comment modifiedComment,Long memberId) {
     Optional<Comment> existingCommentOpt = commentRepository.findById(commentId);
 
     //존재하는 댓글일 때
     if(existingCommentOpt.isPresent()){
       Comment existingComment = existingCommentOpt.get();
-      if(existingComment.getMember_id().equals(existingComment.getMember_id())){
+      if(existingComment.getMember_id().equals(memberId.toString())){
         customCommentRepositoryImpl.updateComment(commentId,modifiedComment);
       }
       else{

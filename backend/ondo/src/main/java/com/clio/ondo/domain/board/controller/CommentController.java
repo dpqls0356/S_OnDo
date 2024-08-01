@@ -46,7 +46,10 @@ public class CommentController {
       댓글 작성하기
   */
   @PostMapping("")
-  public ResponseEntity<ResponseVO<Void>> createComment(@RequestBody Comment comment) {
+  public ResponseEntity<ResponseVO<Void>> createComment(@RequestBody Comment comment,HttpServletRequest request) {
+    String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+    Long memberId = jwtTokenProvider.getIdFromToken(token);
+    comment.settingMemberId(memberId.toString());
     commentServiceImpl.saveComment(comment);
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
   }
@@ -59,7 +62,7 @@ public class CommentController {
     try{
       String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
-      commentServiceImpl.deleteComment(commentId);
+      commentServiceImpl.deleteComment(commentId,memberId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }catch (UnauthorizedException e){
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("댓글 삭제 실패 : 잘못된 접근입니다."));
@@ -77,7 +80,7 @@ public class CommentController {
     try{
       String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
-      commentServiceImpl.updateComment(commentId,modifiedComment);
+      commentServiceImpl.updateComment(commentId,modifiedComment,memberId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }catch (UnauthorizedException e){
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("댓글 삭제 실패 : 잘못된 접근입니다."));

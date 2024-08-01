@@ -8,6 +8,7 @@ import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.exception.member.NotFoundException;
 import com.clio.ondo.global.exception.member.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,12 @@ public class BoardController {
   글 작성하기
    */
   @PostMapping("/article")
-  public ResponseEntity<ResponseVO<Void>> createArticle(@RequestBody Board board ) {
+  public ResponseEntity<ResponseVO<Void>> createArticle(@RequestBody Board board,HttpServletRequest request ) {
+    String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+    Long memberId = jwtTokenProvider.getIdFromToken(token);
+    board.settingMemberId(memberId.toString());
+    board.settingCreatedDate();
+    board.settingViews();
     boardService.saveArticle(board);
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
   }
@@ -84,11 +90,11 @@ public class BoardController {
 게시글 수정
 */
   @PatchMapping("/{articleId}")
-  public ResponseEntity<ResponseVO<Void>>  updateArticle(@PathVariable ObjectId articleId, @RequestBody Board modifiedArticle,HttpServletRequest request) {
+  public ResponseEntity<ResponseVO<Void>>  updateArticle(@PathVariable String articleId, @RequestBody Board modifiedArticle,HttpServletRequest request) {
     try{
       String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
-      boardService.updateArticle(articleId,modifiedArticle);
+      boardService.updateArticle(articleId,modifiedArticle,memberId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
     }catch (UnauthorizedException e){
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));
@@ -105,5 +111,14 @@ public class BoardController {
     List<Board> list = boardService.searchArticles(searchWord);
     return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("boardList", list));
   }
+  /*
+  게시글 상세조회
+   */
+  @GetMapping("/{articleId}")
+  public ResponseEntity<ResponseVO<Optional<Board>>> getArticle(@PathVariable ObjectId articleId){
+    Optional<Board> article = boardService.getArticle(articleId);
+    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("board", article));
+  }
+
 
 }

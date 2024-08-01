@@ -19,7 +19,7 @@ public interface BoardService {
 
   void deleteArticle(ObjectId articleId,Long   memberId);
 
-  void updateArticle(ObjectId articleId, Board modifiedArticle);
+  void updateArticle(String articleId, Board modifiedArticle, Long memberId);
 
   Optional<Board> getArticle(ObjectId articleId);
 
