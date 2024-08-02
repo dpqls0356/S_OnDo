@@ -1,39 +1,68 @@
 import "./Loginpage.css";
-
+import { useState } from "react";
 import Button from "../../../components/app/Button";
 import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
+import useAuthStore from "../../../store/app/authStore";
 
 import { useNavigate } from "react-router-dom";
 
 const Loginpage = () => {
   const nav = useNavigate();
+  const login = useAuthStore((state) => state.login);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email, password);
+      nav('/member/home')
+      console.log('로그인 성공!')
+    } catch (error) {
+      setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+    }
+  };
 
   const onClickKakao = () => {
-    return nav("/member/kakaologin");
+    nav("/member/kakaologin");
   };
 
   const onClickNaver = () => {
-    return nav("/member/naverlogin");
+    nav("/member/naverlogin");
   };
 
   return (
     <main className="Loginpage">
       <p id="Title">로그인</p>
-      <form action="">
+      <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="login-id">아이디</label>
           <br />
-          <input id="login-id" type="text" placeholder="아이디" />
+          <input 
+            id="login-id" 
+            type="text" 
+            placeholder="아이디" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <br />
         </div>
         <div>
           <label htmlFor="password">비밀번호</label>
           <br />
-          <input id="password" type="password" placeholder="비밀번호" />
+          <input 
+            id="password" 
+            type="password" 
+            placeholder="비밀번호" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <br />
         </div>
-        <Button text={"로그인"} />
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <Button text={"로그인"} type="submit" />
       </form>
       <br />
       <hr />
@@ -41,11 +70,13 @@ const Loginpage = () => {
         onClick={onClickKakao}
         src={kakaologin}
         style={{ cursor: "pointer" }}
+        alt="Kakao Login"
       />
       <img
         onClick={onClickNaver}
         src={naverlogin}
         style={{ cursor: "pointer" }}
+        alt="Naver Login"
       />
     </main>
   );
