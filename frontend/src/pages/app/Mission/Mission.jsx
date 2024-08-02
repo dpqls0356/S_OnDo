@@ -27,6 +27,7 @@ const Mission = () => {
   };
 
   return (
+    <div className="scroll">
     <div className="flex flex-col min-h-screen"> 
       <div className="flex-grow mission-page"> 
         <h1 className="text-2xl font-bold mb-4">오늘의 미션</h1>
@@ -51,7 +52,8 @@ const Mission = () => {
           ))}
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
+    </div>
     </div>
   );
 };

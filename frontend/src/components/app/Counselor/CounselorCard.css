@@ -83,6 +83,9 @@
   font-size: 90%;
   border-radius: 30px;
 }
+.FS-Filter * {
+  text-align: center;
+}
 
 .FS-Search{
   display: flex;

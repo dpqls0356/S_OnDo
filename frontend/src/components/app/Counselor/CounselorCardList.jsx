@@ -2,7 +2,7 @@ import './CounselorCardList.css'
 
 import CounselorCard from '../../../components/app/Counselor/CounselorCard';
 
-
+// 캐러셀 실패한 컴포넌트
 const CounselorCardList = () => {
   const swiper = document.querySelector('.carousel_wrapper');
   const prevButtons = document.querySelectorAll('.carousel_prev');
@@ -49,45 +49,45 @@ const CounselorCardList = () => {
   showSlide(0);
 
   return(
-    <div class="carousel_main">
+    <div className="carousel_main">
 
-          <div class="carousel_wrapper">
-              <div class="carousel_slide">
+          <div className="carousel_wrapper">
+              <div className="carousel_slide">
               <CounselorCard name={'김싸피'} email={'1234@email.com'} />
               </div>
-              <div class="carousel_slide">
+              <div className="carousel_slide">
               <CounselorCard name={'이싸피'} email={'1234@email.com'} />
               </div>
-              <div class="carousel_slide">
+              <div className="carousel_slide">
               <CounselorCard name={'박싸피'} email={'1234@email.com'}/>
               </div>
-              <div class="carousel_slide">
+              <div className="carousel_slide">
               <CounselorCard name={'최싸피'} email={'1234@email.com'}/>
               </div>
           </div>
 
 
-          <div class="carousel_button_container">
-              <button type="button" class="carousel_prev">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-                      <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+          <div className="carousel_button_container">
+              <button type="button" className="carousel_prev">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                      <path fillRule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                      <path fillRule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                   </svg>
               </button>
-              <button type="button" class="carousel_next">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
-                      <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
+              <button type="button" className="carousel_next">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                      <path fillRule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+                      <path fillRule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
               </button>
           </div>
 
 
-          <div class="carousel_pagination">
-              <div class="carousel_circle"></div>
-              <div class="carousel_circle"></div>
-              <div class="carousel_circle"></div>
-              <div class="carousel_circle"></div>
+          <div className="carousel_pagination">
+              <div className="carousel_circle"></div>
+              <div className="carousel_circle"></div>
+              <div className="carousel_circle"></div>
+              <div className="carousel_circle"></div>
           </div>
     </div>
   )

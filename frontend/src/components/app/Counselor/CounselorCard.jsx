@@ -3,7 +3,8 @@ import profile from './../../../assets/images/ic_user.png';
 import vector from './../../../assets/images/Vector.png';
 import search from './../../../assets/images/ic_search.png';
 
-const CounselorCard = ({name, field, intro, dday}) => {
+// 상담 메인 페이지 상단 노출 화면
+const CounselorCard = ({name, gender, field, intro, dday}) => {
   const checkOnlyOne = (checkThis) => {
     const checkboxes = document.getElementsByName('test')
     for (let i = 0; i < checkboxes.length; i++) {
@@ -24,7 +25,7 @@ const CounselorCard = ({name, field, intro, dday}) => {
             <img src={profile} alt="Profile" />
           </div>
           <div className='CounselorInfo'>
-            <p id='MP-CounselorName'>{name} 상담자(성별)</p>
+            <p id='MP-CounselorName'>{name} 상담자({gender})</p>
             <p id='MP-Counselorfield'>{field}</p>
             <p id='MP-Counselorintro'>{intro}</p>
           </div>
@@ -64,9 +65,11 @@ const CounselorCard = ({name, field, intro, dday}) => {
         </div>
       </div>
       <div className='FilterSearch'>
-          <div className='FS-Filter'>
-            ▽ 선택
-          </div>
+          <select className='FS-Filter'>
+            <option value="">▽ 선택</option>
+            <option value="">이름</option>
+            <option value="">분야</option>
+          </select>
           <div className='FS-Search'>
             <input type="text" placeholder='이름으로 검색하기'/>
             <img src={search} />

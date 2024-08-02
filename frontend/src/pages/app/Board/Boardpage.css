@@ -1,8 +1,14 @@
+.scroll{
+  height: 100vh;
+  overflow-y: scroll;
+  padding-bottom: 93px;
+}
 /* 전체 페이지를 Flexbox로 설정 */
 .BoardScroll {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  /* overflow-y: scroll; */
 }
 
 /* 페이지의 컨텐츠 영역을 Flex-grow로 설정 */

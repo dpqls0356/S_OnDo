@@ -22,6 +22,7 @@ const BoardDetailpage = () => {
     nav("/member/board/게시글 아이디/update");
   };
   return (
+    <div className="scroll">
     <div className="DetailScroll">
       <div id="CommentScroll">
         {/* 게시글 */}
@@ -83,8 +84,9 @@ const BoardDetailpage = () => {
           </div>
         </div>
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
+    </div>
     </div>
   );
 };

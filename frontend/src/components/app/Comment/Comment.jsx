@@ -28,7 +28,7 @@ const Comment = () => {
       </div>
 
       {/* -----아래는 나중에 지울 예정-------- */}
-      <div className="CommentCard">
+      {/* <div className="CommentCard">
         <div className='CommentWriter'>
           <div>
             <img src={profile} />
@@ -66,7 +66,7 @@ const Comment = () => {
           <div id='CommentContent'>1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</div>
           <p id='CommentCreateDate'>작성 시간</p>
         </div>
-      </div>
+      </div> */}
     </>
   )
 }

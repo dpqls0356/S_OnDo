@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-
+import Footer from "../../components/app/Footer";
 const View = styled.div`
   position: relative;
   background-color: #fff9e9;
@@ -26,6 +26,7 @@ export default function MobileLayout() {
   return (
     <View>
       <Outlet />
+      <Footer id="footer" />
     </View>
   );
 }
