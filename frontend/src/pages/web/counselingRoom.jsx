@@ -3,6 +3,53 @@ import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import UserVideoComponent from "./components/openVideoComponent";
+import styled from "styled-components";
+import LoadingComponent from "./components/loadingComponent";
+
+const View = styled.div`
+  width: 100vw;
+  height: 100vh;
+`;
+const WebCamView = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #000000;
+`;
+const VideoView = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & > .main-video {
+  }
+`;
+const Nav = styled.div`
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  button {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0px 5px;
+    background-color: #333333;
+    & > svg {
+      color: white;
+    }
+    &:nth-child(3) {
+      background-color: #f83d39;
+    }
+  }
+`;
+const Info = styled.div``;
 
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === "production" ? "" : "http://localhost:8080";
@@ -11,23 +58,11 @@ const CounselingRoom = () => {
   const location = useLocation();
   const sessionId = location.state.sessionId;
   const navigate = useNavigate();
-  const [myUserName, setMyUserName] = useState(
-    "Participant" + Math.floor(Math.random() * 100)
-  );
+  const [myUserName, setMyUserName] = useState();
   const [session, setSession] = useState(undefined);
-  const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
-  const [subscribers, setSubscribers] = useState([]);
+  const [subscriber, setSubscriber] = useState(undefined);
   const [currentVideoDevice, setCurrentVideoDevice] = useState(undefined);
-
-  const handleMainVideoStream = useCallback(
-    (stream) => {
-      if (mainStreamManager !== stream) {
-        setMainStreamManager(stream);
-      }
-    },
-    [mainStreamManager]
-  );
 
   const joinSession = useCallback(async () => {
     const OV = new OpenVidu();
@@ -35,13 +70,13 @@ const CounselingRoom = () => {
 
     mySession.on("streamCreated", (event) => {
       const subscriber = mySession.subscribe(event.stream, undefined);
-      setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+      setSubscriber(subscriber);
     });
 
     mySession.on("streamDestroyed", (event) => {
-      setSubscribers((prevSubscribers) =>
-        prevSubscribers.filter((sub) => sub !== event.stream.streamManager)
-      );
+      if (subscriber === event.stream.streamManager) {
+        setSubscriber(undefined);
+      }
     });
 
     mySession.on("exception", (exception) => {
@@ -88,7 +123,6 @@ const CounselingRoom = () => {
 
       setSession(mySession);
       setPublisher(publisher);
-      setMainStreamManager(publisher);
       setCurrentVideoDevice(currentVideoDevice);
     } catch (error) {
       console.error("Error initializing publisher:", error);
@@ -115,9 +149,7 @@ const CounselingRoom = () => {
       });
 
     setSession(undefined);
-    setSubscribers([]);
-    setMyUserName("Participant" + Math.floor(Math.random() * 100));
-    setMainStreamManager(undefined);
+    setSubscriber(undefined);
     setPublisher(undefined);
     navigate("/counselor");
   }, [session, sessionId, myUserName]);
@@ -142,17 +174,16 @@ const CounselingRoom = () => {
           mirror: true,
         });
 
-        await session.unpublish(mainStreamManager);
+        await session.unpublish(publisher);
         await session.publish(newPublisher);
 
         setCurrentVideoDevice(newVideoDevice);
-        setMainStreamManager(newPublisher);
         setPublisher(newPublisher);
       }
     } catch (e) {
       console.error(e);
     }
-  }, [currentVideoDevice, mainStreamManager, publisher, session]);
+  }, [currentVideoDevice, publisher, session]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -179,51 +210,87 @@ const CounselingRoom = () => {
 
   useEffect(() => {
     joinSession();
-  }, []);
+  }, [joinSession]);
 
   return (
-    <div className="container">
+    <div>
       {session !== undefined ? (
-        <div>
-          <button type="button" id="buttonLeaveSession" onClick={leaveSession}>
-            상담종료
-          </button>
-          <input
-            className="btn btn-large btn-success"
-            type="button"
-            id="buttonSwitchCamera"
-            onClick={switchCamera}
-            value="Switch Camera"
-          />
-
-          {mainStreamManager !== undefined ? (
-            <div id="main-video" className="col-md-6">
-              <UserVideoComponent streamManager={mainStreamManager} />
-            </div>
-          ) : null}
-          <div id="video-container" className="col-md-6">
-            {publisher !== undefined ? (
-              <div
-                className="stream-container col-md-6 col-xs-6"
-                onClick={() => handleMainVideoStream(publisher)}
-              >
-                <UserVideoComponent streamManager={publisher} />
-              </div>
-            ) : null}
-            {subscribers.map((sub, i) => (
-              <div
-                key={sub.id}
-                className="stream-container col-md-6 col-xs-6"
-                onClick={() => handleMainVideoStream(sub)}
-              >
-                <span>{sub.id}</span>
-                <UserVideoComponent streamManager={sub} />
-              </div>
-            ))}
-          </div>
-        </div>
+        <View>
+          <WebCamView>
+            <VideoView>
+              {publisher !== undefined ? (
+                <div id="main-video" className="col-md-6">
+                  <UserVideoComponent streamManager={publisher} />
+                </div>
+              ) : null}
+              {subscriber !== undefined ? (
+                <div id="sub-video" className="col-md-6">
+                  <UserVideoComponent streamManager={subscriber} />
+                </div>
+              ) : null}
+            </VideoView>
+            <Nav>
+              <button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                  />
+                </svg>
+              </button>
+              <button id="buttonSwitchCamera" onClick={switchCamera}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"
+                  />
+                </svg>
+              </button>
+              <button id="buttonLeaveSession" onClick={leaveSession}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18 18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </Nav>
+          </WebCamView>
+          {/* 상담사일때만 보이도록 해야함 */}
+          {true ? <div></div> : null}
+          {true ? <Info></Info> : null}
+        </View>
       ) : (
-        <div>{/*  */}</div>
+        <LoadingComponent></LoadingComponent>
       )}
     </div>
   );

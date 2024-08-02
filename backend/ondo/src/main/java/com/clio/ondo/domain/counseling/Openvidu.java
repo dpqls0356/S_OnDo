@@ -51,7 +51,7 @@ public class Openvidu {
     if (true) {
       // 임의의 sessionId 생성
       String customSessionId = UUID.randomUUID().toString();
-
+//        String customSessionId  = "testSession";
       // 세션 속성 설정
       SessionProperties properties = SessionProperties.fromJson(params)
           .customSessionId(customSessionId)
