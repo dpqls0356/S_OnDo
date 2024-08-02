@@ -48,7 +48,6 @@ public class MemberReservationController {
 			dto.setReservationDate(reservation.getReservationDate());
 			dto.setDetail(reservation.getDetail());
 			dto.setCounselingUrl(reservation.getCounselingUrl());
-			dto.setMemo(reservation.getMemo());
 
 			// Reservation 엔티티에서 Counselor 객체를 가져와서 counselorId 추출
 			Counselor counselor = reservation.getCounselor();
@@ -56,10 +55,8 @@ public class MemberReservationController {
 				dto.setCounselorId(counselor.getId()); // Counselor 객체에서 ID를 추출하여 설정
 			}
 
-
 			reservationList.add(dto);
 		}
-
 
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("reservationList", reservationList));
 	}
