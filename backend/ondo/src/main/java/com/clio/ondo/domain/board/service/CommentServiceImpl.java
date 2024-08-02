@@ -1,12 +1,12 @@
 package com.clio.ondo.domain.board.service;
 
-import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.model.Comment;
 import com.clio.ondo.domain.board.repository.CommentRepository;
 import com.clio.ondo.domain.board.repository.CustomCommentRepositoryImpl;
-import java.util.List;
 import java.util.Optional;
 
+import com.clio.ondo.global.exception.member.NotFoundException;
+import com.clio.ondo.global.exception.member.UnauthorizedException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,51 +27,46 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void deleteComment(ObjectId commentId) {
+  public void deleteComment(ObjectId commentId, Long memberId) {
     Optional<Comment> existingCommentOpt = commentRepository.findById(commentId);
 
     //존재하는 댓글일 때
-    if(existingCommentOpt.isPresent()){
+    if (existingCommentOpt.isPresent()) {
       Comment existingComment = existingCommentOpt.get();
-      if(existingComment.getMember_id().equals(existingComment.getMember_id())){
+      if (existingComment.getMemberId().equals(memberId.toString())) {
         commentRepository.deleteById(commentId);
+      } else {
+        //소유주가 아니기에 예외처리
+        throw new UnauthorizedException("잘못된 접근입니다.");
       }
-      //댓글 소유주가 아닐때
-      else{
-
-      }
-    }
-    //댓글이 존재하지 않을 때
-    else{
-
+    } else {
+      // 게시글이 존재하지 않을 경우 예외 처리
+      throw new NotFoundException("존재하지 않은 댓글입니다.");
     }
     commentRepository.deleteById(commentId);
   }
 
   @Override
-  public void updateComment(ObjectId commentId, Comment modifiedComment) {
+  public void updateComment(ObjectId commentId, Comment modifiedComment, Long memberId) {
     Optional<Comment> existingCommentOpt = commentRepository.findById(commentId);
 
     //존재하는 댓글일 때
-    if(existingCommentOpt.isPresent()){
+    if (existingCommentOpt.isPresent()) {
       Comment existingComment = existingCommentOpt.get();
-      if(existingComment.getMember_id().equals(existingComment.getMember_id())){
-        customCommentRepositoryImpl.updateComment(commentId,modifiedComment);
+      if (existingComment.getMemberId().equals(memberId.toString())) {
+        customCommentRepositoryImpl.updateComment(commentId, modifiedComment);
+      } else {
+        //소유주가 아니기에 예외처리
+        throw new UnauthorizedException("잘못된 접근입니다.");
       }
-      //댓글 소유주가 아닐때
-      else{
-
-      }
-    }
-    //댓글이 존재하지 않을 때
-    else{
-
+    } else {
+      // 게시글이 존재하지 않을 경우 예외 처리
+      throw new NotFoundException("존재하지 않은 댓글입니다.");
     }
   }
 
   @Override
-  public Page<Comment> getComments(Pageable pageble){
-    return commentRepository.findAll(pageble);
+  public Page<Comment> getComments(Pageable pageable, String articleId) {
+    return commentRepository.findByArticleId(articleId, pageable);
   }
-
 }
