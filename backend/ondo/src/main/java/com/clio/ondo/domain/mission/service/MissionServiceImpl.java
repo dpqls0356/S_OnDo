@@ -176,7 +176,7 @@ public class MissionServiceImpl implements MissionService{
 		}
 	}
 
-	//완료한 미션 업데이트 및 포인트 추출
+	//완료한 미션 업데이트 및 캐릭터 exp 업데이트
 	@Override
 	public void updateCompleteMission(Long memberId,String title){
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
@@ -193,6 +193,10 @@ public class MissionServiceImpl implements MissionService{
 
 		//해당 멤버의 캐릭터 exp 업데이트
 		characterService.updateExp(memberId,newExp);
+
+		int currentExp=characterService.getCharacters(memberId).getExp();
+		//exp 확인 후 레벨 업데이트
+		characterService.checkLevel(memberId,currentExp);
 		
 		//todayMission 업데이트
 		todayMissionRepository.save(todayMission);
