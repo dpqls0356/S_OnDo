@@ -7,10 +7,11 @@ import home from "./../../assets/images/home2.png";
 import mission from "./../../assets/images/award.png";
 import profile from "./../../assets/images/profile.png";
 
+
 const Footer = () => {
   return (
     <footer>
-      <Link to={"/member/counseling"} style={{ display: "inline-block" }}>
+      <Link to={"/member/counseling/main"} style={{ display: "inline-block" }}>
         <img src={calendar} />
       </Link>
       <Link to={"/member/board"} style={{ display: "inline-block" }}>

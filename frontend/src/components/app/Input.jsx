@@ -1,19 +1,26 @@
 import PropTypes from 'prop-types'
 
-const Input = ({ label, placeholder, type = "text" }) => (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <input
-        type={type}
-        placeholder={placeholder}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-      />
-    </div>
-  );
+const Input = ({ label, placeholder, type = "text", name, value, onChange }) => (
+  <div className="flex flex-col space-y-2">
+    <label className="text-left font-semibold">{label}</label>
+    <input
+      className="w-full p-2 border rounded"
+      type={type}
+      placeholder={placeholder}
+      name={name}
+      value={value}
+      onChange={onChange}
+    />
+  </div>
+);
+
 export default Input
 
 Input.propTypes = {
-  label: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  type: PropTypes.string
+  // label: PropTypes.string.isRequired,
+  // placeholder: PropTypes.string.isRequired,
+  // type: PropTypes.string,
+  // name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  // onChange: PropTypes.func.isRequired
 }

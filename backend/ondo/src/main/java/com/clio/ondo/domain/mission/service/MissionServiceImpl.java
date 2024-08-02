@@ -8,7 +8,9 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.character.service.CharacterService;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.mission.model.CompleteMission;
@@ -18,6 +20,7 @@ import com.clio.ondo.domain.mission.model.TodayMission;
 import com.clio.ondo.domain.mission.repository.CompleteMissionRepository;
 import com.clio.ondo.domain.mission.repository.MissionDetailRepository;
 import com.clio.ondo.domain.mission.repository.TodayMissionRepository;
+import com.clio.ondo.global.exception.mission.TodayMissionNotFoundException;
 
 @Service
 public class MissionServiceImpl implements MissionService{
@@ -33,6 +36,9 @@ public class MissionServiceImpl implements MissionService{
 
 	@Autowired
 	private MemberRepository memberRepository;
+
+	@Autowired
+	private CharacterService characterService;
 
 	private Random random = new Random();
 
@@ -170,20 +176,27 @@ public class MissionServiceImpl implements MissionService{
 		}
 	}
 
-	//완료한 미션 업데이트 및 포인트 추출
+	//완료한 미션 업데이트 및 캐릭터 exp 업데이트
 	@Override
 	public void updateCompleteMission(Long memberId,String title){
 		TodayMission todayMission=todayMissionRepository.findByMemberId(memberId);
 		List<Mission> missionList=todayMission.getMissions();
-		int completExp=0; //캐릭터에게 전달할 exp
+		int newExp=0; //캐릭터에게 전달할 exp
 
 		for (Mission mission : missionList) {
 			if (mission.getTitle().equals(title)) {
 				mission.setCompleteFlag(true);
 				mission.setCompleteTime(now());
-				completExp=mission.getExp();
+				newExp=mission.getExp();
 			}
 		}
+
+		//해당 멤버의 캐릭터 exp 업데이트
+		characterService.updateExp(memberId,newExp);
+
+		int currentExp=characterService.getCharacters(memberId).getExp();
+		//exp 확인 후 레벨 업데이트
+		characterService.checkLevel(memberId,currentExp);
 		
 		//todayMission 업데이트
 		todayMissionRepository.save(todayMission);
@@ -200,6 +213,24 @@ public class MissionServiceImpl implements MissionService{
 	
 	//미션디테일에서 캐릭터의 레벨 이하의 미션 디테일 가져오기
 
+	@Override
+	@Transactional
+	public void addCompleteMission(Long memberId, List<MissionDetail> missionDetails){
+		List<Mission> missions = new ArrayList<>();
+		for(MissionDetail missionDetail : missionDetails) {
+			Mission mission = Mission.builder()
+				.completeFlag(false)
+				.completeTime(null)
+				.title(missionDetail.getTitle())
+				.content(missionDetail.getContent())
+				.type(missionDetail.getType())
+				.exp(missionDetail.getExp())
+				.level(missionDetail.getLevel())
+				.build();
+			missions.add(mission);
+		}
+		todayMissionRepository.upsertByMemberId(memberId, missions);
+	}
 }
 
 
