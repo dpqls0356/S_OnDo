@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.service.CounselorService;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
 import com.clio.ondo.global.ResponseVO;
@@ -26,11 +27,11 @@ public class CounselorController {
 	private final CounselorService counselorService;
 	private final JwtTokenProvider jwtTokenProvider;
 
-	// @GetMapping("/list")
-	// public ResponseEntity<ResponseVO<List<Counselor>>> getCounselorList(){
-	// 	List<Counselor> counselorList=counselorService.getCounselor();
-	// 	return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselorList", counselorList));
-	// }
-
-
+	//상담사 전체 리스트 가져오기
+	@GetMapping("/list")
+	public ResponseEntity<ResponseVO<List<CounselorResponseDto>>> getCounselorList(){
+		List<CounselorResponseDto> counselorList=counselorService.getCounselor();
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselorList", counselorList));
+	}
+	
 }
