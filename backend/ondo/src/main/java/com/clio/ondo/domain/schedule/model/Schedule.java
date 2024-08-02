@@ -15,7 +15,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 public class Schedule {
 
 	@Id
@@ -39,4 +38,12 @@ public class Schedule {
 
 	@OneToOne(mappedBy = "schedule", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Counselor counselor;
+
+	public void update(ScheduleDto newSchedule){
+		this.monday = newSchedule.getMonday();
+		this.tuesday = newSchedule.getTuesday();
+		this.wednesday = newSchedule.getWednesday();
+		this.thursday = newSchedule.getThursday();
+		this.friday = newSchedule.getFriday();
+	}
 }
