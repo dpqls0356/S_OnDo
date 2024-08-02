@@ -23,19 +23,19 @@ public class Schedule {
 	private Long id;
 
 	@Column(nullable = false)
-	private int monday;
+	private String monday;
 
 	@Column(nullable = false)
-	private int tuesday;
+	private String tuesday;
 
 	@Column(nullable = false)
-	private int wednesday;
+	private String wednesday;
 
 	@Column(nullable = false)
-	private int thursday;
+	private String thursday;
 
 	@Column(nullable = false)
-	private int friday;
+	private String friday;
 
 	@OneToOne(mappedBy = "schedule", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Counselor counselor;

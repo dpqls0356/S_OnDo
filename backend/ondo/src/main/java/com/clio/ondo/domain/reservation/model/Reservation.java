@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.reservation.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.clio.ondo.domain.counselDetail.model.CounselDetail;
@@ -30,8 +31,7 @@ public class Reservation {
 	private Long id;
 
 	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date reservationDate;
+	private LocalDateTime reservationDate;
 
 	@Column(name = "counseling_reservation_detail")
 	private String detail;

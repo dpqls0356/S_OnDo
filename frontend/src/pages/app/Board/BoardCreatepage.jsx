@@ -24,7 +24,7 @@ const BoardCreatepage = () => {
             X
           </p>
         </div>
-        <textarea
+        <textarea maxLength={300}
           name=""
           id=""
           placeholder="나누고 싶은 이야기를 적어보세요!"
@@ -32,6 +32,9 @@ const BoardCreatepage = () => {
         <input id="AddImage" type="file" accept="image/*" />
         <Button text={"게시"} />
       </form>
+      <div className="emptybox">
+         
+      </div>
       <Footer />
     </>
   );

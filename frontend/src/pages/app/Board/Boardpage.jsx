@@ -1,16 +1,16 @@
 import "./Boardpage.css";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import BoardList from "../../../components/app/Board/BoardList";
 import Footer from "../../../components/app/Footer";
-
 import create from "./../../../assets/images/new.png";
 import filter from "./../../../assets/images/filter.png";
 import search from "./../../../assets/images/search.png";
 
 const Boardpage = () => {
+
   const nav = useNavigate();
 
   const onClickCreate = () => {
@@ -30,7 +30,8 @@ const Boardpage = () => {
   };
 
   return (
-    <>
+    <div className="scroll">
+    <div className="BoardScroll">
       {/* 헤더 */}
       <div className="BoardHeader">
         <p>온도의 소통공간</p>
@@ -57,11 +58,19 @@ const Boardpage = () => {
         <img onClick={onClickSort} src={filter} style={{ cursor: "pointer" }} />
       </div>
 
-      {/* 게시글 목록 */}
-      <BoardList />
+      {/* 게시글 목록 컨테이너 */}
+      <div className="BoardContentContainer">
+        <div className="BoardContentList">
+          <BoardList />
+        </div>
+      </div>
+
+      <div className="emptybox3"></div>
+
       {/* 하단 바 */}
-      <Footer />
-    </>
+      {/* <Footer id="footer" /> */}
+    </div>
+    </div>
   );
 };
 
