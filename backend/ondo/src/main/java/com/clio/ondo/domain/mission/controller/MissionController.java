@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,20 +30,25 @@ public class MissionController {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
 
-	//스케줄링 된 메서드
+	//스케줄링 된 메서드 TEST 용
 	//-------------------------------------------------------
 	//3개의 랜덤 특별 미션 + 데일리 미션 todayMission에 저장
-	// @GetMapping("/update/{memberId}")
-	// public ResponseEntity<Void> updateTodayMission(@PathVariable Long memberId){
+	// @GetMapping("/update")
+	// public ResponseEntity<ResponseVO<Void>> updateTodayMission(HttpServletRequest request){
+	// 	String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+	// 	Long memberId = jwtTokenProvider.getIdFromToken(token);
 	// 	missionService.createTodayMission(memberId);
-	// 	return ResponseEntity.status(HttpStatus.OK).build();
+	// 	return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("오늘 미션 업데이트"));
 	// }
 	//
 	// //완료한 특별 미션 completeMission에 넣기 + 나머지 삭제
-	// @GetMapping("/clearMission/{memberId}")
-	// public ResponseEntity<Void> clearMission(@PathVariable Long memberId) {
+	// @GetMapping("/clearMission")
+	// public ResponseEntity<ResponseVO<Void>> clearMission(HttpServletRequest request) {
+	// 	String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+	// 	Long memberId = jwtTokenProvider.getIdFromToken(token);
+	//
 	// 	missionService.putCompleteMission(memberId);
-	// 	return ResponseEntity.status(HttpStatus.OK).build();
+	// 	return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("어제 미션 완료 처리"));
 	// }
 	//-------------------------------------------------------
 

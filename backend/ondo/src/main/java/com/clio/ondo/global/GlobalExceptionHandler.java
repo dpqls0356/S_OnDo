@@ -18,4 +18,5 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handlePropertyValueException(PropertyValueException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Property value error}");
 	}
+
 }

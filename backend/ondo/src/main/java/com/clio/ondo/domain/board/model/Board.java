@@ -11,12 +11,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 public class Board {
     @Id
-    private ObjectId id; //식별자
+    private String _id; //식별자
     private String title;   //제목
     private String content; //내용
     private Date created_at;    //작성일
     private int views;  //조회수
     private String member_id;   //작성자
+    private String member_name;
     // 제목을 바꾸는 메서드
     public void changeTitle(String newTitle) {
         this.title = newTitle;
@@ -25,6 +26,20 @@ public class Board {
     // 내용을 바꾸는 메서드
     public void changeContent(String newContent) {
         this.content = newContent;
+    }
+
+    //생성일 초기화 하는 함수
+    public void settingCreatedDate(){
+        this.created_at = new Date();
+    }
+
+    //member id 값 넣는 메서드
+    public void settingMemberId(String memberId){
+        this.member_id = memberId;
+    }
+    //조회 수 초기화
+    public void settingViews(){
+        this.views = 0;
     }
 
 }
