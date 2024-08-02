@@ -7,6 +7,7 @@ import home from "./../../assets/images/home2.png";
 import mission from "./../../assets/images/award.png";
 import profile from "./../../assets/images/profile.png";
 
+
 const Footer = () => {
   return (
     <footer>
