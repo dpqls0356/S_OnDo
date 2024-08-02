@@ -3,6 +3,7 @@ package com.clio.ondo.global.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
@@ -21,4 +22,9 @@ class MongoDBConfig {
 		converter.setTypeMapper(new DefaultMongoTypeMapper(null));
 		return converter;
 	}
+
+	// @Bean
+	// MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+	// 	return new MongoTransactionManager(dbFactory);
+	// }
 }
