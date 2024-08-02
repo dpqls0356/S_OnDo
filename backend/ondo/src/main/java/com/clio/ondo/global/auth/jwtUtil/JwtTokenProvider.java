@@ -50,6 +50,7 @@ public class JwtTokenProvider {
 	public String getJwtTokenFromCookies(HttpServletRequest request, String cookieName) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
+			log.error(cookies.toString());
 			for (Cookie cookie : cookies) {
 				if (cookieName.equals(cookie.getName())) {
 					return cookie.getValue();
