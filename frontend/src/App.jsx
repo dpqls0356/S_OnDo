@@ -27,6 +27,7 @@ import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
 
 
 function App() {
+  // const test = false;
   return (
     <Router>
       <Routes>
@@ -36,6 +37,7 @@ function App() {
         {/* counseling으로 이동할 때 sessionId값을 가지고 이동해야함 -> sessionId로 token발급을 하고 그걸 바탕으로 session에 참가 가능 */}
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
         {/* <Route path="/counselor/login" element={<CounselorLogin />}></Route> */}
+        {/* { test && ( */}
         <Route path="/member" element={<MobileLayout />}>
           <Route path="" element={<Logopage />} />
           <Route path="login" element={<Loginpage />} />
@@ -56,6 +58,7 @@ function App() {
           <Route path="counseling/:id/detail" element={<CounselorDetail />} />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>
+        {/* )} */}
       </Routes>
     </Router>
   );
