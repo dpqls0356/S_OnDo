@@ -24,11 +24,19 @@ public class CounselorServiceImpl implements CounselorService{
 	//상담사 전체 리스트 가져오기
 	@Override
 	public List<CounselorResponseDto> getCounselor(){
-		List<Counselor> list=counselorRepository.findAll();
+		List<Counselor> counselors=counselorRepository.findAll();
 		List<CounselorResponseDto> counselorList=new ArrayList<>();
 
-		for(Counselor c:list){
+		for(Counselor c:counselors){
+			CounselorResponseDto dto=new CounselorResponseDto();
+			dto.setId(c.getId());
+			dto.setName(c.getName());
+			dto.setField(c.getField());
+			dto.setGender(c.getGender());
+			dto.setSelfIntroduction(c.getSelfIntroduction());
+			dto.setProfileUrl(c.getProfileUrl());
 
+			counselorList.add(dto);
 		}
 
 		return counselorList;
