@@ -138,5 +138,5 @@ body {
 
 
 .DetailScroll ::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
 }
