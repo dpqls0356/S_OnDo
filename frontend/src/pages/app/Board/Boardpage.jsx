@@ -30,6 +30,7 @@ const Boardpage = () => {
   };
 
   return (
+    <div className="scroll">
     <div className="BoardScroll">
       {/* 헤더 */}
       <div className="BoardHeader">
@@ -57,14 +58,18 @@ const Boardpage = () => {
         <img onClick={onClickSort} src={filter} style={{ cursor: "pointer" }} />
       </div>
 
-      {/* 게시글 목록 */}
-      <BoardList />
+      {/* 게시글 목록 컨테이너 */}
+      <div className="BoardContentContainer">
+        <div className="BoardContentList">
+          <BoardList />
+        </div>
+      </div>
 
-      <div className="emptybox3">
-         
-         </div>
+      <div className="emptybox3"></div>
+
       {/* 하단 바 */}
-      <Footer />
+      {/* <Footer id="footer" /> */}
+    </div>
     </div>
   );
 };
