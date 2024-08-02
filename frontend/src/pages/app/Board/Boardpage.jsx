@@ -30,6 +30,7 @@ const Boardpage = () => {
   };
 
   return (
+    <div className="scroll">
     <div className="BoardScroll">
       {/* 헤더 */}
       <div className="BoardHeader">
@@ -67,7 +68,8 @@ const Boardpage = () => {
       <div className="emptybox3"></div>
 
       {/* 하단 바 */}
-      <Footer id="footer" />
+      {/* <Footer id="footer" /> */}
+    </div>
     </div>
   );
 };

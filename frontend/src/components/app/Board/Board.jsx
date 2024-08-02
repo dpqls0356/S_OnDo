@@ -127,7 +127,91 @@ const Board = () => {
           <p>내용</p>
         </div>
       </div>
-      
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          <p>내용</p>
+        </div>
+      </div>
+      <div
+        onClick={onClickBoard}
+        className="BoardCard"
+        style={{ cursor: "pointer" }}
+      >
+        <div className="BoardTitle">
+          <p>제목</p>
+          <div className="BoardCreate">
+            <img src={calendar} />
+            <p>20xx.xx.xx</p>
+          </div>
+        </div>
+
+        <div className="BoardContent">
+          <p>내용</p>
+        </div>
+      </div>
 
       
     </>

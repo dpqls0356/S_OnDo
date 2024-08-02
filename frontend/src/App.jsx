@@ -52,7 +52,7 @@ function App() {
           <Route path="mission/list" element={<Mission />} />
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
-          <Route path="counseling/apply" element={<CounselorReservation />} />
+          <Route path="counseling/apply/:id" element={<CounselorReservation />} />
           <Route path="counseling/:id/detail" element={<CounselorDetail />} />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>

@@ -8,6 +8,7 @@ import Button from "../../../components/app/Button";
 import Footer from '../../../components/app/Footer'
 
 import profile from './../../../assets/images/test.png'
+// import notice from './../../../assets/images/notification2.png'
 import notice from './../../../assets/images/notice.png'
 
 // const dummyProfileData = {
