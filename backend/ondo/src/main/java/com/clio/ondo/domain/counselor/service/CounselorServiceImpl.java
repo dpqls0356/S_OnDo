@@ -2,6 +2,7 @@ package com.clio.ondo.domain.counselor.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class CounselorServiceImpl implements CounselorService{
 
 	//상담사 전체 리스트 가져오기
 	@Override
-	public List<CounselorResponseDto> getCounselor(){
+	public List<CounselorResponseDto> getCounselorList(){
 		List<Counselor> counselors=counselorRepository.findAll();
 		List<CounselorResponseDto> counselorList=new ArrayList<>();
 
@@ -40,6 +41,27 @@ public class CounselorServiceImpl implements CounselorService{
 		}
 
 		return counselorList;
+	}
+
+
+	//상담사 상세보기
+	public CounselorResponseDto getCounselor(Long counselorId){
+
+		Optional<Counselor> counselor=counselorRepository.findById(counselorId);
+		if(counselor.isPresent()){
+			CounselorResponseDto counselorDto=new CounselorResponseDto();
+			Counselor c=counselor.get();
+			counselorDto.setId(c.getId());
+			counselorDto.setName(c.getName());
+			counselorDto.setField(c.getField());
+			counselorDto.setGender(c.getGender());
+			counselorDto.setSelfIntroduction(c.getSelfIntroduction());
+			counselorDto.setProfileUrl(c.getProfileUrl());
+
+			return counselorDto;
+		}else{
+			return null;
+		}
 	}
 
 

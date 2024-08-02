@@ -9,5 +9,6 @@ import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 
 @Service
 public interface CounselorService {
-	public List<CounselorResponseDto> getCounselor();
+	 List<CounselorResponseDto> getCounselorList();
+	 CounselorResponseDto getCounselor(Long counselorId);
 }
