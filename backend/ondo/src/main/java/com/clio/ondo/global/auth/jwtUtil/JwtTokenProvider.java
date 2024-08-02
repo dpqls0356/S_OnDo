@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
+import com.clio.ondo.global.auth.PrincipalDetails;
 import com.clio.ondo.global.auth.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
