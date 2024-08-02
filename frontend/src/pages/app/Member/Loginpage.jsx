@@ -5,11 +5,13 @@ import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
 import useAuthStore from "../../../store/app/authStore";
 
+
 import { useNavigate } from "react-router-dom";
 
 const Loginpage = () => {
   const nav = useNavigate();
   const login = useAuthStore((state) => state.login);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -20,11 +22,12 @@ const Loginpage = () => {
       await login(email, password);
       nav('/member/home')
       console.log('로그인 성공!')
+
+
     } catch (error) {
       setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
     }
-  };
-
+  }
   const onClickKakao = () => {
     nav("/member/kakaologin");
   };
