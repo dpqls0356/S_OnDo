@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.reservation.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clio.ondo.domain.reservation.model.CounselorReservationAddDto;
 import com.clio.ondo.domain.reservation.model.CounselorReservationDto;
 import com.clio.ondo.domain.reservation.model.DeleteReservationDto;
 import com.clio.ondo.domain.reservation.service.CounselorReservationService;
@@ -30,6 +32,11 @@ public class CounselorReservationController {
 	@GetMapping("/api/v1/counselor/reservation/{counselorId}/{date}")
 	public ResponseEntity<?> getReservation(@PathVariable Long counselorId, @PathVariable String date) {
 		try{
+			CounselorReservationAddDto crDto = new CounselorReservationAddDto();
+			crDto.setCounselorId(counselorId);
+			crDto.setReservationDate(LocalDateTime.of(2024, 8, 15, 0, 0, 0));
+			counselorReservationService.addReservation(crDto);
+
 			List<CounselorReservationDto> list = counselorReservationService.getReservationByDate(counselorId, date);
 			Map<String, Object> retMap = new HashMap<>();
 			retMap.put("reservations", list);
@@ -58,9 +65,4 @@ public class CounselorReservationController {
 				.body(new ResponseVO<>(false, "삭제에 실패했습니다.", null));
 		}
 	}
-
-	// @PostMapping("/api/v1/counselor/schedule/{counselorId}/{date}")
-	// public ResponseEntity<?> daySchedule(@PathVariable Long counselorId, @PathVariable Long date) {
-	//
-	// }
 }

@@ -107,17 +107,4 @@
 // 			return "완료";
 // 		};
 // 	}
-//
-// 	@Bean
-// 	@ConditionalOnMissingBean
-// 	@ConditionalOnProperty(prefix = "spring.batch.job", name = "enabled", havingValue = "true", matchIfMissing = true)
-// 	public JobLauncherApplicationRunner jobLauncherApplicationRunner(JobLauncher jobLauncher, JobExplorer jobExplorer,
-// 		JobRepository jobRepository, BatchProperties properties) {
-// 		JobLauncherApplicationRunner runner = new JobLauncherApplicationRunner(jobLauncher, jobExplorer, jobRepository);
-// 		String jobNames = properties.getJob().getName();
-// 		if (StringUtils.hasText(jobNames)) {
-// 			runner.setJobName(jobNames);
-// 		}
-// 		return runner;
-// 	}
 // }
