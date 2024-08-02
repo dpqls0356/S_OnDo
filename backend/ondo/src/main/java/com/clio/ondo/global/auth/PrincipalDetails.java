@@ -1,4 +1,4 @@
-package com.clio.ondo.global.auth.OAuth;
+package com.clio.ondo.global.auth;
 
 import java.util.Collection;
 import java.util.Collections;

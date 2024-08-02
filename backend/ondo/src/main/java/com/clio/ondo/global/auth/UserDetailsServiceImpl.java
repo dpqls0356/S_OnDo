@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
-import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
 import com.clio.ondo.global.exception.member.MemberNotFoundException;
 
 import lombok.RequiredArgsConstructor;

@@ -25,7 +25,7 @@ import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.member.service.MemberService;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.ResponseVO;
-import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
+import com.clio.ondo.global.auth.PrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
