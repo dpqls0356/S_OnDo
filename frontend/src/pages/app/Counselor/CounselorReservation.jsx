@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import CounselorListCard from '../../../components/app/Counselor/CounselorListCard';
 
@@ -9,8 +10,11 @@ import TimeSlots from '../../../components/app/TimeSlots'
 import NoteInput from '../../../components/app/NoteInput'
 import Footer from '../../../components/app/Footer'
 import BorderImg from '../../../assets/images/구분선.png'
+import back from '../../../assets/images/back.png'
 
 const Reservation = () => {
+    const nav = useNavigate()
+
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
     const [note, setNote] = useState('');
@@ -22,12 +26,17 @@ const Reservation = () => {
         alert('날짜와 시간을 선택해주세요.');
       }
     };
+
+    const onClickBack = () => {
+      nav('/member/counseling/main')
+    }
   
     return (
       <div className="flex flex-col h-screen overflow-hidden">
         <div className="flex-grow overflow-auto">
           <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-4" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
             {/* <ProfileCard /> */}
+            <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} />
             <CounselorListCard name={'김싸피'} gender={'남'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'}  reservId={1} />
             <br />
             <h1 className="text-2xl font-bold mb-4">예약일지</h1>
