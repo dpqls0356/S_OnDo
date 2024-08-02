@@ -1,17 +1,19 @@
-// counselingRoom.jsx
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import UserVideoComponent from "./components/openVideoComponent";
 
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/";
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080";
 
 const CounselingRoom = () => {
   const location = useLocation();
   const sessionId = location.state.sessionId;
-
-  const [myUserName, setMyUserName] = useState("Participant" + Math.floor(Math.random() * 100));
+  const navigate = useNavigate();
+  const [myUserName, setMyUserName] = useState(
+    "Participant" + Math.floor(Math.random() * 100)
+  );
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -27,91 +29,97 @@ const CounselingRoom = () => {
     [mainStreamManager]
   );
 
-  const joinSession = useCallback(
-    async () => {
-      const OV = new OpenVidu();
-      const mySession = OV.initSession();
+  const joinSession = useCallback(async () => {
+    const OV = new OpenVidu();
+    const mySession = OV.initSession();
 
-      mySession.on("streamCreated", (event) => {
-        const subscriber = mySession.subscribe(event.stream, undefined);
-        setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+    mySession.on("streamCreated", (event) => {
+      const subscriber = mySession.subscribe(event.stream, undefined);
+      setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+    });
+
+    mySession.on("streamDestroyed", (event) => {
+      setSubscribers((prevSubscribers) =>
+        prevSubscribers.filter((sub) => sub !== event.stream.streamManager)
+      );
+    });
+
+    mySession.on("exception", (exception) => {
+      console.warn(exception);
+    });
+    console.log("session: " + sessionId);
+    const token = await getToken(sessionId);
+    console.log("token: " + token);
+
+    try {
+      await mySession.connect(token, { clientData: myUserName });
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      stream.getTracks().forEach((track) => track.stop());
+
+      const publisher = await OV.initPublisherAsync(undefined, {
+        audioSource: undefined,
+        videoSource: undefined,
+        publishAudio: true,
+        publishVideo: true,
+        resolution: "640x480",
+        frameRate: 30,
+        insertMode: "APPEND",
+        mirror: false,
       });
 
-      mySession.on("streamDestroyed", (event) => {
-        setSubscribers((prevSubscribers) =>
-          prevSubscribers.filter((sub) => sub !== event.stream.streamManager)
-        );
-      });
+      mySession.publish(publisher);
 
-      mySession.on("exception", (exception) => {
-        console.warn(exception);
-      });
+      const devices = await OV.getDevices();
+      const videoDevices = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
 
-      const token = await getToken(sessionId);
+      const currentVideoDeviceId = publisher.stream
+        .getMediaStream()
+        .getVideoTracks()[0]
+        .getSettings().deviceId;
+      const currentVideoDevice = videoDevices.find(
+        (device) => device.deviceId === currentVideoDeviceId
+      );
 
-      try {
-        await mySession.connect(token, { clientData: myUserName });
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-        stream.getTracks().forEach((track) => track.stop());
-
-        const publisher = await OV.initPublisherAsync(undefined, {
-          audioSource: undefined,
-          videoSource: undefined,
-          publishAudio: true,
-          publishVideo: true,
-          resolution: "640x480",
-          frameRate: 30,
-          insertMode: "APPEND",
-          mirror: false,
-        });
-
-        mySession.publish(publisher);
-
-        const devices = await OV.getDevices();
-        const videoDevices = devices.filter(
-          (device) => device.kind === "videoinput"
-        );
-
-        const currentVideoDeviceId = publisher.stream
-          .getMediaStream()
-          .getVideoTracks()[0]
-          .getSettings().deviceId;
-        const currentVideoDevice = videoDevices.find(
-          (device) => device.deviceId === currentVideoDeviceId
-        );
-
-        setSession(mySession);
-        setPublisher(publisher);
-        setMainStreamManager(publisher);
-        setCurrentVideoDevice(currentVideoDevice);
-      } catch (error) {
-        console.error("Error initializing publisher:", error);
-      }
-    },
-    [myUserName, sessionId]
-  );
+      setSession(mySession);
+      setPublisher(publisher);
+      setMainStreamManager(publisher);
+      setCurrentVideoDevice(currentVideoDevice);
+    } catch (error) {
+      console.error("Error initializing publisher:", error);
+    }
+  }, [myUserName, sessionId]);
 
   const leaveSession = useCallback(() => {
     if (session) {
       session.disconnect();
     }
 
-    // 서버에 세션 종료 요청 보내기
-    axios.post(`${APPLICATION_SERVER_URL}api/sessions/${sessionId}/leave`, {
-      user: myUserName
-    }).catch(error => {
-      console.error("Error notifying server about leaving session:", error);
-    });
+    axios
+      .post(
+        `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions/${sessionId}/leave`,
+        { user: myUserName },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .catch((error) => {
+        console.error("Error notifying server about leaving session:", error);
+      });
 
     setSession(undefined);
     setSubscribers([]);
     setMyUserName("Participant" + Math.floor(Math.random() * 100));
     setMainStreamManager(undefined);
     setPublisher(undefined);
+    navigate("/counselor");
   }, [session, sessionId, myUserName]);
 
   const switchCamera = useCallback(async () => {
@@ -160,13 +168,13 @@ const CounselingRoom = () => {
 
   const getToken = async (sessionId) => {
     const response = await axios.post(
-      `${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connections`,
+      `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions/${sessionId}/connections`,
       {},
       {
         headers: { "Content-Type": "application/json" },
       }
     );
-    return response.data;
+    return response.data.data.token; // token 값을 직접 반환
   };
 
   useEffect(() => {
@@ -176,24 +184,17 @@ const CounselingRoom = () => {
   return (
     <div className="container">
       {session !== undefined ? (
-        <div id="session">
-          <div id="session-header">
-            <h1 id="session-title">{sessionId}</h1>
-            <input
-              className="btn btn-large btn-danger"
-              type="button"
-              id="buttonLeaveSession"
-              onClick={leaveSession}
-              value="Leave session"
-            />
-            <input
-              className="btn btn-large btn-success"
-              type="button"
-              id="buttonSwitchCamera"
-              onClick={switchCamera}
-              value="Switch Camera"
-            />
-          </div>
+        <div>
+          <button type="button" id="buttonLeaveSession" onClick={leaveSession}>
+            상담종료
+          </button>
+          <input
+            className="btn btn-large btn-success"
+            type="button"
+            id="buttonSwitchCamera"
+            onClick={switchCamera}
+            value="Switch Camera"
+          />
 
           {mainStreamManager !== undefined ? (
             <div id="main-video" className="col-md-6">
@@ -221,7 +222,9 @@ const CounselingRoom = () => {
             ))}
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div>{/*  */}</div>
+      )}
     </div>
   );
 };

@@ -62,7 +62,7 @@ public class SecurityConfig {
 			.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeRequests((authorize) -> authorize
 				.requestMatchers("/api/v1/member/join", "/api/v1/member/login", "/api/v1/member/reissue",
-					"/api/v1/member/oauth-success")
+					"/api/v1/member/oauth-success","/api/v1/counseling/*","/api/v1/counseling/sessions/{sessionId}/connections","/api/v1/counseling/sessions/{sessionId}/leave")
 				.permitAll()
 				.anyRequest().authenticated())
 			.oauth2Login(oauth ->

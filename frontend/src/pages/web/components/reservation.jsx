@@ -1,4 +1,3 @@
-// counselorHome.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -44,27 +43,30 @@ const MemberImg = styled.div`
   }
 `;
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/";
+  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080";
 
 function Reservation() {
   const navigate = useNavigate();
   const [sessionId, setSessionId] = useState("SessionA");
 
   const createCounselingRoom = async () => {
+    console.log(APPLICATION_SERVER_URL);
     try {
       // 세션 생성
       const sessionResponse = await axios.post(
-        `${APPLICATION_SERVER_URL}api/sessions`,
+        `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions`,
         { customSessionId: sessionId },
         {
           headers: { "Content-Type": "application/json" },
         }
       );
 
-      setSessionId(sessionResponse.data);
-
-      // /counselor/counselingroom로 이동하면서 세션 ID 전달
-      navigate("/counselingroom", { state: { sessionId } });
+      setSessionId(sessionResponse.data.data.session_id);
+      console.log(sessionResponse);
+      // /counselingroom으로 이동하면서 세션 ID 전달
+      navigate("/counselingroom", {
+        state: { sessionId: sessionResponse.data.data.session_id },
+      });
     } catch (error) {
       console.error("Error creating counseling room:", error);
     }

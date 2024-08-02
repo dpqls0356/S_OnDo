@@ -34,8 +34,6 @@ const Search = styled.div`
   }
 `;
 const ReservationList = styled.div``;
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/";
 
 function ReservationSpot() {
   return (

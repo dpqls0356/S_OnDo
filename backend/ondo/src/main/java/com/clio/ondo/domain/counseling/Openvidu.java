@@ -28,6 +28,7 @@ import io.openvidu.java.client.SessionProperties;
 @PropertySource("classpath:openvidu.properties")
 @CrossOrigin(origins = "*")
 @RestController()
+@RequestMapping("/api/v1")
 public class Openvidu {
 
   @Value("${openvidu.url}")
@@ -43,66 +44,57 @@ public class Openvidu {
     this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
   }
 
-  /*
-  OpenVidu 세션을 생성
-  params에서 세션 속성(=customSessionId)을 가져와 openvidu 세션을 생성하고 생성된 세션 id를 반환
-
-  // 요청을 보낸 사람이 상담사인지 판단 -> 상담사 _id와 counselor_id가 일치해야한다.
-  // 상담사일 경우 랜덤
-   */
-  @PostMapping("/api/sessions")
-  public  ResponseEntity<ResponseVO<String>> initializeSession(@RequestBody(required = false) Map<String, Object> params)
+  @PostMapping("/counseling/sessions")
+  public ResponseEntity<ResponseVO<String>> initializeSession(@RequestBody(required = false) Map<String, Object> params)
       throws OpenViduJavaClientException, OpenViduHttpException {
-    //상담사 판단
-    if(true){
+    // ----- 상담사 판단
+    if (true) {
       // 임의의 sessionId 생성
-       String customSessionId = UUID.randomUUID().toString();
-//      String customSessionId = "test";
+      String customSessionId = UUID.randomUUID().toString();
 
       // 세션 속성 설정
       SessionProperties properties = SessionProperties.fromJson(params)
-              .customSessionId(customSessionId)
-              .build();
+          .customSessionId(customSessionId)
+          .build();
+
       Session session = openvidu.createSession(properties);
+
+      // ----- 세션 Id 예약내역에 넣기
+
       return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("session_id", session.getSessionId()));
     }
-    //잘못된 접근
-    else{
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));
+    // 잘못된 접근
+    else {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("세션 생성 실패: 잘못된 접근입니다."));
     }
   }
 
-  /*
-  sessionId 경로 변수로 전달된 세션 ID를 사용하여 활성 세션을 가져옴
-  ConnectionProperties 객체를 생성한 후, 세션에 연결을 추가하고 생성된 연결의 토큰을 응답
-   */
-
-  @PostMapping("/api/sessions/{sessionId}/connections")
+  @PostMapping("/counseling/sessions/{sessionId}/connections")
   public ResponseEntity<ResponseVO<String>> createConnection(@PathVariable("sessionId") String sessionId,
       @RequestBody(required = false) Map<String, Object> params)
       throws OpenViduJavaClientException, OpenViduHttpException {
-    Session session = openvidu.getActiveSession(sessionId); //세션 id로 활성세션 가져오기
+    Session session = openvidu.getActiveSession(sessionId); // 세션 id로 활성세션 가져오기
     if (session == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("세션 종료 실패: 세션을 찾을 수 없습니다."));
     }
     ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
-    Connection connection = session.createConnection(properties); //ConnectionProperties 객체를 생성
+    Connection connection = session.createConnection(properties); // ConnectionProperties 객체를 생성
     return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", connection.getToken()));
   }
-
-  @PostMapping("/api/sessions/{sessionId}/leave")
-  public ResponseEntity<Void> leaveSession(@PathVariable("sessionId") String sessionId,
+  @PostMapping("/counseling/sessions/{sessionId}/leave")
+  public ResponseEntity<ResponseVO<String>> leaveSession(@PathVariable("sessionId") String sessionId,
       @RequestBody Map<String, Object> params)
       throws OpenViduJavaClientException, OpenViduHttpException {
-    Session session = openvidu.getActiveSession(sessionId); //활성 세션을 가져온다.
+    Session session = openvidu.getActiveSession(sessionId); // 활성 세션을 가져온다.
     if (session == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("세션 종료 실패: 세션을 찾을 수 없습니다."));
     }
+    // ---- 상담자라면 종료
     // 요청 본문에서 사용자 ID를 가져오기
     String user = (String) params.get("user");
 
     // 해당 사용자를 세션에서 강제로 퇴장시킨다.
     session.forceDisconnect(user);
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("사용자가 세션에서 퇴장되었습니다."));
   }
 }
