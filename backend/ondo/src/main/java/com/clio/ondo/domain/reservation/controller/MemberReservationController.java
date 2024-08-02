@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.reservation.model.Reservation;
@@ -20,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member/reservation")
 @Slf4j
@@ -29,6 +31,7 @@ public class MemberReservationController {
 	private final MemberReservationService memberReservationService;
 	private final JwtTokenProvider jwtTokenProvider;
 
+	//자신의 예약 내역 가져오기
 	@GetMapping("/getReservation")
 	public ResponseEntity<ResponseVO<List<ReservationResponseDto>>> getTodayTypical(HttpServletRequest request){
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
@@ -59,6 +62,13 @@ public class MemberReservationController {
 
 
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("reservationList", reservationList));
+	}
+
+	//자신의 예약 내역 취소하기
+	@DeleteMapping("/cancel/{reservationId}")
+	public ResponseEntity<ResponseVO<Void>> cancelReservation(@PathVariable Long reservationId){
+		memberReservationService.cancelReservation(reservationId);
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("에약 삭제 완료"));
 	}
 
 

@@ -29,4 +29,11 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 		return myList;
 	}
 
+	//예약 내역 삭제하기
+	@Override
+	@Transactional
+	public void cancelReservation(Long reservationId){
+		reservationRepository.deleteById(reservationId);
+	}
+
 }
