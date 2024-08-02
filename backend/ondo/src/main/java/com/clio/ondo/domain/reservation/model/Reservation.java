@@ -47,8 +47,6 @@ public class Reservation {
 	@Column(name = "counseling_url")
 	private	String counselingUrl;
 
-	private String memo;
-
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "counsel_detail_id")
 	private CounselDetail counselingDetail;
