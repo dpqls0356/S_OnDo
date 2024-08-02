@@ -3,9 +3,9 @@ import Input from '../../../components/app/Input.jsx'
 import InputImg from '../../../components/app/InputImg.jsx'
 
 // 수정 관련으로 바꿔야 함
-const UpdateForm = () => {
+const MyUpdateForm = () => {
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg">
       <InputImg />
       {/* 바꿀 수 있는 것 - 별명, 비밀번호 */}
       <Input label="이름" placeholder="{name}" />
@@ -25,4 +25,4 @@ const UpdateForm = () => {
   );
 };
 
-export default UpdateForm;
+export default MyUpdateForm;

@@ -1,0 +1,69 @@
+/* 기본적으로 페이지 전체를 Flexbox로 설정 */
+.homepage {
+  /* background-image: url(./../../../assets/images/home_back.png); */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 페이지 전체 높이를 차지하도록 설정 */
+  /* height: 100vh;
+  width: 100vw;
+  background-repeat : no-repeat;
+  background-size : cover; */
+}
+
+/* 중심 콘텐츠가 Flex-grow로 확장되도록 설정 */
+.center {
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-grow: 1; /* 중심 콘텐츠가 남은 공간을 채우도록 설정 */
+}
+
+/* 하단에 고정된 Footer */
+#footer {
+  flex-shrink: 0; /* Footer가 축소되지 않도록 설정 */
+}
+
+.centerChara{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* justify-content: center; */
+  flex-direction: column;
+  
+}
+
+.chatBtn{
+  padding-left: 80%;
+}
+
+.ballon {
+  /* display: none; */
+  /* position: absolute; */
+  width: 205px;
+  height: 40px;
+  left: 448px;
+  bottom: 62px;
+  background: #484848;
+  color: white;
+  border-radius: 5px;
+  padding: 12px 12.8px;
+}
+
+/* 
+.ballon:after {
+  border-top: 10px solid #484848;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 0px solid transparent;
+  content: "";
+  position: absolute;
+  top: 40px;
+  left: 160px;
+} */
+
+#footer{
+  /* position: fixed; */
+  /* left: 96%; */
+  /* top: 100px; */
+}
