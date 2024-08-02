@@ -19,6 +19,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,18 @@ public class JwtTokenProvider {
 	@PostConstruct
 	protected void init() {
 		secret = Base64.getEncoder().encodeToString(secret.getBytes());
+	}
+
+	public String getJwtTokenFromCookies(HttpServletRequest request, String cookieName) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookieName.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
 	}
 
 	public String generateAccessToken(Authentication authentication) {
