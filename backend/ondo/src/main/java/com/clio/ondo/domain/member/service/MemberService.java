@@ -6,14 +6,14 @@ import org.springframework.security.core.AuthenticationException;
 
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
-import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
+import com.clio.ondo.domain.member.model.dto.MemberJoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 public interface MemberService {
-	void join(JoinRequestDto joinRequestDto);
+	void join(MemberJoinRequestDto joinRequestDto);
 
 	Member findOne(Long memberId);
 

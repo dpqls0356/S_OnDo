@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,12 +21,12 @@ import com.clio.ondo.domain.character.model.Character;
 import com.clio.ondo.domain.character.repository.CharacterRepository;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
-import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
+import com.clio.ondo.domain.member.model.dto.MemberJoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.reservation.model.Reservation;
-import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
@@ -33,11 +34,9 @@ import com.clio.ondo.global.exception.member.MemberException;
 import com.clio.ondo.global.exception.member.MemberNotFoundException;
 
 import io.jsonwebtoken.Claims;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class MemberServiceImpl implements MemberService {
@@ -46,11 +45,29 @@ public class MemberServiceImpl implements MemberService {
 	private final CharacterRepository characterRepository;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final AuthenticationManager authenticationManager;
+	@Qualifier("memberAuthenticationManager")
+	private AuthenticationManager memberAuthenticationManager;
 	private final PasswordEncoder passwordEncoder;
 
+	public MemberServiceImpl(
+		MemberRepository memberRepository,
+		CharacterRepository characterRepository,
+		RedisTemplate<String, String> redisTemplate,
+		JwtTokenProvider jwtTokenProvider,
+		@Qualifier("memberAuthenticationManager") AuthenticationManager memberAuthenticationManager,
+		PasswordEncoder passwordEncoder
+	) {
+		this.memberRepository = memberRepository;
+		this.characterRepository = characterRepository;
+		this.redisTemplate = redisTemplate;
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.memberAuthenticationManager = memberAuthenticationManager;
+		this.passwordEncoder = passwordEncoder;
+	}
+
+	
 	@Transactional
-	public void join(JoinRequestDto joinRequestDto) {
+	public void join(MemberJoinRequestDto joinRequestDto) {
 		Member member = joinRequestDto.toEntity();
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
@@ -72,9 +89,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	@Transactional
 	public TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException {
-		Authentication authentication = authenticationManager.authenticate(
+		Authentication authentication = memberAuthenticationManager.authenticate(
 			new UsernamePasswordAuthenticationToken(
 				loginRequestDto.getEmail(),
 				loginRequestDto.getPassword()
@@ -157,12 +173,12 @@ public class MemberServiceImpl implements MemberService {
 		String key = "refresh-token:" + claims.getSubject();
 		try {
 			if (Objects.equals(redisTemplate.opsForValue().get(key), refreshToken)
-				&& jwtTokenProvider.isTokenBlacklisted(
+				&& !jwtTokenProvider.isTokenBlacklisted(
 				refreshToken)) {
 				Long id = claims.get("id", Long.class);
 				Member member = findOne(id);
 				log.error(member.toString());
-				PrincipalDetails userDetails = new PrincipalDetails(member);
+				MemberPrincipalDetails userDetails = new MemberPrincipalDetails(member);
 				return jwtTokenProvider.generateAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null));
 			}
 		} catch (MemberException e) {

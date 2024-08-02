@@ -1,0 +1,34 @@
+package com.clio.ondo.domain.counselor.model.dto;
+
+import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.member.model.Gender;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class CounselorJoinRequestDto {
+	private String id;
+	private String password;
+	private Gender gender;
+	private String name;
+	private String field;
+	private String selfIntroduction;
+	private String profileUrl;
+
+	@Builder
+	public Counselor toEntity() {
+		return Counselor.builder()
+			.counselorId(id)
+			.selfIntroduction(selfIntroduction)
+			.field(field)
+			.name(name)
+			.password(password)
+			.profileUrl(profileUrl)
+			.build();
+	}
+}

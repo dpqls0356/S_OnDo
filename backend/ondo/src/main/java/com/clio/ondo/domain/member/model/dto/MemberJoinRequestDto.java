@@ -1,17 +1,17 @@
 package com.clio.ondo.domain.member.model.dto;
 
+import java.time.LocalDate;
 
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.Role;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
-public class JoinRequestDto {
+public class MemberJoinRequestDto {
     private String email;
     private String name;
     private String nickname;

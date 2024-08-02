@@ -8,17 +8,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
-import com.clio.ondo.global.auth.UserDetailsServiceImpl;
+import com.clio.ondo.global.auth.CounselorDetailsServiceImpl;
+import com.clio.ondo.global.auth.CounselorPrincipalDetails;
+import com.clio.ondo.global.auth.MemberDetailsServiceImpl;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtTokenProvider {
 
 	private final RedisTemplate<String, String> redisTemplate;
-	private final UserDetailsServiceImpl userDetailsService;
+	private final MemberDetailsServiceImpl memberDetailsService;
+	private final CounselorDetailsServiceImpl counselorDetailsService;
 
 	@Value("${spring.jwt.access-token-expiration}")
 	private long accessTokenExpirationTime;
@@ -46,8 +51,20 @@ public class JwtTokenProvider {
 		secret = Base64.getEncoder().encodeToString(secret.getBytes());
 	}
 
+	public String getJwtTokenFromCookies(HttpServletRequest request, String cookieName) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookieName.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
 	public String generateAccessToken(Authentication authentication) {
-		PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+		MemberPrincipalDetails userDetails = (MemberPrincipalDetails) authentication.getPrincipal();
 		Claims claims = Jwts.claims().setSubject(userDetails.getMember().getEmail());
 		Date now = new Date();
 		Date expireDate = new Date(now.getTime() + accessTokenExpirationTime);
@@ -64,7 +81,7 @@ public class JwtTokenProvider {
 	}
 
 	public String generateRefreshToken(Authentication authentication) {
-		PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+		MemberPrincipalDetails userDetails = (MemberPrincipalDetails) authentication.getPrincipal();
 		Claims claims = Jwts.claims().setSubject(userDetails.getMember().getEmail());
 		Date now = new Date();
 		Date expireDate = new Date(now.getTime() + refreshTokenExpirationTime);
@@ -117,9 +134,21 @@ public class JwtTokenProvider {
 		return decodeJwt(token).get("id", Long.class);
 	}
 
+	public boolean isMemberToken(String token) {
+		Claims claims = decodeJwt(token);
+		String role = claims.get("role", String.class);
+		return role.equals("ROLE_ADMIN") || role.equals("ROLE_USER");
+	}
+
 	public Authentication getAuthentication(String token) {
-		String username = decodeJwt(token).getSubject();
-		PrincipalDetails userDetails = (PrincipalDetails) userDetailsService.loadUserByUsername(username);
+		UserDetails userDetails;
+		if (isMemberToken(token)) {
+			String username = decodeJwt(token).getSubject();
+			userDetails = (MemberPrincipalDetails) memberDetailsService.loadUserByUsername(username);
+		} else {
+			String username = decodeJwt(token).getSubject();
+			userDetails = (CounselorPrincipalDetails) counselorDetailsService.loadUserByUsername(username);
+		}
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}
 

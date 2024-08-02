@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo =
                 OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
         Member member = getOrSave(oAuth2UserInfo);
-        return new PrincipalDetails(member, oAuth2UserAttributes, userNameAttributeName);
+        return new MemberPrincipalDetails(member, oAuth2UserAttributes, userNameAttributeName);
     }
 
     private Member getOrSave(OAuth2UserInfo userInfo) {

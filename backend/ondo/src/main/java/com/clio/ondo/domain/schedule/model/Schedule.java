@@ -39,4 +39,12 @@ public class Schedule {
 
 	@OneToOne(mappedBy = "schedule", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Counselor counselor;
+
+	public Schedule() {
+		this.monday = 0;
+		this.tuesday = 0;
+		this.wednesday = 0;
+		this.thursday = 0;
+		this.friday = 0;
+	}
 }

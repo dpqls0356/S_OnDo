@@ -17,12 +17,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Counselor {
 
 	@Id
@@ -57,4 +60,14 @@ public class Counselor {
 	@JoinColumn(name = "schedule_id")
 	private Schedule schedule;
 
+	@Builder
+	public Counselor(String counselorId, String password, String name, String field, String selfIntroduction, String profileUrl) {
+		this.counselorId = counselorId;
+		this.password = password;
+		this.name = name;
+		this.field = field;
+		this.selfIntroduction = selfIntroduction;
+		this.profileUrl = profileUrl;
+		this.schedule = new Schedule();
+	}
 }
