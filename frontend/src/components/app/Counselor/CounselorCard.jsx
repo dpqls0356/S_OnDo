@@ -1,4 +1,5 @@
 import './CounselorCard.css';
+import { useNavigate } from 'react-router-dom';
 import profile from './../../../assets/images/ic_user.png';
 import vector from './../../../assets/images/Vector.png';
 import search from './../../../assets/images/ic_search.png';
@@ -11,14 +12,25 @@ const CounselorCard = ({name, gender, field, intro, dday}) => {
       if (checkboxes[i] !== checkThis) {
         checkboxes[i].checked = false
       }
-      // setGender(checkThis.value);
     }
+  }
+
+  const nav = useNavigate()
+
+  const counselorList = (event) => {
+    event.stopPropagation();
+    nav('/member/counseling/list')
+  }
+
+  const MobileCounseling = (event) => {
+    event.stopPropagation();
+    nav('/member/home')
   }
 
   return (
     <div className='CounselorPageTop'>
-      <div className="CounselorCard">
-        {dday &&(<p id='CS-Date'>2024.08.20</p>)}
+      <div onClick={counselorList} style={{cursor: 'pointer'}} className="CounselorCard">
+        {dday && (<p id='CS-Date'>2024.08.20</p>)}
         
         <div className='ConSelorCardIn'>
           <div>
@@ -29,7 +41,7 @@ const CounselorCard = ({name, gender, field, intro, dday}) => {
             <p id='MP-Counselorfield'>{field}</p>
             <p id='MP-Counselorintro'>{intro}</p>
           </div>
-          {!dday &&(<div><img src={vector} /></div>)}
+          {!dday &&(<div><img src={vector} alt="Vector" /></div>)}
         </div>
         
         {dday && (
@@ -43,7 +55,7 @@ const CounselorCard = ({name, gender, field, intro, dday}) => {
               </div>
             </div>
             <div>
-              <button id='DdayBtn'>
+              <button onClick={MobileCounseling} id='DdayBtn'>
                 <div>
                   {dday}
                 </div>
@@ -51,8 +63,8 @@ const CounselorCard = ({name, gender, field, intro, dday}) => {
             </div>
           </div>
         )}
-        
       </div>
+
       <div className='OptionSelect'>
         <div>
           <input type="radio" name="test" value="전체" onChange={(e) => checkOnlyOne(e.target)}/> 전체
@@ -64,16 +76,17 @@ const CounselorCard = ({name, gender, field, intro, dday}) => {
           <input type="radio" name="test" value="여" onChange={(e) => checkOnlyOne(e.target)}/> 여
         </div>
       </div>
+      
       <div className='FilterSearch'>
-          <select className='FS-Filter'>
-            <option value="">▽ 선택</option>
-            <option value="">이름</option>
-            <option value="">분야</option>
-          </select>
-          <div className='FS-Search'>
-            <input type="text" placeholder='이름으로 검색하기'/>
-            <img src={search} />
-          </div>
+        <select className='FS-Filter'>
+          <option value="">▽ 선택</option>
+          <option value="">이름</option>
+          <option value="">분야</option>
+        </select>
+        <div className='FS-Search'>
+          <input type="text" placeholder='이름으로 검색하기'/>
+          <img src={search} alt="Search" />
+        </div>
       </div>
     </div>
   );
