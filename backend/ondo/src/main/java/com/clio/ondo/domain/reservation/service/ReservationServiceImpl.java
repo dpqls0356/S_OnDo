@@ -1,4 +1,7 @@
 package com.clio.ondo.domain.reservation.service;
 
-public class ReservationServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class ReservationServiceImpl implements ReservationService {
 }
