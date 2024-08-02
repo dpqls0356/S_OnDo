@@ -1,22 +1,50 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api/v1',
+  withCredentials: true
+});
+
 export const useAuthStore = create((set, get) => ({
-  accessToken: null,
-  refreshToken: null,
+  isAuthenticated: false,
+  user: null,
   login: async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/member/login', { email, password });
-      const { accessToken, refreshToken } = response.data.data.token;
-      set({ accessToken, refreshToken });
-      
+      const response = await api.post('/member/login', { email, password });
+      if (response.data.success) {
+        set({ isAuthenticated: true });
+        return true;
+      }
+      return false;
     } catch (error) {
       console.error('Login failed:', error);
-      throw error;
+      return false;
     }
   },
-  logout: () => set({ accessToken: null, refreshToken: null }),
-  getAccessToken: () => get().accessToken,
+  logout: async () => {
+    try {
+      await api.post('/member/logout');
+      set({ isAuthenticated: false, user: null });
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  },
+  checkAuth: async () => {
+    try {
+      const response = await api.get('/member/me');
+      if (response.data.success) {
+        set({ isAuthenticated: true, user: response.data.data.user });
+        return true;
+      }
+      set({ isAuthenticated: false, user: null });
+      return false;
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      set({ isAuthenticated: false, user: null });
+      return false;
+    }
+  }
 }));
 
-export default useAuthStore
+export default useAuthStore;
