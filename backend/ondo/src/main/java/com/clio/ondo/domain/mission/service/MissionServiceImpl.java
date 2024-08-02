@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
@@ -200,6 +201,24 @@ public class MissionServiceImpl implements MissionService{
 	
 	//미션디테일에서 캐릭터의 레벨 이하의 미션 디테일 가져오기
 
+	@Override
+	@Transactional
+	public void addCompleteMission(Long memberId, List<MissionDetail> missionDetails){
+		List<Mission> missions = new ArrayList<>();
+		for(MissionDetail missionDetail : missionDetails) {
+			Mission mission = Mission.builder()
+				.completeFlag(false)
+				.completeTime(null)
+				.title(missionDetail.getTitle())
+				.content(missionDetail.getContent())
+				.type(missionDetail.getType())
+				.exp(missionDetail.getExp())
+				.level(missionDetail.getLevel())
+				.build();
+			missions.add(mission);
+		}
+		todayMissionRepository.upsertByMemberId(memberId, missions);
+	}
 }
 
 
