@@ -1,12 +1,15 @@
 package com.clio.ondo.domain.reservation.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.reservation.model.Reservation;
+import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
 import com.clio.ondo.domain.reservation.repository.ReservationRepository;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 
@@ -24,9 +27,29 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 
 	//예약 내역 가져오기
 	@Override
-	public List<Reservation> getReservationList(Long memberId){
+	public List<ReservationResponseDto> getReservationList(Long memberId){
 		List<Reservation> myList=reservationRepository.findByMemberId(memberId);
-		return myList;
+		List<ReservationResponseDto> reservationList=new ArrayList<>();
+
+		for (Reservation reservation : myList) {
+			ReservationResponseDto dto = new ReservationResponseDto();
+			dto.setCounselDetailId(reservation.getId()); // CounselDetail의 id는 Reservation의 id와 동일
+			dto.setId(reservation.getId());
+			dto.setMemberId(memberId);
+			dto.setReservationDate(reservation.getReservationDate());
+			dto.setDetail(reservation.getDetail());
+			dto.setCounselingUrl(reservation.getCounselingUrl());
+
+			// Reservation 엔티티에서 Counselor 객체를 가져와서 counselorId 추출
+			Counselor counselor = reservation.getCounselor();
+			if (counselor != null) {
+				dto.setCounselorId(counselor.getId()); // Counselor 객체에서 ID를 추출하여 설정
+			}
+
+			reservationList.add(dto);
+		}
+
+		return reservationList;
 	}
 
 	//예약 내역 삭제하기
