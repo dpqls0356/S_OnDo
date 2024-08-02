@@ -54,6 +54,8 @@ public class MemberController {
 	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto, HttpServletResponse response) {
 		try {
 			TokenDto token = memberService.login(loginRequestdto);
+			log.error(token.getAccessToken());
+			log.error(token.getRefreshToken());
 			// 쿠키 설정
 			Cookie accessTokenCookie = new Cookie("accessToken", token.getAccessToken());
 			accessTokenCookie.setHttpOnly(true);
