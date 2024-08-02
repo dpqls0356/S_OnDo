@@ -11,7 +11,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@ToString
 @AllArgsConstructor
 public class Mission {
 
@@ -26,4 +25,8 @@ public class Mission {
 	private int exp; //경험치
 	private int level; //단계
 
+	@Override
+	public String toString() {
+		return content;
+	}
 }

@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 /src/main/resources/openaiapi.properties
 /src/main/resources/openvidu.properties
+/src/main/resources/firebase.json
 
 ### STS ###
 .apt_generated
