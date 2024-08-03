@@ -21,6 +21,7 @@ public class CounselorResponseDto {
                 .field(field)
                 .name(name)
                 .profileUrl(profileUrl)
+                .gender(gender)
                 .build();
     }
 }

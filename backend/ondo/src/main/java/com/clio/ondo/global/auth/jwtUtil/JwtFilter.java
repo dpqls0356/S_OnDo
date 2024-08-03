@@ -23,14 +23,35 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
+	private static final String[] EXCLUDE_URLS = {
+			"/api/v1/member/join",
+			"/api/v1/member/login",
+			"/api/v1/member/reissue",
+			"/api/v1/member/oauth-success",
+			"/api/v1/counselor/login",
+			"/api/v1/counselor/join"
+	};
+	private boolean isExcludedUrl(String requestURI) {
+		for (String excludeUrl : EXCLUDE_URLS) {
+			if (excludeUrl.equals(requestURI)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
+
+		String requestURI = request.getRequestURI();
+		if (isExcludedUrl(requestURI)) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		String accessToken = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		String refreshToken = jwtTokenProvider.getJwtTokenFromCookies(request, "refreshToken");
-		log.error("refresh:{}",refreshToken);
-		log.error("access:{}",accessToken);
 		try {
 			if (accessToken != null) {
 				Claims claims = jwtTokenProvider.decodeJwt(accessToken);

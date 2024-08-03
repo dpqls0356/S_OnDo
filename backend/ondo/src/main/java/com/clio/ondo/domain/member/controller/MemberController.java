@@ -65,7 +65,7 @@ public class MemberController {
 			Cookie refreshTokenCookie = new Cookie("refreshToken", token.getRefreshToken());
 			refreshTokenCookie.setHttpOnly(true);
 			refreshTokenCookie.setPath("/");
-			refreshTokenCookie.setMaxAge(7 * 24 * 3600); // 1 week
+			refreshTokenCookie.setMaxAge(7 * 24 * 3600 * 2); // 2 week
 
 			response.addCookie(accessTokenCookie);
 			response.addCookie(refreshTokenCookie);
