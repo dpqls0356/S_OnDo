@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.clio.ondo.domain.member.model.Gender;
+import com.clio.ondo.domain.member.model.Role;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.domain.schedule.model.Schedule;
 
@@ -60,6 +61,9 @@ public class Counselor {
 	@JoinColumn(name = "schedule_id")
 	private Schedule schedule;
 
+	@Enumerated
+	private Role role;
+
 	@Builder
 	public Counselor(String counselorId, String password, String name, String field, String selfIntroduction, String profileUrl) {
 		this.counselorId = counselorId;
@@ -69,5 +73,6 @@ public class Counselor {
 		this.selfIntroduction = selfIntroduction;
 		this.profileUrl = profileUrl;
 		this.schedule = new Schedule();
+		this.role = Role.COUNSELOR;
 	}
 }
