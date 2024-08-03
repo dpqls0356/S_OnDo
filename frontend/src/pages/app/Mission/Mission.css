@@ -3,8 +3,56 @@
     margin: 0 auto;
     padding: 20px;
   }
+  #MissionPage{
+    padding-top: 10%;
+  }
+
+  .charCard{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
+    margin: 0 auto;
+    border: 1px black solid;
+    border-radius: 20px;
+    gap: 10px;
+    font-size: 75%;
+    background-color: white;
+    box-shadow: 0px 8px 0px 0px #BFA1FF;
+    /* height: 40%; */
+  }
+  .charCard-r{
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .charCard > img{
+    width: 30%;
+    border-radius: 100%;
+  }
   
-  h1 {
+  #EXP-bar{
+    position: relative;
+    border: 2px #FFB1B1 solid;
+    height: 15px;
+    width: 90%;
+    border-radius: 30px;
+  }
+  #EXP-bar > p{
+    position: absolute;
+    font-size: 80%;
+    color: gray;
+    left: 40%;
+  }
+
+  #EXP{
+    height: 100%;
+    background-color: #FFB1B1;
+  }
+
+  /* h1 {
     text-align: center;
   }
   
@@ -48,7 +96,7 @@
   .mission-button.completed {
     background-color: #4CAF50;
     color: white;
-  }
+  } */
 
   /* footer {
     margin-top: auto

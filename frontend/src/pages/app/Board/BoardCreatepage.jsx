@@ -13,16 +13,16 @@ const BoardCreatepage = () => {
   return (
     <>
       <form className="CreateForm">
-        <div>
+        <div className="CF-Title">
           <input
             maxLength={20}
             id="CreateTitle"
             type="text"
             placeholder="Title"
           />
-          <p onClick={onClickCancel} style={{ cursor: "pointer" }}>
+          <div onClick={onClickCancel} style={{ cursor: "pointer" }}>
             X
-          </p>
+          </div>
         </div>
         <textarea maxLength={300}
           name=""
