@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.clio.ondo.domain.reservation.model.dto.ReservationRequestDto;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
 import com.clio.ondo.domain.reservation.model.dto.ScheduleResponseDto;
 
@@ -13,4 +14,5 @@ public interface MemberReservationService {
 	List<ReservationResponseDto> getReservationList(Long memberId);
 	void cancelReservation(Long reservationId);
 	List<ScheduleResponseDto> getCounselorSchedule(Long counselorId);
+	void makeReservation(ReservationRequestDto requestDto);
 }
