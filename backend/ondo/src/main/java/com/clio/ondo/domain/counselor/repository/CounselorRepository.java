@@ -1,5 +1,7 @@
 package com.clio.ondo.domain.counselor.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +12,5 @@ import jakarta.persistence.EntityManager;
 
 @Repository
 public interface CounselorRepository extends JpaRepository<Counselor, Long> {
-
+    Optional<Counselor> findByCounselorId(String counselorId);
 }
