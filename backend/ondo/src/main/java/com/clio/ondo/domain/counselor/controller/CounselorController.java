@@ -41,5 +41,7 @@ public class CounselorController {
 		CounselorResponseDto counselor=counselorService.getCounselor(counselorId);
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselor", counselor));
 	}
+
+
 	
 }

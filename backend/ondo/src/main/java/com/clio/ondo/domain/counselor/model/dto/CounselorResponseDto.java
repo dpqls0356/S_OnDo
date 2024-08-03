@@ -18,6 +18,7 @@ public class CounselorResponseDto {
 	private String name;
 	private Gender gender;
 	private String field;
+
 	private String selfIntroduction;
 	private String profileUrl;
 
