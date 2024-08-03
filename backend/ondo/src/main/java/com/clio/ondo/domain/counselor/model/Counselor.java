@@ -4,25 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.clio.ondo.domain.member.model.Gender;
+import com.clio.ondo.domain.member.model.Role;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.domain.schedule.model.Schedule;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString
 public class Counselor {
 
 	@Id
@@ -38,7 +31,7 @@ public class Counselor {
 	@Column(name = "counselor_name", nullable = false)
 	private String name;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
 	@Column(nullable = false)
@@ -54,7 +47,21 @@ public class Counselor {
 	private List<Reservation> reservations = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "schedule_id")
+	@JoinColumn(name = "schedule_id", nullable = false)
 	private Schedule schedule;
 
+	@Enumerated(EnumType.STRING)
+	private Role role;
+
+	@Builder
+	public Counselor(String counselorId, String password, String name, String field, String selfIntroduction, String profileUrl, Gender gender, Role role) {
+		this.counselorId = counselorId;
+		this.password = password;
+		this.name = name;
+		this.field = field;
+		this.selfIntroduction = selfIntroduction;
+		this.profileUrl = profileUrl;
+		this.role = role;
+		this.gender = gender;
+	}
 }

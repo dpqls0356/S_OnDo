@@ -1,10 +1,14 @@
-// import 해야 함
 import { useState } from 'react'
-import ProfileCard from "./../../../components/app/ProfileCard";
+
+import CounselorListCard from '../../../components/app/Counselor/CounselorListCard';
+
+import Button2 from '../../../components/app/Button2'
+// import ProfileCard from "../../../components/app/CounselorProfileCard";
 import Calendar from '../../../components/app/Calendar'
 import TimeSlots from '../../../components/app/TimeSlots'
 import NoteInput from '../../../components/app/NoteInput'
 import Footer from '../../../components/app/Footer'
+import BorderImg from '../../../assets/images/구분선.png'
 
 const Reservation = () => {
     const [selectedDate, setSelectedDate] = useState(null);
@@ -20,19 +24,24 @@ const Reservation = () => {
     };
   
     return (
-      <div className="bg-[#a8e6cf] min-h-screen pb-16">
-        <div className="p-4">
-          <ProfileCard />
-          <h2 className="text-lg font-bold mt-4 mb-2">예약일지</h2>
-          <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-          <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
-          <NoteInput note={note} setNote={setNote} />
-          <button 
-            className="w-full bg-yellow-400 text-white py-3 rounded-lg font-bold mt-4"
-            onClick={handleReservation}
-          >
-            예약 확정하기 
-          </button>
+      <div className="flex flex-col h-screen overflow-hidden">
+        <div className="flex-grow overflow-auto">
+          <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-4" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
+            {/* <ProfileCard /> */}
+            <CounselorListCard name={'김싸피'} gender={'남'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'}  reservId={1} />
+            <br />
+            <h1 className="text-2xl font-bold mb-4">예약일지</h1>
+            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+            <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+          </div>
+          <img src={BorderImg} alt="" className="w-full" />
+          <div className="p-4">
+            <textarea onChange={(e) => setNote(e.target.value)} style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px', resize: 'none'}}></textarea>
+            {/* <NoteInput note={note} setNote={setNote} /> */}
+            <br />
+            <br />
+            <Button2 text="예약 확정하기" onClick={handleReservation} />
+          </div>
         </div>
         <Footer />
       </div>
