@@ -38,6 +38,8 @@ public class QCounselor extends EntityPathBase<Counselor> {
 
     public final ListPath<com.clio.ondo.domain.reservation.model.Reservation, com.clio.ondo.domain.reservation.model.QReservation> reservations = this.<com.clio.ondo.domain.reservation.model.Reservation, com.clio.ondo.domain.reservation.model.QReservation>createList("reservations", com.clio.ondo.domain.reservation.model.Reservation.class, com.clio.ondo.domain.reservation.model.QReservation.class, PathInits.DIRECT2);
 
+    public final EnumPath<com.clio.ondo.domain.member.model.Role> role = createEnum("role", com.clio.ondo.domain.member.model.Role.class);
+
     public final com.clio.ondo.domain.schedule.model.QSchedule schedule;
 
     public final StringPath selfIntroduction = createString("selfIntroduction");

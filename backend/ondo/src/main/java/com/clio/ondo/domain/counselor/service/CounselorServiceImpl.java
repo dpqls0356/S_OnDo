@@ -13,7 +13,6 @@ import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Gender;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
