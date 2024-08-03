@@ -3,11 +3,13 @@ import { useState } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-
+import Footer from "../../components/app/Footer";
 const View = styled.div`
   position: relative;
   background-color: #fff9e9;
-  width: 390px;
+  width: 100%;
+  max-width: 420px;
+  // max-height: 1000px;
   margin: auto;
   height: 100vh;
   overflow-y: hidden;
@@ -24,6 +26,7 @@ export default function MobileLayout() {
   return (
     <View>
       <Outlet />
+      <Footer id="footer" />
     </View>
   );
 }

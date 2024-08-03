@@ -54,6 +54,7 @@
 
 .DetailContent{
   padding: 15px 30px;
+  word-break:break-all;
 }
 
 .CommentList{
@@ -106,6 +107,12 @@
   outline: none;
 }
 
+.emptybox2{
+  height: 2vh;
+  background-color: #fff9e900;
+}
+
+
 /* 댓글 스크롤 */
 /* 스크롤바 구현하는 중 조금 더 손 봐야함 */
 
@@ -122,7 +129,7 @@ body {
 } */
 #CommentScroll {
   /* width: 100%; */
-  height: 60vh;
+  height: 100vh;
   /* margin: 0 auto; */
   overflow-y: scroll;
   /* gap: 25px; */
@@ -130,6 +137,6 @@ body {
 
 
 
-.CommentList ::-webkit-scrollbar {
-  display: none;
+.DetailScroll ::-webkit-scrollbar {
+  /* display: none; */
 }
