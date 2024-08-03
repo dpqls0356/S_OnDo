@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
-import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
 import com.clio.ondo.domain.reservation.service.MemberReservationService;
 import com.clio.ondo.global.ResponseVO;
@@ -36,31 +35,7 @@ public class MemberReservationController {
 	public ResponseEntity<ResponseVO<List<ReservationResponseDto>>> getTodayTypical(HttpServletRequest request){
 		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
-
-		List<Reservation> myList=memberReservationService.getReservationList(memberId);
-		List<ReservationResponseDto> reservationList=new ArrayList<>();
-
-		for (Reservation reservation : myList) {
-			ReservationResponseDto dto = new ReservationResponseDto();
-			dto.setCounselDetailId(reservation.getId()); // CounselDetail의 id는 Reservation의 id와 동일
-			dto.setId(reservation.getId());
-			dto.setMemberId(memberId);
-			dto.setReservationDate(reservation.getReservationDate());
-			dto.setDetail(reservation.getDetail());
-			dto.setCounselingUrl(reservation.getCounselingUrl());
-			dto.setMemo(reservation.getMemo());
-
-			// Reservation 엔티티에서 Counselor 객체를 가져와서 counselorId 추출
-			Counselor counselor = reservation.getCounselor();
-			if (counselor != null) {
-				dto.setCounselorId(counselor.getId()); // Counselor 객체에서 ID를 추출하여 설정
-			}
-
-
-			reservationList.add(dto);
-		}
-
-
+		List<ReservationResponseDto> reservationList=memberReservationService.getReservationList(memberId);
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("reservationList", reservationList));
 	}
 
