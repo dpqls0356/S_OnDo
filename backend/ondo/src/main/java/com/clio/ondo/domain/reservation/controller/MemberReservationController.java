@@ -9,10 +9,14 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.reservation.model.Reservation;
+import com.clio.ondo.domain.reservation.model.dto.ReservationRequestDto;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
 import com.clio.ondo.domain.reservation.model.dto.ScheduleResponseDto;
 import com.clio.ondo.domain.reservation.service.MemberReservationService;
@@ -53,6 +57,13 @@ public class MemberReservationController {
 	public ResponseEntity<ResponseVO<List<ScheduleResponseDto>>> getCounselorSchedule(@PathVariable Long counselorId){
 		List<ScheduleResponseDto> scheduleList=memberReservationService.getCounselorSchedule(counselorId);
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselorSchedule", scheduleList));
+	}
+
+	//예약하기
+	@PostMapping("/make")
+	public ResponseEntity<ResponseVO<Void>> createReservation(@RequestBody ReservationRequestDto requestDto) {
+		memberReservationService.makeReservation(requestDto);
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("에약 완료"));
 	}
 
 

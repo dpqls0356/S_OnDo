@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.reservation.model.Reservation;
+import com.clio.ondo.domain.reservation.model.dto.ReservationRequestDto;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
 import com.clio.ondo.domain.reservation.model.dto.ScheduleResponseDto;
 import com.clio.ondo.domain.reservation.repository.ReservationRepository;
@@ -26,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberReservationServiceImpl implements MemberReservationService{
 
 	private final ReservationRepository reservationRepository;
+	private final MemberRepository memberRepository;
+	private final CounselorRepository counselorRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 
 	//나의 예약 내역 가져오기
@@ -93,7 +97,7 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 	//
 	// }
 
-	//해당 상담사의 예약 내역 가져오기
+	//해당 상담사의 예약 스케줄 가져오기
 	@Override
 	public List<ScheduleResponseDto> getCounselorSchedule(Long counselorId){
 		List<Reservation> reservationList=reservationRepository.findByCounselorId(counselorId);
@@ -115,5 +119,30 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 
 		return scheduleList;
 	}
+
+	//예약하기
+	@Override
+	@Transactional
+	public void makeReservation(ReservationRequestDto requestDto){
+
+		// memberId로 member 조회
+		Member member = memberRepository.findById(requestDto.getMemberId())
+			.orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. id=" + requestDto.getMemberId()));
+
+		// counselorId로 counselor 조회
+		Counselor counselor = counselorRepository.findById(requestDto.getCounselorId())
+			.orElseThrow(() -> new IllegalArgumentException("해당 상담사가 없습니다. id=" + requestDto.getCounselorId()));
+
+		// Reservation 엔티티 생성 및 필드 설정
+		Reservation reservation = new Reservation();
+		reservation.setReservationDate(requestDto.getReservationDate());
+		reservation.setDetail(requestDto.getDetail());
+		reservation.setMember(member);
+		reservation.setCounselor(counselor);
+
+		// 예약 저장
+		reservationRepository.save(reservation);
+	}
+
 
 }
