@@ -1,0 +1,25 @@
+.CL-header{
+  display: flex;
+  justify-content: space-between;
+  /* padding: 20px 20px; */
+  padding: 10% 5%;
+  align-items: center;
+}
+
+.scroll{
+  /* position: relative; */
+}
+
+.CL-header > p{
+  font-size: 150%;
+}
+
+.CS-List{
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+#CL-empty{
+  height: 3vh;
+}
