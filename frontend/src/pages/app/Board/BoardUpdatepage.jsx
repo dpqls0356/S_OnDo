@@ -14,7 +14,7 @@ const BoardUpdatepage = () => {
   return (
      <>
       <form className="CreateForm">
-        <div>
+      <div className="CF-Title">
           <input
             maxLength={20}
             id="CreateTitle"

@@ -3,9 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import profile from './../../../assets/images/ic_user.png';
 import vector from './../../../assets/images/Vector.png';
 import search from './../../../assets/images/ic_search.png';
+import { useState } from 'react';
 
 // 상담 메인 페이지 상단 노출 화면
 const CounselorCard = ({name, gender, field, intro, dday}) => {
+
+  const [ selected , setSelected ] = useState()
+  const handleSelect = (e) => {
+    setSelected(e.target.value)
+  }
+  
   const checkOnlyOne = (checkThis) => {
     const checkboxes = document.getElementsByName('test')
     for (let i = 0; i < checkboxes.length; i++) {
@@ -78,13 +85,13 @@ const CounselorCard = ({name, gender, field, intro, dday}) => {
       </div>
       
       <div className='FilterSearch'>
-        <select className='FS-Filter'>
+        <select className='FS-Filter' onChange={handleSelect} value={selected}>
           <option value="">▽ 선택</option>
-          <option value="">이름</option>
-          <option value="">분야</option>
+          <option value="name">이름</option>
+          <option value="field">분야</option>
         </select>
         <div className='FS-Search'>
-          <input type="text" placeholder='이름으로 검색하기'/>
+          <input type="text" placeholder={selected? (selected === 'name' ? '이름으로 검색하기': '상담 분야로 검색하기') : '검색어를 입력하세요.'}/>
           <img src={search} alt="Search" />
         </div>
       </div>
