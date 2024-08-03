@@ -9,7 +9,7 @@ import Button from "../../../components/app/Button";
 
 import calendar from "./../../../assets/images/calendar.png";
 import profile from "./../../../assets/images/test.png";
-import commentbtn from "./../../../assets/images/edit-2.png";
+import commentbtn from "./../../../assets/images/send.png";
 
 const BoardDetailpage = () => {
   const comment = useRef(null);
