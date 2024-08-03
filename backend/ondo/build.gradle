@@ -54,6 +54,8 @@ dependencies {
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
+
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
@@ -64,6 +66,7 @@ tasks.withType(JavaCompile) {
 clean {
 	delete file('src/main/generated')
 }
+
 
 
 

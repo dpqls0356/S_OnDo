@@ -8,9 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.counselor.model.QCounselor;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Gender;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryFactory;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CounselorServiceImpl implements CounselorService{
 
 	private final CounselorRepository counselorRepository;
+	private final JPAQueryFactory queryFactory;
 
 	//상담사 전체 리스트 가져오기
 	@Override
@@ -66,9 +72,30 @@ public class CounselorServiceImpl implements CounselorService{
 	}
 
 	//상담사 필터링된 리스트 가져오기
-	// public List<CounselorResponseDto> filteredList(String name, Gender gender,String field){
-	//
-	// }
+	public List<CounselorResponseDto> filteredList(String name, Gender gender,String field){
+		QCounselor counselor = QCounselor.counselor;
+		BooleanBuilder builder=new BooleanBuilder();
+		if(gender!=null){
+			builder.and(counselor.gender.eq(gender));
+		}
+		if(field!=null){
+			builder.and(counselor.field.eq(field));
+		}
+		if(name!=null){
+			builder.and(counselor.name.eq(name));
+		}
+
+		return queryFactory.select(Projections.constructor(CounselorResponseDto.class,
+				counselor.id,
+				counselor.name,
+				counselor.gender,
+				counselor.field,
+				counselor.selfIntroduction,
+				counselor.profileUrl))
+			.from(counselor)
+			.where(builder)
+			.fetch();
+	}
 
 
 }
