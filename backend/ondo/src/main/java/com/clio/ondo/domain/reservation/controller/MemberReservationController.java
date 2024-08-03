@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
+import com.clio.ondo.domain.reservation.model.dto.ScheduleResponseDto;
 import com.clio.ondo.domain.reservation.service.MemberReservationService;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
@@ -45,6 +47,14 @@ public class MemberReservationController {
 		memberReservationService.cancelReservation(reservationId);
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("에약 삭제 완료"));
 	}
+
+	//해당 상담사의 예약 내역 가져오기
+	@GetMapping("/counselor/{counselorId}")
+	public ResponseEntity<ResponseVO<List<ScheduleResponseDto>>> getCounselorSchedule(@PathVariable Long counselorId){
+		List<ScheduleResponseDto> scheduleList=memberReservationService.getCounselorSchedule(counselorId);
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselorSchedule", scheduleList));
+	}
+
 
 
 }
