@@ -11,6 +11,7 @@ import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Component
 public class CounselorDetailsServiceImpl implements UserDetailsService {
     private final CounselorRepository counselorRepository;
 

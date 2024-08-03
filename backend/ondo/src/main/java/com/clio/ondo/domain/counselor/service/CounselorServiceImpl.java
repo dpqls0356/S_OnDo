@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,20 +20,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CounselorServiceImpl implements CounselorService {
 
-    private final RedisTemplate<String, String> redisTemplate;
     private final JwtTokenProvider jwtTokenProvider;
-    @Qualifier("counselorAuthenticationManager")
-    private final AuthenticationManager counselorAuthenticationManager;
+    private final DaoAuthenticationProvider counselorAuthenticationProvider;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public TokenDto login(CounselorLoginRequestDto loginRequestDto) throws AuthenticationException {
-        Authentication authentication = counselorAuthenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getId(),
-                        loginRequestDto.getPassword()
-                )
-        );
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(loginRequestDto.getId(), loginRequestDto.getPassword());
+
+        Authentication authentication = counselorAuthenticationProvider.authenticate(authToken);
+
         String accessToken = jwtTokenProvider.generateAccessToken(authentication);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
 

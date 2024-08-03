@@ -12,6 +12,7 @@ import com.clio.ondo.global.exception.member.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Component
 public class MemberDetailsServiceImpl implements UserDetailsService {
 
     private final MemberRepository memberRepository;
