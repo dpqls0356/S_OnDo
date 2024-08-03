@@ -74,12 +74,10 @@ public class SecurityConfig {
 		private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 		private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 		private static final String[] AUTH_WHITELIST = {
-				"/**",
 				"/api/v1/member/join",
 				"/api/v1/member/login",
 				"/api/v1/member/reissue",
 				"/api/v1/member/oauth-success",
-				"/api/v1/counselor/login"
 		};
 
 		@Bean
@@ -121,9 +119,9 @@ public class SecurityConfig {
 		private final JwtTokenProvider jwtTokenProvider;
 		private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 		private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-		private static final String[] AUTH_WHITELIST = {
-				"/api/v1/counselor/join",
-				"/api/v1/counselor/login"
+		private static final String[] WHITELIST = {
+				"/api/v1/member/**",
+				"/api/v1/counselor/**",
 		};
 
 		@Bean
@@ -145,7 +143,7 @@ public class SecurityConfig {
 					.formLogin(AbstractHttpConfigurer::disable)
 					.logout(AbstractHttpConfigurer::disable)
 					.authorizeRequests((authorize) -> authorize
-							.requestMatchers(AUTH_WHITELIST)
+							.requestMatchers(WHITELIST)
 							.permitAll()
 							.anyRequest().authenticated())
 					.exceptionHandling((exceptionHandling) -> exceptionHandling

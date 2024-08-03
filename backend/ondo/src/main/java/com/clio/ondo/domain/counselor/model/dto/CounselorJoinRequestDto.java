@@ -3,6 +3,8 @@ package com.clio.ondo.domain.counselor.model.dto;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.member.model.Gender;
 
+import com.clio.ondo.domain.member.model.Role;
+import com.clio.ondo.domain.schedule.model.Schedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +16,11 @@ import lombok.Setter;
 public class CounselorJoinRequestDto {
     private String id;
     private String password;
-    private Gender gender;
+    private String gender;
     private String name;
     private String field;
     private String selfIntroduction;
     private String profileUrl;
-
     @Builder
     public Counselor toEntity() {
         return Counselor.builder()
@@ -29,6 +30,8 @@ public class CounselorJoinRequestDto {
                 .name(name)
                 .password(password)
                 .profileUrl(profileUrl)
+                .gender(Gender.valueOf(gender))
+                .role(Role.valueOf("COUNSELOR"))
                 .build();
     }
 }

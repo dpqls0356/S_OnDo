@@ -11,11 +11,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Schedule {
 
 	@Id
@@ -39,4 +41,13 @@ public class Schedule {
 
 	@OneToOne(mappedBy = "schedule", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Counselor counselor;
+
+	public Schedule(Counselor counselor) {
+		this.monday = "000000000";
+		this.tuesday = "000000000";
+		this.wednesday = "000000000";
+		this.thursday = "000000000";
+		this.friday = "000000000";
+		this.counselor = counselor;
+	}
 }

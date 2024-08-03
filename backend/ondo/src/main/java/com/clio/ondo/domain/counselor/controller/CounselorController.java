@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.counselor.controller;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CounselorController {
 
-    private final CounselorRepository counselorRepository;
     private final CounselorService counselorService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -40,7 +40,7 @@ public class CounselorController {
         try {
             joinRequestDto.setPassword(passwordEncoder.encode(joinRequestDto.getPassword()));
             Counselor counselor = joinRequestDto.toEntity();
-            counselorRepository.save(counselor);
+            counselorService.join(counselor);
             return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("상담사 가입 실패: 올바른 값을 입력해주세요."));
@@ -53,8 +53,18 @@ public class CounselorController {
     public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody CounselorLoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
             TokenDto token = counselorService.login(loginRequestDto);
-            jwtTokenProvider.setHeaderAccessToken(response, token.getAccessToken());
-            jwtTokenProvider.setHeaderRefreshToken(response, token.getRefreshToken());
+            Cookie accessTokenCookie = new Cookie("accessToken", token.getAccessToken());
+            accessTokenCookie.setHttpOnly(true);
+            accessTokenCookie.setPath("/");
+            accessTokenCookie.setMaxAge(3600); // 1 hour
+
+            Cookie refreshTokenCookie = new Cookie("refreshToken", token.getRefreshToken());
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge(7 * 24 * 3600 * 2); // 2 week
+
+            response.addCookie(accessTokenCookie);
+            response.addCookie(refreshTokenCookie);
             return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
