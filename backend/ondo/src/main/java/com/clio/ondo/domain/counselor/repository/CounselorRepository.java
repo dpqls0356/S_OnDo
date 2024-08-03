@@ -6,4 +6,6 @@ import com.clio.ondo.domain.counselor.model.Counselor;
 
 public interface CounselorRepository extends JpaRepository<Counselor, Long> {
 
+
+
 }
