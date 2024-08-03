@@ -2,6 +2,7 @@ package com.clio.ondo.global.auth.OAuth;
 
 import java.util.Map;
 
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -35,7 +36,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo =
                 OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
         Member member = getOrSave(oAuth2UserInfo);
-        return new PrincipalDetails(member, oAuth2UserAttributes, userNameAttributeName);
+        return new MemberPrincipalDetails(member, oAuth2UserAttributes, userNameAttributeName);
     }
 
     private Member getOrSave(OAuth2UserInfo userInfo) {
