@@ -1,14 +1,14 @@
+
 footer {
   width: 100%;
   bottom: 0;
-  /* position: absolute; */
+  position: absolute;
   padding-bottom: 20px;
   padding-top: 25px;
   padding-left: 5%;
   padding-right: 5%;
   align-items: center;
   background-color: #ed9c9f;
-  position: sticky;
   transform: translateY(0%);
   display: flex;
   justify-content: center;
