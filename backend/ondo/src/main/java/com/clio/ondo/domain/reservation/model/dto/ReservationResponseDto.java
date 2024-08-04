@@ -20,7 +20,6 @@ public class ReservationResponseDto {
 	private LocalDateTime reservationDate; // 예약 날짜 및 시간
 	private String detail; // 상담 예약 상세
 	private String counselingUrl;  // 상담 URL
-	private String memo;           // 메모
 
 
 }
