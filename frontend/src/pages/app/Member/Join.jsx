@@ -5,6 +5,11 @@ import Input from '../../../components/app/Input';
 import useJoinStore from '../../../store/app/useJoinStore';
 import axios from 'axios';
 
+import camera from './../../../assets/images/camera.png'
+import profile from './../../../assets/images/ic_user.png'
+
+import './Join.css'
+
 const JoinForm = () => {
   const nav = useNavigate();
   const { error, success } = useJoinStore();
@@ -77,77 +82,81 @@ const JoinForm = () => {
   });
 
   return (
-<div className="flex justify-center items-center min-h-screen">
-    <div className="w-full max-w-md p-8 rounded-lg">
-      <form id="JoinForm" onSubmit={join} className="flex flex-col space-y-4">
-        <Input
-          label="이름"
-          placeholder=" 이름을 입력해주세요"
-          value={formData.name}
-          onChange={handleInputChange('name')}
-          labelClassName="text-left"
-        />
-        <Input
-          label="별명"
-          placeholder=" 별명을 입력해주세요"
-          value={formData.nickname}
-          onChange={handleInputChange('nickname')}
-          labelClassName="text-left"
-        />
-        <Input
-          label="이메일"
-          placeholder=" 이메일을 입력해주세요"
-          type="email"
-          value={formData.email}
-          onChange={handleInputChange('email')}
-          labelClassName="text-left"
-        />
-        <Input
-          label="비밀번호"
-          placeholder=" 비밀번호를 입력해주세요"
-          type="password"
-          value={formData.password}
-          onChange={handleInputChange('password')}
-          labelClassName="text-left"
-        />
-        <Input
-          label="비밀번호 확인"
-          placeholder=" 비밀번호를 다시 입력해주세요"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleInputChange('confirmPassword')}
-          labelClassName="text-left"
-        />
-        <Input
-          label="생년월일"
-          placeholder=" 생년월일을 입력해주세요"
-          type="date"
-          value={formData.birthDate}
-          onChange={handleInputChange('birthDate')}
-          labelClassName="text-left"
-        />
-        <div className="flex justify-center space-x-4">
-          <button
-            type="button"
-            style={genderButtonStyle('MALE')}
-            onClick={() => handleGenderSelect('남')}
-          >
-            남
-          </button>
-          <button
-            type="button"
-            style={genderButtonStyle('FEMALE')}
-            onClick={() => handleGenderSelect('여')}
-          >
-            여
-          </button>
+    <div className='scroll'>
+      <div className='JoinPage'>
+        <img id='JoinCamera' src={camera} />
+        <div className='JoinProfile'>
+          <img src={profile} />
         </div>
-        <Button text="회원가입하기" type="submit Button_PINK" onClick={join} />
-        <p onClick={onClickLogin} className="cursor-pointer text-center text-sm text-gray-500 mt-4">
-          로그인하러가기
-        </p>
-      </form>
-    </div>
+        <form id="JoinForm" onSubmit={join} className="flex flex-col space-y-4">
+          <Input
+            label="이름"
+            placeholder=" 이름을 입력해주세요"
+            value={formData.name}
+            onChange={handleInputChange('name')}
+            labelClassName="text-left"
+          />
+          <Input
+            label="별명"
+            placeholder=" 별명을 입력해주세요"
+            value={formData.nickname}
+            onChange={handleInputChange('nickname')}
+            labelClassName="text-left"
+          />
+          <Input
+            label="이메일"
+            placeholder=" 이메일을 입력해주세요"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange('email')}
+            labelClassName="text-left"
+          />
+          <Input
+            label="비밀번호"
+            placeholder=" 비밀번호를 입력해주세요"
+            type="password"
+            value={formData.password}
+            onChange={handleInputChange('password')}
+            labelClassName="text-left"
+          />
+          <Input
+            label="비밀번호 확인"
+            placeholder=" 비밀번호를 다시 입력해주세요"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleInputChange('confirmPassword')}
+            labelClassName="text-left"
+          />
+          <Input
+            label="생년월일"
+            placeholder=" 생년월일을 입력해주세요"
+            type="date"
+            value={formData.birthDate}
+            onChange={handleInputChange('birthDate')}
+            labelClassName="text-left"
+          />
+          <div className="flex justify-center space-x-4">
+            <button
+              type="button"
+              style={genderButtonStyle('MALE')}
+              onClick={() => handleGenderSelect('남')}
+            >
+              남
+            </button>
+            <button
+              type="button"
+              style={genderButtonStyle('FEMALE')}
+              onClick={() => handleGenderSelect('여')}
+            >
+              여
+            </button>
+          </div>
+          <Button text="회원가입하기" type="submit Button_PINK" onClick={join} />
+          <p onClick={onClickLogin} className="cursor-pointer text-center text-sm text-gray-500 mt-4">
+            로그인하러가기
+          </p>
+        </form>
+      </div>
   </div>
   );
 };
