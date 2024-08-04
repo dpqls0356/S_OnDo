@@ -1,4 +1,4 @@
-package com.clio.ondo.global.auth.OAuth;
+package com.clio.ondo.global.auth;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,12 +18,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PrincipalDetails implements OAuth2User, UserDetails {
+public class MemberPrincipalDetails implements OAuth2User, UserDetails {
     private Member member;
     private Map<String, Object> attributes;
     private String attributeKey;
 
-    public PrincipalDetails(Member member) {
+    public MemberPrincipalDetails(Member member) {
         this.member = member;
     }
 
@@ -35,7 +35,7 @@ public class PrincipalDetails implements OAuth2User, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(
-                new SimpleGrantedAuthority(String.valueOf(member.getRole())));
+                new SimpleGrantedAuthority("ROLE_" + String.valueOf(member.getRole())));
     }
 
     @Override
