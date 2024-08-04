@@ -66,11 +66,12 @@ const ChangeSpot = styled.div`
 function CounselorLayout() {
     const checkLoggedIn = useAuthStore(state => state.checkLoggedIn);
     const navigate = useNavigate();
-  useEffect(() => {
-    if (!checkLoggedIn) {
-      navigate('/counselor/login');
-    }
-  }, []); 
+  // useEffect(() => {
+  //       console.log(checkLoggedIn());
+  //   if (!checkLoggedIn()) {
+  //     navigate('/counselor/login');
+  //   }
+  // }, []); 
   return (
     <View>
       <HomeLeft>

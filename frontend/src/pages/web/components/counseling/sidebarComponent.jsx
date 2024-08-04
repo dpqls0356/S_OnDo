@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesRight, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import styled, { css } from 'styled-components';
 import UserInfoComponent from './userInfoComponent';
-import Chat from './Chat'; // userInfoComponent 대신 Chat을 가져와야 합니다.
+import Chat from './chat'; // userInfoComponent 대신 Chat을 가져와야 합니다.
 
 const Tag = styled.div`
   position: absolute;
