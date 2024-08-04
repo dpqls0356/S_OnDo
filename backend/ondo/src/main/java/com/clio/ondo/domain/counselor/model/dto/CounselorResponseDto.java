@@ -3,25 +3,23 @@ package com.clio.ondo.domain.counselor.model.dto;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.member.model.Gender;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class CounselorResponseDto {
-    private String id;
-    private Gender gender;
+    private Long id;
+
     private String name;
+    private Gender gender;
     private String field;
+
     private String selfIntroduction;
     private String profileUrl;
-
-    @Builder
-    public Counselor toEntity() {
-        return Counselor.builder()
-                .counselorId(id)
-                .selfIntroduction(selfIntroduction)
-                .field(field)
-                .name(name)
-                .profileUrl(profileUrl)
-                .gender(gender)
-                .build();
-    }
 }
