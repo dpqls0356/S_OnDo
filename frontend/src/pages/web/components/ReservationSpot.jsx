@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import Reservation from "./components/reservation";
+import Reservation from "./reservation";
 const View = styled.div`
   padding: 70px 50px;
   width: 50%;
@@ -34,8 +34,6 @@ const Search = styled.div`
   }
 `;
 const ReservationList = styled.div``;
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/";
 
 function ReservationSpot() {
   return (
