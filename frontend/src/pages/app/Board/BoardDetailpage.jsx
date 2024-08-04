@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import CommentList from "../../../components/app/Comment/CommentList";
-import Footer from "../../../components/app/Footer";
+// import Footer from "../../../components/app/Footer";
 import Button from "../../../components/app/Button";
 
 import calendar from "./../../../assets/images/calendar.png";
