@@ -27,7 +27,7 @@ export default function MobileLayout() {
   const location = useLocation();
 
   // Footer를 제외할 경로 목록
-  const noFooterPaths = ['/member', '/member/join', '/member/login', '/member/name','/member/chat'];
+  const noFooterPaths = ['/member', '/member/', '/member/join', '/member/login', '/member/name','/member/chat'];
 
   // 현재 경로가 noFooterPaths에 포함되어 있는지 확인
   const shouldShowFooter = !noFooterPaths.includes(location.pathname);
