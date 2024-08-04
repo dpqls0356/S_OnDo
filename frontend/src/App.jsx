@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CounselorHome from "./pages/web/counselorHome";
-import CounselingRoom from "./pages/web/counselingRoom";
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
+
+import CounselingRoom from "./pages/web/counselingRoom";
+import CounselorLogin from "./pages/web/counselorLogin"
 
 import Logopage from "./pages/app/Member/Logopage";
 import Loginpage from "./pages/app/Member/Loginpage";
@@ -30,12 +31,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/counselor" element={<CounselorLayout />}>
-          {/* <Route path="" element={<CounselorHome />}></Route> */}
-        </Route>
+          <Route path="/counselor/home" element={<CounselorLayout />}>
+          </Route>
+          <Route path="/counselor/login" element={<CounselorLogin/>}>
+          </Route>
         {/* counseling으로 이동할 때 sessionId값을 가지고 이동해야함 -> sessionId로 token발급을 하고 그걸 바탕으로 session에 참가 가능 */}
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
-        {/* <Route path="/counselor/login" element={<CounselorLogin />}></Route> */}
         <Route path="/member" element={<MobileLayout />}>
           <Route path="" element={<Logopage />} />
           <Route path="login" element={<Loginpage />} />
