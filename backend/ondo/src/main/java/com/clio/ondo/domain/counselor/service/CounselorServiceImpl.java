@@ -141,4 +141,8 @@ public class CounselorServiceImpl implements CounselorService {
 
 
 
+    @Override
+    public Counselor getCounselorEntity(Long id) {
+        return counselorRepository.findByCounselorId(id);
+    }
 }
