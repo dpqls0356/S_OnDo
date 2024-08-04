@@ -3,28 +3,36 @@ import "./Homepage.css";
 // import Balloon from "./../../../components/app/Ballon"
 import Thermometer from "../../../components/app/Thermometer";
 import Balloon from "../../../components/app/Balloon";
-import Footer from "../../../components/app/Footer";
 import character from "./../../../assets/images/공통_캐릭터.png";
 import chat from "./../../../assets/images/chat.png";
 
 import back_img from './../../../assets/images/home_back2.jpg'
 
 import { useNavigate } from "react-router-dom";
+import { useRef, useEffect } from "react";
 import axios from "axios";
 import useAuthStore from '../../../store/app/authStore';
 
 const Homepage = () => {
-  const { getAccessToken } = useAuthStore();
-  const getBoard = async()=>{
-    const token = getAccessToken();
-    console.log(token);
-      const res = await axios.get('http://localhost:8080/api/v1/board/list',{
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      console.log(res);
-  }
+  const { isAuthenticated } = useAuthStore()
+  const renderCount = useRef(0)
+
+  useEffect(() => {
+    renderCount.current += 1
+    console.log('Render count:', renderCount.current)
+    console.log('isAuthenticated:', isAuthenticated)
+  })
+  // const { getAccessToken } = useAuthStore();
+  // const getBoard = async()=>{
+  //   const token = getAccessToken();
+  //   console.log(token);
+  //     const res = await axios.get('http://localhost:8080/api/v1/board/list',{
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     });
+  //     console.log(res);
+  // }
   const nav = useNavigate();
 
   const onClickChat = () => {
@@ -56,9 +64,7 @@ const Homepage = () => {
       </div>
     </div>
       <img id="back-img" src={back_img} />
-      <div id="footer">
-        {/* <Footer /> */}
-      </div>
+    
     </div>
   );
 };
