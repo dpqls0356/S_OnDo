@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 import com.clio.ondo.domain.schedule.model.Schedule;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-	// @Query(value = "select :day from schedule where counselor_id = :counselorId", nativeQuery = true)
-	// int findDayValueByCounselorId(@Param("day") String day, @Param("counselorId") Long counselorId);
+	@Query(value = "select s from Schedule s where s.id = ?1")
+	Schedule findByCounselorId(Long counselorId);
 }

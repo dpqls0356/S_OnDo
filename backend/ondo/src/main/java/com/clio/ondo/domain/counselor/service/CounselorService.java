@@ -11,10 +11,16 @@ import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 
+import org.springframework.stereotype.Service;
+
+import com.clio.ondo.domain.counselor.model.Counselor;
+
+@Service
 public interface CounselorService {
     TokenDto login(CounselorLoginRequestDto loginRequestDto) throws AuthenticationException;
     void join(Counselor counselor);
     List<CounselorResponseDto> getCounselorList();
     CounselorResponseDto getCounselor(Long counselorId);
     List<CounselorResponseDto> filteredList(String name, Gender gender,String field);
+	Counselor getCounselorEntity(Long id);
 }
