@@ -1,6 +1,10 @@
 package com.clio.ondo.domain.counselor.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.schedule.model.Schedule;
 import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
@@ -56,4 +60,27 @@ public class CounselorServiceImpl implements CounselorService {
         }
         counselorRepository.save(counselor);
     }
+
+
+    //상담사 전체 리스트 가져오기
+    @Override
+    public List<CounselorResponseDto> getCounselorList(){
+        List<Counselor> counselors=counselorRepository.findAll();
+        List<CounselorResponseDto> counselorList=new ArrayList<>();
+
+        for(Counselor c:counselors){
+            CounselorResponseDto dto=new CounselorResponseDto();
+            dto.setId(c.getId());
+            dto.setName(c.getName());
+            dto.setField(c.getField());
+            dto.setGender(c.getGender());
+            dto.setSelfIntroduction(c.getSelfIntroduction());
+            dto.setProfileUrl(c.getProfileUrl());
+
+            counselorList.add(dto);
+        }
+
+        return counselorList;
+    }
+
 }
