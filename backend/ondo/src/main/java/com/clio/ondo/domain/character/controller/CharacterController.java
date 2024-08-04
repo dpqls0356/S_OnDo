@@ -31,7 +31,7 @@ public class CharacterController {
 	//현재 멤버의 캐릭터 가져오기
 	@GetMapping("/getCharacter")
 	public ResponseEntity<ResponseVO<CharacterResponseDto>> getCharacter(HttpServletRequest request){
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
 		Character character = characterService.getCharacters(memberId);
@@ -44,7 +44,7 @@ public class CharacterController {
 	@PostMapping("/changeName")
 	public ResponseEntity<ResponseVO<Void>> changeName(HttpServletRequest request,
 		@RequestBody ChangeRequestDto changeName){
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 		String newName=changeName.getName();
 		characterService.changeName(memberId,newName);
