@@ -69,7 +69,7 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		reservation.setDetail(null);
 		reservation.setMember(null);
 		// counselorId로 서비스에서 가져와야겠네..
-		reservation.setCounselor(counselorService.getCounselor(counselorReservationAddDto.getCounselorId()));
+		reservation.setCounselor(counselorService.getCounselorEntity(counselorReservationAddDto.getCounselorId()).get());
 		reservation.setCounselingUrl(null);
 		reservation.setCounselingDetail(null);
 

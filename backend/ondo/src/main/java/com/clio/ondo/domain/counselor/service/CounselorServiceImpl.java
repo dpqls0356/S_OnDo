@@ -12,9 +12,6 @@ import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.schedule.model.Schedule;
 import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -26,7 +23,6 @@ import com.clio.ondo.domain.counselor.model.dto.CounselorLoginRequestDto;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -142,7 +138,7 @@ public class CounselorServiceImpl implements CounselorService {
 
 
     @Override
-    public Counselor getCounselorEntity(Long id) {
-        return counselorRepository.findByCounselorId(id);
+    public Optional<Counselor> getCounselorEntity(Long id) {
+        return counselorRepository.findById(id);
     }
 }
