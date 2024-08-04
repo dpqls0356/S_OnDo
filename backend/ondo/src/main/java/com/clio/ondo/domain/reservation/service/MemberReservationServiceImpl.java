@@ -17,7 +17,6 @@ import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.domain.reservation.model.dto.ReservationRequestDto;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
-import com.clio.ondo.domain.reservation.model.dto.ScheduleResponseDto;
 import com.clio.ondo.domain.reservation.repository.ReservationRepository;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 
