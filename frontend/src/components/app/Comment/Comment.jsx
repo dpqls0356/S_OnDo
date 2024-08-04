@@ -1,73 +1,71 @@
 import './Comment.css'
-import { useNavigate } from 'react-router-dom'
-
+import { useState } from 'react'
 import profile from './../../../assets/images/test.png'
+import useCommentStore from '../../../store/app/useCommentStore'
 
-const Comment = () => {
+const Comment = ({ comment }) => {
+  const { deleteComment, updateComment } = useCommentStore()
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedContent, setEditedContent] = useState(comment.content)
 
-  const nav = useNavigate()
-  const onClickCommentDelete = () => {
-    console.log('댓글 삭제 완료')
-    nav('/member/board/게시글 아이디/comment 아이디')
+  const onClickCommentDelete = async () => {
+    const success = await deleteComment(comment.id)
+    if (success) {
+      console.log('댓글 삭제 완료')
+    }
+  }
+
+  const onClickCommentEdit = () => {
+    setIsEditing(true)
+  }
+
+  const onSaveEdit = async () => {
+    const success = await updateComment(comment.id, editedContent)
+    if (success) {
+      setIsEditing(false)
+      console.log('댓글 수정 완료')
+    }
   }
 
   return(
-    <>
-      <div className="CommentCard">
-        <div className='CommentWriter'>
-          <div>
-            <img src={profile} />
-            <p>댓글 작성자</p>
-          </div>
-          <p onClick={onClickCommentDelete} style={{cursor: 'pointer'}}>X</p>
+    <div className="CommentCard">
+      <div className='CommentWriter'>
+        <div>
+          <img src={profile} alt="프로필" />
+          <p>{comment.member_name}</p>
         </div>
-        <div className='CommentContent'>
-          <p>내용</p>
-          <p id='CommentCreateDate'>작성 시간</p>
+        <div>
+          <p onClick={onClickCommentEdit} style={{cursor: 'pointer'}}>수정</p>
+          <p onClick={onClickCommentDelete} style={{cursor: 'pointer'}}>삭제</p>
         </div>
       </div>
-
-      {/* -----아래는 나중에 지울 예정-------- */}
-      {/* <div className="CommentCard">
-        <div className='CommentWriter'>
+      <div className='CommentContent'>
+        {isEditing ? (
           <div>
-            <img src={profile} />
-            <p>댓글 작성자</p>
+            <textarea 
+              value={editedContent} 
+              onChange={(e) => setEditedContent(e.target.value)}
+              style={{
+                width: '100%', 
+                minHeight: '50px',
+                border: '1px solid #6ABFB4',
+                borderRadius: '5px',
+                padding: '5px',
+                marginBottom: '10px',
+                resize: 'vertical'
+              }}
+            />
+            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+              <span onClick={onSaveEdit} style={{cursor: 'pointer', marginRight: '10px', color: '#6ABFB4'}}>저장</span>
+              <span onClick={() => setIsEditing(false)} style={{cursor: 'pointer', color: 'gray'}}>취소</span>
+            </div>
           </div>
-          <p onClick={onClickCommentDelete} style={{cursor: 'pointer'}}>X</p>
-        </div>
-        <div className='CommentContent'>
-          <p>내용</p>
-          <p id='CommentCreateDate'>작성 시간</p>
-        </div>
+        ) : (
+          <div id="CommentContent">{comment.content}</div>
+        )}
+        <p id='CommentCreateDate'>{new Date(comment.created_at).toLocaleString()}</p>
       </div>
-      <div className="CommentCard">
-        <div className='CommentWriter'>
-          <div>
-            <img src={profile} />
-            <p>댓글 작성자</p>
-          </div>
-          <p onClick={onClickCommentDelete} style={{cursor: 'pointer'}}>X</p>
-        </div>
-        <div className='CommentContent'>
-          <p>내용</p>
-          <p id='CommentCreateDate'>작성 시간</p>
-        </div>
-      </div>
-      <div className="CommentCard">
-        <div className='CommentWriter'>
-          <div>
-            <img src={profile} />
-            <p>댓글 작성자</p>
-          </div>
-          <p onClick={onClickCommentDelete} style={{cursor: 'pointer'}}>X</p>
-        </div>
-        <div className='CommentContent'>
-          <div id='CommentContent'>1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</div>
-          <p id='CommentCreateDate'>작성 시간</p>
-        </div>
-      </div> */}
-    </>
+    </div>
   )
 }
 
