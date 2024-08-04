@@ -1,4 +1,31 @@
+.JoinPage{
+  position: relative;
+  padding: 15% 10%;
+}
+
 #JoinForm{
     display: flex;
     flex-direction: column;
+  }
+
+  .JoinProfile{
+    position: relative;
+    display: flex;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10%;
+  }
+  .JoinProfile > img{
+    background-color: white;
+    border: 1px black solid;
+    border-radius: 100%;
+  }
+
+  #JoinCamera{
+    position: absolute;
+    left: 56%;
+    top: 12%;
+    z-index: 100;
+    /* position: static; */
   }

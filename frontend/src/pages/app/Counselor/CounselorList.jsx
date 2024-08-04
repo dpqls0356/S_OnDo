@@ -9,11 +9,15 @@ import CounselorListCard from '../../../components/app/Counselor/CounselorListCa
 
 import back from './../../../assets/images/back.png'
 import profile from './../../../assets/images/ic_user.png'
+import sort from './../../../assets/images/Shape.png'
 
 const CounselorList = () => {
   const nav = useNavigate()
   const onClickBack = () => {
     nav('/member/counseling/main')
+  }
+  const onClickSort = () => {
+    console.log('날짜순 정렬 기능 추가해야 함')
   }
   // 카드 데이터 배열
   const profiles = [
@@ -38,54 +42,22 @@ const CounselorList = () => {
 
   return (
     <div className='scroll'>
-      <img onClick={onClickBack} style={{cursor: "pointer"}} id='CD-back' src={back} />
-      <p>상담예약내역</p>
-      <div>
-        {/* <CLCard name={'박싸피'} gender={'여'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'} /> */}
+      <div className='CL-header'>
+        <img onClick={onClickBack} style={{cursor: "pointer"}} src={back} />
+        <p>상담예약내역</p>
+        <img onClick={onClickSort} style={{cursor: "pointer"}} src={sort}/>
       </div>
-      {/* <div className='CD-header'>
-      </div> */}
-      {/* <div className='CD-Card'>
-        <div>
-          <p id='CD-name'>정유진 상담사(여)</p>
-          <img src={profile} alt="상담사 프로필" />
-          <p>분야</p>
-          <p>미술심리상담사, 도형심리상담사</p>
-          <p>경력</p>
-          <div className='Career'>
-            <ul>
-              <li>- OO대학 예술치료대학원 석사</li>
-              <li>- 가정의학대학교 보건학 박사</li>
-              <li>- 한국미술치료 교수협의회 이사</li>
-              <li>- 한국통합미술치료학회 고문</li>
-            </ul>
-          </div>
-          <div id='CD-line'></div>
-          <p>안녕하세요^^ 반갑습니다~~</p>
+      <div className='CL-main'>
+        <div className='CS-List'>
+          <CLCard name={'박싸피'} gender={'여'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'} dday={'D-22'} is_complete={false} />
+          <CLCard name={'박싸피'} gender={'여'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'} dday={'입장'} is_complete={false}/>
+          <CLCard name={'박싸피'} gender={'여'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'} is_complete={true} />
         </div>
-      </div> */}
+      </div>
+      <div id='CL-empty'>
+
+      </div>
     </div>
-    // <div className="flex flex-col min-h-screen">
-    //   <div className="container mx-auto flex-grow">
-    //   <img onClick={onClickBack} style={{cursor: "pointer"}} id='CD-back' src={back} />
-    //     <div className="w-full">
-    //       <h1 className="text-2xl font-bold mb-4">상담 예약 내역</h1>
-    //       <div className="ml-8 space-y-4">
-    //         {profiles.map(profile => (
-    //           <ProfileCard
-    //             key={profile.id}
-    //             date={profile.date}
-    //             name={profile.name}
-    //             position={profile.position}
-    //             message={profile.message}
-    //             daysLeft={profile.daysLeft}
-    //           />
-    //         ))}
-    //       </div>
-    //     </div>
-    //   </div>
-    //   <Footer />
-    // </div>
   );
 };
 
