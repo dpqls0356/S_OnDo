@@ -54,16 +54,18 @@ public class MemberReservationController {
 
 	//해당 상담사의 예약 내역 가져오기
 	@GetMapping("/counselor/{counselorId}")
-	public ResponseEntity<ResponseVO<List<ScheduleResponseDto>>> getCounselorSchedule(@PathVariable Long counselorId){
-		List<ScheduleResponseDto> scheduleList=memberReservationService.getCounselorSchedule(counselorId);
+	public ResponseEntity<ResponseVO<List<String>>> getCounselorSchedule(@PathVariable Long counselorId){
+		List<String> scheduleList=memberReservationService.getCounselorSchedule(counselorId);
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselorSchedule", scheduleList));
 	}
 
 	//예약하기
 	@PostMapping("/make")
-	public ResponseEntity<ResponseVO<Void>> createReservation(@RequestBody ReservationRequestDto requestDto) {
-		memberReservationService.makeReservation(requestDto);
-		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("에약 완료"));
+	public ResponseEntity<ResponseVO<Void>> createReservation(@RequestBody ReservationRequestDto requestDto, HttpServletRequest request) {
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+		Long memberId = jwtTokenProvider.getIdFromToken(token);
+		memberReservationService.makeReservation(requestDto,memberId);
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("예약 완료"));
 	}
 
 

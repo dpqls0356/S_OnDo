@@ -1,6 +1,9 @@
 package com.clio.ondo.domain.reservation.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,24 +100,16 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 	//
 	// }
 
-	//해당 상담사의 예약 스케줄 가져오기
+	//해당 상담사의 예약 스케줄 가져오기. String 으로 넘겨주기
 	@Override
-	public List<ScheduleResponseDto> getCounselorSchedule(Long counselorId){
+	public List<String> getCounselorSchedule(Long counselorId){
 		List<Reservation> reservationList=reservationRepository.findByCounselorId(counselorId);
-		List<ScheduleResponseDto> scheduleList=new ArrayList<>();
+		List<String> scheduleList=new ArrayList<>();
 
 		for(Reservation reservation:reservationList){
 			LocalDateTime time=reservation.getReservationDate();
-			ScheduleResponseDto dto=new ScheduleResponseDto();
-
-			dto.setCounselorId(counselorId);
-			dto.setYear(time.getYear());
-			dto.setMonth(time.getMonthValue());
-			dto.setDay(time.getDayOfMonth());
-			dto.setHour(time.getHour());
-			dto.setMinute(time.getMinute());
-
-			scheduleList.add(dto);
+			String formattedDateTime = time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+			scheduleList.add(formattedDateTime);
 		}
 
 		return scheduleList;
@@ -123,19 +118,24 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 	//예약하기
 	@Override
 	@Transactional
-	public void makeReservation(ReservationRequestDto requestDto){
+	public void makeReservation(ReservationRequestDto requestDto,Long memberId){
 
 		// memberId로 member 조회
-		Member member = memberRepository.findById(requestDto.getMemberId())
-			.orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. id=" + requestDto.getMemberId()));
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. id=" + memberId));
 
 		// counselorId로 counselor 조회
 		Counselor counselor = counselorRepository.findById(requestDto.getCounselorId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 상담사가 없습니다. id=" + requestDto.getCounselorId()));
 
+		//받은 날짜 String -> LocalDateTime 으로 변환
+		String stringDate=requestDto.getReservationDate();
+		ZonedDateTime zonedDateTime = ZonedDateTime.parse(stringDate, DateTimeFormatter.ISO_DATE_TIME);
+		LocalDateTime localDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+
 		// Reservation 엔티티 생성 및 필드 설정
 		Reservation reservation = new Reservation();
-		reservation.setReservationDate(requestDto.getReservationDate());
+		reservation.setReservationDate(localDateTime);
 		reservation.setDetail(requestDto.getDetail());
 		reservation.setMember(member);
 		reservation.setCounselor(counselor);
