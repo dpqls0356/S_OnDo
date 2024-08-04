@@ -1,0 +1,61 @@
+.Namepage {
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* min-height: 100%; */
+  /* min-height: 100vh; */
+  position: relative;
+  height: 100%;
+  background-color: #FFD787;
+  /* align-items: center; */
+  /* gap: 6vh; */
+  /* padding-top: 50%; */
+}
+
+#name-content{
+  z-index: 100;
+}
+
+.Name-ballon {
+  position: absolute;
+  display: inline-block;
+  /* padding: 30px; */
+  padding-top: 30px;
+  top: 30vh;
+  /* display: inline-block; */
+  width: 70%;
+  /* bottom: 5vh; */
+  /* left: 10px; */
+  width: 100%;
+  /* left: 26%; */
+}
+.Name-ballon *{
+  /* margin: 0 auto; */
+  left: 20%;
+}
+
+.Name-daram{
+  z-index: 100;
+  position: absolute;
+  /* padding-left: 30px; */
+  height: 150px;
+  left: 20%;
+  top: 45vh;
+  bottom: 0;
+}
+
+#NAME{
+  z-index: 100;
+  /* position: absolute; */
+  /* padding: 30px; */
+  /* left: 40%; */
+  /* top: 75vh; */
+  /* bottom: 0; */
+  padding-top: 75vh;
+}
+
+#name-bottom{
+  z-index: 0;
+  position: absolute;
+  /* top: 80%; */
+  bottom: 15px;
+}
