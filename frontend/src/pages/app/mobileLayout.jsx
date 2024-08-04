@@ -22,12 +22,50 @@ const View = styled.div`
     font-weight: normal;
     font-style: normal;
   }
+      @font-face {
+     font-family: 'DungGeunMo';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+  }
+  @font-face {
+    font-family: '양진체';
+    src: url('https://fastly.jsdelivr.net/gh/supernovice-lab/font@0.9/yangjin.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+      font-family: 'NIXGONM-Vb';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/NIXGONM-Vb.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+  }
+  @font-face {
+    font-family: 'NIXGONFONTS B 2.0'
+    src: url('./../fonts/NIXGONFONTS B 2.0.ttf')
+  }
+  @font-face {
+    font-family: 'NIXGONFONTS L 2.0'
+    src: url('./../fonts/NIXGONFONTS L 2.0.ttf')
+  }
+  @font-face {
+    font-family: 'NIXGONFONTS M 2.0'
+    src: url('./../fonts/NIXGONFONTS M 2.0.ttf')
+  }
+  @font-face {
+    font-family: 'morris9'
+    src: url('./../fonts/모리스체-heroine762.ttf')
+  }
+  @font-face {
+    font-family: 'PF스타더스트'
+    src: url('./../fonts/PF스타더스트.ttf')
+  }
 `;
 export default function MobileLayout() {
   const location = useLocation();
 
   // Footer를 제외할 경로 목록
-  const noFooterPaths = ['/member', '/member/join', '/member/login', '/member/name','/member/chat'];
+  const noFooterPaths = ['/member', '/member/', '/member/join', '/member/login', '/member/name','/member/chat'];
 
   // 현재 경로가 noFooterPaths에 포함되어 있는지 확인
   const shouldShowFooter = !noFooterPaths.includes(location.pathname);

@@ -28,7 +28,8 @@ const Footer = () => {
       <Link to={"/member/profile"} style={{ display: "inline-block" }}>
         <img src={profile} />
       </Link>
-    </footer>
+    </footer>      
+
   );
 };
 
