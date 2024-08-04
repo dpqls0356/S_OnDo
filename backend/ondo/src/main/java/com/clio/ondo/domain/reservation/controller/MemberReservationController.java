@@ -38,7 +38,7 @@ public class MemberReservationController {
 	//자신의 예약 내역 가져오기
 	@GetMapping("/getReservation")
 	public ResponseEntity<ResponseVO<List<ReservationResponseDto>>> getTodayTypical(HttpServletRequest request){
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 		List<ReservationResponseDto> reservationList=memberReservationService.getReservationList(memberId);
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("reservationList", reservationList));
