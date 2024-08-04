@@ -1,9 +1,10 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import ReservationSpot from "./ReservationSpot";
+import ReservationSpot from "./components/ReservationSpot";
+import useAuthStore from '../../store/app/authStore';
 
 const View = styled.div`
   width: 100vw;
@@ -63,6 +64,13 @@ const ChangeSpot = styled.div`
   width: 50%;
 `;
 function CounselorLayout() {
+    const checkLoggedIn = useAuthStore(state => state.checkLoggedIn);
+    const navigate = useNavigate();
+  useEffect(() => {
+    if (!checkLoggedIn) {
+      navigate('/counselor/login');
+    }
+  }, []); 
   return (
     <View>
       <HomeLeft>
