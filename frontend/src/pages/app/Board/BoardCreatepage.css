@@ -23,12 +23,19 @@
   background-color: #fff9e900;
 }
 
-.CreateForm div {
-  width: 100%;
+.CF-Title {
+  /* width: 100%; */
   display: flex;
+  /* flex-wrap: wrap; */
   align-items: center;
   justify-content: space-between;
 }
+/* .CreateForm div * {
+  width: 100%;
+} */
+ .CF-Title input {
+  width: 100%;
+ }
 
 #CreateTitle{
   font-size: 140%;

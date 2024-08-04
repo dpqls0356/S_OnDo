@@ -3,6 +3,10 @@ import axios from 'axios';
 import useMissionStore from '../../../store/app/useMissionStore';
 import MissionButton from '../../../components/app/MissionButton';
 
+import char from './../../../assets/images/test_chara.png'
+
+import './Mission.css'
+
 // axios 인스턴스 생성
 const api = axios.create({
   baseURL: 'http://localhost:8080',
@@ -68,13 +72,29 @@ function MissionPage() {
     </div>
   );
 
+  const testExp = 70
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold my-4">특별 미션</h2>
-      {renderMissions('typical')}
+    <div className='scroll'>
+      <div className="container mx-auto p-4" id='MissionPage'>
+        <div className='charCard'>
+          <img src={char} />
+          <div className='charCard-r'>
+            <div id='EXP-bar'>
+              <p>180 / 300</p>
+              <div id='EXP' style={{width: testExp+'%'}}></div>
+            </div>
+            <div>
+              <p>오늘 완수한 미션은 n개야!</p>
+              <p>앞으로 m개만 더 하면 끝! 파이팅해보자</p>
+            </div>
+          </div>
+        </div>
+        <h2 className="text-2xl font-bold my-4">특별 미션</h2>
+        {renderMissions('typical')}
 
-      <h2 className="text-2xl font-bold mb-4">데일리 미션</h2>
-      {renderMissions('daily')}
+        <h2 className="text-2xl font-bold mb-4">데일리 미션</h2>
+        {renderMissions('daily')}
+      </div>
     </div>
   );
 }
