@@ -1,9 +1,10 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import Footer from "../../components/app/Footer";
+
 const View = styled.div`
   position: relative;
   background-color: #fff9e9;
@@ -23,10 +24,17 @@ const View = styled.div`
   }
 `;
 export default function MobileLayout() {
+  const location = useLocation();
+
+  // Footer를 제외할 경로 목록
+  const noFooterPaths = ['/member', '/member/join', '/member/login', '/member/name','/member/chat'];
+
+  // 현재 경로가 noFooterPaths에 포함되어 있는지 확인
+  const shouldShowFooter = !noFooterPaths.includes(location.pathname);
   return (
     <View>
       <Outlet />
-      <Footer id="footer" />
+      {shouldShowFooter && <Footer id="footer" />}
     </View>
   );
 }
