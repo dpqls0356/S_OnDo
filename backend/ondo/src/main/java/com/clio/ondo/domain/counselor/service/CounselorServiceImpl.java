@@ -141,4 +141,9 @@ public class CounselorServiceImpl implements CounselorService {
     public Optional<Counselor> getCounselorEntity(Long id) {
         return counselorRepository.findById(id);
     }
+
+    @Override
+    public void logout(String token) {
+
+    }
 }
