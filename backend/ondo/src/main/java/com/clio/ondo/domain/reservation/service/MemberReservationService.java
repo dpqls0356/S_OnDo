@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.clio.ondo.domain.reservation.model.dto.ReservationRequestDto;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
-import com.clio.ondo.domain.reservation.model.dto.ScheduleResponseDto;
 
 @Service
 public interface MemberReservationService {

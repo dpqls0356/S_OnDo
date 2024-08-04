@@ -18,7 +18,6 @@ import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.domain.reservation.model.dto.ReservationRequestDto;
 import com.clio.ondo.domain.reservation.model.dto.ReservationResponseDto;
-import com.clio.ondo.domain.reservation.model.dto.ScheduleResponseDto;
 import com.clio.ondo.domain.reservation.service.MemberReservationService;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
