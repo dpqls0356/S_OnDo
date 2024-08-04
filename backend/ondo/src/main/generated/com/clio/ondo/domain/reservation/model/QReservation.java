@@ -34,8 +34,6 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final com.clio.ondo.domain.member.model.QMember member;
 
-    public final StringPath memo = createString("memo");
-
     public final DateTimePath<java.time.LocalDateTime> reservationDate = createDateTime("reservationDate", java.time.LocalDateTime.class);
 
     public QReservation(String variable) {
