@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 body * {
-  font-family: "PFStardust";
+  font-family: "NIXGONM-Vb";
+  /* font-family: "DungGeunMo"; */
+  /* font-family: "PFStardust"; */
+  /* font-family: "morris9"; */
+  /* font-family: "PF스타더스트"; */
   font-size: 100%;
 }
 #root {

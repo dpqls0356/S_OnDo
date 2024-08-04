@@ -38,7 +38,7 @@ const Loginpage = () => {
 
   return (
     <main className="Loginpage">
-      <p id="Title">로그인</p>
+      <p id="Title">로그인</p>      
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="login-id">아이디</label>

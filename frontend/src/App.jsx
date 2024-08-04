@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+<<<<<<< HEAD
+import useAuthStore from "./store/app/authStore";
+
+import CounselorHome from "./pages/web/counselorHome";
+import CounselingRoom from "./pages/web/counselingRoom";
+=======
+>>>>>>> dev
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
 
@@ -28,6 +35,13 @@ import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
 
 
 function App() {
+  // const test = false;
+  const checkAuth = useAuthStore(state => state.checkAuth)
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
   return (
     <Router>
       <Routes>
@@ -57,6 +71,7 @@ function App() {
           <Route path="counseling/:id/detail" element={<CounselorDetail />} />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>
+        {/* )} */}
       </Routes>
     </Router>
   );
