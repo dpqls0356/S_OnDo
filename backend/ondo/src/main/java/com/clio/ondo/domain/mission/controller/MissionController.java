@@ -55,7 +55,7 @@ public class MissionController {
 	//오늘의 특별미션 가져오기
 	@GetMapping("/todayTypical")
 	public ResponseEntity<ResponseVO<List<Mission>>> getTodayTypical(HttpServletRequest request){
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
 		List<Mission> todayMission= missionService.getTodayMission(memberId);
@@ -69,7 +69,7 @@ public class MissionController {
 	//오늘의 데일리미션 가져오기
 	@GetMapping("/todayDaily")
 	public ResponseEntity<ResponseVO<List<Mission>>> getTodayDaily(HttpServletRequest request){
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
 		List<Mission> todayMission= missionService.getTodayMission(memberId);
@@ -85,7 +85,7 @@ public class MissionController {
 	@PostMapping("/complete")
 	public ResponseEntity<ResponseVO<Void>> completeMission(HttpServletRequest request,
 		@RequestBody CompleteRequestDto completeRequest){
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 		String title=completeRequest.getTitle();
 		missionService.updateCompleteMission(memberId, title);
@@ -97,7 +97,7 @@ public class MissionController {
 	@GetMapping("/getComplete")
 	public ResponseEntity<ResponseVO<List<Mission>>> getCompleteMission(HttpServletRequest request) {
 
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
 		List<Mission> completeMisison=missionService.getCompleteMission(memberId);
