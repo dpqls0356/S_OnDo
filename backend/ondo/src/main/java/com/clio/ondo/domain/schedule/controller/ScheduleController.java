@@ -6,15 +6,13 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.clio.ondo.domain.chatbot.controller.ChatbotController;
-import com.clio.ondo.domain.schedule.model.ScheduleUpdateDto;
+import com.clio.ondo.domain.schedule.model.Schedule;
+import com.clio.ondo.domain.schedule.model.ScheduleDto;
 import com.clio.ondo.domain.schedule.service.ScheduleService;
 import com.clio.ondo.global.ResponseVO;
 
@@ -25,13 +23,12 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleController {
 	private final ScheduleService scheduleService;
 
-	@GetMapping("/api/v1/counselor/schedule/{counselorId}/{day}")
-	public ResponseEntity<?> getDaySchedule(@PathVariable Long counselorId, @PathVariable String day) {
+	@GetMapping("/api/v1/counselor/schedule/{counselorId}")
+	public ResponseEntity<?> getDaySchedule(@PathVariable Long counselorId) {
 		try{
-			String time = scheduleService.getDaySchedule(day, counselorId);
+			ScheduleDto schedule = scheduleService.getSchedule(counselorId);
 			Map<String, Object> retMap = new HashMap<>();
-			retMap.put("day", day);
-			retMap.put("time", time);
+			retMap.put("schedule", schedule);
 
 			return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseVO<>(true, "일정 조회 성공", retMap));
@@ -42,18 +39,19 @@ public class ScheduleController {
 		}
 	}
 
-	@PutMapping("/api/v1/counselor/schedule/{counselorId}/{day}")
-	public ResponseEntity<?> updateDaySchedule(@PathVariable Long counselorId, @PathVariable String day, @RequestBody ScheduleUpdateDto time) {
+	@PutMapping("/api/v1/counselor/schedule/{counselorId}")
+	public ResponseEntity<?> updateDaySchedule(@PathVariable Long counselorId, @RequestBody ScheduleDto schedule) {
 		try{
-			String updatedTime = scheduleService.updateDaySchedule(day, counselorId, time.getTime());
+			System.out.println(schedule);
+			ScheduleDto resultSchedule = scheduleService.updateSchedule(counselorId, schedule);
 			Map<String, Object> retMap = new HashMap<>();
-			retMap.put("day", day);
-			retMap.put("time", updatedTime);
+			retMap.put("schedule", resultSchedule);
 
 			return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseVO<>(true, "성공적으로 변경 되었습니다. ", retMap));
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(new ResponseVO<>(false, "일정 변경에 실패했습니다.", null));
 		}
