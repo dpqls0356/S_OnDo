@@ -65,13 +65,14 @@ const ChangeSpot = styled.div`
 `;
 function CounselorLayout() {
     const checkLoggedIn = useAuthStore(state => state.checkLoggedIn);
+    const counselorLogout = useAuthStore(state => state.counselorLogout);
     const navigate = useNavigate();
-  // useEffect(() => {
-  //       console.log(checkLoggedIn());
-  //   if (!checkLoggedIn()) {
-  //     navigate('/counselor/login');
-  //   }
-  // }, []); 
+  useEffect(async() => {
+     const isLoggedIn = await checkLoggedIn();
+    if (!isLoggedIn) {
+      navigate('/counselor/login');
+    }
+  }, []);
   return (
     <View>
       <HomeLeft>
@@ -112,7 +113,7 @@ function CounselorLayout() {
           <StyledLink to="">마이페이지</StyledLink>
           <StyledLink to="">비밀번호 변경</StyledLink>
         </Nav>
-        <LogoutBtn>로그아웃</LogoutBtn>
+        <LogoutBtn onClick={counselorLogout}>로그아웃</LogoutBtn>
       </HomeRight>
     </View>
   );

@@ -60,6 +60,14 @@ export const useAuthStore = create((set) => ({
       return false;
     }
   },
+  counselorLogout: async () => {
+    try {
+      await api.post('/counselor/logout');
+      set({ isAuthenticated: false, user: null });
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  },
     checkLoggedIn: async () => {
     const token = Cookies.get('accessToken');
     if (token) {

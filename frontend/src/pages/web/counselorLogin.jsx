@@ -69,7 +69,7 @@ const CounselorLogin = () => {
   const handleLogin = async () => {
     try {
       await counselorLogin(credentials.id, credentials.password, { withCredential: true });
-      navigate('/counselor/home');
+      navigate('/counselor');
     } catch (error) {
       alert('Login failed');
     }
@@ -77,12 +77,12 @@ const CounselorLogin = () => {
 
 
   // 로그인 페이지에 들어올 때마다 인증 여부 확인
-  // useEffect(() => {
-  //   console.log(checkLoggedIn());
-  //   if (checkLoggedIn()) {
-  //     navigate('/counselor/home');
-  //   }
-  // }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때마다 실행
+  useEffect(async() => {
+     const isLoggedIn = await checkLoggedIn();
+    if (isLoggedIn) {
+      navigate('/counselor');
+    }
+  }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때마다 실행
 
   return (
     <View>

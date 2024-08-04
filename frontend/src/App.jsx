@@ -1,16 +1,11 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-<<<<<<< HEAD
 import useAuthStore from "./store/app/authStore";
 
-import CounselorHome from "./pages/web/counselorHome";
 import CounselingRoom from "./pages/web/counselingRoom";
-=======
->>>>>>> dev
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
 
-import CounselingRoom from "./pages/web/counselingRoom";
 import CounselorLogin from "./pages/web/counselorLogin"
 
 import Logopage from "./pages/app/Member/Logopage";
@@ -45,7 +40,7 @@ function App() {
   return (
     <Router>
       <Routes>
-          <Route path="/counselor/home" element={<CounselorLayout />}>
+          <Route path="/counselor" element={<CounselorLayout />}>
           </Route>
           <Route path="/counselor/login" element={<CounselorLogin/>}>
           </Route>
