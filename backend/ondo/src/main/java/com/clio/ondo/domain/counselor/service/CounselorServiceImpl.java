@@ -2,6 +2,7 @@ package com.clio.ondo.domain.counselor.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
@@ -82,5 +83,27 @@ public class CounselorServiceImpl implements CounselorService {
 
         return counselorList;
     }
+
+    //상담사 상세보기
+    @Override
+    public CounselorResponseDto getCounselor(Long counselorId){
+
+        Optional<Counselor> counselor=counselorRepository.findById(counselorId);
+        if(counselor.isPresent()){
+            CounselorResponseDto counselorDto=new CounselorResponseDto();
+            Counselor c=counselor.get();
+            counselorDto.setId(c.getId());
+            counselorDto.setName(c.getName());
+            counselorDto.setField(c.getField());
+            counselorDto.setGender(c.getGender());
+            counselorDto.setSelfIntroduction(c.getSelfIntroduction());
+            counselorDto.setProfileUrl(c.getProfileUrl());
+
+            return counselorDto;
+        }else{
+            return null;
+        }
+    }
+
 
 }
