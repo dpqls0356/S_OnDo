@@ -3,10 +3,14 @@ package com.clio.ondo.domain.schedule.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.schedule.model.Schedule;
+import com.clio.ondo.domain.schedule.model.ScheduleDto;
+
 @Service
 public interface ScheduleService {
-	String getDaySchedule(String day, Long counselorId);
+
+	ScheduleDto getSchedule(Long counselorId);
 
 	@Transactional
-	String updateDaySchedule(String day, Long counselorId, String time);
+	ScheduleDto updateSchedule(Long counselorId, ScheduleDto newSchedule);
 }
