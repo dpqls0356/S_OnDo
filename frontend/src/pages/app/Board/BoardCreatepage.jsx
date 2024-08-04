@@ -38,8 +38,13 @@ const BoardCreatepage = () => {
 
   return (
     <>
+<<<<<<< HEAD
       <form className="CreateForm" onSubmit={handleSubmit}>
         <div>
+=======
+      <form className="CreateForm">
+        <div className="CF-Title">
+>>>>>>> Front
           <input
             maxLength={20}
             id="CreateTitle"
@@ -48,9 +53,9 @@ const BoardCreatepage = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <p onClick={onClickCancel} style={{ cursor: "pointer" }}>
+          <div onClick={onClickCancel} style={{ cursor: "pointer" }}>
             X
-          </p>
+          </div>
         </div>
         <textarea 
           maxLength={300}
