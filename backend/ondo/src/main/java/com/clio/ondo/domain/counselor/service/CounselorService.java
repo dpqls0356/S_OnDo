@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 
 import com.clio.ondo.domain.counselor.model.dto.CounselorLoginRequestDto;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
+import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 
@@ -15,4 +16,5 @@ public interface CounselorService {
     void join(Counselor counselor);
     List<CounselorResponseDto> getCounselorList();
     CounselorResponseDto getCounselor(Long counselorId);
+    List<CounselorResponseDto> filteredList(String name, Gender gender,String field);
 }
