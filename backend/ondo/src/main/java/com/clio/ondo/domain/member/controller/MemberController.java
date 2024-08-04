@@ -1,5 +1,9 @@
 package com.clio.ondo.domain.member.controller;
 
+import java.util.List;
+
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,8 +25,8 @@ import com.clio.ondo.domain.member.model.dto.MemberResponseDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.member.service.MemberService;
+import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.ResponseVO;
-import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
@@ -30,13 +34,15 @@ import com.clio.ondo.global.exception.member.MemberException;
 import com.clio.ondo.global.exception.member.MemberNotFoundException;
 
 import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
+@RequiredArgsConstructor
 @Slf4j
 public class MemberController {
 
@@ -45,10 +51,24 @@ public class MemberController {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 
-	@PostMapping("/login")
-	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto) {
+
+    @PostMapping("/login")
+	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto, HttpServletResponse response) {
 		try {
 			TokenDto token = memberService.login(loginRequestdto);
+			// 쿠키 설정
+			Cookie accessTokenCookie = new Cookie("accessToken", token.getAccessToken());
+			accessTokenCookie.setHttpOnly(true);
+			accessTokenCookie.setPath("/");
+			accessTokenCookie.setMaxAge(3600); // 1 hour
+
+			Cookie refreshTokenCookie = new Cookie("refreshToken", token.getRefreshToken());
+			refreshTokenCookie.setHttpOnly(true);
+			refreshTokenCookie.setPath("/");
+			refreshTokenCookie.setMaxAge(7 * 24 * 3600 * 2); // 2 week
+
+			response.addCookie(accessTokenCookie);
+			response.addCookie(refreshTokenCookie);
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
@@ -58,8 +78,22 @@ public class MemberController {
 	@PostMapping("/logout")
 	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request) {
 		try {
-			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			memberService.logout(token);
+
+			Cookie accessTokenCookie = new Cookie("accessToken", null);
+			accessTokenCookie.setHttpOnly(true);
+			accessTokenCookie.setPath("/");
+			accessTokenCookie.setMaxAge(0);
+
+			Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+			refreshTokenCookie.setHttpOnly(true);
+			refreshTokenCookie.setPath("/");
+			refreshTokenCookie.setMaxAge(0);
+
+			HttpServletResponse response = (HttpServletResponse) request;
+			response.addCookie(accessTokenCookie);
+//			response.addCookie(refreshTokenCookie);
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("logout"));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("로그아웃 실패"));
@@ -81,7 +115,7 @@ public class MemberController {
 
 	@GetMapping("/id")
 	public ResponseEntity<ResponseVO<Long>> getMyId(HttpServletRequest request) {
-		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		Long id = jwtTokenProvider.getIdFromToken(token);
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("id", id));
 	}
@@ -89,9 +123,9 @@ public class MemberController {
 	@GetMapping("/me")
 	public ResponseEntity<ResponseVO<MemberResponseDto>> getMyInfo(HttpServletRequest request) {
 		try {
-			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
-			Authentication authentication = jwtTokenProvider.getAuthentication(token);
-			PrincipalDetails userDetails = (PrincipalDetails)authentication.getPrincipal();
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Authentication authentication = jwtTokenProvider.getMemberAuthentication(token);
+			MemberPrincipalDetails userDetails = (MemberPrincipalDetails)authentication.getPrincipal();
 			Member user = memberRepository.findByEmail(userDetails.getMember().getEmail())
 				.orElseThrow(MemberNotFoundException::new);
 			MemberResponseDto memberResponseDto = MemberResponseDto.builder()
@@ -115,7 +149,7 @@ public class MemberController {
 	public ResponseEntity<ResponseVO<String>> update(@RequestBody UpdateRequestDto updateRequestDto,
 		HttpServletRequest request) {
 		try {
-			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			memberService.updateMember(updateRequestDto, token);
 		} catch (MemberNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("회원 정보 수정 실패"));
@@ -127,7 +161,7 @@ public class MemberController {
 	public ResponseEntity<ResponseVO<String>> delete(@RequestBody DeleteRequestDto deleteRequestDto,
 		HttpServletRequest request) {
 		try {
-			String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			memberService.deleteMember(deleteRequestDto, token);
 		} catch (MemberNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("회원 탈퇴 실패"));
@@ -138,7 +172,7 @@ public class MemberController {
 	@PostMapping("/reissue")
 	public ResponseEntity<ResponseVO<String>> reissueAccessToken(HttpServletRequest request) {
 		try {
-			String refreshToken = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+			String refreshToken = jwtTokenProvider.getJwtTokenFromCookies(request, "refreshToken");
 			String newAccessToken = memberService.reissueAccessToken(refreshToken);
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success(newAccessToken));
 		} catch (AuthenticationException | MemberException e) {
@@ -152,6 +186,18 @@ public class MemberController {
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
+		}
+	}
+
+	@GetMapping("/reservations")
+	public ResponseEntity<ResponseVO<List<Reservation>>> getReservations(HttpServletRequest request) {
+		try {
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
+			List<Reservation> reservations = memberService.getReservationsForMember(id);
+			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("reservations", reservations));
+		} catch (AuthenticationException | MemberException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("예약 목록 불러오기 실패"));
 		}
 	}
 }

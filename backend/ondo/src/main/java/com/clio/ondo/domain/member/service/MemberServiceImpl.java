@@ -1,13 +1,17 @@
 package com.clio.ondo.domain.member.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,13 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.repository.CharacterRepository;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.dto.DeleteRequestDto;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
-import com.clio.ondo.global.auth.OAuth.PrincipalDetails;
+import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
@@ -39,18 +45,21 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberRepository memberRepository;
+	private final CharacterRepository characterRepository;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final AuthenticationManager authenticationManager;
+	private final DaoAuthenticationProvider memberAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
 
-	@Transactional
+    @Transactional
 	public void join(JoinRequestDto joinRequestDto) {
 		Member member = joinRequestDto.toEntity();
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
 		}
+		Character character = member.getCharacter();
+		characterRepository.save(character);
 		memberRepository.save(member);
 	}
 
@@ -67,12 +76,9 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException {
-		Authentication authentication = authenticationManager.authenticate(
-			new UsernamePasswordAuthenticationToken(
-				loginRequestDto.getEmail(),
-				loginRequestDto.getPassword()
-			)
-		);
+		UsernamePasswordAuthenticationToken authToken =
+				new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+		Authentication authentication = memberAuthenticationProvider.authenticate(authToken);
 		String accessToken = jwtTokenProvider.generateAccessToken(authentication);
 		String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
 
@@ -155,12 +161,18 @@ public class MemberServiceImpl implements MemberService {
 				Long id = claims.get("id", Long.class);
 				Member member = findOne(id);
 				log.error(member.toString());
-				PrincipalDetails userDetails = new PrincipalDetails(member);
+				MemberPrincipalDetails userDetails = new MemberPrincipalDetails(member);
 				return jwtTokenProvider.generateAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null));
 			}
 		} catch (MemberException e) {
 			throw new MemberException("토큰 재발급을 실패했습니다.");
 		}
 		return "유효하지 않은 토큰입니다";
+	}
+
+	public List<Reservation> getReservationsForMember(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberNotFoundException("Member not found"));
+		return member.getReservations();
 	}
 }
