@@ -1,47 +1,66 @@
-// 챗알림, MemberProfileCard, footer, Button*2(로그아웃, 회원정보수정)&연결
-// import MemberProfileCard from '../../../components/app/MemberProfileCard'
-import './Mypage.css'
-
 import { useNavigate } from 'react-router-dom';
-
+import { useEffect, useState } from 'react';
+import useAuthStore from '../../../store/app/authStore';
+import axios from 'axios';
 import Button from "../../../components/app/Button";
 import Footer from '../../../components/app/Footer'
-
 import profile from './../../../assets/images/test.png'
-// import notice from './../../../assets/images/notification2.png'
 import notice from './../../../assets/images/notice.png'
+import './Mypage.css'
 
-// const dummyProfileData = {
-//   name: "유싸피",
-//   nickname: "뽀용",
-//   email: "apple@gmail.com"
-//};
-
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api/v1',
+  withCredentials: true // 쿠키를 포함하기 위해 필요
+});
 
 const MyPage = () => {
-  const nav = useNavigate()
+  const nav = useNavigate();
+  const { logout, checkAuth, user } = useAuthStore();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const init = async () => {
+      const isAuth = await checkAuth();
+      if (!isAuth) {
+        nav('/member/login');
+      }
+      setLoading(false);
+    };
+
+    init();
+  }, [checkAuth, nav]);
 
   const onClickInfoEdit = () => {
-    nav('/member/info/유저아이디/update')
+    if (user) {
+      nav(`/member/info/${user.id}/update`);
+    }
   }
 
-  const onClickLogout = () => {
-    console.log('로그아웃!')
-    console.log('로그아웃로직 추가해야 함')
+  const onClickLogout = async () => {
+    await logout();
+    nav('/member/login');
   }
   
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className='Mypage'>
       <div className="UserCardBack">
         <div id='My-notice'>
           <p>My Page</p>
-          <img src={notice} />
+          <img src={notice} alt="Notice" />
         </div>
         <div className="UserCard">
-          <img src={profile} />
+          <img src={user.profileUrl || profile} alt="Profile" />
           <div className='UserInfo'>
-            <p id='MP-UserName'>이싸피 님(별명)</p>
-            <p id='MP-Email'>Leessafy@gmail.com</p>
+            <p id='MP-UserName'>{user.name} 님({user.nickname})</p>
+            <p id='MP-Email'>{user.email}</p>
           </div>
         </div>
       </div>
