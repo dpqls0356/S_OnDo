@@ -58,6 +58,7 @@ function Reservation() {
         { customSessionId: sessionId },
         {
           headers: { "Content-Type": "application/json" },
+          withCredentials: true // default를 true로 설정
         }
       );
 

@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.counseling;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -51,11 +52,10 @@ public class Openvidu {
     if (true) {
       // 임의의 sessionId 생성
       String customSessionId = UUID.randomUUID().toString();
-//        String customSessionId  = "testSession";
       // 세션 속성 설정
       SessionProperties properties = SessionProperties.fromJson(params)
-          .customSessionId(customSessionId)
-          .build();
+              .customSessionId(customSessionId)
+              .build();
 
       Session session = openvidu.createSession(properties);
 
@@ -85,16 +85,17 @@ public class Openvidu {
   public ResponseEntity<ResponseVO<String>> leaveSession(@PathVariable("sessionId") String sessionId,
       @RequestBody Map<String, Object> params)
       throws OpenViduJavaClientException, OpenViduHttpException {
-    Session session = openvidu.getActiveSession(sessionId); // 활성 세션을 가져온다.
-    if (session == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("세션 종료 실패: 세션을 찾을 수 없습니다."));
-    }
     // ---- 상담자라면 종료
-    // 요청 본문에서 사용자 ID를 가져오기
-    String user = (String) params.get("user");
-
-    // 해당 사용자를 세션에서 강제로 퇴장시킨다.
-    session.forceDisconnect(user);
+    if(true){
+      Session session = openvidu.getActiveSession(sessionId); // 활성 세션을 가져온다.
+      if (session == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("세션 종료 실패: 세션을 찾을 수 없습니다."));
+      }
+      List<Connection> connections = session.getActiveConnections();
+      for (Connection connection : connections) {
+        session.forceDisconnect(connection);
+      }
+    }
     return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("사용자가 세션에서 퇴장되었습니다."));
   }
 }
