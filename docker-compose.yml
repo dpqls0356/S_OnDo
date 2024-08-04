@@ -43,7 +43,9 @@ services:
       - backwebnet
 
   backend:
-    image: clio_backend
+    build:
+      context: ./backend/ondo
+      dockerfile: Dockerfile
     container_name: backend
     ports:
       - "8080:8080"
@@ -57,7 +59,9 @@ services:
       - backwebnet
 
   frontend:
-    image: clio_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: frontend
     ports:
       - "3000:80"
