@@ -30,31 +30,6 @@ function MissionPage() {
   const { missions, setMissions, completeMission } = useMissionStore();
   const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   async function fetchMissions() {
-  //     try {
-  //       const [typicalResponse, dailyResponse] = await Promise.all([
-  //         api.get('/api/v1/mission/todayTypical'),
-  //         api.get('/api/v1/mission/todayDaily')
-  //       ]);
-  
-  //       if (typicalResponse.data.success && dailyResponse.data.success) {
-  //         setMissions({
-  //           typical: typicalResponse.data.data.typicalMission,
-  //           daily: dailyResponse.data.data.dailyMission
-  //         });
-  //       } else {
-  //         throw new Error('서버에서 미션 데이터를 가져오는데 실패했습니다.');
-  //       }
-  //     } catch (error) {
-  //       console.error('미션 가져오기 실패:', error);
-  //       setError('미션을 불러오는 데 실패했습니다. 잠시 후 다시 시도해 주세요.');
-  //     }
-  //   }
-  
-  //   fetchMissions();
-  // }, [setMissions]);
-
   // 더미데이터로 테스트
   const tempMissions = {
     typical: [
@@ -107,8 +82,9 @@ function MissionPage() {
         setMissions(tempMissions);
         setError('서버에서 미션을 불러오는 데 실패했습니다. 임시 데이터를 표시합니다.');
       }
+      console.log('Missions after fetch:', missions);
     }
-  
+
     fetchMissions();
   }, [setMissions]);
 
@@ -127,7 +103,7 @@ function MissionPage() {
 
   const renderMissions = (type) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {missions[type]?.map((mission, index) => (
+      {(missions[type] || []).map((mission, index) => (
         <MissionButton
           key={index}
           mission={mission}
@@ -147,13 +123,12 @@ function MissionPage() {
 
   const testExp = totalMissionsCount > 0 ? (completedMissionsCount / totalMissionsCount) * 100 : 0;
 
-  if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
-  }
+  console.log('Missions before rendering:', missions);
 
   return (
     <div className='scroll'>
       <div className="container mx-auto p-4" id='MissionPage'>
+        {error && <div className="text-center text-red-500 mb-4">{error}</div>}
         <div className='charCard'>
           <img src={char} alt="Character" />
           <div className='charCard-r'>
