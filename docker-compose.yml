@@ -62,7 +62,7 @@ services:
     ports:
       - "3000:80"
     networks:
-      - webnet
+      - backwebnet
 
 volumes:
   mysql-data:
