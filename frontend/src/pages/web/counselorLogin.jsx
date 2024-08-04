@@ -77,11 +77,12 @@ const CounselorLogin = () => {
 
 
   // 로그인 페이지에 들어올 때마다 인증 여부 확인
-  useEffect(() => {
-    if (checkLoggedIn) {
-      navigate('/counselor/home');
-    }
-  }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때마다 실행
+  // useEffect(() => {
+  //   console.log(checkLoggedIn());
+  //   if (checkLoggedIn()) {
+  //     navigate('/counselor/home');
+  //   }
+  // }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때마다 실행
 
   return (
     <View>
