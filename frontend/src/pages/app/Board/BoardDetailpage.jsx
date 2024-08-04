@@ -1,26 +1,51 @@
 import "./BoardDetailpage.css";
 
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import useCommentStore from "../../../store/app/useCommentStore";
+import authStore from '../../../store/app/authStore'
 import CommentList from "../../../components/app/Comment/CommentList";
-import Footer from "../../../components/app/Footer";
 import Button from "../../../components/app/Button";
 
 import calendar from "./../../../assets/images/calendar.png";
 import profile from "./../../../assets/images/test.png";
-import commentbtn from "./../../../assets/images/edit-2.png";
+import commentbtn from "./../../../assets/images/send.png";
 
 const BoardDetailpage = () => {
   const comment = useRef(null);
-  const onClickCreateComment = () => {
-    console.log(comment.current.value);
+  const nav = useNavigate();
+  const { articleId } = useParams(); // URL에서 articleId 가져오기
+  console.log('articleId', articleId)
+  const { addComment } = useCommentStore(); // 댓글 추가 함수 가져오기
+
+  const { user } = authStore()
+
+
+  const onClickCreateComment = async () => {
+    if (comment.current.value.trim() === "") return;
+    
+    const commentData = {
+      content: comment.current.value,
+      article_id: articleId,
+      // 아래 정보는 실제 로그인된 사용자 정보로 대체해야 합니다
+      member_id: user.id, 
+      member_name: user.name
+    };
+
+    // 에러 확인
+    console.log("Sending comment data:", commentData); // 추가
+
+
+    const success = await addComment(commentData);
+    if (success) {
+      comment.current.value = "";
+    }
   };
 
-  const nav = useNavigate();
   const onClickUpdate = () => {
-    nav("/member/board/게시글 아이디/update");
+    nav(`/member/board/${articleId}/update`);
   };
+
   return (
     <div className="scroll">
     <div className="DetailScroll">
@@ -57,36 +82,29 @@ const BoardDetailpage = () => {
 
         {/* 댓글 목록 */}
         <div className="BD-center">
-
           <div className="CommentList">
             <div id="comment-line"></div>
-            <div className="CmtList">
-              <CommentList />
-            </div>
+              <CommentList articleId={articleId} />
           </div>
+
           {/* 댓글 작성 */}
-          <form className="CommentForm">
-            <textarea
-              ref={comment}
-              maxLength={100}
-              name=""
-              id=""
-              placeholder="댓글을 달아보세요."
-            ></textarea>
-            <img
-              onClick={onClickCreateComment}
-              src={commentbtn}
-              style={{ cursor: "pointer" }}
-            />
-          </form>
-          <div className="emptybox2">
-          
+          <form className="CommentForm" onSubmit={(e) => e.preventDefault()}>
+              <textarea
+                ref={comment}
+                maxLength={100}
+                placeholder="댓글을 달아보세요."
+              ></textarea>
+              <img
+                onClick={onClickCreateComment}
+                src={commentbtn}
+                alt="댓글 작성"
+                style={{ cursor: "pointer" }}
+              />
+            </form>
+            <div className="emptybox2"></div>
           </div>
         </div>
-
-        {/* <Footer /> */}
       </div>
-    </div>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import axios from 'axios'
 
+// articleId가 제대로 할당 아직 안 됨!!
+
 const useDataStore = create((set) => ({
   data: null,
   isLoading: false,

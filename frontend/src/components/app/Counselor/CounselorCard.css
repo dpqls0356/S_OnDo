@@ -4,6 +4,20 @@
   gap: 4vh;
 }
 
+.slick-active{
+  /* position: absolute; */
+  /* bottom: 40px; */
+  /* position: absolute; */
+}
+
+/* .ConSelorCardIn{
+  display: flex;
+  float: left;
+}
+
+.CSCardFooter{
+  float: left;
+} */
 
 
 .CounselorCard {
@@ -136,6 +150,7 @@
 }
 
 #DdayBtn {
+  z-index: 100;
   width: 85%; /* 버튼 너비 고정 */
   height: 35px; /* 버튼 높이 고정 */
   border-radius: 30px;

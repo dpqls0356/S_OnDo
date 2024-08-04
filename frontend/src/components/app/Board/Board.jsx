@@ -16,9 +16,7 @@ const Board = () => {
 
   return (
     <>
-      <p>BoardList.css</p>
-      <p>게시글 목록 로직 추가해야함</p>
-      {/* <p>이거 자체를 for문 돌려야 하나....? for문 돌면서 넘어온 데이터 받고....</p> */}
+      {/* 게시글 하나에 대한 카드 형태의 컴포넌트 -> 밑에 다 지우고 DB 데이터 뿌릴 수 있게 */}
       <div
         onClick={onClickBoard}
         className="BoardCard"
@@ -26,7 +24,9 @@ const Board = () => {
       >
         {/* onClickBoard(게시글 번호 혹은 게시글 객체 넘기기) */}
         <div className="BoardTitle">
-          <p>제목</p>
+          <div id="BD-Title">
+            <p>일이삼사오육칠팔구십십일</p>
+          </div>
           <div className="BoardCreate">
             <img src={calendar} />
             <p>20xx.xx.xx</p>
@@ -35,7 +35,7 @@ const Board = () => {
 
         <div className="BoardContent">
           {/* 보이는 글자수 제한 해야 함 */}
-          <p>내용</p>
+          <p>일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십육십일asfafasfafffaaaaaaaaassssssssssssssssssss</p>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ const Board = () => {
         </div>
 
         <div className="BoardContent">
-          <p>내용</p>
+          <p>adlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosooadlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosooadlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosoo</p>
         </div>
       </div>
       <div
@@ -90,7 +90,7 @@ const Board = () => {
         </div>
 
         <div className="BoardContent">
-          <p>내용</p>
+          <p>prijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosooadlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;gjzik/;jdzmfi/oa;</p>
         </div>
       </div>
       <div
