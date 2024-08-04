@@ -5,7 +5,7 @@ import Board from './Board'
 
 const BoardList = () => {
   return (
-    // 게시글 리스트 불러와서 아래 컴포넌트 for문 돌려야함
+    // for문 돌리듯이 돌려서 Board 뿌리게 하기
     <>
       <div>
         <Board />

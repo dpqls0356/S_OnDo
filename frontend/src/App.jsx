@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import useAuthStore from "./store/app/authStore";
+
 import CounselorHome from "./pages/web/counselorHome";
 import CounselingRoom from "./pages/web/counselingRoom";
 import CounselorLayout from "./pages/web/counselorLayout";
@@ -28,6 +30,12 @@ import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
 
 function App() {
   // const test = false;
+  const checkAuth = useAuthStore(state => state.checkAuth)
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
   return (
     <Router>
       <Routes>

@@ -16,8 +16,7 @@ const Board = () => {
 
   return (
     <>
-      {/* <p>게시글 목록 로직 추가해야함</p> */}
-      {/* <p>이거 자체를 for문 돌려야 하나....? for문 돌면서 넘어온 데이터 받고....</p> */}
+      {/* 게시글 하나에 대한 카드 형태의 컴포넌트 -> 밑에 다 지우고 DB 데이터 뿌릴 수 있게 */}
       <div
         onClick={onClickBoard}
         className="BoardCard"

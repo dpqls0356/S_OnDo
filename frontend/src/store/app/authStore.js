@@ -6,9 +6,10 @@ const api = axios.create({
   withCredentials: true
 });
 
-export const useAuthStore = create((set, get) => ({
+export const useAuthStore = create((set) => ({
   isAuthenticated: false,
   user: null,
+ 
   login: async (email, password) => {
     try {
       const response = await api.post('/member/login', { email, password });
@@ -48,3 +49,5 @@ export const useAuthStore = create((set, get) => ({
 }));
 
 export default useAuthStore;
+
+
