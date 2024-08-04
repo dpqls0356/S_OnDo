@@ -13,6 +13,6 @@ public interface MemberReservationService {
 
 	List<ReservationResponseDto> getReservationList(Long memberId);
 	void cancelReservation(Long reservationId);
-	List<ScheduleResponseDto> getCounselorSchedule(Long counselorId);
-	void makeReservation(ReservationRequestDto requestDto);
+	List<String> getCounselorSchedule(Long counselorId);
+	void makeReservation(ReservationRequestDto requestDto,Long memberId);
 }

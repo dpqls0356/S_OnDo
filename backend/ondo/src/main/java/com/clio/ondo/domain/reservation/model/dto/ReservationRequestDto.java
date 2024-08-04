@@ -14,9 +14,7 @@ import lombok.Setter;
 public class ReservationRequestDto {
 
 	private Long counselorId;      // 상담사 ID
-	private Long memberId;         // 회원 ID
-
-	private LocalDateTime reservationDate; // 예약 날짜 및 시간
+	private String reservationDate; // 예약 날짜 및 시간
 	private String detail; // 상담 예약 상세, 메모 남긴 부분
 
 }
