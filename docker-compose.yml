@@ -14,7 +14,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - webnet
+      - backwebnet
     restart: always
 
   redis:
@@ -23,7 +23,7 @@ services:
     ports:
       - "16379:6379"
     networks:
-      - webnet
+      - backwebnet
     volumes:
       - redis-data:/var/lib/redis
     restart: always
@@ -39,6 +39,8 @@ services:
     volumes:
       - mongo-data:/data/db
     restart: always
+    networks:
+      - backwebnet
 
   backend:
     image: clio_backend
@@ -52,7 +54,7 @@ services:
       - redis
       - mongo
     networks:
-      - webnet
+      - backwebnet
 
   frontend:
     image: clio_frontend
@@ -68,4 +70,4 @@ volumes:
   mongo-data:
 
 networks:
-  webnet:
+  backwebnet:
