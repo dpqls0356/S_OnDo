@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.schedule.service;
 
+import com.clio.ondo.domain.reservation.model.CounselorReservationAddDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,6 +9,8 @@ import com.clio.ondo.domain.schedule.model.ScheduleDto;
 import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +30,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 		schedule.update(newSchedule);
 
 		return getSchedule(counselorId);
+	}
+
+	@Override
+	public List<CounselorReservationAddDto> getDaySchedule(Long counselorId, String date){
+		return null;
+	}
+
+	@Override
+	public List<CounselorReservationAddDto> setDaySchedule(Long counselorId, String date){
+		return null;
 	}
 }
