@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: clio
+      MYSQL_DATABASE: ondo
+      MYSQL_USER: clio
+      MYSQL_PASSWORD: clio
+    ports:
+      - "13306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - webnet
+    restart: always
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "16379:6379"
+    networks:
+      - webnet
+    volumes:
+      - redis-data:/var/lib/redis
+    restart: always
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: clio
+      MONGO_INITDB_ROOT_PASSWORD: clio
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+
+  backend:
+    image: clio_backend
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - mysql
+      - redis
+      - mongo
+    networks:
+      - webnet
+
+  frontend:
+    image: clio_frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    networks:
+      - webnet
+
+volumes:
+  mysql-data:
+  redis-data:
+  mongo-data:
+
+networks:
+  webnet:
