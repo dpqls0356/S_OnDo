@@ -6,6 +6,9 @@ import com.clio.ondo.domain.board.repository.CustomBoardRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.clio.ondo.global.exception.member.NotFoundException;
+import com.clio.ondo.global.exception.member.UnauthorizedException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,19 +56,21 @@ public class BoardServiceImpl implements BoardService {
   예외처리
    */
   @Override
-  public void deleteArticle(ObjectId articleId) {
+  public void deleteArticle(ObjectId articleId,Long memberId) {
     Optional<Board> existingArticleOpt = boardRepository.findById(articleId);
     if (existingArticleOpt.isPresent()) {
       //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
       Board existingArticle = existingArticleOpt.get();
-      if(existingArticle.getMember_id().equals(existingArticle.getMember_id())){
+      if(existingArticle.getMember_id().equals(memberId.toString())){
         boardRepository.deleteById(articleId);
       }
       else{
         //소유주가 아니기에 예외처리
+        throw new UnauthorizedException("잘못된 접근입니다.");
       }
     } else {
       // 게시글이 존재하지 않을 경우 예외 처리
+      throw new NotFoundException("존재하지 않은 게시글입니다.");
     }
   }
 
@@ -79,19 +84,22 @@ public class BoardServiceImpl implements BoardService {
   예외처리
    */
   @Override
-  public void updateArticle(ObjectId articleId, Board modifiedArticle) {
-    Optional<Board> existingArticleOpt = boardRepository.findById(articleId);
+  public void updateArticle(String articleId, Board modifiedArticle,Long memberId) {
+    ObjectId objectArtilceId = new ObjectId(articleId);
+    Optional<Board> existingArticleOpt = boardRepository.findById(objectArtilceId);
     if (existingArticleOpt.isPresent()) {
       //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
       Board existingArticle = existingArticleOpt.get();
-      if(existingArticle.getMember_id().equals(existingArticle.getMember_id())){
-        customBoardRepositoryImpl.updateArticle(articleId,modifiedArticle);
+      if(existingArticle.getMember_id().equals(memberId.toString())){
+        customBoardRepositoryImpl.updateArticle(objectArtilceId,modifiedArticle);
       }
       else{
         //소유주가 아니기에 예외처리
+        throw new UnauthorizedException("잘못된 접근입니다.");
       }
     } else {
       // 게시글이 존재하지 않을 경우 예외 처리
+      throw new NotFoundException("존재하지 않은 게시글입니다.");
     }
   }
 

@@ -5,6 +5,10 @@ spring:
     password: clio
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  sql:
+    init:
+      mode: always
+
   data:
     mongodb:
       host: localhost
@@ -32,6 +36,10 @@ spring:
   profiles:
     active: local
     include: oauth
+
+  batch:
+    job:
+      enabled: false
 
 logging:
   level:

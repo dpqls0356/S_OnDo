@@ -5,6 +5,8 @@ import com.clio.ondo.domain.mission.model.MissionDetail;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 public interface MissionService {
 
 	// 스케줄링 된 메서드
@@ -27,4 +29,7 @@ public interface MissionService {
 
 	// 멤버별 완료한 특별미션 전체조회
 	List<Mission> getCompleteMission(Long memberId);
+
+	@Transactional
+	void addCompleteMission(Long memberId, List<MissionDetail> missionDetails);
 }

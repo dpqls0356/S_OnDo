@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 public interface CommentService {
   public void saveComment(Comment comment);
 
-  void deleteComment(ObjectId commentId);
+  void deleteComment(ObjectId commentId,Long memberId);
 
-  void updateComment(ObjectId commentId, Comment modifiedComment);
+  void updateComment(ObjectId commentId, Comment modifiedComment,Long memberId);
 
-  public Page<Comment> getComments(Pageable pageble);
+  public Page<Comment> getComments(Pageable pageble,String articleId);
 }

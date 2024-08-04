@@ -1,13 +1,14 @@
 package com.clio.ondo.domain.board.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.model.Comment;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-//Board 도메인 객체를 처리할 때 ID를 ObjectId로 처리
 public interface CommentRepository extends MongoRepository<Comment, ObjectId> {
+  Page<Comment> findByArticleId(String articleId, Pageable pageable);
 }

@@ -7,7 +7,7 @@ import Footer from "../../../components/app/Footer";
 import character from "./../../../assets/images/공통_캐릭터.png";
 import chat from "./../../../assets/images/chat.png";
 
-import back_img from './../../../assets/images/home_back.jpg'
+import back_img from './../../../assets/images/home_back2.jpg'
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -34,27 +34,30 @@ const Homepage = () => {
   return (
     <div className="homepage">
     {/* <img src={back_img} /> */}
-      <div className="charaInfo">
-        <p>이름</p>
-        <p>Lv.5</p>
+      <div className="home-content">
+        <div className="charaInfo">
+          <p id="char-name">다람이</p>
+          <p id="char-level">Lv.5</p>
       </div>
       {/* <div className="ballon">
         <p>안녕</p>
         </div> */}
-      <div className="center">
-        <div>
-          <Thermometer />
-        </div>
-        <div className="centerChara">
-          <Balloon text={'혹시 내 도토리 봤어?? 분명 아까까지만 해도 옆에 있었던 것 같은데...'} />
-          <img style={{ height: 170 }} src={character} />
-        </div>
+      <div id="thermometer">
+        <Thermometer />
+      </div>
+      <div className="Char-ballon">
+        <Balloon text={'혹시 내 도토리 봤어?? 분명 아까까지만 해도 옆에 있었던 것 같은데...'} />
+      </div>
+      <div className="Char-daram">
+        <img style={{ height: 170 }} src={character} />
       </div>
       <div className="chatBtn">
         <img onClick={onClickChat} src={chat} style={{ cursor: "pointer" }} />
       </div>
+    </div>
+      <img id="back-img" src={back_img} />
       <div id="footer">
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );
