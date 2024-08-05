@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import useAuthStore from '../../store/app/authStore';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import useAuthStore from "../../store/app/authStore";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const View = styled.div`
   display: flex;
@@ -47,46 +47,47 @@ const Button = styled.button`
   cursor: pointer;
   margin-top: 20px;
   transition: background-color 0.3s ease;
-  
+
   &:hover {
     background-color: #f0c050;
   }
 `;
 
 const CounselorLogin = () => {
-  const [credentials, setCredentials] = useState({ id: '', password: '' });
-  const counselorLogin = useAuthStore(state => state.counselorLogin);
-  const checkLoggedIn = useAuthStore(state => state.checkLoggedIn);
+  const [credentials, setCredentials] = useState({ id: "", password: "" });
+  const counselorLogin = useAuthStore((state) => state.counselorLogin);
+  const checkLoggedIn = useAuthStore((state) => state.checkLoggedIn);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials({
       ...credentials,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleLogin = async () => {
     try {
-      await counselorLogin(credentials.id, credentials.password, { withCredential: true });
-      navigate('/counselor');
+      await counselorLogin(credentials.id, credentials.password, {
+        withCredential: true,
+      });
+      navigate("/counselor");
     } catch (error) {
-      alert('Login failed');
+      alert("Login failed");
     }
   };
 
-
-  // 로그인 페이지에 들어올 때마다 인증 여부 확인
-  useEffect(async() => {
-     const isLoggedIn = await checkLoggedIn();
-    if (isLoggedIn) {
-      navigate('/counselor');
-    }
-  }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때마다 실행
+  // // 로그인 페이지에 들어올 때마다 인증 여부 확인
+  // useEffect(async () => {
+  //   const isLoggedIn = await checkLoggedIn();
+  //   if (isLoggedIn) {
+  //     navigate("/counselor");
+  //   }
+  // }, []); // 빈 배열로 두어 컴포넌트가 마운트될 때마다 실행
 
   return (
     <View>
-      <Logo src="logo.png" alt="Logo" /> 
+      <Logo src="logo.png" alt="Logo" />
       <Subtitle>당신의 잠든 일상을 깨우는, 따스한</Subtitle>
       <Input
         type="text"
