@@ -5,8 +5,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
-
+import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
+import com.clio.ondo.domain.reservation.service.CounselorReservationService;
 import com.clio.ondo.global.ResponseVO;
+import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
@@ -30,7 +35,10 @@ import io.openvidu.java.client.SessionProperties;
 @CrossOrigin(origins = "*")
 @RestController()
 @RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class Openvidu {
+
+  private final JwtTokenProvider jwtTokenProvider;
 
   @Value("${openvidu.url}")
   private String OPENVIDU_URL;
@@ -46,9 +54,11 @@ public class Openvidu {
   }
 
   @PostMapping("/counseling/sessions")
-  public ResponseEntity<ResponseVO<String>> initializeSession(@RequestBody(required = false) Map<String, Object> params)
+  public ResponseEntity<ResponseVO<String>> initializeSession(@RequestBody(required = false) Map<String, Object> params, HttpServletRequest request)
       throws OpenViduJavaClientException, OpenViduHttpException {
     // ----- 상담사 판단
+    String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+    Long id = jwtTokenProvider.getIdFromToken(token);
     if (true) {
       // 임의의 sessionId 생성
       String customSessionId = UUID.randomUUID().toString();
