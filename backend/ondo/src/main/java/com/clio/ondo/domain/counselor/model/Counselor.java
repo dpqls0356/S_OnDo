@@ -3,6 +3,7 @@ package com.clio.ondo.domain.counselor.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.clio.ondo.domain.career.model.Career;
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.member.model.Role;
 import com.clio.ondo.domain.reservation.model.Reservation;
@@ -52,6 +53,9 @@ public class Counselor {
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@OneToMany(mappedBy="counselor")
+	private List<Career> career=new ArrayList<>();
 
 	@Builder
 	public Counselor(String counselorId, String password, String name, String field, String selfIntroduction, String profileUrl, Gender gender, Role role) {
