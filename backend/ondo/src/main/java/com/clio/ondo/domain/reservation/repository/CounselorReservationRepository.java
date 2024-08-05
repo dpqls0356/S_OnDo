@@ -21,6 +21,6 @@ public interface CounselorReservationRepository extends JpaRepository<Reservatio
 	@Transactional
 	void deleteEntitiesByCounselorIdAndReservationDateBetween(Long counselorId, LocalDateTime from, LocalDateTime to);
 
-	@Query("select r from Reservation r where r.counselor.id = :counselorId")
+	@Query("select r from Reservation r where r.counselor.id = :counselorId order by r.reservationDate desc")
 	Page<Reservation> findByCounselorId(@Param("counselorId") Long counselorId, Pageable pageable);
 }

@@ -7,5 +7,5 @@ import com.clio.ondo.domain.counselDetail.model.CounselDetail;
 
 
 public interface CounselDetailRepository extends JpaRepository<CounselDetail, Long> {
-	public CounselDetail findCOunselDetailById(Long id);
+	public CounselDetail findCounselDetailById(Long id);
 }

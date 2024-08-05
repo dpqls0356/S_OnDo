@@ -29,4 +29,8 @@ public class CounselDetail {
 		this.reservation = reservation;
 		this.content = content;
 	}
+
+	public void updateContent(String content){
+		this.content = content;
+	}
 }
