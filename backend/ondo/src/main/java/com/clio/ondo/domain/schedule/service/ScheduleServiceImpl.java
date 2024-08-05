@@ -65,7 +65,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		LocalDateTime start = convertStartDate(dateStr);
 		LocalDateTime end = convertEndDate(dateStr);
 
-		counselorReservationRepository.deleteByCounselorIdAndReservationDate(counselorId, start, end);
+		counselorReservationRepository.deleteEntitiesByCounselorIdAndReservationDateBetween(counselorId, start, end);
 		List<Reservation> inputReservation = reservations.stream()
 			.map(reservation -> {
 				Reservation r = new Reservation();
