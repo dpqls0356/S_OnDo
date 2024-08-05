@@ -56,6 +56,7 @@ const Nav = styled.ul`
   flex: 1;
   display: flex;
   flex-direction: column;
+  text-align: center;
 `;
 const LogoutBtn = styled.button`
   background-color: rgba(0, 0, 0, 0);
