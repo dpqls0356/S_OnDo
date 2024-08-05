@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://mysql:13306/ondo?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://mysql:3306/ondo?serverTimezone=Asia/Seoul
     username: clio
     password: clio
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,7 +17,7 @@ spring:
 
     redis:
       host: redis
-      port: 16379
+      port: 6379
 
   jpa:
     hibernate:
@@ -28,13 +28,11 @@ spring:
 
   jwt:
     secret: jwtsecrettoken
-    # 30분 1800000
     access-token-expiration: 1800000
-    # 2주일 1209600000
     refresh-token-expiration: 1209600000
 
   profiles:
-    active: local
+    active: prod
     include: oauth
 
   batch:
