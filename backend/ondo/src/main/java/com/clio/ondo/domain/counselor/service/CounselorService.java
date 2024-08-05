@@ -22,4 +22,6 @@ public interface CounselorService {
     CounselorResponseDto getCounselor(Long counselorId);
     List<CounselorResponseDto> filteredList(String name, Gender gender,String field);
 	Optional<Counselor> getCounselorEntity(Long id);
+
+    void logout(String token);
 }
