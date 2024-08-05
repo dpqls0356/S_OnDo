@@ -83,22 +83,22 @@ public class ScheduleController {
 		}
 	}
 
-	@PostMapping("/api/v1/counselor/schedule/{date}")
-	public ResponseEntity<?> setDaySchedule(HttpServletRequest request, @PathVariable String date, @RequestBody) {
-		try{
-			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
-			Long id = jwtTokenProvider.getIdFromToken(token);
-
-			List<CounselorReservationAddDto> daySchedule = scheduleService.setDaySchedule(id, date);
-			Map<String, Object> retMap = new HashMap<>();
-			retMap.put("schedule", daySchedule);
-
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseVO<>(true, "일정 조회 성공", retMap));
-		}
-		catch(Exception e){
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new ResponseVO<>(false, "일정을 가져올 수 없습니다.", null));
-		}
-	}
+	// @PostMapping("/api/v1/counselor/schedule/{date}")
+	// public ResponseEntity<?> setDaySchedule(HttpServletRequest request, @PathVariable String date, @RequestBody) {
+	// 	try{
+	// 		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+	// 		Long id = jwtTokenProvider.getIdFromToken(token);
+	//
+	// 		List<CounselorReservationAddDto> daySchedule = scheduleService.setDaySchedule(id, date);
+	// 		Map<String, Object> retMap = new HashMap<>();
+	// 		retMap.put("schedule", daySchedule);
+	//
+	// 		return ResponseEntity.status(HttpStatus.OK)
+	// 				.body(new ResponseVO<>(true, "일정 조회 성공", retMap));
+	// 	}
+	// 	catch(Exception e){
+	// 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	// 				.body(new ResponseVO<>(false, "일정을 가져올 수 없습니다.", null));
+	// 	}
+	// }
 }
