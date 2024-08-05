@@ -1,52 +1,101 @@
-// counselingRoom.jsx
-import { OpenVidu } from "openvidu-browser";
-import axios from "axios";
-import { useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
-import UserVideoComponent from "./components/openVideoComponent";
+import { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { OpenVidu } from 'openvidu-browser';
+import axios from 'axios';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import UserVideoComponent from './components/counseling/openVideoComponent';
+import LoadingComponent from './components/counseling/loadingComponent';
+import PreJoinComponent from './components/counseling/preJoinComponent';
+import { faMicrophoneSlash ,faMicrophone} from "@fortawesome/free-solid-svg-icons";
+import SideBar from './components/counseling/sidebarComponent';
+const View = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+`;
+const WebCamView = styled.div`
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #000000;
+`;
+const VideoView = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    #main-video{
+      padding: 10px;
+      border-radius: 50px;
+    border: 5px solid yellow;
+    }
+    video{
+      border-radius: 50px;
+    }
 
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/";
+`;
+const Nav = styled.div`
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  button {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0px 5px;
+    background-color: #333333;
+    & > div > svg {
+      color: white;
+    }
+    &:nth-child(3) {
+      background-color: #f83d39;
+    
+    }
+  }`;
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
 
 const CounselingRoom = () => {
   const location = useLocation();
   const sessionId = location.state.sessionId;
-
-  const [myUserName, setMyUserName] = useState("Participant" + Math.floor(Math.random() * 100));
+  const navigate = useNavigate();
+  const [myUserName, setMyUserName] = useState();
   const [session, setSession] = useState(undefined);
-  const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
-  const [subscribers, setSubscribers] = useState([]);
+  const [subscriber, setSubscriber] = useState(undefined);
   const [currentVideoDevice, setCurrentVideoDevice] = useState(undefined);
-
-  const handleMainVideoStream = useCallback(
-    (stream) => {
-      if (mainStreamManager !== stream) {
-        setMainStreamManager(stream);
-      }
-    },
-    [mainStreamManager]
-  );
+  const [micStatus, setMicStatus] = useState(true);
+  const [cameraStatus, setCameraStatus] = useState(true);
+  const [preJoin, setPreJoin] = useState(true);
 
   const joinSession = useCallback(
-    async () => {
+    async (micStatus, cameraStatus) => {
       const OV = new OpenVidu();
       const mySession = OV.initSession();
 
-      mySession.on("streamCreated", (event) => {
+      mySession.on('streamCreated', (event) => {
         const subscriber = mySession.subscribe(event.stream, undefined);
-        setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+        setSubscriber(subscriber);
       });
 
-      mySession.on("streamDestroyed", (event) => {
-        setSubscribers((prevSubscribers) =>
-          prevSubscribers.filter((sub) => sub !== event.stream.streamManager)
-        );
+      mySession.on('streamDestroyed', (event) => {
+        if (subscriber === event.stream.streamManager) {
+          setSubscriber(undefined);
+        }
       });
 
-      mySession.on("exception", (exception) => {
+      mySession.on('exception', (exception) => {
         console.warn(exception);
       });
-
       const token = await getToken(sessionId);
 
       try {
@@ -61,11 +110,11 @@ const CounselingRoom = () => {
         const publisher = await OV.initPublisherAsync(undefined, {
           audioSource: undefined,
           videoSource: undefined,
-          publishAudio: true,
-          publishVideo: true,
-          resolution: "640x480",
+          publishAudio: micStatus,
+          publishVideo: cameraStatus,
+          resolution: '640x480',
           frameRate: 30,
-          insertMode: "APPEND",
+          insertMode: 'APPEND',
           mirror: false,
         });
 
@@ -73,7 +122,7 @@ const CounselingRoom = () => {
 
         const devices = await OV.getDevices();
         const videoDevices = devices.filter(
-          (device) => device.kind === "videoinput"
+          (device) => device.kind === 'videoinput'
         );
 
         const currentVideoDeviceId = publisher.stream
@@ -86,10 +135,9 @@ const CounselingRoom = () => {
 
         setSession(mySession);
         setPublisher(publisher);
-        setMainStreamManager(publisher);
         setCurrentVideoDevice(currentVideoDevice);
       } catch (error) {
-        console.error("Error initializing publisher:", error);
+        console.error('Error initializing publisher:', error);
       }
     },
     [myUserName, sessionId]
@@ -100,128 +148,144 @@ const CounselingRoom = () => {
       session.disconnect();
     }
 
-    // 서버에 세션 종료 요청 보내기
-    axios.post(`${APPLICATION_SERVER_URL}api/sessions/${sessionId}/leave`, {
-      user: myUserName
-    }).catch(error => {
-      console.error("Error notifying server about leaving session:", error);
-    });
+    axios
+      .post(
+        `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions/${sessionId}/leave`,
+        { user: myUserName },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .catch((error) => {
+        console.error('Error notifying server about leaving session:', error);
+      });
 
     setSession(undefined);
-    setSubscribers([]);
-    setMyUserName("Participant" + Math.floor(Math.random() * 100));
-    setMainStreamManager(undefined);
+    setSubscriber(undefined);
     setPublisher(undefined);
+    navigate('/counselor');
   }, [session, sessionId, myUserName]);
 
-  const switchCamera = useCallback(async () => {
-    if (!publisher || !session) return;
 
-    try {
-      const devices = await OpenVidu.getDevices();
-      const videoDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
-      if (videoDevices && videoDevices.length > 1) {
-        const newVideoDevice = videoDevices.filter(
-          (device) => device.deviceId !== currentVideoDevice.deviceId
-        )[0];
+useEffect(() => {
+  if (publisher) {
+    publisher.publishVideo(cameraStatus);
+  }
+}, [cameraStatus, publisher]);
 
-        const newPublisher = OpenVidu.initPublisher(undefined, {
-          videoSource: newVideoDevice.deviceId,
-          publishAudio: false,
-          publishVideo: true,
-          mirror: true,
-        });
-
-        await session.unpublish(mainStreamManager);
-        await session.publish(newPublisher);
-
-        setCurrentVideoDevice(newVideoDevice);
-        setMainStreamManager(newPublisher);
-        setPublisher(newPublisher);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, [currentVideoDevice, mainStreamManager, publisher, session]);
+useEffect(()=>{
+  if(publisher){
+    publisher.publishAudio(micStatus);
+  }
+},[micStatus,publisher])
 
   useEffect(() => {
     const handleBeforeUnload = () => {
       leaveSession();
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [leaveSession]);
 
   const getToken = async (sessionId) => {
     const response = await axios.post(
-      `${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connections`,
+      `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions/${sessionId}/connections`,
       {},
       {
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       }
     );
-    return response.data;
+    return response.data.data.token;
   };
 
-  useEffect(() => {
-    joinSession();
-  }, []);
+  const handleJoin = ({ micStatus, cameraStatus }) => {
+    setMicStatus(micStatus);
+    setCameraStatus(cameraStatus);
+    setPreJoin(false);
+    console.log("실행"+micStatus+cameraStatus)
+    joinSession(micStatus, cameraStatus);
+  };
 
   return (
-    <div className="container">
-      {session !== undefined ? (
-        <div id="session">
-          <div id="session-header">
-            <h1 id="session-title">{sessionId}</h1>
-            <input
-              className="btn btn-large btn-danger"
-              type="button"
-              id="buttonLeaveSession"
-              onClick={leaveSession}
-              value="Leave session"
-            />
-            <input
-              className="btn btn-large btn-success"
-              type="button"
-              id="buttonSwitchCamera"
-              onClick={switchCamera}
-              value="Switch Camera"
-            />
-          </div>
+    <div>
+      {preJoin ? (
+        <PreJoinComponent onJoin={handleJoin} />
+      ) : session !== undefined ? (
+        <View>
+          <WebCamView>
+            <VideoView>
+              {publisher !== undefined ? (
+                <div id="main-video" className="col-md-6">
+                  <UserVideoComponent streamManager={publisher} />
+                </div>
+              ) : null}
+              {subscriber !== undefined ? (
+                <div id="sub-video" className="col-md-6">
+                  <UserVideoComponent streamManager={subscriber} />
+                </div>
+              ) : null}
+            </VideoView>
+            <Nav>
+              <button onClick={() => setMicStatus(!micStatus)}>
+                {
+                  micStatus?<div>
+                    <FontAwesomeIcon icon={faMicrophone} />
+                  </div>
+                  :<div>
+                    <FontAwesomeIcon icon={faMicrophoneSlash} />
+                  </div>
+                }
+              </button>
+              <button onClick={() => setCameraStatus(!cameraStatus)}>
+                {
+                  cameraStatus?
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                      </svg>
 
-          {mainStreamManager !== undefined ? (
-            <div id="main-video" className="col-md-6">
-              <UserVideoComponent streamManager={mainStreamManager} />
-            </div>
-          ) : null}
-          <div id="video-container" className="col-md-6">
-            {publisher !== undefined ? (
-              <div
-                className="stream-container col-md-6 col-xs-6"
-                onClick={() => handleMainVideoStream(publisher)}
-              >
-                <UserVideoComponent streamManager={publisher} />
-              </div>
-            ) : null}
-            {subscribers.map((sub, i) => (
-              <div
-                key={sub.id}
-                className="stream-container col-md-6 col-xs-6"
-                onClick={() => handleMainVideoStream(sub)}
-              >
-                <span>{sub.id}</span>
-                <UserVideoComponent streamManager={sub} />
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
+                  </div>
+                  :
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M12 18.75H4.5a2.25 2.25 0 0 1-2.25-2.25V9m12.841 9.091L16.5 19.5m-1.409-1.409c.407-.407.659-.97.659-1.591v-9a2.25 2.25 0 0 0-2.25-2.25h-9c-.621 0-1.184.252-1.591.659m12.182 12.182L2.909 5.909M1.5 4.5l1.409 1.409" />
+                      </svg>
+                  </div>
+                }
+              </button>
+              <button id="buttonLeaveSession" onClick={leaveSession}>
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+              </button>
+            </Nav>
+          </WebCamView>
+          {/* 상담사일때만 보이도록 해야함 */}
+          {/* {true ? <SideBar/> : null} */}
+          <SideBar/>
+        </View>
+      ) : (
+        <LoadingComponent></LoadingComponent>
+      )}
     </div>
   );
 };

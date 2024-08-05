@@ -50,4 +50,12 @@ public class Schedule {
 		this.friday = "000000000";
 		this.counselor = counselor;
 	}
+
+	public void update(ScheduleDto newSchedule){
+		this.monday = newSchedule.getMonday();
+		this.tuesday = newSchedule.getTuesday();
+		this.wednesday = newSchedule.getWednesday();
+		this.thursday = newSchedule.getThursday();
+		this.friday = newSchedule.getFriday();
+	}
 }
