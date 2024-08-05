@@ -53,27 +53,29 @@ function Reservation({reservation}) {
   const [daysRemaining, setDaysRemaining] = useState();
 
   const createCounselingRoom = async () => {
-    console.log(APPLICATION_SERVER_URL);
-    try {
-      // 세션 생성
-      const sessionResponse = await axios.post(
-        `${APPLICATION_SERVER_URL}/counseling/sessions`,
-        { customSessionId: sessionId },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true // default를 true로 설정
-        }
-      );
+    if(daysRemaining===0){
+      try {
+        // 세션 생성
+        const sessionResponse = await axios.post(
+          `${APPLICATION_SERVER_URL}/counseling/sessions`,
+          { customSessionId: sessionId },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true // default를 true로 설정
+          }
+        );
 
-      setSessionId(sessionResponse.data.data.session_id);
-      console.log(sessionResponse);
-      // /counselingroom으로 이동하면서 세션 ID 전달
-      navigate("/counselingroom", {
-        state: { sessionId: sessionResponse.data.data.session_id },
-      });
-    } catch (error) {
-      console.error("Error creating counseling room:", error);
+        setSessionId(sessionResponse.data.data.session_id);
+        console.log(sessionResponse);
+        // /counselingroom으로 이동하면서 세션 ID 전달
+        navigate("/counselingroom", {
+          state: { sessionId: sessionResponse.data.data.session_id },
+        });
+      } catch (error) {
+        console.error("Error creating counseling room:", error);
+      }
     }
+    else return;
   };
 
   const changeDateFormat=()=>{
