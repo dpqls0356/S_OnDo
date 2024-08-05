@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,16 +62,20 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Override
 	@Transactional
 	public List<CounselorReservationAddDto> setDaySchedule(Long counselorId, String dateStr,
-		List<CounselorReservationAddDto> reservations){
+		List<String> dateList){
 		LocalDateTime start = convertStartDate(dateStr);
 		LocalDateTime end = convertEndDate(dateStr);
 
+		// 있는거 다 지우고 다시 넣어야 된다...
 		counselorReservationRepository.deleteEntitiesByCounselorIdAndReservationDateBetween(counselorId, start, end);
-		List<Reservation> inputReservation = reservations.stream()
-			.map(reservation -> {
+
+		List<Reservation> inputReservation = dateList.stream()
+			.map(date -> {
 				Reservation r = new Reservation();
-				r.setReservationDate(reservation.getReservationDate());
-				r.setCounselor(counselorService.getCounselorEntity(reservation.getCounselorId()).get());
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+				LocalDateTime dateTime = LocalDateTime.parse(date, formatter.withZone(ZoneOffset.UTC));
+				r.setReservationDate(dateTime);
+				r.setCounselor(counselorService.getCounselorEntity(counselorId).get());
 				return r;
 			})
 			.toList();
