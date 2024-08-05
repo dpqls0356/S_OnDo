@@ -19,5 +19,7 @@ public interface ScheduleService {
 
 	List<CounselorReservationAddDto> getDaySchedule(Long counselorId, String date);
 
-	List<CounselorReservationAddDto> setDaySchedule(Long counselorId, String date);
+	@Transactional
+	List<CounselorReservationAddDto> setDaySchedule(Long counselorId, String dateStr,
+		List<CounselorReservationAddDto> reservations);
 }
