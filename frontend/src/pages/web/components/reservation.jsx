@@ -6,16 +6,21 @@ import { Link } from "react-router-dom";
 
 const View = styled.div`
   padding: 20px 20px;
-  width: 100%;
+  width: 90%;
   height: 100%;
   display: flex;
   align-items: center;
   background-color: white;
   border: 3px solid #f7867a;
+  border-radius: 10px;
 `;
 
 const CreateCounselingRoomBtn = styled.button`
+  color: white;
   background-color: #f7867a;
+  font-weight: 700;
+  font-size: 110%;
+  border-radius: 30px
 `;
 
 const Col = styled.div`
@@ -24,8 +29,12 @@ const Col = styled.div`
     font-size: 20px;
   }
   &:nth-child(2) {
-    flex: 2;
+    flex: 3;
+    // padding: 10px;
   }
+    & > div{
+      padding: 5px;
+    }
   &:nth-child(3) {
     flex: 1;
     display: flex;
@@ -99,8 +108,8 @@ function Reservation() {
         )}
       </Col>
       <Col>
-        <div className="member-info">이싸피(만 30세)</div>
-        <div>상담신청일자: 2024-08-01 10:00</div>
+        <div className="member-info" style={{fontSize: '22px'}}>이싸피(만 30세)</div>
+        <div style={{color: '#8B8B8B'}}>상담신청일자: 2024-08-01 10:00</div>
       </Col>
       <Col>
         <CreateCounselingRoomBtn onClick={createCounselingRoom}>
