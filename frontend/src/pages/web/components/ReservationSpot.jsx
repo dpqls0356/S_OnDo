@@ -6,8 +6,8 @@ import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import Reservation from "./reservation";
 const View = styled.div`
-  padding: 70px 50px;
-  width: 50%;
+  padding: 50px 50px;
+  width: 45%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -15,17 +15,17 @@ const View = styled.div`
 
 const Header = styled.div`
   font-weight: 700;
-  font-size: 32px;
+  font-size: 20px;
   margin-bottom: 30px;
 `;
 const Search = styled.div`
   display: flex;
+  width: 100%;
   padding-bottom: 30px;
   margin-bottom: 20px;
   border-bottom: 3px solid black;
   & > input {
-    width: 100%;
-    border-radius: 5px;
+    flex: 1;
     margin-right: 30px;
     padding: 0px 10px
   }
