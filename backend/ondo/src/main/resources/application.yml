@@ -39,7 +39,6 @@ spring:
     job:
       enabled: false
 
-
 openvidu:
   url: "http://localhost:4443/"
   secret: "ondo_project_openvidu"
