@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/ondo?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://mysql:13306/ondo?serverTimezone=Asia/Seoul
     username: clio
     password: clio
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,13 +11,13 @@ spring:
 
   data:
     mongodb:
-      host: localhost
+      host: mongo
       port: 27017
       database: ondo
 
     redis:
-      host: localhost
-      port: 6379
+      host: redis
+      port: 16379
 
   jpa:
     hibernate:
