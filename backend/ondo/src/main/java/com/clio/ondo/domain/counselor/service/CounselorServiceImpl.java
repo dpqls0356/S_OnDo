@@ -3,7 +3,11 @@ package com.clio.ondo.domain.counselor.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.clio.ondo.domain.career.model.Career;
+import com.clio.ondo.domain.career.repository.CareerRepository;
+import com.clio.ondo.domain.career.service.CareerService;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.model.QCounselor;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
@@ -11,6 +15,8 @@ import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.schedule.model.Schedule;
 import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
+
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,6 +45,7 @@ public class CounselorServiceImpl implements CounselorService {
     private final DaoAuthenticationProvider counselorAuthenticationProvider;
     private final CounselorRepository counselorRepository;
     private final ScheduleRepository scheduleRepository;
+    private final CareerService careerService;
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory queryFactory;
 
@@ -65,6 +72,11 @@ public class CounselorServiceImpl implements CounselorService {
         counselorRepository.save(counselor);
     }
 
+    //마이페이지 보기
+
+
+    //마이페이지 수정하기
+
 
     //상담사 전체 리스트 가져오기
     @Override
@@ -73,6 +85,7 @@ public class CounselorServiceImpl implements CounselorService {
         List<CounselorResponseDto> counselorList=new ArrayList<>();
 
         for(Counselor c:counselors){
+
             CounselorResponseDto dto=new CounselorResponseDto();
             dto.setId(c.getId());
             dto.setName(c.getName());
@@ -80,7 +93,7 @@ public class CounselorServiceImpl implements CounselorService {
             dto.setGender(c.getGender());
             dto.setSelfIntroduction(c.getSelfIntroduction());
             dto.setProfileUrl(c.getProfileUrl());
-
+            dto.setCareer(careerService.getCareer(c.getId()));
             counselorList.add(dto);
         }
 
@@ -101,7 +114,7 @@ public class CounselorServiceImpl implements CounselorService {
             counselorDto.setGender(c.getGender());
             counselorDto.setSelfIntroduction(c.getSelfIntroduction());
             counselorDto.setProfileUrl(c.getProfileUrl());
-
+            counselorDto.setCareer(careerService.getCareer(c.getId()));
             return counselorDto;
         }else{
             return null;
@@ -111,6 +124,7 @@ public class CounselorServiceImpl implements CounselorService {
     //상담사 필터링된 리스트 가져오기
     @Override
     public List<CounselorResponseDto> filteredList(String name, Gender gender,String field){
+
         QCounselor counselor = QCounselor.counselor;
         BooleanBuilder builder=new BooleanBuilder();
         if(gender!=null){
@@ -123,19 +137,31 @@ public class CounselorServiceImpl implements CounselorService {
             builder.and(counselor.name.eq(name));
         }
 
-        return queryFactory.select(Projections.constructor(CounselorResponseDto.class,
-                counselor.id,
-                counselor.name,
-                counselor.gender,
-                counselor.field,
-                counselor.selfIntroduction,
-                counselor.profileUrl))
-            .from(counselor)
+
+        // 기본 Counselor 데이터 조회
+        List<Counselor> counselors = queryFactory.selectFrom(counselor)
             .where(builder)
             .fetch();
+
+        // 엔티티를 DTO로 변환
+        return counselors.stream()
+            .map(c -> {
+                // Counselor의 ID로 Career 정보를 가져오기
+                List<String> careerDescriptions = careerService.getCareer(c.getId());
+
+                // DTO 생성
+                return new CounselorResponseDto(
+                    c.getId(),
+                    c.getName(),
+                    c.getGender(),
+                    c.getField(),
+                    careerDescriptions,
+                    c.getSelfIntroduction(),
+                    c.getProfileUrl()
+                );
+            })
+            .collect(Collectors.toList());
     }
-
-
 
     @Override
     public Optional<Counselor> getCounselorEntity(Long id) {
