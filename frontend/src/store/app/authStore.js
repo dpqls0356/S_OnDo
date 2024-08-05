@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const api = axios.create({
   baseURL: 'http://localhost:8080/api/v1',
@@ -9,7 +10,6 @@ const api = axios.create({
 export const useAuthStore = create((set) => ({
   isAuthenticated: false,
   user: null,
- 
   login: async (email, password) => {
     try {
       const response = await api.post('/member/login', { email, password });
@@ -45,9 +45,30 @@ export const useAuthStore = create((set) => ({
       set({ isAuthenticated: false, user: null });
       return false;
     }
-  }
+  },
+    counselorLogin:async(id,password)=>{
+    try{
+      const response = await api.post('/counselor/login',{id,password});
+      console.log(response);
+      if (response.data.success) {
+        set({ isAuthenticated: true });
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login failed:', error);
+      return false;
+    }
+  },
+    checkLoggedIn: async () => {
+    const token = Cookies.get('accessToken');
+    if (token) {
+      set({ isAuthenticated: true });
+      return true;
+    }
+    set({ isAuthenticated: false, user: null });
+    return false;
+  },
 }));
 
 export default useAuthStore;
-
-
