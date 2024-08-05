@@ -6,6 +6,9 @@ import com.clio.ondo.domain.alarm.missionAlarm.service.MissionAlarmService;
 import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import com.clio.ondo.domain.chatbot.controller.ChatbotController;
 import com.clio.ondo.domain.chatbot.model.ChattingReadDto;
+import com.clio.ondo.global.ResponseVO;
+import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,24 +16,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 public class AlarmController {
     private final ScheduledAlarmService scheduledAlarmService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/api/v1/alarm/fcmtoken/{memberId}")
-    public ResponseEntity<?> setToken(@PathVariable("memberId") Long memberId, @RequestBody FCMToken fcmToken) {
+    @PostMapping("/api/v1/alarm/fcmtoken")
+    public ResponseEntity<?> setToken(HttpServletRequest request, @RequestBody FCMToken fcmToken) {
         try{
-            scheduledAlarmService.saveToken(memberId, fcmToken);
+            String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+            Long id = jwtTokenProvider.getIdFromToken(token);
+            scheduledAlarmService.saveToken(id, fcmToken);
 
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new Result<>(true,HttpStatus.OK.value(), "저장에 성공했습니다."));
+                    .body(new ResponseVO<>(true, "토큰 저장 성공", null));
         }catch(Exception e){
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new Result<>(false, HttpStatus.BAD_REQUEST.value(), "저장에 실패했습니다."));
+                    .body(new ResponseVO<>(false, "토큰 저장 실패", null));
         }
     }
 

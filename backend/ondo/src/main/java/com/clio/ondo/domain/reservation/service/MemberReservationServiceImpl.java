@@ -10,6 +10,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.counselDetail.model.CounselDetail;
+import com.clio.ondo.domain.counselDetail.service.CounselDetailService;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Member;
@@ -33,6 +35,7 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 	private final MemberRepository memberRepository;
 	private final CounselorRepository counselorRepository;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final CounselDetailService counselDetailService;
 
 	//나의 예약 내역 가져오기
 	@Override
@@ -141,6 +144,8 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 
 		// 예약 저장
 		reservationRepository.save(reservation);
+
+		counselDetailService.save(new CounselDetail(reservation, null));
 	}
 
 
