@@ -84,7 +84,7 @@ public class ScheduleController {
 	}
 
 	@PostMapping("/api/v1/counselor/schedule/{date}")
-	public ResponseEntity<?> setDaySchedule(HttpServletRequest request, @PathVariable String date) {
+	public ResponseEntity<?> setDaySchedule(HttpServletRequest request, @PathVariable String date, @RequestBody) {
 		try{
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			Long id = jwtTokenProvider.getIdFromToken(token);
