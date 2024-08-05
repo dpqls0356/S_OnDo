@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import ReservationSpot from "./components/ReservationSpot";
+import ReservationSpot from "./components/checkReservation/ReservationSpot";
 import useAuthStore from "../../store/app/authStore";
 import IncorrectAccessModal from "./components/incorrectAccessModal";
 
