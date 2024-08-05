@@ -49,9 +49,8 @@ export const useAuthStore = create((set) => ({
   counselorLogin: async (id, password) => {
     try {
       const response = await api.post("/counselor/login", { id, password });
-      console.log(response);
       if (response.data.success) {
-        set({ isAuthenticated: true });
+        localStorage.setItem("isAuthenticated", true);
         return true;
       }
       return false;
@@ -63,18 +62,15 @@ export const useAuthStore = create((set) => ({
   counselorLogout: async () => {
     try {
       await api.post("/counselor/logout");
-      set({ isAuthenticated: false, user: null });
+      localStorage.removeItem("isAuthenticated");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   },
   checkLoggedIn: async () => {
-    const token = Cookies.get("accessToken");
-    if (token) {
-      set({ isAuthenticated: true });
+    if (localStorage.getItem("isAuthenticated")) {
       return true;
     }
-    set({ isAuthenticated: false, user: null });
     return false;
   },
 }));
