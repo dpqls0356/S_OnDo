@@ -1,23 +1,12 @@
-import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
 
-<<<<<<< HEAD
-=======
-// import CounselorHome from "./pages/web/counselorHome";
->>>>>>> 924ac72a5d0b62fe01478bfc8fea3b72c227eb37
+import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
+import CounselorLogin from "./pages/web/counselorLogin";
 import CounselingRoom from "./pages/web/counselingRoom";
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
-
-<<<<<<< HEAD
-import CounselorLogin from "./pages/web/counselorLogin";
-=======
-import CounselorLogin from "./pages/web/counselorLogin"
->>>>>>> 924ac72a5d0b62fe01478bfc8fea3b72c227eb37
-
-import Centerpage from "./pages/web/centerpage";
-import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
 import Logopage from "./pages/app/Member/Logopage";
 import Loginpage from "./pages/app/Member/Loginpage";
@@ -34,7 +23,6 @@ import MyUpdateForm from "./pages/app/Member/MyUpdatepage";
 import Join from "../src/pages/app/Member/Join";
 import MyPage from "../src/pages/app/Member/MyPage";
 import Mission from "./pages/app/Mission/Mission";
-import CompletedMissions from "./pages/app/Mission/CompletedMissions";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
@@ -43,7 +31,6 @@ import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
 function App() {
   // const test = false;
   const checkAuth = useAuthStore((state) => state.checkAuth);
-
   useEffect(() => {
     checkAuth();
   }, []);
@@ -52,8 +39,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/counselor" element={<CounselorLayout />}>
-          <Route path="schedul" element={<Centerpage />} />
-          {/* <Route path="schedul/detail" element={<DetailSchedulComponent />} /> */}
+          <Route path="*" element={<CounselorNotFoundPage />} />
         </Route>
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
         {/* counseling으로 이동할 때 sessionId값을 가지고 이동해야함 -> sessionId로 token발급을 하고 그걸 바탕으로 session에 참가 가능 */}
@@ -72,7 +58,6 @@ function App() {
           <Route path="join" element={<Join />} />
           <Route path="profile" element={<MyPage />} />
           <Route path="mission/list" element={<Mission />} />
-          <Route path="mission/completed" element={<CompletedMissions />} />
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
           <Route
@@ -87,5 +72,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;
