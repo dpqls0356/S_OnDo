@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.counselDetail.model.CounselDetail;
 import com.clio.ondo.domain.counselDetail.model.MemberWithReservationDto;
@@ -29,12 +30,12 @@ public class CounselDetailServiceImpl implements CounselDetailService {
 	}
 
 	@Override
-	public MemberWithReservationDto getRerservationWithDetail(Long memberId){
+	public MemberWithReservationDto getRerservationWithDetail(Long memberId, Long counselorId){
 		Member member = memberRepository.findById(memberId).orElse(null);
-		List<Reservation> reservations = reservationRepository.findByMemberId(memberId);
+		List<Reservation> reservations = reservationRepository.findByMemberIdAndCounselorIdOrderByReservationDateDesc(memberId, counselorId);
 		List<ReservationWithDetailDto> reservationWithDetailDtos = new ArrayList<>();
 		for(Reservation reservation : reservations){
-			CounselDetail counselDetail = counselDetailRepository.findCOunselDetailById(reservation.getId());
+			CounselDetail counselDetail = counselDetailRepository.findCounselDetailById(reservation.getId());
 			ReservationWithDetailDto reservationWithDetailDto = ReservationWithDetailDto.builder()
 				.reservationId(reservation.getId())
 				.reservationDate(reservation.getReservationDate())
@@ -54,5 +55,18 @@ public class CounselDetailServiceImpl implements CounselDetailService {
 			.build();
 
 		return memberWIthReservationto;
+	}
+
+	@Override
+	@Transactional
+	public MemberWithReservationDto updateReservationCounselingDetail(Long counselorId,
+		ReservationWithDetailDto reservationWithDetailDto){
+		Reservation reservation = reservationRepository.findById(reservationWithDetailDto.getReservationId()).orElse(null);
+		CounselDetail counselDetail = counselDetailRepository.findCounselDetailById(reservation.getId());
+		counselDetail.updateContent(reservationWithDetailDto.getCounsellingDetail());
+
+		Long memberId = reservation.getMember().getId();
+
+		return getRerservationWithDetail(memberId, counselorId);
 	}
 }
