@@ -8,6 +8,9 @@ import MobileLayout from "./pages/app/mobileLayout";
 
 import CounselorLogin from "./pages/web/counselorLogin";
 
+import Centerpage from "./pages/web/centerpage";
+import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
+
 import Logopage from "./pages/app/Member/Logopage";
 import Loginpage from "./pages/app/Member/Loginpage";
 import Namepage from "./pages/app/Home/Namepage";
@@ -39,7 +42,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/counselor" element={<CounselorLayout />}></Route>
+        <Route path="/counselor" element={<CounselorLayout />}>
+          <Route path="schedul" element={<Centerpage />} />
+          {/* <Route path="schedul/detail" element={<DetailSchedulComponent />} /> */}
+        </Route>
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
         {/* counseling으로 이동할 때 sessionId값을 가지고 이동해야함 -> sessionId로 token발급을 하고 그걸 바탕으로 session에 참가 가능 */}
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
