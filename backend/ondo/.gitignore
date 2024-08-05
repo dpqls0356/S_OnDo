@@ -1,13 +1,17 @@
-HELP.md
+# Logs
+*.log
+
+# Gradle build files
 .gradle
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-/src/main/resources/openaiapi.properties
-/src/main/resources/openvidu.properties
-/src/main/resources/firebase.json
 
+# Gradle Wrapper files
+!gradlew
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# IDEs and Editors
 ### STS ###
 .apt_generated
 .classpath
@@ -39,4 +43,8 @@ out/
 ### VS Code ###
 .vscode/
 
-
+# Other
+HELP.md
+/src/main/resources/openaiapi.properties
+/src/main/resources/openvidu.properties
+/src/main/resources/firebase.json
