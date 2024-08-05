@@ -1,10 +1,12 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Modal from "react-modal";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import ReservationSpot from "./components/ReservationSpot";
 import useAuthStore from "../../store/app/authStore";
+import IncorrectAccessModal from "./components/incorrectAccessModal";
 
 const View = styled.div`
   width: 100vw;
@@ -63,20 +65,36 @@ const LogoutBtn = styled.button`
 const ChangeSpot = styled.div`
   width: 50%;
 `;
+
 function CounselorLayout() {
   const checkLoggedIn = useAuthStore((state) => state.checkLoggedIn);
   const counselorLogout = useAuthStore((state) => state.counselorLogout);
   const navigate = useNavigate();
-  const logout = () => {
-    counselorLogout();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const logout = async () => {
+    await counselorLogout();
     navigate("/counselor/login");
   };
-  // useEffect(async() => {
-  //    const isLoggedIn = await checkLoggedIn();
-  //   if (!isLoggedIn) {
-  //     navigate('/counselor/login');
-  //   }
-  // }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    navigate("/counselor/login");
+  };
+
+  // 로그인 페이지에 들어올 때마다 인증 여부 확인
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const loggedIn = await checkLoggedIn();
+      console.log("layout: " + loggedIn);
+      if (!loggedIn) {
+        setIsModalOpen(true);
+      }
+    };
+
+    checkAuthentication();
+  }, [checkLoggedIn, navigate]);
+
   return (
     <View>
       <HomeLeft>
@@ -89,7 +107,7 @@ function CounselorLayout() {
         <Profile>
           {false ? (
             <div className="profile-img">
-              <img src="" />
+              <img src="" alt="Profile" />
             </div>
           ) : (
             <div className="profile-img">
@@ -119,6 +137,7 @@ function CounselorLayout() {
         </Nav>
         <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
       </HomeRight>
+      <IncorrectAccessModal isOpen={isModalOpen} closeModal={closeModal} />
     </View>
   );
 }
