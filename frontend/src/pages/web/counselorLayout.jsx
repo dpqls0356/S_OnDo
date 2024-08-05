@@ -1,10 +1,10 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import ReservationSpot from "./components/ReservationSpot";
-import useAuthStore from '../../store/app/authStore';
+import useAuthStore from "../../store/app/authStore";
 
 const View = styled.div`
   width: 100vw;
@@ -64,15 +64,19 @@ const ChangeSpot = styled.div`
   width: 50%;
 `;
 function CounselorLayout() {
-    const checkLoggedIn = useAuthStore(state => state.checkLoggedIn);
-    const counselorLogout = useAuthStore(state => state.counselorLogout);
-    const navigate = useNavigate();
-  useEffect(async() => {
-     const isLoggedIn = await checkLoggedIn();
-    if (!isLoggedIn) {
-      navigate('/counselor/login');
-    }
-  }, []);
+  const checkLoggedIn = useAuthStore((state) => state.checkLoggedIn);
+  const counselorLogout = useAuthStore((state) => state.counselorLogout);
+  const navigate = useNavigate();
+  const logout = () => {
+    counselorLogout();
+    navigate("/counselor/login");
+  };
+  // useEffect(async() => {
+  //    const isLoggedIn = await checkLoggedIn();
+  //   if (!isLoggedIn) {
+  //     navigate('/counselor/login');
+  //   }
+  // }, []);
   return (
     <View>
       <HomeLeft>
@@ -113,7 +117,7 @@ function CounselorLayout() {
           <StyledLink to="">마이페이지</StyledLink>
           <StyledLink to="">비밀번호 변경</StyledLink>
         </Nav>
-        <LogoutBtn onClick={counselorLogout}>로그아웃</LogoutBtn>
+        <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
       </HomeRight>
     </View>
   );

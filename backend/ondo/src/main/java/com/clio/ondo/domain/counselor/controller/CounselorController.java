@@ -60,6 +60,7 @@ public class CounselorController {
     @PostMapping("/login")
     public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody CounselorLoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
+            System.out.println(loginRequestDto.getId()+" "+loginRequestDto.getPassword());
             TokenDto token = counselorService.login(loginRequestDto);
             Cookie accessTokenCookie = new Cookie("accessToken", token.getAccessToken());
             accessTokenCookie.setHttpOnly(true);
