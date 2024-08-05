@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.clio.ondo.domain.reservation.model.CounselorReservationAddRequestDto;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,6 +95,25 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		counselorReservationRepository.deleteById(reservationId);
 	}
 
+	@Override
+	public List<CounselorReservationDto> getAllReservation(Long counselorId, Pageable pageable){
+		Page<Reservation> pages = counselorReservationRepository.findByCounselorId(counselorId, pageable);
+		List<Reservation> reservations = pages.getContent();
+		List<CounselorReservationDto> counselorReservationDtos = new ArrayList<>();
+		for(Reservation reservation : reservations) {
+			counselorReservationDtos.add(CounselorReservationDto.builder()
+				.reservationId(reservation.getId())
+				.reservationDate(reservation.getReservationDate())
+				.memberId(reservation.getMember().getId())
+				.memberName(reservation.getMember().getName())
+				.memberBirthday(reservation.getMember().getBirthDate())
+				.counselingUrl(reservation.getCounselingUrl())
+				.build()
+			);
+		}
+
+		return counselorReservationDtos;
+	}
 
 	@Override
 	public LocalDateTime convertStartDate(String dateStr) {
