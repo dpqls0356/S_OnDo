@@ -41,17 +41,6 @@ spring:
     job:
       enabled: false
 
-logging:
-  level:
-    org.hibernate.sql: debug
-    org:
-      springframework:
-        web: debug
-        data:
-          mongodb:
-            core:
-              MongoTemplate: DEBUG
-    # org.hibernate.type: trace
 openvidu:
   url: "http://localhost:4443/"
   secret: "ondo_project_openvidu"

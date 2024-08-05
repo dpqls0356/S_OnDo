@@ -2,10 +2,18 @@ package com.clio.ondo.domain.counselor.model.dto;
 
 import java.util.List;
 
-import com.clio.ondo.domain.career.model.Career;
 import com.clio.ondo.domain.member.model.Gender;
 
-public class CounselorMyPageDto {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class CounselorMyPageResponseDto {
 
 	private Long id;
 
@@ -16,7 +24,7 @@ public class CounselorMyPageDto {
 	private Gender gender;
 	private String field;
 
-	private List<Career> career;
+	private List<String> career;
 	private String selfIntroduction;
 	private String profileUrl;
 

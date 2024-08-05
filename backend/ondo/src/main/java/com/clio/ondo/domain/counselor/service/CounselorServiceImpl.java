@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.clio.ondo.domain.career.model.Career;
-import com.clio.ondo.domain.career.repository.CareerRepository;
 import com.clio.ondo.domain.career.service.CareerService;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.model.QCounselor;
+import com.clio.ondo.domain.counselor.model.dto.CounselorMyPageResponseDto;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Gender;
@@ -32,7 +31,6 @@ import com.clio.ondo.domain.counselor.model.dto.CounselorLoginRequestDto;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -77,9 +75,46 @@ public class CounselorServiceImpl implements CounselorService {
     }
 
     //마이페이지 보기
+    @Override
+    public CounselorMyPageResponseDto getMypage(Long counselorId){
+        Optional<Counselor> counselor=counselorRepository.findById(counselorId);
 
+        if(counselor.isPresent()){
+
+            CounselorMyPageResponseDto counselorDto=new CounselorMyPageResponseDto();
+            Counselor c=counselor.get();
+            counselorDto.setId(counselorId);
+            counselorDto.setCounselorId(c.getCounselorId());
+            counselorDto.setPassword(c.getPassword());
+            counselorDto.setName(c.getName());
+            counselorDto.setGender(c.getGender());
+            counselorDto.setField(c.getField());
+            counselorDto.setSelfIntroduction(c.getSelfIntroduction());
+            counselorDto.setProfileUrl(c.getProfileUrl());
+            counselorDto.setCareer(careerService.getCareer(c.getId()));
+
+            return counselorDto;
+        }
+        return null;
+    }
 
     //마이페이지 수정하기
+    @Transactional
+    @Override
+    public void updateMypage(Long counselorId,String password,String selfIntroduction, String profileUrl){
+        Optional<Counselor> counselor=counselorRepository.findById(counselorId);
+
+        if(counselor.isPresent()){
+            Counselor changeCounselor=counselor.get();
+            changeCounselor.setPassword(password);
+            changeCounselor.setSelfIntroduction(selfIntroduction);
+            changeCounselor.setProfileUrl(profileUrl);
+
+            counselorRepository.save(changeCounselor);
+        }else{
+            //예외처리
+        }
+    }
 
 
     //상담사 전체 리스트 가져오기
