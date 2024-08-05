@@ -108,7 +108,6 @@ public class ScheduleController {
 					.body(new ResponseVO<>(true, "일정 변경에 성공했습니다.", retMap));
 		}
 		catch(Exception e){
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(new ResponseVO<>(false, "일정 변경에 실패했습니다.", null));
 		}
