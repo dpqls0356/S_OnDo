@@ -14,9 +14,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class CounselorReservationAddDto {
 	private LocalDateTime reservationDate;
 	private Long counselorId;

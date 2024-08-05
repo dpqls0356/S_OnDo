@@ -3,6 +3,9 @@ package com.clio.ondo.domain.reservation.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.clio.ondo.domain.reservation.model.CounselorReservationAddRequestDto;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +22,12 @@ public interface CounselorReservationService {
 	void addReservation(CounselorReservationAddDto counselorReservationAddDto);
 
 	@Transactional
+	void addRequestReservation(CounselorReservationAddRequestDto counselorReservationAddRequestDto);
+
+	@Transactional
 	void deleteReservation(Long reservationId);
+
+	List<CounselorReservationDto> getAllReservation(Long counselorId, Pageable pageable);
 
 	LocalDateTime convertStartDate(String dateStr);
 

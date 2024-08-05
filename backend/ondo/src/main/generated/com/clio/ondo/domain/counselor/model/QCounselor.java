@@ -22,6 +22,8 @@ public class QCounselor extends EntityPathBase<Counselor> {
 
     public static final QCounselor counselor = new QCounselor("counselor");
 
+    public final ListPath<com.clio.ondo.domain.career.model.Career, com.clio.ondo.domain.career.model.QCareer> career = this.<com.clio.ondo.domain.career.model.Career, com.clio.ondo.domain.career.model.QCareer>createList("career", com.clio.ondo.domain.career.model.Career.class, com.clio.ondo.domain.career.model.QCareer.class, PathInits.DIRECT2);
+
     public final StringPath counselorId = createString("counselorId");
 
     public final StringPath field = createString("field");
