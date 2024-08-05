@@ -65,6 +65,11 @@ public class CounselorServiceImpl implements CounselorService {
         counselorRepository.save(counselor);
     }
 
+    //마이페이지 보기
+
+
+    //마이페이지 수정하기
+
 
     //상담사 전체 리스트 가져오기
     @Override
