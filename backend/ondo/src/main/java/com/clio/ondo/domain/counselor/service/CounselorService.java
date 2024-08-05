@@ -7,6 +7,7 @@ import com.clio.ondo.domain.counselor.model.Counselor;
 import org.springframework.security.core.AuthenticationException;
 
 import com.clio.ondo.domain.counselor.model.dto.CounselorLoginRequestDto;
+import com.clio.ondo.domain.counselor.model.dto.CounselorMyPageResponseDto;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
@@ -22,4 +23,6 @@ public interface CounselorService {
     CounselorResponseDto getCounselor(Long counselorId);
     List<CounselorResponseDto> filteredList(String name, Gender gender,String field);
 	Optional<Counselor> getCounselorEntity(Long id);
+    CounselorMyPageResponseDto getMypage(Long counslorId);
+    void updateMypage(Long counselorId,String password,String selfIntroduction, String profileUrl);
 }
