@@ -93,7 +93,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	@Override
 	@Transactional
 	public List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
-		ChatbotChatting requestChatting = new ChatbotChatting(null, "user", text, LocalDateTime.now(), memberId);
+		ChatbotChatting requestChatting = new ChatbotChatting(null, text, "user", LocalDateTime.now(), memberId);
 		chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
 		WebClient webClient = WebClient.builder().build();
@@ -118,7 +118,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 		List<String> parsedStrings = stringParsingService.parseLine(responseString);
 		for(String parsedString : parsedStrings){
-			ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", parsedString, LocalDateTime.now(), memberId);
+			ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
 			chatbotRepository.upsertByMemberId(memberId, responseChatting);
 		}
 
@@ -130,7 +130,11 @@ public class ChatbotServiceImpl implements ChatbotService{
 	public List<ChattingReadDto> getChatbotChattings(Long memberId, int page, int size) {
 		List<ChatbotChatting> chatbotChattings = chatbotRepository.getChattingsByPage(memberId, page, size);
 		return chatbotChattings.stream()
-			.map(a -> new ChattingReadDto(a.getContent(), a.getSender(), a.getCreatedAt()))
+			.map(a -> ChattingReadDto.builder()
+					.sender(a.getSender())
+					.content(a.getContent())
+					.createdAt(a.getCreatedAt())
+					.build())
 			.collect(Collectors.toList());
 	}
 

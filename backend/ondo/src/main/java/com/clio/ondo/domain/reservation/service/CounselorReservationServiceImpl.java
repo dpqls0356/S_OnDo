@@ -1,26 +1,14 @@
 package com.clio.ondo.domain.reservation.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Scheduled;
+import com.clio.ondo.domain.reservation.model.CounselorReservationAddRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.service.CounselorService;
 import com.clio.ondo.domain.reservation.model.CounselorReservationAddDto;
 import com.clio.ondo.domain.reservation.model.Reservation;
@@ -70,6 +58,26 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		reservation.setMember(null);
 		// counselorId로 서비스에서 가져와야겠네..
 		reservation.setCounselor(counselorService.getCounselorEntity(counselorReservationAddDto.getCounselorId()).get());
+		reservation.setCounselingUrl(null);
+		reservation.setCounselingDetail(null);
+
+		counselorReservationRepository.save(reservation);
+	}
+
+	@Override
+	@Transactional
+	public void addRequestReservation(CounselorReservationAddRequestDto counselorReservationAddRequestDto) {
+		Reservation reservation = new Reservation();
+		reservation.setId(null);
+		// ZonedDateTime으로 변환
+		ZonedDateTime zonedDateTime = ZonedDateTime.parse(counselorReservationAddRequestDto.getReservationDate(), DateTimeFormatter.ISO_DATE_TIME);
+		// LocalDateTime으로 변환
+		LocalDateTime localDateTime = zonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+		reservation.setReservationDate(localDateTime);
+		reservation.setDetail(null);
+		reservation.setMember(null);
+		// counselorId로 서비스에서 가져와야겠네..
+		reservation.setCounselor(counselorService.getCounselorEntity(counselorReservationAddRequestDto.getCounselorId()).get());
 		reservation.setCounselingUrl(null);
 		reservation.setCounselingDetail(null);
 
