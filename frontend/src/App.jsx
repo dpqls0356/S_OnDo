@@ -24,6 +24,7 @@ import MyUpdateForm from "./pages/app/Member/MyUpdatepage";
 import Join from "../src/pages/app/Member/Join";
 import MyPage from '../src/pages/app/Member/MyPage'
 import Mission from "./pages/app/Mission/Mission";
+import CompletedMissions from "./pages/app/Mission/CompletedMissions";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
@@ -61,6 +62,7 @@ function App() {
           <Route path="join" element={<Join />} />
           <Route path="profile" element={<MyPage />} />
           <Route path="mission/list" element={<Mission />} />
+          <Route path="mission/completed" element={<CompletedMissions />} />
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
           <Route path="counseling/apply/:id" element={<CounselorReservation />} />
