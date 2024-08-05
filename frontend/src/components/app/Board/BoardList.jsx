@@ -1,17 +1,75 @@
-// 게시글 리스트
-import './BoardList.css'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import './BoardList.css';
+import useBoardStore from "../../../store/app/useBoardStore";
+import Board from './Board';
 
-import Board from './Board'
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api/v1',
+  withCredentials: true
+});
 
 const BoardList = () => {
-  return (
-    // for문 돌리듯이 돌려서 Board 뿌리게 하기
-    <>
-      <div>
-        <Board />
-      </div>
-    </>
-  )
-}
+  const { boards, setBoards, pagination, updatePagination } = useBoardStore();
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchBoards = async () => {
+      try {
+        setIsLoading(true);
+        const res = await api.get(`/board/list?page=${pagination.currentPage}&size=10`);
+        
+        // 응답 구조를 확인
+        // console.log('API 응답:', res.data); 
+
+        if (res.data && res.data.data) {
+          setBoards(res.data.data);  // res.data.data를 전달
+        } else {
+          console.error('Unexpected API response structure:', res.data);
+          setBoards({ boardList: { content: [] } });
+        }
+      } catch (error) {
+        console.error("게시글 목록을 가져오는데 실패했습니다:", error);
+        setBoards({ boardList: [] });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBoards();
+  }, [pagination.currentPage, setBoards]);
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  return (
+    <div className="BoardList">
+      {Array.isArray(boards) && boards.length > 0 ? (
+        <>
+          {boards.map(board => (
+            <Board key={board._id} board={board} />
+          ))}
+          <div className="pagination">
+            <button 
+              onClick={() => updatePagination({ currentPage: Math.max(0, pagination.currentPage - 1) })} 
+              disabled={pagination.currentPage === 0}
+            >
+              이전
+            </button>
+            <span>페이지 {pagination.currentPage + 1} / {pagination.totalPages}</span>
+            <button 
+              onClick={() => updatePagination({ currentPage: Math.min(pagination.totalPages - 1, pagination.currentPage + 1) })} 
+              disabled={pagination.currentPage === pagination.totalPages - 1}
+            >
+              다음
+            </button>
+          </div>
+        </>
+      ) : (
+        <p>게시글이 없습니다. (boards: {JSON.stringify(boards)})</p>
+      )}
+    </div>
+  );
+}
 export default BoardList;
