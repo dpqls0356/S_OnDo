@@ -47,10 +47,12 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		return counselorReservationDtos;
 	}
 
-	// Setter가 좀 아니긴 한데 일단 그냥 하자...
+	// 백엔드 내부적으로 호출해서 추가하는 함수
+	// 사용자가 호출하는 경우는 없음
 	@Override
 	@Transactional
 	public void addReservation(CounselorReservationAddDto counselorReservationAddDto) {
+		System.out.println(counselorReservationAddDto);
 		Reservation reservation = new Reservation();
 		reservation.setId(null);
 		reservation.setReservationDate(counselorReservationAddDto.getReservationDate());
@@ -64,16 +66,15 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		counselorReservationRepository.save(reservation);
 	}
 
+	// Get으로 호출할 때는 문자열로만 받을 수 있으니 Request 객체가 달라야 함
 	@Override
 	@Transactional
 	public void addRequestReservation(CounselorReservationAddRequestDto counselorReservationAddRequestDto) {
 		Reservation reservation = new Reservation();
 		reservation.setId(null);
-		// ZonedDateTime으로 변환
-		ZonedDateTime zonedDateTime = ZonedDateTime.parse(counselorReservationAddRequestDto.getReservationDate(), DateTimeFormatter.ISO_DATE_TIME);
-		// LocalDateTime으로 변환
-		LocalDateTime localDateTime = zonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-		reservation.setReservationDate(localDateTime);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+		LocalDateTime dateTime = LocalDateTime.parse(counselorReservationAddRequestDto.getReservationDate(), formatter.withZone(ZoneOffset.UTC));
+		reservation.setReservationDate(dateTime);
 		reservation.setDetail(null);
 		reservation.setMember(null);
 		// counselorId로 서비스에서 가져와야겠네..
@@ -84,6 +85,7 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		counselorReservationRepository.save(reservation);
 	}
 
+	// 예약 삭제
 	@Override
 	@Transactional
 	public void deleteReservation(Long reservationId) {
