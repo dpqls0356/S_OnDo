@@ -8,6 +8,8 @@ import java.util.Map;
 import com.clio.ondo.domain.reservation.model.CounselorReservationAddRequestDto;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -79,5 +81,23 @@ public class CounselorReservationController {
 		}
 	}
 
+	@GetMapping("/api/v1/counselor/reservation")
+	public ResponseEntity<?> getAllReservation(HttpServletRequest request, Pageable pageable) {
+		try{
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
 
+			List<CounselorReservationDto> reservationDtos = counselorReservationService.getAllReservation(id, pageable);
+
+			Map<String, Object> retMap = new HashMap<>();
+			retMap.put("reservations", reservationDtos);
+
+			return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseVO<>(true, "조회에 성공했습니다.", retMap));
+		}
+		catch(Exception e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new ResponseVO<>(false, "조회에 실패했습니다.", null));
+		}
+	}
 }
