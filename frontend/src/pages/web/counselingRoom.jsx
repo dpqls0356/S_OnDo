@@ -61,8 +61,9 @@ const Nav = styled.div`
     
     }
   }`;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080';
+  process.env.NODE_ENV === 'production' ? '' : baseUrl ;
 
 const CounselingRoom = () => {
   const location = useLocation();
@@ -150,7 +151,7 @@ const CounselingRoom = () => {
 
     axios
       .post(
-        `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions/${sessionId}/leave`,
+        `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/leave`,
         { user: myUserName },
         {
           headers: {
@@ -195,7 +196,7 @@ useEffect(()=>{
 
   const getToken = async (sessionId) => {
     const response = await axios.post(
-      `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions/${sessionId}/connections`,
+      `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
       {},
       {
         headers: { 'Content-Type': 'application/json' },

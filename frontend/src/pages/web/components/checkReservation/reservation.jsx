@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect  } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
@@ -42,19 +42,22 @@ const MemberImg = styled.div`
     height: 50px;
   }
 `;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080";
+  process.env.NODE_ENV === "production" ? "" : baseUrl;
 
-function Reservation() {
+function Reservation({reservation}) {
   const navigate = useNavigate();
-  const [sessionId, setSessionId] = useState("SessionA");
+  const [sessionId, setSessionId] = useState();
+  const [reservationFormattedDate , setReservationFormattedDate] = useState();
+  const [daysRemaining, setDaysRemaining] = useState();
 
   const createCounselingRoom = async () => {
     console.log(APPLICATION_SERVER_URL);
     try {
       // 세션 생성
       const sessionResponse = await axios.post(
-        `${APPLICATION_SERVER_URL}/api/v1/counseling/sessions`,
+        `${APPLICATION_SERVER_URL}/counseling/sessions`,
         { customSessionId: sessionId },
         {
           headers: { "Content-Type": "application/json" },
@@ -71,6 +74,33 @@ function Reservation() {
     } catch (error) {
       console.error("Error creating counseling room:", error);
     }
+  };
+
+  const changeDateFormat=()=>{
+
+  let date = new Date(reservation.reservationDate);
+
+  let year = date.getFullYear();
+  let month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+  let day = String(date.getDate()).padStart(2, '0');
+  let hours = String(date.getHours()).padStart(2, '0');
+  let minutes = String(date.getMinutes()).padStart(2, '0');
+
+  let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+    setReservationFormattedDate(formattedDate);
+  }
+  useEffect(()=>{
+    changeDateFormat();
+    calculateDaysRemaining();
+  },[])
+  
+  const calculateDaysRemaining = () => {
+    let today = new Date();
+    let reservationDate = new Date(reservation.reservationDate);
+    let timeDifference = reservationDate - today;
+    let daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    setDaysRemaining(daysDifference);
   };
 
   return (
@@ -99,12 +129,16 @@ function Reservation() {
         )}
       </Col>
       <Col>
-        <div className="member-info">이싸피(만 30세)</div>
-        <div>상담신청일자: 2024-08-01 10:00</div>
+        <div className="member-info">{reservation.memberName}(만 30세)</div>
+        <div>상담일:{reservationFormattedDate}</div>
       </Col>
       <Col>
         <CreateCounselingRoomBtn onClick={createCounselingRoom}>
-          입장
+          {daysRemaining > 0
+            ? `D-${daysRemaining}`
+            : daysRemaining === 0
+            ? `상담시작`
+            : `완료된 상담`}
         </CreateCounselingRoomBtn>
       </Col>
     </View>
