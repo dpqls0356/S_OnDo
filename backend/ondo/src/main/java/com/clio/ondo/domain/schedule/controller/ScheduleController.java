@@ -1,15 +1,20 @@
 package com.clio.ondo.domain.schedule.controller;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.clio.ondo.domain.reservation.model.CounselorReservationAddDto;
+import com.clio.ondo.domain.schedule.model.DayScheduleModifyDto;
+import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
+import io.jsonwebtoken.Jwt;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.clio.ondo.domain.schedule.model.Schedule;
 import com.clio.ondo.domain.schedule.model.ScheduleDto;
@@ -22,11 +27,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScheduleController {
 	private final ScheduleService scheduleService;
+	private final JwtTokenProvider jwtTokenProvider;
 
-	@GetMapping("/api/v1/counselor/schedule/{counselorId}")
-	public ResponseEntity<?> getDaySchedule(@PathVariable Long counselorId) {
+	@GetMapping("/api/v1/counselor/schedule")
+	public ResponseEntity<?> getSchedule(HttpServletRequest request) {
 		try{
-			ScheduleDto schedule = scheduleService.getSchedule(counselorId);
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
+
+			ScheduleDto schedule = scheduleService.getSchedule(id);
 			Map<String, Object> retMap = new HashMap<>();
 			retMap.put("schedule", schedule);
 
@@ -39,11 +48,36 @@ public class ScheduleController {
 		}
 	}
 
-	@PutMapping("/api/v1/counselor/schedule/{counselorId}")
-	public ResponseEntity<?> updateDaySchedule(@PathVariable Long counselorId, @RequestBody ScheduleDto schedule) {
+	@GetMapping("/api/v1/counselor/schedule/{date}")
+	public ResponseEntity<?> getDaySchedule(HttpServletRequest request, @PathVariable String date) {
 		try{
-			System.out.println(schedule);
-			ScheduleDto resultSchedule = scheduleService.updateSchedule(counselorId, schedule);
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
+
+			List<CounselorReservationAddDto> daySchedule = scheduleService.getDaySchedule(id, date);
+			List<LocalDateTime> times = daySchedule.stream()
+				.map(CounselorReservationAddDto::getReservationDate)
+				.toList();
+			Map<String, Object> retMap = new HashMap<>();
+			retMap.put("schedule", times);
+
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseVO<>(true, "일정 조회 성공", retMap));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ResponseVO<>(false, "일정을 가져올 수 없습니다.", null));
+		}
+	}
+
+	@PutMapping("/api/v1/counselor/schedule")
+	public ResponseEntity<?> updateSchedule(HttpServletRequest request, @RequestBody ScheduleDto schedule) {
+		try{
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
+
+			ScheduleDto resultSchedule = scheduleService.updateSchedule(id, schedule);
 			Map<String, Object> retMap = new HashMap<>();
 			retMap.put("schedule", resultSchedule);
 
@@ -51,9 +85,32 @@ public class ScheduleController {
 				.body(new ResponseVO<>(true, "성공적으로 변경 되었습니다. ", retMap));
 		}
 		catch(Exception e){
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(new ResponseVO<>(false, "일정 변경에 실패했습니다.", null));
+		}
+	}
+
+	@PostMapping("/api/v1/counselor/schedule/{date}")
+	public ResponseEntity<?> setDaySchedule(HttpServletRequest request, @PathVariable String date,
+		@RequestBody DayScheduleModifyDto dayScheduleModifyDto) {
+		try{
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
+
+			List<CounselorReservationAddDto> daySchedule = scheduleService.setDaySchedule(id, date, dayScheduleModifyDto.getSchedule());
+			List<LocalDateTime> times = daySchedule.stream()
+				.map(CounselorReservationAddDto::getReservationDate)
+				.toList();
+			Map<String, Object> retMap = new HashMap<>();
+			retMap.put("schedule", times);
+
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseVO<>(true, "일정 변경에 성공했습니다.", retMap));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ResponseVO<>(false, "일정 변경에 실패했습니다.", null));
 		}
 	}
 }
