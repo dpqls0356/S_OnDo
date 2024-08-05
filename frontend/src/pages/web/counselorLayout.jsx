@@ -74,6 +74,7 @@ function CounselorLayout() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const logout = async () => {
+    console.log("logout");
     await counselorLogout();
     navigate("/counselor/login");
   };

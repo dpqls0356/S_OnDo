@@ -1,5 +1,5 @@
 // counselorHome.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
@@ -36,7 +36,13 @@ const Search = styled.div`
 `;
 const ReservationList = styled.div``;
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 function ReservationSpot() {
+  const [reservationList, setReservationList] = useState([]);
+  useEffect(async () => {
+    const response = await axios.get(`${baseUrl}/api/v1/counselor/reservation`);
+  }, []);
   return (
     <View>
       <Header>전체 상담 관리</Header>
@@ -46,7 +52,7 @@ function ReservationSpot() {
       </Search>
       <ReservationList>
         {true ? (
-          <Reservation />
+          <Reservation reservationList={reservationList} />
         ) : (
           <div>
             <div>예약된 상담 일정이 없습니다.</div>
