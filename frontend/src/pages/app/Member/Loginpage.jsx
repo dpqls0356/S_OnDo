@@ -21,11 +21,11 @@ const Loginpage = () => {
     try {
       await login(email, password);
       nav('/member/home')
-      console.log('로그인 성공!')
+      alert('로그인 성공!')
 
 
     } catch (error) {
-      setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
     }
   }
   const onClickKakao = () => {
