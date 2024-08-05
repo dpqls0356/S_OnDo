@@ -1,12 +1,12 @@
-import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
 
+import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
+import CounselorLogin from "./pages/web/counselorLogin";
+import CounselingRoom from "./pages/web/counselingRoom";
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
-
-import CounselingRoom from "./pages/web/counselingRoom";
-import CounselorLogin from "./pages/web/counselorLogin";
 
 import Logopage from "./pages/app/Member/Logopage";
 import Loginpage from "./pages/app/Member/Loginpage";
@@ -31,7 +31,6 @@ import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
 function App() {
   // const test = false;
   const checkAuth = useAuthStore((state) => state.checkAuth);
-
   useEffect(() => {
     checkAuth();
   }, []);
@@ -39,7 +38,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/counselor/home" element={<CounselorLayout />}></Route>
+        <Route path="/counselor" element={<CounselorLayout />}>
+          <Route path="*" element={<CounselorNotFoundPage />} />
+        </Route>
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
         {/* counseling으로 이동할 때 sessionId값을 가지고 이동해야함 -> sessionId로 token발급을 하고 그걸 바탕으로 session에 참가 가능 */}
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
@@ -71,5 +72,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;

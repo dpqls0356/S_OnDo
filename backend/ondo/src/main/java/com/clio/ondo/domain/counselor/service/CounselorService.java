@@ -23,6 +23,8 @@ public interface CounselorService {
     CounselorResponseDto getCounselor(Long counselorId);
     List<CounselorResponseDto> filteredList(String name, Gender gender,String field);
 	Optional<Counselor> getCounselorEntity(Long id);
+    void logout(String token);
     CounselorMyPageResponseDto getMypage(Long counslorId);
     void updateMypage(Long counselorId,String password,String selfIntroduction, String profileUrl);
+
 }

@@ -24,6 +24,8 @@ public class QCounselDetail extends EntityPathBase<CounselDetail> {
 
     public final StringPath content = createString("content");
 
+    public final NumberPath<Long> id = createNumber("id", Long.class);
+
     public final com.clio.ondo.domain.reservation.model.QReservation reservation;
 
     public QCounselDetail(String variable) {

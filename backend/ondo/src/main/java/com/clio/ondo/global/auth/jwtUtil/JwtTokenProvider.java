@@ -179,7 +179,7 @@ public class JwtTokenProvider {
 
 	public Authentication getCounselorAuthentication(String token) {
 		String username = decodeJwt(token).getSubject();
-		MemberPrincipalDetails userDetails = (MemberPrincipalDetails) memberDetailsService.loadUserByUsername(username);
+		CounselorPrincipalDetails userDetails = (CounselorPrincipalDetails) counselorDetailsService.loadUserByUsername(username);
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}
 
