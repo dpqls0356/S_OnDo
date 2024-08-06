@@ -6,7 +6,7 @@ import Reservation from "./reservation";
 const View = styled.div`
   padding: 50px 50px;
   width: 45%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 `;
@@ -26,6 +26,7 @@ const Search = styled.div`
   & > input {
     flex: 1;
     margin-right: 30px;
+    padding: 0px 20px;
   }
   & > button {
     width: 80px;
@@ -34,7 +35,16 @@ const Search = styled.div`
   }
 `;
 
-const ReservationList = styled.div``;
+const ReservationList = styled.div`
+  height: 90%;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+`;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -42,6 +52,7 @@ function ReservationSpot() {
   const [reservationList, setReservationList] = useState([]);
   const [page, setPage] = useState(0);
   const size = 10;
+  const [searchWord, setSearchWord] = useState("");
 
   const getReservationList = async () => {
     try {
@@ -59,7 +70,30 @@ function ReservationSpot() {
       console.error("Error fetching reservations:", err);
     }
   };
-
+  const searchByName = async () => {
+    setPage(0);
+    if (searchWord === "") {
+      getReservationList();
+    } else {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/counselor/reservation/search/${encodeURIComponent(searchWord)}?page=${page}&size=${size}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setReservationList(response.data.data.reservations);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+  const handleInputChange = (event) => {
+    setSearchWord(event.target.value);
+  };
   useEffect(() => {
     const fetchData = async () => {
       await getReservationList();
@@ -71,8 +105,8 @@ function ReservationSpot() {
     <View>
       <Header>전체 상담 관리</Header>
       <Search>
-        <input type="text" />
-        <button>검색</button>
+        <input onChange={handleInputChange} type="text" value={searchWord} />
+        <button onClick={searchByName}>검색</button>
       </Search>
       <ReservationList>
         {reservationList.length > 0 ? (
