@@ -75,7 +75,6 @@ const CounselingRoom = () => {
   const sessionId = location.state.sessionId;
   const reservationId = location.state.reservationId;
   const memberId = location.state.memberId;
-  const [memberInfo, setMemberInfo] = useState({});
 
   const [preJoin, setPreJoin] = useState(true);
 
@@ -147,7 +146,6 @@ const CounselingRoom = () => {
         setSession(mySession);
         setPublisher(publisher);
         setCurrentVideoDevice(currentVideoDevice);
-        getMemberInfo();
       } catch (error) {
         console.error("Error initializing publisher:", error);
       }
@@ -155,22 +153,6 @@ const CounselingRoom = () => {
     [sessionId]
   );
 
-  const getMemberInfo = async () => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}/api/v1/counselor/member?memberId=${memberId}`,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   const leaveSession = useCallback(async () => {
     const response = await axios
@@ -343,7 +325,7 @@ const CounselingRoom = () => {
           </WebCamView>
           {/* 상담사일때만 보이도록 해야함 */}
           {/* {true ? <SideBar/> : null} */}
-          <SideBar memberInfo={memberInfo} />
+          <SideBar memberId={memberId} />
         </View>
       ) : (
         <LoadingComponent></LoadingComponent>
