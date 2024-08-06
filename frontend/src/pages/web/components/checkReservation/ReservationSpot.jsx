@@ -79,7 +79,7 @@ function ReservationSpot() {
         const response = await axios.get(
           `${baseUrl}/counselor/reservation/search/${encodeURIComponent(searchWord)}?page=${page}&size=${size}`,
           {
-            withCredentials: true, // 쿠키를 포함
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
             },

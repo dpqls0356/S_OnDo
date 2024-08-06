@@ -103,11 +103,11 @@ function Reservation({ reservation }) {
         );
 
         setSessionId(sessionResponse.data.data.session_id);
-        console.log(sessionResponse);
         navigate("/counselingroom", {
           state: {
             sessionId: sessionResponse.data.data.session_id,
             reservationId: reservation.reservationId,
+            memberId: reservation.memberId,
           },
         });
       } catch (error) {
