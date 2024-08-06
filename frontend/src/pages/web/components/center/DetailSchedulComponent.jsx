@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
 
-import Calendar from "../../../../components/app/Calendar";
+// import Calendar from "../../../../components/app/Calendar";
 // import TimeSlots from "../../../../components/app/TimeSlots";
+import CounselorCalendar from "./CounselorCalendar";
 import CounselorTimeSlots from "./CounselorTimeSlots";
 
 const View = styled.div`
@@ -38,14 +39,17 @@ const Option = styled.div`
 
 const DetailSchedulComponent = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
+  // const selectedTime = null
+  
+  const [selectedTime, setSelectedTime] = useState([]);
 
   return(
     <View>
       <Option>
         <Calen>
-          <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+          <CounselorCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
         </Calen>
+        {/* <CounselorTimeSlots selectedTime={selectedTime} /> */}
         <CounselorTimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
       </Option>
       <Save>

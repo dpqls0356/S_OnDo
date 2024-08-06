@@ -5,7 +5,7 @@ import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
 import useBoardStore from "../../../store/app/useBoardStore";
 
-const baseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const api = axios.create({
   baseURL: baseUrl,
