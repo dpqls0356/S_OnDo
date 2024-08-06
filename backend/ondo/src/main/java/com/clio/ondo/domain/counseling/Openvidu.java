@@ -65,7 +65,6 @@ public class Openvidu {
     // 요청에서 JWT 토큰 추출
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
     Long id = jwtTokenProvider.getIdFromToken(token);
-
     // 사용자 인증 확인
     if (id != null) {
       // 예약 ID 추출
@@ -134,6 +133,11 @@ public class Openvidu {
 
     // 요청에서 JWT 토큰 추출
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+
+    if (token == null || token.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("JWT 토큰이 제공되지 않았습니다."));
+    }
+
     Long id = jwtTokenProvider.getIdFromToken(token);
 
     if (id != null) {
