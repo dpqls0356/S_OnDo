@@ -5,7 +5,9 @@ const useMissionStore = create((set) => ({
         daily: [],
         typical: []
     },
-    setMissions: (missions) => set({ missions }),
+    setMissions: (missions) => {
+        // console.log('Setting missions in store:', missions);
+        set({ missions })},
     completeMission: (type, missionIndex) => set(state => ({
         missions: {
             ...state.missions,
