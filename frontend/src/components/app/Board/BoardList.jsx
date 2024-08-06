@@ -11,6 +11,7 @@ const api = axios.create({
   withCredentials: true
 });
 
+// api랑 맞추려고 게시글들은 boards, 단일 게시글은 article로
 const BoardList = () => {
   const { boards, setBoards, pagination, updatePagination } = useBoardStore();
   const [isLoading, setIsLoading] = useState(true);
@@ -49,22 +50,26 @@ const BoardList = () => {
     <div className="BoardList">
       {Array.isArray(boards) && boards.length > 0 ? (
         <>
-          {boards.map(board => (
-            <Board key={board._id} board={board} />
+          {boards.map(article => (
+            <Board key={article._id} article={article} />
           ))}
+        <br />
           <div className="pagination">
             <button 
+              className='pagination-button' 
               onClick={() => updatePagination({ currentPage: Math.max(0, pagination.currentPage - 1) })} 
-              disabled={pagination.currentPage === 0}
-            >
-              이전
+              disabled={pagination.currentPage === 0} 
+            >                                                                                                                                                                                                                                                                                                  
+              {/* JSX에서 특수 문자를 처리하는 방법 */}
+              &lt;   
             </button>
             <span>페이지 {pagination.currentPage + 1} / {pagination.totalPages}</span>
-            <button 
+            <button
+              className='pagination-button' 
               onClick={() => updatePagination({ currentPage: Math.min(pagination.totalPages - 1, pagination.currentPage + 1) })} 
               disabled={pagination.currentPage === pagination.totalPages - 1}
             >
-              다음
+              &gt;
             </button>
           </div>
         </>
