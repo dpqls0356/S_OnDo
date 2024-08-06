@@ -47,9 +47,13 @@ function ReservationSpot() {
     try {
       const response = await axios.get(
         `${baseUrl}/counselor/reservation?page=${page}&size=${size}`,
-        { withCredentials: true }
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // 쿠키를 포함하여 요청
+        }
       );
-      console.log("Fetched reservations:", response.data.data.reservations);
       setReservationList(response.data.data.reservations);
     } catch (err) {
       console.error("Error fetching reservations:", err);
@@ -62,10 +66,6 @@ function ReservationSpot() {
     };
     fetchData();
   }, [page]);
-
-  useEffect(() => {
-    console.log("Updated reservationList:", reservationList);
-  }, [reservationList]);
 
   return (
     <View>
