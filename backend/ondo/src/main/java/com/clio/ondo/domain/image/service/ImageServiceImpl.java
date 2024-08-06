@@ -3,6 +3,8 @@ package com.clio.ondo.domain.image.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +28,7 @@ public class ImageServiceImpl implements ImageService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
+	@Override
 	//MultipartFile 받아서 File로 변환 후 S3에 업로드
 	public String upload(MultipartFile multipartFile, String dirName) throws IOException {
 		File uploadFile = convert(multipartFile)
@@ -66,7 +69,6 @@ public class ImageServiceImpl implements ImageService {
 		String uuid = UUID.randomUUID().toString();
 		String saveFileName = uuid + "_" + originalFilename.replaceAll("\\s", "_");
 
-
 		File convertFile = new File(saveFileName);
 
 		if (convertFile.createNewFile()) {
@@ -77,4 +79,29 @@ public class ImageServiceImpl implements ImageService {
 		}
 		return Optional.empty();
 	}
+
+	@Override
+	public void delete(String imageUrl){
+		try{
+			String decodeUrl=extractAndDecodePath(imageUrl);
+			amazonS3.deleteObject(bucket, decodeUrl);
+		}catch(UnsupportedEncodingException e){
+			System.out.println("디코딩 중 오류가 발생했습니다: " + e.getMessage());
+		}
+
+	}
+
+
+	public static String extractAndDecodePath(String url) throws UnsupportedEncodingException {
+		// ".com/" 이후의 경로 추출
+		int startIndex = url.indexOf("MemberProfile/");
+		String path = url.substring(startIndex);
+
+		// 경로 전체를 URL 디코딩
+		String decodedPath = URLDecoder.decode(path, "UTF-8");
+
+		return decodedPath;
+	}
+
+
 }
