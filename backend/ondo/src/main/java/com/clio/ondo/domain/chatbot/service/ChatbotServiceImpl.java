@@ -48,7 +48,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 		+ "You should always be polite, understanding, and positive. Make sure to be empathetic and attentive,"
 		+ "and avoid any rude or insensitive comments. Keep the conversation light-hearted and uplifting,"
 		+ "and try to make the user feel better and more at ease. Here are some guidelines to follow:\n"
-		+ "**Important:** Always use informal, friendly language. Do not use formal language or honorifics (존댓말). Your responses should feel like a casual conversation between friends. Make sure to use Korean"
+		+ "**Important:** Always use informal, friendly language. Do not use formal language or honorifics (존댓말). Your responses should feel like a casual conversation between friends. Make sure to use Korean and Don't talk to long"
 		+ "\n"
 		+ "1. Greet the user warmly and ask how they are feeling.\n"
 		+ "2. Listen attentively to the user's concerns and respond with empathy and kindness.\n"
@@ -93,7 +93,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	// 사용자가 대화를 입력했을 경우 동작하는 함수
 	@Override
 	@Transactional
-	public List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
+	public ChattingReadDto getResponseFromOpenAIChatCompletion(Long memberId, String text) {
 		try{
 			WebClient webClient = WebClient.builder().build();
 			String url = "https://api.openai.com/v1/chat/completions";
@@ -118,12 +118,14 @@ public class ChatbotServiceImpl implements ChatbotService{
 			ChatbotChatting requestChatting = new ChatbotChatting(null, text,"user", LocalDateTime.now(), memberId);
 			chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
-			List<String> parsedStrings = stringParsingService.parseLine(responseString);
-			for(String parsedString : parsedStrings){
-				ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
-				chatbotRepository.upsertByMemberId(memberId, responseChatting);
-			}
-			return parsedStrings;
+//			List<String> parsedStrings = stringParsingService.parseLine(responseString);
+			ChatbotChatting response = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now(), memberId);
+			ChattingReadDto responseReadDto = new ChattingReadDto(response.getContent(), response.getSender(), response.getCreatedAt());
+			chatbotRepository.upsertByMemberId(memberId, response);
+//			for(String parsedString : parsedStrings){
+//				ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
+//			}
+			return responseReadDto;
 		}catch(Exception e){
 			throw new RestRequestException("OpenAI 서버와 연결에 실패했습니다.");
 		}

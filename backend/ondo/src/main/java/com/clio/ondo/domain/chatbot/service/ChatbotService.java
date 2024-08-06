@@ -11,7 +11,7 @@ import com.clio.ondo.domain.mission.model.MissionDetail;
 public interface ChatbotService {
 	// 사용자가 대화를 입력했을 경우 동작하는 함수
 	@Transactional
-	List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text);
+	ChattingReadDto getResponseFromOpenAIChatCompletion(Long memberId, String text);
 
 	// 이전 채팅 내역을 page 단위로 가져오는 함수
 	List<ChattingReadDto> getChatbotChattings(Long memberId, int page, int size);
