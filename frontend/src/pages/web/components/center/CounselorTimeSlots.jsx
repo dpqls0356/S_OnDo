@@ -24,7 +24,14 @@ const Btn = styled.div`
 
 const CounselorTimeSlots = ({ selectedTime, setSelectedTime }) => {
   const handleTimeClick = (time) => {
-    setSelectedTime(time);
+    // setSelectedTime(time);
+    if (selectedTime.includes(time)) {
+      setSelectedTime(selectedTime.filter(t => t !== time))
+    } else {
+    setSelectedTime([ ...selectedTime, time]);      
+    }
+    // setSelectedTime([ ...selectedTime, time]);
+    console.log(selectedTime)
   };
 
   const renderTimeButton = (time) => (
