@@ -41,7 +41,7 @@ const DetailSchedulComponent = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   // const selectedTime = null
   
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedTime, setSelectedTime] = useState([]);
 
   return(
     <View>

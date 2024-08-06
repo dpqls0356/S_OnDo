@@ -10,6 +10,7 @@ table {
 th, td {
   /* background-color: pink; */
   padding: 10px 0px;
+  width: 80px;
   border: 2px solid #E6E6E6;
 }
 
