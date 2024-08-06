@@ -23,4 +23,7 @@ public interface CounselorReservationRepository extends JpaRepository<Reservatio
 
 	@Query("select r from Reservation r where r.counselor.id = :counselorId order by r.reservationDate desc")
 	Page<Reservation> findByCounselorId(@Param("counselorId") Long counselorId, Pageable pageable);
+
+	@Query("select r from Reservation r where r.counselor.id = :counselorId and r.member.name = :memberName order by r.reservationDate desc")
+	Page<Reservation> findByCounselorIdAndMemberName(@Param("counselorId") Long counselorId, @Param("memberName") String memberName, Pageable pageable);
 }
