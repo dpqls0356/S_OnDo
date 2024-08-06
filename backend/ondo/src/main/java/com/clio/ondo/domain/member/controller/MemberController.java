@@ -74,8 +74,32 @@ public class MemberController {
 		}
 	}
 
+//	@PostMapping("/logout")
+//	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request,HttpServletResponse response) {
+//		try {
+//			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+//			memberService.logout(token);
+//
+//			Cookie accessTokenCookie = new Cookie("accessToken", null);
+//			accessTokenCookie.setHttpOnly(true);
+//			accessTokenCookie.setPath("/");
+//			accessTokenCookie.setMaxAge(0);
+//
+//			Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+//			refreshTokenCookie.setHttpOnly(true);
+//			refreshTokenCookie.setPath("/");
+//			refreshTokenCookie.setMaxAge(0);
+//
+//			HttpServletResponse response = (HttpServletResponse) request;
+//			response.addCookie(accessTokenCookie);
+////			response.addCookie(refreshTokenCookie);
+//			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("logout"));
+//		} catch (AuthenticationException e) {
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("로그아웃 실패"));
+//		}
+//	}
 	@PostMapping("/logout")
-	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request) {
+	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request,HttpServletResponse response) {
 		try {
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			memberService.logout(token);
@@ -90,9 +114,11 @@ public class MemberController {
 			refreshTokenCookie.setPath("/");
 			refreshTokenCookie.setMaxAge(0);
 
-			HttpServletResponse response = (HttpServletResponse) request;
+			// 응답에 쿠키 추가
 			response.addCookie(accessTokenCookie);
+			// refreshToken 쿠키를 응답에 추가 (현재 주석 처리됨)
 			response.addCookie(refreshTokenCookie);
+
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("logout"));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("로그아웃 실패"));
