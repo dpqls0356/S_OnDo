@@ -19,7 +19,7 @@ import './Mission.css'
 //   ]
 // };
 
-const baseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 // axios 인스턴스 생성
 const api = axios.create({
