@@ -8,7 +8,7 @@ import profile from './../../../assets/images/test.png'
 import notice from './../../../assets/images/notice.png'
 import './Mypage.css'
 
-const baseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -39,8 +39,13 @@ const MyPage = () => {
   }
 
   const onClickLogout = async () => {
-    await logout();
-    nav('/member/login');
+    const success = await logout();
+    if (success) {
+      nav('/member/login');
+    } else {
+      alert('로그아웃 실패!')
+    }
+    
   }
   
   if (loading) {
