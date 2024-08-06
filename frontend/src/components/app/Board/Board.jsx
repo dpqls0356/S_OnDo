@@ -3,15 +3,15 @@ import "./Board.css";
 import { useNavigate } from "react-router-dom";
 import calendar from "./../../../assets/images/calendar.png";
 
-const Board = ({ board }) => {
-  // console.log(board)
+const Board = ({ article }) => {
+  // console.log(article)
   const nav = useNavigate();
 
   const onClickBoard = () => {
-    nav(`/member/board/${board._id}`);
+    nav(`/member/board/${article._id}`);
   };
 
-  // 사용자가 보기 편하게
+  // 사용자가 보기 편하게 날짜 변환
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -31,23 +31,23 @@ const Board = ({ board }) => {
     >
       <div className="BoardTitle">
         <div id="BD-Title">
-          <p>{board.title || '제목 없음'}</p>
+          <p>{article.title || '제목 없음'}</p>
         </div>
         <div className="BoardCreate">
           <img src={calendar} alt="Calendar icon" />
-          <p>{formatDate(board.created_at)}</p>
+          <p>{formatDate(article.created_at)}</p>
         </div>
       </div>
 
       <div className="BoardContent">
-        <p>{truncateContent(board.content || '내용 없음')}</p>
+        <p>{truncateContent(article.content || '내용 없음')}</p>
       </div>
     </div>
   );
 };
 
 Board.propTypes = {
-  board: PropTypes.shape({
+  article: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     title: PropTypes.string,
     content: PropTypes.string,
