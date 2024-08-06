@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.chatbot.model.ChatbotChatting;
 import com.clio.ondo.domain.chatbot.service.ChatbotServiceImpl;
+import com.clio.ondo.global.exception.RestRequestException;
 
 import lombok.Builder;
 import lombok.Data;
@@ -45,7 +46,11 @@ public class ChatbotController {
 
 			return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseVO<>(true, "채팅 입력 성공", result));
-		}catch(Exception e){
+		}catch(RestRequestException rre){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new ResponseVO<>(false, rre.getMessage(), null));
+		}
+		catch(Exception e){
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(new ResponseVO<>(false, "채팅 입력 실패", null));
 		}

@@ -3,8 +3,13 @@ package com.clio.ondo.domain.board.service;
 import com.clio.ondo.domain.board.model.Comment;
 import com.clio.ondo.domain.board.repository.CommentRepository;
 import com.clio.ondo.domain.board.repository.CustomCommentRepositoryImpl;
+
+import java.util.List;
 import java.util.Optional;
 
+import com.clio.ondo.domain.moderation.model.FilteringResponse;
+import com.clio.ondo.domain.moderation.service.ModerationService;
+import com.clio.ondo.global.exception.board.ModerationException;
 import com.clio.ondo.global.exception.member.NotFoundException;
 import com.clio.ondo.global.exception.member.UnauthorizedException;
 import org.bson.types.ObjectId;
@@ -20,9 +25,16 @@ public class CommentServiceImpl implements CommentService {
   CommentRepository commentRepository;
   @Autowired
   CustomCommentRepositoryImpl customCommentRepositoryImpl;
+  @Autowired
+  ModerationService moderationService;
 
   @Override
   public void saveComment(Comment comment) {
+    List<FilteringResponse> contentResponse = moderationService.inspectBadWord(comment.getContent());
+    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+      throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
+    }
+
     commentRepository.save(comment);
   }
 
@@ -54,6 +66,11 @@ public class CommentServiceImpl implements CommentService {
     if (existingCommentOpt.isPresent()) {
       Comment existingComment = existingCommentOpt.get();
       if (existingComment.getMemberId().equals(memberId.toString())) {
+        List<FilteringResponse> contentResponse = moderationService.inspectBadWord(modifiedComment.getContent());
+        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+          throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
+        }
+
         customCommentRepositoryImpl.updateComment(commentId, modifiedComment);
       } else {
         //소유주가 아니기에 예외처리
