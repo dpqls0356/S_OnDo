@@ -10,6 +10,8 @@ import profile from './../../../assets/images/ic_user.png'
 
 import './Join.css'
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const JoinForm = () => {
   const nav = useNavigate();
   const { error, success } = useJoinStore();
@@ -56,7 +58,7 @@ const JoinForm = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/member/join', userData);
+      const response = await axios.post(`${baseUrl}/member/join`, userData);
       
       if (response.data.success) {
         alert('회원가입이 완료되었습니다.');

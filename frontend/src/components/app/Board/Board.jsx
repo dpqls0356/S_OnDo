@@ -1,221 +1,58 @@
-// 게시글 리스트
+import PropTypes from 'prop-types';
 import "./Board.css";
-
 import { useNavigate } from "react-router-dom";
-
 import calendar from "./../../../assets/images/calendar.png";
 
-const Board = () => {
-  // 단일게시글 정보 입력받아야 함
-
+const Board = ({ article }) => {
+  // console.log(article)
   const nav = useNavigate();
+
   const onClickBoard = () => {
-    // 게시글 번호 입력받아야 함
-    return nav("/member/board/게시글 번호");
+    nav(`/member/board/${article._id}`);
+  };
+
+  // 사용자가 보기 편하게 날짜 변환
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+  };
+
+  const truncateContent = (content, maxLength = 100) => {
+    if (content.length <= maxLength) return content;
+    return content.slice(0, maxLength) + '...';
   };
 
   return (
-    <>
-      {/* 게시글 하나에 대한 카드 형태의 컴포넌트 -> 밑에 다 지우고 DB 데이터 뿌릴 수 있게 */}
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        {/* onClickBoard(게시글 번호 혹은 게시글 객체 넘기기) */}
-        <div className="BoardTitle">
-          <div id="BD-Title">
-            <p>일이삼사오육칠팔구십십일</p>
-          </div>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
+    <div
+      onClick={onClickBoard}
+      className="BoardCard"
+      style={{ cursor: "pointer" }}
+    >
+      <div className="BoardTitle">
+        <div id="BD-Title">
+          <p>{article.title || '제목 없음'}</p>
         </div>
-
-        <div className="BoardContent">
-          {/* 보이는 글자수 제한 해야 함 */}
-          <p>일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십육십일asfafasfafffaaaaaaaaassssssssssssssssssss</p>
+        <div className="BoardCreate">
+          <img src={calendar} alt="Calendar icon" />
+          <p>{formatDate(article.created_at)}</p>
         </div>
       </div>
 
-
-
-
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
+      <div className="BoardContent">
+        <p>{truncateContent(article.content || '내용 없음')}</p>
       </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>adlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosooadlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosooadlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosoo</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>prijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;apgijosooadlspgjadskgjaeprijtalkrwjt;kjwe;poiujtfiowaujsfiokjaiokw;jgk;/osjad;/fgjzik/;jdzmfi/oa;jz;gjzik/;jdzmfi/oa;</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
-      </div>
-      <div
-        onClick={onClickBoard}
-        className="BoardCard"
-        style={{ cursor: "pointer" }}
-      >
-        <div className="BoardTitle">
-          <p>제목</p>
-          <div className="BoardCreate">
-            <img src={calendar} />
-            <p>20xx.xx.xx</p>
-          </div>
-        </div>
-
-        <div className="BoardContent">
-          <p>내용</p>
-        </div>
-      </div>
-
-      
-    </>
+    </div>
   );
+};
+
+Board.propTypes = {
+  article: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    content: PropTypes.string,
+    created_at: PropTypes.string
+  }).isRequired
 };
 
 export default Board;

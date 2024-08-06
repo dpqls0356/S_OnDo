@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-const baseURL = 'http://localhost:8080/api/v1/';
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const useCommentStore = create((set) => ({
   comments: [],
   addComment: async (comment) => {
     try {
-      const response = await axios.post(`${baseURL}board/comment`, comment);
+      const response = await axios.post(`${baseUrl}board/comment`, comment);
       if (response.status === 201) {
         set((state) => ({ comments: [...state.comments, response.data] }));
         return true;
@@ -19,7 +19,7 @@ const useCommentStore = create((set) => ({
   },
   fetchComments: async (articleId) => {
     try {
-      const response = await axios.get(`${baseURL}board/comment/${articleId}`);
+      const response = await axios.get(`${baseUrl}board/comment/${articleId}`);
       set({ comments: response.data });
     } catch (error) {
       console.error('댓글 목록 불러오기 실패:', error);
@@ -27,7 +27,7 @@ const useCommentStore = create((set) => ({
   },
   deleteComment: async (commentId) => {
     try {
-      await axios.delete(`${baseURL}board/comment/${commentId}`);
+      await axios.delete(`${baseUrl}board/comment/${commentId}`);
       set((state) => ({
         comments: state.comments.filter((comment) => comment.id !== commentId),
       }));
@@ -39,7 +39,7 @@ const useCommentStore = create((set) => ({
   },
   updateComment: async (commentId, modifiedContent) => {
     try {
-      const response = await axios.patch(`${baseURL}board/comment/${commentId}`, {
+      const response = await axios.patch(`${baseUrl}board/comment/${commentId}`, {
         content: modifiedContent
       }, {
         headers: { 'Content-Type': 'application/json' }

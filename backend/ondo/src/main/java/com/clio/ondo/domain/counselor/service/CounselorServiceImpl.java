@@ -1,24 +1,11 @@
 package com.clio.ondo.domain.counselor.service;
 
-import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import com.clio.ondo.domain.career.service.CareerService;
-import com.clio.ondo.domain.counselor.model.Counselor;
-import com.clio.ondo.domain.counselor.model.QCounselor;
-import com.clio.ondo.domain.counselor.model.dto.CounselorMyPageResponseDto;
-import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
-import com.clio.ondo.domain.counselor.repository.CounselorRepository;
-import com.clio.ondo.domain.member.model.Gender;
-import com.clio.ondo.domain.schedule.model.Schedule;
-import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
-
-import lombok.AllArgsConstructor;
-import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,15 +13,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.career.service.CareerService;
+import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.counselor.model.QCounselor;
 import com.clio.ondo.domain.counselor.model.dto.CounselorLoginRequestDto;
+import com.clio.ondo.domain.counselor.model.dto.CounselorMyPageResponseDto;
+import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
+import com.clio.ondo.domain.counselor.repository.CounselorRepository;
+import com.clio.ondo.domain.member.model.Gender;
+import com.clio.ondo.domain.schedule.model.Schedule;
+import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
+import com.clio.ondo.global.exception.counselor.CounselorAlreadyExistsException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -67,9 +66,15 @@ public class CounselorServiceImpl implements CounselorService {
     @Override
     @Transactional
     public void join(Counselor counselor) {
+        Optional<Counselor> optionalCounselor = counselorRepository.findByCounselorId(counselor.getCounselorId());
+        if (optionalCounselor.isPresent()) {
+            throw new CounselorAlreadyExistsException("이미 존재하는 상담사입니다.");
+        }
         if (counselor.getSchedule() == null) {
-            counselor.setSchedule(new Schedule(counselor));
-            scheduleRepository.save(counselor.getSchedule());
+            Schedule schedule = new Schedule(counselor);
+            counselor.setSchedule(schedule);
+            schedule.setCounselor(counselor);
+            scheduleRepository.save(schedule);
         }
         counselorRepository.save(counselor);
     }
