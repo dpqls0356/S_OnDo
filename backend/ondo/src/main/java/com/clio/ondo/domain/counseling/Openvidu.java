@@ -1,7 +1,10 @@
 package com.clio.ondo.domain.counseling;
 
+import com.clio.ondo.domain.reservation.model.Reservation;
+import com.clio.ondo.domain.reservation.repository.ReservationRepository;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -39,6 +42,7 @@ import io.openvidu.java.client.SessionProperties;
 public class Openvidu {
 
   private final JwtTokenProvider jwtTokenProvider;
+  private final ReservationRepository reservationRepository;
 
   @Value("${openvidu.url}")
   private String OPENVIDU_URL;
@@ -53,31 +57,59 @@ public class Openvidu {
     this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
   }
 
+
   @PostMapping("/counseling/sessions")
   public ResponseEntity<ResponseVO<String>> initializeSession(@RequestBody(required = false) Map<String, Object> params, HttpServletRequest request)
       throws OpenViduJavaClientException, OpenViduHttpException {
-    // ----- 상담사 판단
+
+    // 요청에서 JWT 토큰 추출
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
     Long id = jwtTokenProvider.getIdFromToken(token);
-    if (true) {
-      // 임의의 sessionId 생성
-      String customSessionId = UUID.randomUUID().toString();
-      // 세션 속성 설정
-      SessionProperties properties = SessionProperties.fromJson(params)
-              .customSessionId(customSessionId)
-              .build();
 
-      Session session = openvidu.createSession(properties);
+    // 사용자 인증 확인
+    if (id != null) {
+      // 예약 ID 추출
+      Long reservationId = params != null && params.containsKey("reservationId")
+          ? Long.parseLong(params.get("reservationId").toString())
+          : null;
 
-      // ----- 세션 Id 예약내역에 넣기
+      // reservationId가 존재하는지 확인
+      if (reservationId != null) {
+        // 임의의 sessionId 생성
+        String customSessionId = UUID.randomUUID().toString();
 
-      return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("session_id", session.getSessionId()));
-    }
-    // 잘못된 접근
-    else {
+        // 세션 속성 설정
+        SessionProperties properties = SessionProperties.fromJson(params)
+            .customSessionId(customSessionId)
+            .build();
+
+        Session session = openvidu.createSession(properties);
+
+        // 데이터베이스에서 reservationId로 예약 찾기 및 counseling_url 업데이트
+        Optional<Reservation> reservationOpt = reservationRepository.findById(reservationId);
+        if (reservationOpt.isPresent()) {
+          Reservation reservation = reservationOpt.get();
+          reservation.setCounselingUrl(customSessionId);
+          reservationRepository.save(reservation);
+
+          // 성공적으로 세션 ID 반환
+          return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("session_id", session.getSessionId()));
+        } else {
+          // 예약을 찾을 수 없는 경우
+          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("예약을 찾을 수 없습니다."));
+        }
+      } else {
+        // reservationId가 제공되지 않은 경우
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("reservationId가 제공되지 않았습니다."));
+      }
+    } else {
+      // 잘못된 접근
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("세션 생성 실패: 잘못된 접근입니다."));
     }
   }
+
+
+
 
   @PostMapping("/counseling/sessions/{sessionId}/connections")
   public ResponseEntity<ResponseVO<String>> createConnection(@PathVariable("sessionId") String sessionId,
@@ -91,12 +123,17 @@ public class Openvidu {
     Connection connection = session.createConnection(properties); // ConnectionProperties 객체를 생성
     return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", connection.getToken()));
   }
+
+
+
+
   @PostMapping("/counseling/sessions/{sessionId}/leave")
   public ResponseEntity<ResponseVO<String>> leaveSession(@PathVariable("sessionId") String sessionId,
-      @RequestBody Map<String, Object> params)
+      @RequestBody Map<String, Object> params, HttpServletRequest request)
       throws OpenViduJavaClientException, OpenViduHttpException {
-    // ---- 상담자라면 종료
-    if(true){
+    String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+    Long id = jwtTokenProvider.getIdFromToken(token);
+    if (id!=null) {
       Session session = openvidu.getActiveSession(sessionId); // 활성 세션을 가져온다.
       if (session == null) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("세션 종료 실패: 세션을 찾을 수 없습니다."));

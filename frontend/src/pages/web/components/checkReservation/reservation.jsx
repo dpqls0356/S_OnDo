@@ -1,4 +1,4 @@
-import { useState,useEffect  } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { styled } from "styled-components";
@@ -46,22 +46,22 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === "production" ? "" : baseUrl;
 
-function Reservation({reservation}) {
+function Reservation({ reservation }) {
   const navigate = useNavigate();
   const [sessionId, setSessionId] = useState();
-  const [reservationFormattedDate , setReservationFormattedDate] = useState();
+  const [reservationFormattedDate, setReservationFormattedDate] = useState();
   const [daysRemaining, setDaysRemaining] = useState();
 
   const createCounselingRoom = async () => {
-    if(daysRemaining===0){
+    if (daysRemaining === 0) {
       try {
         // 세션 생성
         const sessionResponse = await axios.post(
           `${APPLICATION_SERVER_URL}/counseling/sessions`,
-          { customSessionId: sessionId },
+          { reservationId: reservation.reservationId },
           {
             headers: { "Content-Type": "application/json" },
-            withCredentials: true // default를 true로 설정
+            withCredentials: true, // default를 true로 설정
           }
         );
 
@@ -74,29 +74,27 @@ function Reservation({reservation}) {
       } catch (error) {
         console.error("Error creating counseling room:", error);
       }
-    }
-    else return;
+    } else return;
   };
 
-  const changeDateFormat=()=>{
+  const changeDateFormat = () => {
+    let date = new Date(reservation.reservationDate);
 
-  let date = new Date(reservation.reservationDate);
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 필요
+    let day = String(date.getDate()).padStart(2, "0");
+    let hours = String(date.getHours()).padStart(2, "0");
+    let minutes = String(date.getMinutes()).padStart(2, "0");
 
-  let year = date.getFullYear();
-  let month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
-  let day = String(date.getDate()).padStart(2, '0');
-  let hours = String(date.getHours()).padStart(2, '0');
-  let minutes = String(date.getMinutes()).padStart(2, '0');
-
-  let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+    let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
 
     setReservationFormattedDate(formattedDate);
-  }
-  useEffect(()=>{
+  };
+  useEffect(() => {
     changeDateFormat();
     calculateDaysRemaining();
-  },[])
-  
+  }, []);
+
   const calculateDaysRemaining = () => {
     let today = new Date();
     let reservationDate = new Date(reservation.reservationDate);
@@ -139,8 +137,8 @@ function Reservation({reservation}) {
           {daysRemaining > 0
             ? `D-${daysRemaining}`
             : daysRemaining === 0
-            ? `상담시작`
-            : `완료된 상담`}
+              ? `상담시작`
+              : `완료된 상담`}
         </CreateCounselingRoomBtn>
       </Col>
     </View>
