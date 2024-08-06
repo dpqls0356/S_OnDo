@@ -102,8 +102,8 @@ public class CounselorReservationController {
 		}
 	}
 
-	@GetMapping("/api/v1/counselor/reservation")
-	public ResponseEntity<?> searchReservationByName(HttpServletRequest request, @RequestParam String name ,Pageable pageable) {
+	@GetMapping("/api/v1/counselor/reservation/search/{name}")
+	public ResponseEntity<?> searchReservationByName(HttpServletRequest request, @PathVariable String name, Pageable pageable) {
 		try{
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			Long id = jwtTokenProvider.getIdFromToken(token);
