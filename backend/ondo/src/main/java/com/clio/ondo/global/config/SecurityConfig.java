@@ -37,12 +37,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final CustomOAuth2UserService customOAuth2UserService;
-	private final OAuth2SuccessHandler oAuth2SuccessHandler;
-	private final JwtTokenProvider jwtTokenProvider;
-	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
 	@Bean
 	public AuthenticationManager authenticationManager(
 		AuthenticationConfiguration authenticationConfiguration
@@ -65,7 +59,9 @@ public class SecurityConfig {
 		private final JwtTokenProvider jwtTokenProvider;
 		private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 		private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-		private static final String[] LIST = {
+		private static final String[] AUTH_WHITELIST = {
+			"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue",
+			"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue",
 		};
 
 		@Bean
@@ -80,17 +76,15 @@ public class SecurityConfig {
 		public SecurityFilterChain memberFilterChain(HttpSecurity http) throws Exception {
 			http
 				.httpBasic(AbstractHttpConfigurer::disable)
+				.authenticationProvider(memberAuthenticationProvider())
 				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.cors(Customizer.withDefaults())
 				.formLogin(AbstractHttpConfigurer::disable)
 				.logout(AbstractHttpConfigurer::disable)
 				.authorizeRequests((authorize) -> authorize
-					.requestMatchers("/api/v1/member/login", "/api/v1/member/join").permitAll()
-					.requestMatchers("/api/v1/**").hasRole("USER")
-					.requestMatchers("/api/v1/counselor/**").denyAll()
-					.anyRequest().authenticated()
-				)
+					.requestMatchers(AUTH_WHITELIST).permitAll()
+					.anyRequest().authenticated())
 				.oauth2Login(oauth ->
 					oauth.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
 						.successHandler(oAuth2SuccessHandler)
@@ -112,7 +106,8 @@ public class SecurityConfig {
 		private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 		private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 		private static final String[] WHITELIST = {
-			"/**",
+			"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue",
+			"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue",
 		};
 
 		@Bean
@@ -134,14 +129,13 @@ public class SecurityConfig {
 				.formLogin(AbstractHttpConfigurer::disable)
 				.logout(AbstractHttpConfigurer::disable)
 				.authorizeRequests((authorize) -> authorize
-					.requestMatchers("/api/v1/counselor/login", "/api/v1/counselor/join").permitAll()
-					.requestMatchers("/api/v1/counselor**", "/api/v1/counseling**").hasRole("COUNSELOR")
-					.anyRequest().denyAll()
-				)
+					.requestMatchers(WHITELIST).permitAll()
+					.requestMatchers("/api/v1/counselor**").hasRole("COUNSELOR")
+					.anyRequest().authenticated())
 				.exceptionHandling((exceptionHandling) -> exceptionHandling
 					.authenticationEntryPoint(jwtAuthenticationEntryPoint)
 					.accessDeniedHandler(jwtAccessDeniedHandler))
-				.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+					.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 			return http.build();
 		}
 	}
