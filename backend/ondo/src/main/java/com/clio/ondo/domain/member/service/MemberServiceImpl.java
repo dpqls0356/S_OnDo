@@ -137,7 +137,8 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public void updateMember(UpdateRequestDto updateRequestDto, String accessToken) {
+	public void updateMember(UpdateRequestDto updateRequestDto, String accessToken, MultipartFile profileImage) throws
+		IOException {
 		Claims claims = jwtTokenProvider.decodeJwt(accessToken);
 		String user = claims.getSubject();
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
@@ -151,10 +152,14 @@ public class MemberServiceImpl implements MemberService {
 			findMember.updateNickName(updateRequestDto.getNickname());
 			isUpdated = true;
 		}
-		if (StringUtils.hasText(updateRequestDto.getProfileUrl())) {
-			findMember.updateProfileUrl(updateRequestDto.getProfileUrl());
-			isUpdated = true;
-		}
+
+
+		//무조건 update 되어야함.
+		imageService.delete(findMember.getProfileUrl()); //원래 profileImage 삭제
+		String profileUrl=imageService.upload(profileImage,"MemberProfile");
+		findMember.updateProfileUrl(profileUrl);
+		isUpdated=true;
+
 		if (isUpdated) {
 			memberRepository.save(findMember);
 		}

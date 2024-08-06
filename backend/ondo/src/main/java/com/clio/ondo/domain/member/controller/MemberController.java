@@ -180,13 +180,17 @@ public class MemberController {
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<ResponseVO<String>> update(@RequestBody UpdateRequestDto updateRequestDto,
+	public ResponseEntity<ResponseVO<String>> update(
+		@RequestPart("updateRequestDto") UpdateRequestDto updateRequestDto,
+		@RequestPart("profileImage") MultipartFile profileImage,
 		HttpServletRequest request) {
 		try {
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
-			memberService.updateMember(updateRequestDto, token);
+			memberService.updateMember(updateRequestDto, token,profileImage);
 		} catch (MemberNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("회원 정보 수정 실패"));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("회원 정보 수정 성공"));
 	}

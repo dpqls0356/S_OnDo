@@ -25,7 +25,7 @@ public interface MemberService {
 
 	void deleteMember(DeleteRequestDto deleteRequestDto, String token);
 
-	void updateMember(UpdateRequestDto updateRequestDto, String token);
+	void updateMember(UpdateRequestDto updateRequestDto, String accessToken, MultipartFile profileImage) throws IOException;
 
 	String reissueAccessToken(String refreshToken) throws AuthenticationException;
 
