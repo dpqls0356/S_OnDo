@@ -11,7 +11,7 @@ import back from "./../../../assets/images/back.png";
 const Chatpage = () => {
   const nav = useNavigate();
   const [messages, setMessages] = useState([]); // 메세지 기록
-  // const [userInput, setUserInput] = useState(""); // 유저가 보낼 메세지
+  const [userInput, setUserInput] = useState(""); // 유저가 보낼 메세지
   // const [loading, setLoading ] = useState(false);
 
   // const apikey = '';
@@ -42,7 +42,7 @@ const Chatpage = () => {
   });
 
   const getChatbotMessage = async () => {
-    const response = await api.get("/chatbot/list?page=0&size=20");
+    const response = await api.get("/chatbot/list?page=0&size=5");
     const chattingList = response.data.data.chattingList;
     //setMessages([...chattingList]);
     console.log(chattingList);
@@ -50,19 +50,22 @@ const Chatpage = () => {
   };
 
   const typeChattingMessage = async () => {
-    const response = await api.post(
-      "/chatbot/insert",
-      {
-        message: "좋은하루",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json", // form-data 아니고 json으로
+    if (userInput.trim() !== '') {
+      const response = await api.post(
+        "/chatbot/insert",
+        {
+          message: userInput,
         },
-      }
-    );
-
-    console.log(response);
+        {
+          headers: {
+            "Content-Type": "application/json", // form-data 아니고 json으로
+          },
+        }
+      );
+  
+      const chattingList = response.data.data.responseChatting;
+      setMessages([...messages, userInput, chattingList]);
+    }
   };
 
   useEffect(() => {
@@ -73,6 +76,10 @@ const Chatpage = () => {
 
     updateMessages();
   }, []);
+
+  const handleInputChange = (event) => {
+    setUserInput(event.target.value);
+  };
 
   const onClickBack = () => {
     nav("/member/home");
@@ -86,19 +93,17 @@ const Chatpage = () => {
       </div>
 
       {/* 채팅 화면 */}
-      <div className="ChatScreen">
+      <div className="ChatScreen text-black">
         {messages &&
           messages.map((message, index) => {
             return <li key={index}>{message.content}</li>;
           })}
       </div>
 
-      <button onClick={typeChattingMessage}>버튼</button>
-
       {/* 채팅 입력창 */}
       <div className="Chatbox">
-        <input type="text" />
-        {/* <img onClick={typeChattingMessage()} src={chat_send} /> */}
+        <input type="text" value={userInput} onChange={handleInputChange} />
+        <img onClick={typeChattingMessage} src={chat_send} />
       </div>
     </div>
   );
