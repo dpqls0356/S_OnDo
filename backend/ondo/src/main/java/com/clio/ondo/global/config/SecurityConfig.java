@@ -61,7 +61,7 @@ public class SecurityConfig {
 		private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 		private static final String[] AUTH_WHITELIST = {
 			"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue",
-			"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue",
+			"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue", "/error"
 		};
 
 		@Bean
@@ -107,7 +107,7 @@ public class SecurityConfig {
 		private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 		private static final String[] WHITELIST = {
 			"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue",
-			"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue",
+			"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue", "/error"
 		};
 
 		@Bean
@@ -130,7 +130,7 @@ public class SecurityConfig {
 				.logout(AbstractHttpConfigurer::disable)
 				.authorizeRequests((authorize) -> authorize
 					.requestMatchers(WHITELIST).permitAll()
-					.requestMatchers("/api/v1/counselor**").hasRole("COUNSELOR")
+					.requestMatchers("/api/v1/counselor/**").hasRole("COUNSELOR")
 					.anyRequest().authenticated())
 				.exceptionHandling((exceptionHandling) -> exceptionHandling
 					.authenticationEntryPoint(jwtAuthenticationEntryPoint)
