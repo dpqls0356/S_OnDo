@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clio.ondo.domain.reservation.model.CounselorReservationAddDto;
@@ -88,6 +89,26 @@ public class CounselorReservationController {
 			Long id = jwtTokenProvider.getIdFromToken(token);
 
 			List<CounselorReservationDto> reservationDtos = counselorReservationService.getAllReservation(id, pageable);
+
+			Map<String, Object> retMap = new HashMap<>();
+			retMap.put("reservations", reservationDtos);
+
+			return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseVO<>(true, "조회에 성공했습니다.", retMap));
+		}
+		catch(Exception e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new ResponseVO<>(false, "조회에 실패했습니다.", null));
+		}
+	}
+
+	@GetMapping("/api/v1/counselor/reservation")
+	public ResponseEntity<?> searchReservationByName(HttpServletRequest request, @RequestParam String name ,Pageable pageable) {
+		try{
+			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
+
+			List<CounselorReservationDto> reservationDtos = counselorReservationService.searchReservationByName(id, name, pageable);
 
 			Map<String, Object> retMap = new HashMap<>();
 			retMap.put("reservations", reservationDtos);
