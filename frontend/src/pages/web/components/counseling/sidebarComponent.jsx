@@ -59,13 +59,13 @@ const Col = styled.div`
     `}
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const SideBar = () => {
-  const location = useLocation();
+const SideBar = ({memberId}) => {
+  // const location = useLocation();
   const [isChat, setIsChat] = useState(true);
   const [hidden, setHidden] = useState(true);
-  const [memberInfo, setMemberInfo] = useState({});
-  const [historyList, setHistoryList] = useState([]);
-  const memberId = location.state.memberId;
+  // const [memberInfo, setMemberInfo] = useState({});
+  // const [historyList, setHistoryList] = useState([]);
+  // const memberId = location.state.memberId;
 
   const toggleChat = useCallback((status) => {
     setIsChat(status);
@@ -79,32 +79,9 @@ const SideBar = () => {
     setHidden(false);
   };
 
-  const getMemberInfo = async () => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}/counselor/member?memberId=${memberId}`,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = response.data.data.member;
-      setMemberInfo({
-        birthDate: data.birthDate,
-        gender: data.gender === 'MALE' ? "남성" : "여성",
-        memberId: data.memberId,
-        memberName: data.memberName,
-      });
-      setHistoryList([...data.reservations]);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+
 
   useEffect(() => {
-    getMemberInfo();
   }, []);
 
   return (
@@ -124,7 +101,7 @@ const SideBar = () => {
             <FontAwesomeIcon style={{ width: "20px", height: "30px", cursor: "pointer" }} icon={faAnglesRight} onClick={hiddenSidebar} />
           </div>
         </Header>
-        {isChat ? <Chat /> : <UserInfoComponent memberInfo={memberInfo} historyList={historyList} />}
+        {isChat ? <Chat /> : <UserInfoComponent memberId={memberId} />}
       </View>
       <Tag hidden={hidden} onClick={showSideBar}>
         <FontAwesomeIcon style={{ width: "50px", height: "30px" }} icon={faChevronLeft} />

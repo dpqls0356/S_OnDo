@@ -75,6 +75,7 @@ const CounselingRoom = () => {
   const sessionId = location.state.sessionId;
   const reservationId = location.state.reservationId;
   const memberId = location.state.memberId;
+  const [memberInfo, setMemberInfo] = useState({});
 
   const [preJoin, setPreJoin] = useState(true);
 
