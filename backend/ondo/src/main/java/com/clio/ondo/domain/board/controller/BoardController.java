@@ -24,6 +24,7 @@ import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.service.BoardService;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
+import com.clio.ondo.global.exception.board.ModerationException;
 import com.clio.ondo.global.exception.member.NotFoundException;
 import com.clio.ondo.global.exception.member.UnauthorizedException;
 
@@ -70,7 +71,11 @@ public class BoardController {
     board.settingMemberId(memberId.toString());
     board.settingCreatedDate();
     board.settingViews();
-    boardService.saveArticle(board);
+    try{
+      boardService.saveArticle(board);
+    }catch(ModerationException me){
+      return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
+    }
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
   }
 
@@ -103,8 +108,10 @@ public class BoardController {
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
     }catch (UnauthorizedException e){
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));
-    }catch (NotFoundException e){
+    }catch (NotFoundException e) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 존재하지 않은 게시글에 대한 요청입니다."));
+    } catch(ModerationException me){
+      return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }
   }
 

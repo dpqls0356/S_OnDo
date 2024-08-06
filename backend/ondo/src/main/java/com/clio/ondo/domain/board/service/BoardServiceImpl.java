@@ -7,6 +7,9 @@ import com.clio.ondo.domain.board.repository.CustomBoardRepository;
 import java.util.List;
 import java.util.Optional;
 
+import com.clio.ondo.domain.moderation.model.FilteringResponse;
+import com.clio.ondo.domain.moderation.service.ModerationService;
+import com.clio.ondo.global.exception.board.ModerationException;
 import com.clio.ondo.global.exception.member.NotFoundException;
 import com.clio.ondo.global.exception.member.UnauthorizedException;
 import org.bson.types.ObjectId;
@@ -25,6 +28,8 @@ public class BoardServiceImpl implements BoardService {
   CustomBoardRepository customBoardRepositoryImpl;
   @Autowired
   BoardRepository boardRepository;
+  @Autowired
+  ModerationService moderationService;
 
     /*
     모든 게시글 가져오기
@@ -43,6 +48,16 @@ public class BoardServiceImpl implements BoardService {
   }
 
   public Board saveArticle(Board board) {
+    List<FilteringResponse> titleResponse = moderationService.inspectBadWord(board.getTitle());
+    if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
+      throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
+    }
+
+    List<FilteringResponse> contentResponse = moderationService.inspectBadWord(board.getContent());
+    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+      throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
+    }
+
     return boardRepository.save(board);
   }
 
@@ -91,6 +106,16 @@ public class BoardServiceImpl implements BoardService {
       //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
       Board existingArticle = existingArticleOpt.get();
       if(existingArticle.getMember_id().equals(memberId.toString())){
+        List<FilteringResponse> titleResponse = moderationService.inspectBadWord(modifiedArticle.getTitle());
+        if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
+          throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
+        }
+
+        List<FilteringResponse> contentResponse = moderationService.inspectBadWord(modifiedArticle.getContent());
+        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+          throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
+        }
+
         customBoardRepositoryImpl.updateArticle(objectArtilceId,modifiedArticle);
       }
       else{
