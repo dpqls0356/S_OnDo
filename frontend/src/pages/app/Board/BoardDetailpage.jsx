@@ -2,6 +2,7 @@ import "./BoardDetailpage.css";
 
 import { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import useBoardStore from "../../../store/app/useBoardStore";
 import useCommentStore from "../../../store/app/useCommentStore";
 import authStore from '../../../store/app/authStore'
 import CommentList from "../../../components/app/Comment/CommentList";
@@ -27,13 +28,13 @@ const BoardDetailpage = () => {
     const commentData = {
       content: comment.current.value,
       article_id: articleId,
-      // 아래 정보는 실제 로그인된 사용자 정보로 대체해야 합니다
+      // 아래 정보는 실제 로그인된 사용자 정보로 대체
       member_id: user.id, 
       member_name: user.name
     };
 
     // 에러 확인
-    console.log("Sending comment data:", commentData); // 추가
+    console.log("Sending comment data:", commentData); 
 
 
     const success = await addComment(commentData);

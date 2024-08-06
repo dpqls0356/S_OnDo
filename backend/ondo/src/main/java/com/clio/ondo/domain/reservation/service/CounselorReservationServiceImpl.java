@@ -116,6 +116,26 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 	}
 
 	@Override
+	public List<CounselorReservationDto> searchReservationByName(Long counselorId, String name, Pageable pageable){
+		Page<Reservation> pages = counselorReservationRepository.findByCounselorIdAndMemberName(counselorId, name, pageable);
+		List<Reservation> reservations = pages.getContent();
+		List<CounselorReservationDto> counselorReservationDtos = new ArrayList<>();
+		for(Reservation reservation : reservations) {
+			counselorReservationDtos.add(CounselorReservationDto.builder()
+				.reservationId(reservation.getId())
+				.reservationDate(reservation.getReservationDate())
+				.memberId(reservation.getMember().getId())
+				.memberName(reservation.getMember().getName())
+				.memberBirthday(reservation.getMember().getBirthDate())
+				.counselingUrl(reservation.getCounselingUrl())
+				.build()
+			);
+		}
+
+		return counselorReservationDtos;
+	}
+
+	@Override
 	public LocalDateTime convertStartDate(String dateStr) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 		LocalDate date = LocalDate.parse(dateStr, formatter);

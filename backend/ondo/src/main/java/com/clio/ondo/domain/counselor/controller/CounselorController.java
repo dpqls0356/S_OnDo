@@ -2,9 +2,6 @@ package com.clio.ondo.domain.counselor.controller;
 
 import java.util.List;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -29,8 +26,9 @@ import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
-import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
+import com.clio.ondo.global.exception.counselor.CounselorAlreadyExistsException;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +53,7 @@ public class CounselorController {
             return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("상담사 가입 실패: 올바른 값을 입력해주세요."));
-        } catch (MemberAlreadyExistsException e) {
+        } catch (CounselorAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("상담사 가입 실패: 이미 가입된 회원입니다."));
         }
     }
@@ -63,7 +61,6 @@ public class CounselorController {
     @PostMapping("/login")
     public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody CounselorLoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
-            System.out.println(loginRequestDto.getId()+" "+loginRequestDto.getPassword());
             TokenDto token = counselorService.login(loginRequestDto);
             Cookie accessTokenCookie = new Cookie("accessToken", token.getAccessToken());
             accessTokenCookie.setHttpOnly(true);
