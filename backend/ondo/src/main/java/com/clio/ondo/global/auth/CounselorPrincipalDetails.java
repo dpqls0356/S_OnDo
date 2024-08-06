@@ -21,7 +21,7 @@ public class CounselorPrincipalDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_COUNSELOR"));
+        return Collections.singletonList(new SimpleGrantedAuthority(String.valueOf(counselor.getRole())));
     }
 
     @Override
