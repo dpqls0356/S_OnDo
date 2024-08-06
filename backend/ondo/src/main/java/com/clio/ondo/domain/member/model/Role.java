@@ -1,5 +1,5 @@
 package com.clio.ondo.domain.member.model;
 
 public enum Role {
-	ADMIN, USER, COUNSELOR
+	ROLE_ADMIN, ROLE_USER, ROLE_COUNSELOR
 }
