@@ -115,7 +115,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 			ChatCompletion responseChatCompletion = responseBody.getBody();
 			String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-			ChatbotChatting requestChatting = new ChatbotChatting(null, text, "user", LocalDateTime.now(), memberId);
+			ChatbotChatting requestChatting = new ChatbotChatting(null, text,"user", LocalDateTime.now(), memberId);
 			chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
 			List<String> parsedStrings = stringParsingService.parseLine(responseString);
