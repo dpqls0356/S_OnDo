@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useLocation, useNavigate } from "react-router-dom";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import styled from 'styled-components';
-
+import axios from "axios";
 const View = styled.div`
   padding: 0px 20px 10px 20px;
   width: 100%;
@@ -81,17 +82,48 @@ const CounselingMemo = styled.div`
     }
   }
 `;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toISOString().split('T')[0]; // '2024-08-13' 형식으로 변환
-};
+const UserInfoComponent = ({memberId}) => {
+  const [memberInfo, setMemberInfo] = useState({});
+  const [historyList, setHistoryList] = useState([]);
+  const location = useLocation();
+  const memberIdForHome = location.state.memberIdForHome;
+  console.log(memberIdForHome);
 
-const UserInfoComponent = ({ memberInfo, historyList }) => {
   useEffect(() => {
-    console.log(memberInfo);
-    console.log(historyList);
-  }, [memberInfo, historyList]);
+    console.log("Fetching member info for ID:", memberId);
+    getMemberInfo();
+  }, [memberId]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0]; // '2024-08-13' 형식으로 변환
+  };
+
+  const getMemberInfo = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/counselor/member?memberId=${memberId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = response.data.data.member;
+      setMemberInfo({
+        birthDate: data.birthDate,
+        gender: data.gender === 'MALE' ? "남성" : "여성",
+        memberId: data.memberId,
+        memberName: data.memberName,
+      });
+      setHistoryList([...data.reservations]);
+    } catch (e) {
+      console.log("Error fetching member info:", e);
+    }
+  };
 
   return (
     <View>

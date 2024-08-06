@@ -8,6 +8,7 @@ import CounselingRoom from "./pages/web/counselingRoom";
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
 
+import UserInfoComponent from "./pages/web/components/counseling/userInfoComponent";
 import Centerpage from "./pages/web/centerpage";
 // import DetailSchedulComponent from "./components/center/DetailSchedulComponent";
 import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
@@ -57,6 +58,7 @@ function App() {
           <Route path="mypage" element={<CounselorMypage/> }/>
           <Route path="updatepassword/:id" element={<UpdatePassword/> }/>
           <Route path="userinfo" element={<UserInfo/> }/>
+          <Route path="info/member" element={<UserInfoComponent/>}></Route>
           <Route path="*" element={<CounselorNotFoundPage />} />
         </Route>
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>

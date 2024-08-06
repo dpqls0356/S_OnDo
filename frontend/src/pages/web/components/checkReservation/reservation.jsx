@@ -90,7 +90,8 @@ function Reservation({ reservation }) {
   const [timeRemaining, setTimeRemaining] = useState();
   const [age, setAge] = useState();
 
-  const createCounselingRoom = async () => {
+  const createCounselingRoom = async (event) => {
+    event.stopPropagation();
     if (timeRemaining === 0) {
       try {
         const sessionResponse = await axios.post(
@@ -166,9 +167,17 @@ function Reservation({ reservation }) {
     }
     setAge(age);
   };
+  const ViewMemberInfo = () =>{
+    navigate("/counselor/info/member",{
+      state:{
+        memberIdForHome:reservation.memberId
+      },
+    }
+    );
+  } 
 
   return (
-    <View past={timeRemaining < 0}>
+    <View onClick={ViewMemberInfo} past={timeRemaining < 0}>
       <Col>
         {false ? (
           <MemberImg></MemberImg>
