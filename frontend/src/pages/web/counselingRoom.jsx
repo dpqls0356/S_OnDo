@@ -70,17 +70,23 @@ const APPLICATION_SERVER_URL =
 
 const CounselingRoom = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const sessionId = location.state.sessionId;
   const reservationId = location.state.reservationId;
-  const navigate = useNavigate();
+  const memberId = location.state.memberId;
+  const [memberInfo, setMemberInfo] = useState({});
+
+  const [preJoin, setPreJoin] = useState(true);
+
   const [role, setRole] = useState("counselor");
+
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscriber, setSubscriber] = useState(undefined);
   const [currentVideoDevice, setCurrentVideoDevice] = useState(undefined);
   const [micStatus, setMicStatus] = useState(true);
   const [cameraStatus, setCameraStatus] = useState(true);
-  const [preJoin, setPreJoin] = useState(true);
 
   const joinSession = useCallback(
     async (micStatus, cameraStatus) => {
@@ -141,12 +147,30 @@ const CounselingRoom = () => {
         setSession(mySession);
         setPublisher(publisher);
         setCurrentVideoDevice(currentVideoDevice);
+        getMemberInfo();
       } catch (error) {
         console.error("Error initializing publisher:", error);
       }
     },
     [sessionId]
   );
+
+  const getMemberInfo = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/counselor/member?memberId=${memberId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const leaveSession = useCallback(async () => {
     const response = await axios
@@ -163,7 +187,6 @@ const CounselingRoom = () => {
       .catch((error) => {
         console.error("Error notifying server about leaving session:", error);
       });
-    console.log(response);
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
@@ -191,7 +214,6 @@ const CounselingRoom = () => {
     setMicStatus(micStatus);
     setCameraStatus(cameraStatus);
     setPreJoin(false);
-    console.log("실행" + micStatus + cameraStatus);
     joinSession(micStatus, cameraStatus);
   };
 
@@ -312,7 +334,6 @@ const CounselingRoom = () => {
               <button
                 id="buttonLeaveSession"
                 onClick={() => {
-                  console.log("상담종료 버튼 클릭됨");
                   leaveSession();
                 }}
               >
@@ -322,7 +343,7 @@ const CounselingRoom = () => {
           </WebCamView>
           {/* 상담사일때만 보이도록 해야함 */}
           {/* {true ? <SideBar/> : null} */}
-          <SideBar />
+          <SideBar memberInfo={memberInfo} />
         </View>
       ) : (
         <LoadingComponent></LoadingComponent>
