@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.counselor.service;
 
+import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,9 @@ import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.schedule.model.Schedule;
 import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -41,6 +44,7 @@ public class CounselorServiceImpl implements CounselorService {
     private final ScheduleRepository scheduleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory queryFactory;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public TokenDto login(CounselorLoginRequestDto loginRequestDto) throws AuthenticationException {
@@ -140,5 +144,30 @@ public class CounselorServiceImpl implements CounselorService {
     @Override
     public Optional<Counselor> getCounselorEntity(Long id) {
         return counselorRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public void logout(String accessToken) throws AuthenticationException {
+        Claims accessTokenclaims = jwtTokenProvider.decodeJwt(accessToken);
+        if (jwtTokenProvider.validateToken(accessToken)
+            && jwtTokenProvider.hasClaim(accessTokenclaims, "type", "access")) {
+            String user = accessTokenclaims.getSubject();
+            String refreshToken = redisTemplate.opsForValue().get("refresh-token:" + user);
+            if (refreshToken != null) {
+                redisTemplate.opsForValue().set(
+                    "blacklist:" + refreshToken,
+                    refreshToken,
+                    jwtTokenProvider.getExpirationTime(refreshToken),
+                    TimeUnit.MILLISECONDS
+                );
+            }
+            redisTemplate.opsForValue().set(
+                "blacklist:" + accessToken,
+                accessToken,
+                accessTokenclaims.getExpiration().getTime(),
+                TimeUnit.MILLISECONDS
+            );
+        }
     }
 }
