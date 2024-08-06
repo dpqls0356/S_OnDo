@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.reservation.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -132,8 +133,11 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 
 		//받은 날짜 String -> LocalDateTime 으로 변환
 		String stringDate=requestDto.getReservationDate();
-		ZonedDateTime zonedDateTime = ZonedDateTime.parse(stringDate, DateTimeFormatter.ISO_DATE_TIME);
-		LocalDateTime localDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+
+		// Z를 무시하고 파싱하기 위해 DateTimeFormatter 를 수정
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		// LocalDateTime으로 직접 파싱
+		LocalDateTime localDateTime = LocalDateTime.parse(stringDate.substring(0, 23), formatter);
 
 		// Reservation 엔티티 생성 및 필드 설정
 		Reservation reservation = new Reservation();
