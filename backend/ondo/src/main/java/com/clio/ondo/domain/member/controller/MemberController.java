@@ -2,8 +2,6 @@ package com.clio.ondo.domain.member.controller;
 
 import java.util.List;
 
-import com.clio.ondo.global.auth.MemberPrincipalDetails;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,6 +25,7 @@ import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.member.service.MemberService;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.ResponseVO;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;

@@ -1,5 +1,7 @@
 package com.clio.ondo.global.auth;
 
+import java.util.Optional;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +21,8 @@ public class MemberDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException("회원 정보가 없습니다."));
+        Optional<Member> findMember = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException("회원 정보 없음!!!"));
         return new MemberPrincipalDetails(member);
     }
 }
