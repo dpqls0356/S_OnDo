@@ -33,7 +33,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 @PropertySource("classpath:openaiapi.properties")
 public class ChatbotServiceImpl implements ChatbotService{
-	@Value("${api.key}")
+	@Value("${openai.api.key}")
 	String api;
 
 	private final MissionService missionService;
@@ -94,9 +94,6 @@ public class ChatbotServiceImpl implements ChatbotService{
 	@Override
 	@Transactional
 	public List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
-		ChatbotChatting requestChatting = new ChatbotChatting(null, text, "user", LocalDateTime.now(), memberId);
-		chatbotRepository.upsertByMemberId(memberId, requestChatting);
-
 		try{
 			WebClient webClient = WebClient.builder().build();
 			String url = "https://api.openai.com/v1/chat/completions";
@@ -117,6 +114,9 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 			ChatCompletion responseChatCompletion = responseBody.getBody();
 			String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
+
+			ChatbotChatting requestChatting = new ChatbotChatting(null, text, "user", LocalDateTime.now(), memberId);
+			chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
 			List<String> parsedStrings = stringParsingService.parseLine(responseString);
 			for(String parsedString : parsedStrings){

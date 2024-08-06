@@ -33,28 +33,31 @@ const Reservation = () => {
     }
   
     return (
+      
       <div className="flex flex-col h-screen overflow-hidden">
-        <div className="flex-grow overflow-auto">
-          <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-4" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
-            {/* <ProfileCard /> */}
-            <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} />
-            <CLCard name={'김싸피'} gender={'남'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'}  reservId={1} />
-            <br />
-            <h1 className="text-2xl font-bold mb-4">예약일지</h1>
-            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-            <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+          <div className='scroll'>
+          <div className="flex-grow">
+            <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-4" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
+              {/* <ProfileCard /> */}
+              <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} />
+              <CLCard name={'김싸피'} gender={'남'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'}  reservId={1} />
+              <br />
+              <h1 className="text-2xl font-bold mb-4">예약일지</h1>
+              <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+              <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+            </div>
+            <img src={BorderImg} alt="" className="w-full" />
+            <div className="p-4">
+              <textarea onChange={(e) => setNote(e.target.value)} style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px 10px', resize: 'none'}} placeholder='힘든 점이나 고민점을 적어보세요...'></textarea>
+              {/* <NoteInput note={note} setNote={setNote} /> */}
+              <br />
+              <br />
+              <Button2 text="예약 확정하기" onClick={handleReservation} />
+            </div>
           </div>
-          <img src={BorderImg} alt="" className="w-full" />
-          <div className="p-4">
-            <textarea onChange={(e) => setNote(e.target.value)} style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px 10px', resize: 'none'}} placeholder='힘든 점이나 고민점을 적어보세요...'></textarea>
-            {/* <NoteInput note={note} setNote={setNote} /> */}
-            <br />
-            <br />
-            <Button2 text="예약 확정하기" onClick={handleReservation} />
+          {/* <Footer /> */}
           </div>
         </div>
-        <Footer />
-      </div>
     );
   };
   
