@@ -18,14 +18,18 @@ const Loginpage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('')    // 에러 메시지 초기화
     try {
-      await login(email, password);
+      const success = await login(email, password);
+      if (success) {
       nav('/member/home')
       alert('로그인 성공!')
-
-
-    } catch (error) {
-      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+    } else {
+      setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.')
+    } 
+  }   catch (error) {
+      setError('로그인 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      console.error('Login error:', error);
     }
   }
   const onClickKakao = () => {

@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
   baseURL: baseUrl,
-  withCredentials: true,
+  withCredentials: false, // 기본으로 false 세팅 -> 나중에 함수에서 true로 가게
 });
 
 export const useAuthStore = create((set) => ({
@@ -13,7 +13,7 @@ export const useAuthStore = create((set) => ({
   user: null,
   login: async (email, password) => {
     try {
-      const response = await api.post("/member/login", { email, password });
+      const response = await api.post("/member/login", { email, password }, { withCredentials: true });
       if (response.data.success) {
         set({ isAuthenticated: true, user: response.data.user });
         return true;
@@ -34,9 +34,9 @@ export const useAuthStore = create((set) => ({
   // },
   logout: async () => {
     try {
-      const response = await api.post("/member/logout");
+      const response = await api.post("/member/logout", {}, { withCredentials: true });
       if (response.data.success) {
-        set({ isAuthenticated: false, user: null });
+        set({ isAuthenticated: false, user: null});
         return true;
       }
       console.error("Logout failed:", response.data.message);
@@ -48,7 +48,7 @@ export const useAuthStore = create((set) => ({
   },
   checkAuth: async () => {
     try {
-      const response = await api.get("/member/me");
+      const response = await api.get("/member/me", { withCredentials: true });
       if (response.data.success) {
         set({ isAuthenticated: true, user: response.data.data.user });
         return true;
