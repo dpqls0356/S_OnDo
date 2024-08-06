@@ -128,7 +128,7 @@ public class MemberServiceImpl implements MemberService {
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
 		if (passwordEncoder.matches(deleteRequestDto.getPassword(), findMember.getPassword())) {
 			logout(accessToken);
-			imageService.delete(findMember.getProfileUrl());
+			imageService.delete(findMember.getProfileUrl(),"MemberProfile");
 			memberRepository.delete(findMember);
 		} else {
 			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
@@ -155,7 +155,7 @@ public class MemberServiceImpl implements MemberService {
 
 
 		//무조건 update 되어야함.
-		imageService.delete(findMember.getProfileUrl()); //원래 profileImage 삭제
+		imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
 		String profileUrl=imageService.upload(profileImage,"MemberProfile");
 		findMember.updateProfileUrl(profileUrl);
 		isUpdated=true;
