@@ -10,7 +10,7 @@ import profile from './../../../assets/images/ic_user.png'
 
 import './Join.css'
 
-const baseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const JoinForm = () => {
   const nav = useNavigate();

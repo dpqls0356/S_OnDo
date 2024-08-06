@@ -4,7 +4,7 @@ import './BoardList.css';
 import useBoardStore from "../../../store/app/useBoardStore";
 import Board from './Board';
 
-const baseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -22,7 +22,7 @@ const BoardList = () => {
         const res = await api.get(`/board/list?page=${pagination.currentPage}&size=10`);
         
         // 응답 구조를 확인
-        // console.log('API 응답:', res.data); 
+        console.log('API 응답:', res); 
 
         if (res.data && res.data.data) {
           setBoards(res.data.data);  // res.data.data를 전달

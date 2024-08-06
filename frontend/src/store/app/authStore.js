@@ -15,7 +15,7 @@ export const useAuthStore = create((set) => ({
     try {
       const response = await api.post("/member/login", { email, password });
       if (response.data.success) {
-        set({ isAuthenticated: true });
+        set({ isAuthenticated: true, user: response.data.user });
         return true;
       }
       return false;
@@ -24,12 +24,26 @@ export const useAuthStore = create((set) => ({
       return false;
     }
   },
+  // logout: async () => {
+  //   try {
+  //     await api.post("/member/logout");
+  //     set({ isAuthenticated: false, user: null });
+  //   } catch (error) {
+  //     console.error("Logout failed:", error);
+  //   }
+  // },
   logout: async () => {
     try {
-      await api.post("/member/logout");
-      set({ isAuthenticated: false, user: null });
+      const response = await api.post("/member/logout");
+      if (response.data.success) {
+        set({ isAuthenticated: false, user: null });
+        return true;
+      }
+      console.error("Logout failed:", response.data.message);
+      return false;
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Logout failed:", error.response ? error.response.data : error.message);
+      return false;
     }
   },
   checkAuth: async () => {

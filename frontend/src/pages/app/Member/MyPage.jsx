@@ -8,7 +8,7 @@ import profile from './../../../assets/images/test.png'
 import notice from './../../../assets/images/notice.png'
 import './Mypage.css'
 
-const baseUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const api = axios.create({
   baseURL: baseUrl,
