@@ -4,8 +4,10 @@ import './BoardList.css';
 import useBoardStore from "../../../store/app/useBoardStore";
 import Board from './Board';
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: baseUrl,
   withCredentials: true
 });
 

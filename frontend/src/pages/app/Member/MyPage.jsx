@@ -8,8 +8,10 @@ import profile from './../../../assets/images/test.png'
 import notice from './../../../assets/images/notice.png'
 import './Mypage.css'
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: baseUrl,
   withCredentials: true // 쿠키를 포함하기 위해 필요
 });
 
