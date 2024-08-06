@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MissionButton from '../../../components/app/MissionButton';
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: baseUrl,
   withCredentials: true
 });
 

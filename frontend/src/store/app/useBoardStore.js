@@ -22,10 +22,10 @@ const useBoardStore = create((set, get) => ({
 
   // 게시글 목록 설정 (API 응답 구조에 맞게 수정)
   setBoards: (response) => {
-    console.log('setBoards 호출됨:', response); // 이 부분을 추가
+    // console.log('setBoards 호출됨:', response); // 이 부분을 추가
     set((state) => {
       if (response && response.boardList && Array.isArray(response.boardList.content)) {
-        console.log('새로운 boards 상태:', response.boardList.content);
+        // console.log('새로운 boards 상태:', response.boardList.content);
         return { 
           boards: response.boardList.content,
           pagination: {

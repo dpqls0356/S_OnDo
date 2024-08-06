@@ -108,7 +108,7 @@
 				String bits = (String) field.get(schedule);
 
 				int startHour = 9;
-				for(int i = 0; i < 3; i++){
+				for(int i = 0; i < 9; i++){
 					char hour = bits.charAt(i);
 
 					if(hour == '1'){
@@ -116,26 +116,10 @@
 
 						LocalDateTime newDateTime = localDate.atTime(time);
 
-						CounselorReservationAddDto reservation = new CounselorReservationAddDto();
-						reservation.setReservationDate(newDateTime);
-						// counselor 가져오기
-						reservation.setCounselorId(schedule.getCid());
-
-						reservations.add(reservation);
-					}
-				}
-				for(int i = 3; i < 8; i++){
-					char hour = bits.charAt(i);
-
-					if(hour == '1'){
-						LocalTime time = LocalTime.of(startHour + i+1, 0, 0);
-
-						LocalDateTime newDateTime = localDate.atTime(time);
-
-						CounselorReservationAddDto reservation = new CounselorReservationAddDto();
-						reservation.setReservationDate(newDateTime);
-						// counselor 가져오기
-						reservation.setCounselorId(schedule.getCid());
+						CounselorReservationAddDto reservation = CounselorReservationAddDto.builder()
+							.reservationDate(newDateTime)
+							.counselorId(schedule.getCid())
+							.build();
 
 						reservations.add(reservation);
 					}

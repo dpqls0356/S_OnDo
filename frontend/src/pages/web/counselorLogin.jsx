@@ -60,7 +60,7 @@ const Button = styled.button`
   &:hover,
   &:focus {
     outline: none;
-    background-color: #f0c050;
+    background-color: #fec069;
   }
 `;
 const LoginForm = styled.div`

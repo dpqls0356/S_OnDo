@@ -4,9 +4,10 @@ import Modal from "react-modal";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-import ReservationSpot from "./components/ReservationSpot";
+import ReservationSpot from "./components/checkReservation/ReservationSpot";
 import useAuthStore from "../../store/app/authStore";
 import IncorrectAccessModal from "./components/incorrectAccessModal";
+import Centerpage from "./centerpage";
 
 const View = styled.div`
   width: 100vw;
@@ -74,6 +75,7 @@ function CounselorLayout() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const logout = async () => {
+    console.log("logout");
     await counselorLogout();
     navigate("/counselor/login");
   };
@@ -101,7 +103,7 @@ function CounselorLayout() {
       <HomeLeft>
         <ReservationSpot />
         <ChangeSpot>
-          <Outlet />
+          <Centerpage/>
         </ChangeSpot>
       </HomeLeft>
       <HomeRight>
@@ -132,9 +134,9 @@ function CounselorLayout() {
         </Profile>
         <Nav>
           <StyledLink to="">일정관리</StyledLink>
-          <StyledLink to="">상담내역</StyledLink>
-          <StyledLink to="">마이페이지</StyledLink>
-          <StyledLink to="">비밀번호 변경</StyledLink>
+          <StyledLink to="daylist/상담사아이디">상담내역</StyledLink>
+          <StyledLink to="mypage">마이페이지</StyledLink>
+          <StyledLink to="updatepassword/상담사아이디">비밀번호 변경</StyledLink>
         </Nav>
         <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
       </HomeRight>

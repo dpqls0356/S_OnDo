@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.reservation.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -10,6 +11,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.counselDetail.model.CounselDetail;
+import com.clio.ondo.domain.counselDetail.service.CounselDetailService;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
 import com.clio.ondo.domain.member.model.Member;
@@ -33,6 +36,7 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 	private final MemberRepository memberRepository;
 	private final CounselorRepository counselorRepository;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final CounselDetailService counselDetailService;
 
 	//나의 예약 내역 가져오기
 	@Override
@@ -129,8 +133,11 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 
 		//받은 날짜 String -> LocalDateTime 으로 변환
 		String stringDate=requestDto.getReservationDate();
-		ZonedDateTime zonedDateTime = ZonedDateTime.parse(stringDate, DateTimeFormatter.ISO_DATE_TIME);
-		LocalDateTime localDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+
+		// Z를 무시하고 파싱하기 위해 DateTimeFormatter 를 수정
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		// LocalDateTime으로 직접 파싱
+		LocalDateTime localDateTime = LocalDateTime.parse(stringDate.substring(0, 23), formatter);
 
 		// Reservation 엔티티 생성 및 필드 설정
 		Reservation reservation = new Reservation();
@@ -141,6 +148,8 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 
 		// 예약 저장
 		reservationRepository.save(reservation);
+
+		counselDetailService.save(new CounselDetail(reservation, null));
 	}
 
 

@@ -5,8 +5,10 @@ import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
 import useBoardStore from "../../../store/app/useBoardStore";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: baseUrl,
   withCredentials: true
 });
 

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import axios from 'axios'
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const useJoinStore = create((set) => ({
   error: null,
@@ -7,7 +8,7 @@ const useJoinStore = create((set) => ({
   signUp: async (userData) => {
     set({ error: null, success: false })
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/member/join', userData)
+      const response = await axios.post(`${baseUrl}/member/join`, userData)
       if (response.data.success) {
         set({ success: true })
       } else {
