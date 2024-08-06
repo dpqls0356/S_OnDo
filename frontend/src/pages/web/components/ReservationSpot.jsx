@@ -5,6 +5,8 @@ import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import Reservation from "./reservation";
+import counselor_Calendar from './../../../assets/images/counselor_Calendar.png'
+
 const View = styled.div`
   padding: 50px 50px;
   width: 45%;
@@ -35,6 +37,16 @@ const Search = styled.div`
     background-color: #121481;
   }
 `;
+const ListNull = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin: 0 auto;
+  color: gray;
+  & > img{
+    width: 35%;
+  }
+`
 const ReservationList = styled.div``;
 
 function ReservationSpot() {
@@ -49,9 +61,10 @@ function ReservationSpot() {
         {true ? (
           <Reservation />
         ) : (
-          <div>
+          <ListNull>
+            <img src={counselor_Calendar} />
             <div>예약된 상담 일정이 없습니다.</div>
-          </div>
+          </ListNull>
         )}
       </ReservationList>
     </View>
