@@ -1,10 +1,12 @@
 package com.clio.ondo.domain.member.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.clio.ondo.domain.character.model.Character;
 import com.clio.ondo.domain.character.repository.CharacterRepository;
@@ -46,22 +49,29 @@ public class MemberServiceImpl implements MemberService {
 
 	private final MemberRepository memberRepository;
 	private final CharacterRepository characterRepository;
+	private final ImageService imageService;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final DaoAuthenticationProvider memberAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-	public void join(JoinRequestDto joinRequestDto) {
-		Member member = joinRequestDto.toEntity();
+	@Override
+	@Transactional
+	public void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
+
+		//s3이미지 url 생성 및 저장
+		String profileUrl=imageService.upload(profileImage,"MemberProfile");
+		Member member = joinRequestDto.toEntity(profileUrl);
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
 		}
 		Character character = member.getCharacter();
+
 		characterRepository.save(character);
 		memberRepository.save(member);
 	}
+
 
 	@Override
 	public Member findOne(Long memberId) {
