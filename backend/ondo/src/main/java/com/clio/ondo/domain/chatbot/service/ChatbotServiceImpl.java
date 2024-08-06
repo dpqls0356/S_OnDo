@@ -24,6 +24,7 @@ import com.clio.ondo.domain.chatbot.repository.ChatbotDocumentRepository;
 import com.clio.ondo.domain.mission.model.MissionDetail;
 import com.clio.ondo.domain.mission.service.MissionDetailService;
 import com.clio.ondo.domain.mission.service.MissionService;
+import com.clio.ondo.global.exception.RestRequestException;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -96,33 +97,36 @@ public class ChatbotServiceImpl implements ChatbotService{
 		ChatbotChatting requestChatting = new ChatbotChatting(null, text, "user", LocalDateTime.now(), memberId);
 		chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
-		WebClient webClient = WebClient.builder().build();
-		String url = "https://api.openai.com/v1/chat/completions";
+		try{
+			WebClient webClient = WebClient.builder().build();
+			String url = "https://api.openai.com/v1/chat/completions";
 
-		List<RoleContentMessage> roleContentMessages = new ArrayList<>();
-		roleContentMessages.add(new RoleContentMessage("system", conversationCommand));
-		roleContentMessages.add(new RoleContentMessage("user", text));
-		OpenAiRequestDto dto = new OpenAiRequestDto("gpt-4o-mini", roleContentMessages);
+			List<RoleContentMessage> roleContentMessages = new ArrayList<>();
+			roleContentMessages.add(new RoleContentMessage("system", conversationCommand));
+			roleContentMessages.add(new RoleContentMessage("user", text));
+			OpenAiRequestDto dto = new OpenAiRequestDto("gpt-4o-mini", roleContentMessages);
 
-		ResponseEntity<ChatCompletion> responseBody = webClient.post()
-			.uri(url)	// url 정의
-			.header("Content-Type", "application/json")
-			.header("Authorization", "Bearer " + api)
-			.bodyValue(dto)	// requestBody 정의
-			.retrieve()	// 응답 정의 시작
-			.toEntity(ChatCompletion.class)	// 응답 데이터 정의
-			.block();	// 동기식 처리
+			ResponseEntity<ChatCompletion> responseBody = webClient.post()
+				.uri(url)	// url 정의
+				.header("Content-Type", "application/json")
+				.header("Authorization", "Bearer " + api)
+				.bodyValue(dto)	// requestBody 정의
+				.retrieve()	// 응답 정의 시작
+				.toEntity(ChatCompletion.class)	// 응답 데이터 정의
+				.block();	// 동기식 처리
 
-		ChatCompletion responseChatCompletion = responseBody.getBody();
-		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
+			ChatCompletion responseChatCompletion = responseBody.getBody();
+			String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-		List<String> parsedStrings = stringParsingService.parseLine(responseString);
-		for(String parsedString : parsedStrings){
-			ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
-			chatbotRepository.upsertByMemberId(memberId, responseChatting);
+			List<String> parsedStrings = stringParsingService.parseLine(responseString);
+			for(String parsedString : parsedStrings){
+				ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
+				chatbotRepository.upsertByMemberId(memberId, responseChatting);
+			}
+			return parsedStrings;
+		}catch(Exception e){
+			throw new RestRequestException("OpenAI 서버와 연결에 실패했습니다.");
 		}
-
-		return parsedStrings;
 	}
 
 	// 이전 채팅 내역을 page 단위로 가져오는 함수
