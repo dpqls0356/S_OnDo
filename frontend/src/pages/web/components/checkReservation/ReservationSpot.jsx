@@ -49,7 +49,6 @@ function ReservationSpot() {
         `${baseUrl}/counselor/reservation?page=${page}&size=${size}`,
         { withCredentials: true }
       );
-      console.log("Fetched reservations:", response.data.data.reservations);
       setReservationList(response.data.data.reservations);
     } catch (err) {
       console.error("Error fetching reservations:", err);
@@ -62,10 +61,6 @@ function ReservationSpot() {
     };
     fetchData();
   }, [page]);
-
-  useEffect(() => {
-    console.log("Updated reservationList:", reservationList);
-  }, [reservationList]);
 
   return (
     <View>

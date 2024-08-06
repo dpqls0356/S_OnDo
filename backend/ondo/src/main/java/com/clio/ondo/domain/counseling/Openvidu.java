@@ -131,18 +131,50 @@ public class Openvidu {
   public ResponseEntity<ResponseVO<String>> leaveSession(@PathVariable("sessionId") String sessionId,
       @RequestBody Map<String, Object> params, HttpServletRequest request)
       throws OpenViduJavaClientException, OpenViduHttpException {
+
+    // 요청에서 JWT 토큰 추출
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
     Long id = jwtTokenProvider.getIdFromToken(token);
-    if (id!=null) {
-      Session session = openvidu.getActiveSession(sessionId); // 활성 세션을 가져온다.
+
+    if (id != null) {
+      // 세션 가져오기
+      Session session = openvidu.getActiveSession(sessionId);
       if (session == null) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("세션 종료 실패: 세션을 찾을 수 없습니다."));
       }
+
+      // 세션의 모든 연결 강제 종료
       List<Connection> connections = session.getActiveConnections();
       for (Connection connection : connections) {
         session.forceDisconnect(connection);
       }
+
+      // 요청 본문에서 reservationId 추출
+      Long reservationId = params != null && params.containsKey("reservationId")
+          ? Long.parseLong(params.get("reservationId").toString())
+          : null;
+
+      if (reservationId != null) {
+        // 데이터베이스에서 reservationId로 예약 찾기
+        Optional<Reservation> reservationOpt = reservationRepository.findById(reservationId);
+        if (reservationOpt.isPresent()) {
+          Reservation reservation = reservationOpt.get();
+          reservation.setCounselingUrl(null); // counseling_url 필드 지우기
+          reservationRepository.save(reservation);
+        } else {
+          // 예약을 찾을 수 없는 경우
+          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseVO.failure("예약을 찾을 수 없습니다."));
+        }
+      } else {
+        // reservationId가 제공되지 않은 경우
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("reservationId가 제공되지 않았습니다."));
+      }
+    } else {
+      // 잘못된 접근
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("잘못된 접근입니다."));
     }
+
     return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("사용자가 세션에서 퇴장되었습니다."));
   }
+
 }
