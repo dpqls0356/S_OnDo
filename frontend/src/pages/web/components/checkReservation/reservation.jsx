@@ -69,7 +69,10 @@ function Reservation({ reservation }) {
         console.log(sessionResponse);
         // /counselingroom으로 이동하면서 세션 ID 전달
         navigate("/counselingroom", {
-          state: { sessionId: sessionResponse.data.data.session_id },
+          state: {
+            sessionId: sessionResponse.data.data.session_id,
+            reservationId: reservation.reservationId,
+          },
         });
       } catch (error) {
         console.error("Error creating counseling room:", error);

@@ -1,14 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { OpenVidu } from 'openvidu-browser';
-import axios from 'axios';
-import styled from 'styled-components';
+import { useState, useEffect, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { OpenVidu } from "openvidu-browser";
+import axios from "axios";
+import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import UserVideoComponent from './components/counseling/openVideoComponent';
-import LoadingComponent from './components/counseling/loadingComponent';
-import PreJoinComponent from './components/counseling/preJoinComponent';
-import { faMicrophoneSlash ,faMicrophone} from "@fortawesome/free-solid-svg-icons";
-import SideBar from './components/counseling/sidebarComponent';
+import UserVideoComponent from "./components/counseling/openVideoComponent";
+import LoadingComponent from "./components/counseling/loadingComponent";
+import PreJoinComponent from "./components/counseling/preJoinComponent";
+import {
+  faMicrophoneSlash,
+  faMicrophone,
+} from "@fortawesome/free-solid-svg-icons";
+import SideBar from "./components/counseling/sidebarComponent";
 const View = styled.div`
   width: 100vw;
   height: 100vh;
@@ -27,15 +30,14 @@ const VideoView = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-    #main-video{
-      padding: 10px;
-      border-radius: 50px;
+  #main-video {
+    padding: 10px;
+    border-radius: 50px;
     border: 5px solid yellow;
-    }
-    video{
-      border-radius: 50px;
-    }
-
+  }
+  video {
+    border-radius: 50px;
+  }
 `;
 const Nav = styled.div`
   display: flex;
@@ -58,16 +60,17 @@ const Nav = styled.div`
     }
     &:nth-child(3) {
       background-color: #f83d39;
-    
     }
-  }`;
+  }
+`;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : baseUrl ;
+  process.env.NODE_ENV === "production" ? "" : baseUrl;
 
 const CounselingRoom = () => {
   const location = useLocation();
   const sessionId = location.state.sessionId;
+  const reservationId = location.state.reservationId;
   const navigate = useNavigate();
   const [myUserName, setMyUserName] = useState();
   const [session, setSession] = useState(undefined);
@@ -83,18 +86,18 @@ const CounselingRoom = () => {
       const OV = new OpenVidu();
       const mySession = OV.initSession();
 
-      mySession.on('streamCreated', (event) => {
+      mySession.on("streamCreated", (event) => {
         const subscriber = mySession.subscribe(event.stream, undefined);
         setSubscriber(subscriber);
       });
 
-      mySession.on('streamDestroyed', (event) => {
+      mySession.on("streamDestroyed", (event) => {
         if (subscriber === event.stream.streamManager) {
           setSubscriber(undefined);
         }
       });
 
-      mySession.on('exception', (exception) => {
+      mySession.on("exception", (exception) => {
         console.warn(exception);
       });
       const token = await getToken(sessionId);
@@ -113,9 +116,9 @@ const CounselingRoom = () => {
           videoSource: undefined,
           publishAudio: micStatus,
           publishVideo: cameraStatus,
-          resolution: '640x480',
+          resolution: "640x480",
           frameRate: 30,
-          insertMode: 'APPEND',
+          insertMode: "APPEND",
           mirror: false,
         });
 
@@ -123,7 +126,7 @@ const CounselingRoom = () => {
 
         const devices = await OV.getDevices();
         const videoDevices = devices.filter(
-          (device) => device.kind === 'videoinput'
+          (device) => device.kind === "videoinput"
         );
 
         const currentVideoDeviceId = publisher.stream
@@ -138,7 +141,7 @@ const CounselingRoom = () => {
         setPublisher(publisher);
         setCurrentVideoDevice(currentVideoDevice);
       } catch (error) {
-        console.error('Error initializing publisher:', error);
+        console.error("Error initializing publisher:", error);
       }
     },
     [myUserName, sessionId]
@@ -152,54 +155,29 @@ const CounselingRoom = () => {
     axios
       .post(
         `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/leave`,
-        { user: myUserName },
+        { reservationId: reservationId },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       )
       .catch((error) => {
-        console.error('Error notifying server about leaving session:', error);
+        console.error("Error notifying server about leaving session:", error);
       });
 
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
-    navigate('/counselor');
+    navigate("/counselor");
   }, [session, sessionId, myUserName]);
-
-
-useEffect(() => {
-  if (publisher) {
-    publisher.publishVideo(cameraStatus);
-  }
-}, [cameraStatus, publisher]);
-
-useEffect(()=>{
-  if(publisher){
-    publisher.publishAudio(micStatus);
-  }
-},[micStatus,publisher])
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      leaveSession();
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [leaveSession]);
 
   const getToken = async (sessionId) => {
     const response = await axios.post(
       `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
       {},
       {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       }
     );
     return response.data.data.token;
@@ -209,9 +187,37 @@ useEffect(()=>{
     setMicStatus(micStatus);
     setCameraStatus(cameraStatus);
     setPreJoin(false);
-    console.log("실행"+micStatus+cameraStatus)
+    console.log("실행" + micStatus + cameraStatus);
     joinSession(micStatus, cameraStatus);
   };
+
+  const leaveCounseling = () => {
+    //상담사인지 아닌지에 따라 이동해야할 url이 달라짐
+    navigate("/counselor");
+  };
+  useEffect(() => {
+    if (publisher) {
+      publisher.publishVideo(cameraStatus);
+    }
+  }, [cameraStatus, publisher]);
+
+  useEffect(() => {
+    if (publisher) {
+      publisher.publishAudio(micStatus);
+    }
+  }, [micStatus, publisher]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      leaveSession();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [leaveSession]);
 
   return (
     <div>
@@ -234,33 +240,54 @@ useEffect(()=>{
             </VideoView>
             <Nav>
               <button onClick={() => setMicStatus(!micStatus)}>
-                {
-                  micStatus?<div>
+                {micStatus ? (
+                  <div>
                     <FontAwesomeIcon icon={faMicrophone} />
                   </div>
-                  :<div>
+                ) : (
+                  <div>
                     <FontAwesomeIcon icon={faMicrophoneSlash} />
                   </div>
-                }
+                )}
               </button>
               <button onClick={() => setCameraStatus(!cameraStatus)}>
-                {
-                  cameraStatus?
+                {cameraStatus ? (
                   <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
-                      </svg>
-
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
+                      />
+                    </svg>
                   </div>
-                  :
+                ) : (
                   <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M12 18.75H4.5a2.25 2.25 0 0 1-2.25-2.25V9m12.841 9.091L16.5 19.5m-1.409-1.409c.407-.407.659-.97.659-1.591v-9a2.25 2.25 0 0 0-2.25-2.25h-9c-.621 0-1.184.252-1.591.659m12.182 12.182L2.909 5.909M1.5 4.5l1.409 1.409" />
-                      </svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M12 18.75H4.5a2.25 2.25 0 0 1-2.25-2.25V9m12.841 9.091L16.5 19.5m-1.409-1.409c.407-.407.659-.97.659-1.591v-9a2.25 2.25 0 0 0-2.25-2.25h-9c-.621 0-1.184.252-1.591.659m12.182 12.182L2.909 5.909M1.5 4.5l1.409 1.409"
+                      />
+                    </svg>
                   </div>
-                }
+                )}
               </button>
-              <button id="buttonLeaveSession" onClick={leaveSession}>
+              <button id="buttonLeaveSession" onClick={leaveCounseling}>
                 <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -278,11 +305,14 @@ useEffect(()=>{
                   </svg>
                 </div>
               </button>
+              <button id="buttonLeaveSession" onClick={leaveSession}>
+                <div>상담종료</div>
+              </button>
             </Nav>
           </WebCamView>
           {/* 상담사일때만 보이도록 해야함 */}
           {/* {true ? <SideBar/> : null} */}
-          <SideBar/>
+          <SideBar />
         </View>
       ) : (
         <LoadingComponent></LoadingComponent>
