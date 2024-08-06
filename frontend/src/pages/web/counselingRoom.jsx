@@ -73,7 +73,7 @@ const CounselingRoom = () => {
   const sessionId = location.state.sessionId;
   const reservationId = location.state.reservationId;
   const navigate = useNavigate();
-  const [myUserName, setMyUserName] = useState();
+  const [role, setRole] = useState("counselor");
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscriber, setSubscriber] = useState(undefined);
@@ -104,7 +104,7 @@ const CounselingRoom = () => {
       const token = await getToken(sessionId);
 
       try {
-        await mySession.connect(token, { clientData: myUserName });
+        await mySession.connect(token);
 
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
@@ -145,7 +145,7 @@ const CounselingRoom = () => {
         console.error("Error initializing publisher:", error);
       }
     },
-    [myUserName, sessionId]
+    [sessionId]
   );
 
   const leaveSession = useCallback(async () => {
@@ -171,12 +171,12 @@ const CounselingRoom = () => {
     if (session) {
       session.disconnect();
     }
-  }, [session, sessionId, myUserName]);
+  }, [session, sessionId]);
 
   const getToken = async (sessionId) => {
     const response = await axios.post(
       `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
-      {},
+      { role: role },
       {
         headers: {
           "Content-Type": "application/json",
