@@ -41,6 +41,13 @@ spring:
     job:
       enabled: false
 
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          DEBUG
+
 openvidu:
   url: "http://localhost:4443/"
   secret: "ondo_project_openvidu"

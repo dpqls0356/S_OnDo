@@ -5,10 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import com.clio.ondo.global.auth.MemberPrincipalDetails;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -28,6 +25,7 @@ import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.reservation.model.Reservation;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
@@ -54,6 +52,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
 	public void join(JoinRequestDto joinRequestDto) {
 		Member member = joinRequestDto.toEntity();
+		log.error(String.valueOf(member));
+		log.error("@@@@@@@2");
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
