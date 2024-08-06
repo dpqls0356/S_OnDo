@@ -63,7 +63,7 @@ export const useAuthStore = create((set) => ({
   },
   counselorLogin: async (id, password) => {
     try {
-      const response = await api.post("/counselor/login", { id, password });
+      const response = await api.post("/counselor/login", { id, password }, { withCredentials: true });
       if (response.data.success) {
         localStorage.setItem("isAuthenticated", true);
         return true;
@@ -75,8 +75,9 @@ export const useAuthStore = create((set) => ({
     }
   },
   counselorLogout: async () => {
+    console.log("here,,,");
     try {
-      await api.post("/counselor/logout");
+      await api.post("/counselor/logout", {},{ withCredentials: true });
       localStorage.removeItem("isAuthenticated");
     } catch (error) {
       console.error("Logout failed:", error);
