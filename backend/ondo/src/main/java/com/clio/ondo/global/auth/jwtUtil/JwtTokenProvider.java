@@ -4,13 +4,17 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import com.clio.ondo.global.auth.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import com.clio.ondo.global.auth.CounselorDetailsServiceImpl;
+import com.clio.ondo.global.auth.CounselorPrincipalDetails;
+import com.clio.ondo.global.auth.MemberDetailsServiceImpl;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

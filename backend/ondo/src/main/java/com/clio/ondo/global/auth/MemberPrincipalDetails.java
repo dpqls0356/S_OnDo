@@ -35,7 +35,7 @@ public class MemberPrincipalDetails implements OAuth2User, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_" + String.valueOf(member.getRole())));
+                new SimpleGrantedAuthority(String.valueOf(member.getRole())));
     }
 
     @Override
