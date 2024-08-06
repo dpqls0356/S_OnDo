@@ -16,6 +16,7 @@ const Table = styled.div`
   border-radius: 10px;
 `
 
+
 const Save = styled.div`
   display: inline-block;
   & > button {
