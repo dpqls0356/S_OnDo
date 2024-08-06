@@ -1,9 +1,9 @@
 import "./BoardCreatepage.css";
 
 import { useNavigate } from "react-router-dom";
-
+import useBoardStore from "../../../store/app/useBoardStore";
 import Button from "../../../components/app/Button";
-import Footer from "../../../components/app/Footer"
+
 
 const BoardUpdatepage = () => {
   const nav = useNavigate();
@@ -34,7 +34,6 @@ const BoardUpdatepage = () => {
       <div className="emptybox">
          
       </div>
-      <Footer />
     </>
   )
 }
