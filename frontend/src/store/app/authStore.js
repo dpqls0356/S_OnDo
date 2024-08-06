@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
   baseURL: baseUrl,
-  withCredentials: false, // 기본으로 false 세팅 -> 나중에 함수에서 true로 가게
+  // withCredentials: false, // 기본으로 false 세팅 -> 나중에 함수에서 true로 가게
 });
 
 export const useAuthStore = create((set) => ({
@@ -34,7 +34,7 @@ export const useAuthStore = create((set) => ({
   // },
   logout: async () => {
     try {
-      const response = await api.post("/member/logout", {}, { withCredentials: true });
+      const response = await api.post("/member/logout", {},{ withCredentials: true });
       if (response.data.success) {
         set({ isAuthenticated: false, user: null});
         return true;
@@ -63,7 +63,7 @@ export const useAuthStore = create((set) => ({
   },
   counselorLogin: async (id, password) => {
     try {
-      const response = await api.post("/counselor/login", { id, password });
+      const response = await api.post("/counselor/login", { id, password }, { withCredentials: true });
       if (response.data.success) {
         localStorage.setItem("isAuthenticated", true);
         return true;
@@ -76,7 +76,7 @@ export const useAuthStore = create((set) => ({
   },
   counselorLogout: async () => {
     try {
-      await api.post("/counselor/logout");
+      await api.post("/counselor/logout", {},{ withCredentials: true });
       localStorage.removeItem("isAuthenticated");
     } catch (error) {
       console.error("Logout failed:", error);
