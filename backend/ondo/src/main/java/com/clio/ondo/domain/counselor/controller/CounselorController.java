@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.counselor.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.model.dto.CounselorJoinRequestDto;
@@ -22,6 +25,7 @@ import com.clio.ondo.domain.counselor.model.dto.CounselorMyPageResponseDto;
 import com.clio.ondo.domain.counselor.model.dto.CounselorMypageRequestDto;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.service.CounselorService;
+import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
@@ -41,22 +45,28 @@ import lombok.extern.slf4j.Slf4j;
 public class CounselorController {
 
     private final CounselorService counselorService;
+    private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/join")
-    public ResponseEntity<ResponseVO<Void>> join(@RequestBody CounselorJoinRequestDto joinRequestDto) {
+    public ResponseEntity<ResponseVO<Void>> join(
+        @RequestPart("joinRequestDto") CounselorJoinRequestDto joinRequestDto,
+        @RequestPart("profileImage") MultipartFile profileImage) {
         try {
             joinRequestDto.setPassword(passwordEncoder.encode(joinRequestDto.getPassword()));
-            Counselor counselor = joinRequestDto.toEntity();
+            String profileUrl=imageService.upload(profileImage,"CounselorProfile");
+            Counselor counselor = joinRequestDto.toEntity(profileUrl);
             counselorService.join(counselor);
             return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("상담사 가입 실패: 올바른 값을 입력해주세요."));
         } catch (CounselorAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("상담사 가입 실패: 이미 가입된 회원입니다."));
-        }
-    }
+        } catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     @PostMapping("/login")
     public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody CounselorLoginRequestDto loginRequestDto, HttpServletResponse response) {
@@ -124,14 +134,16 @@ public class CounselorController {
     //상담사 수정하기
     @PutMapping("/updateMypage")
     public ResponseEntity<ResponseVO<Void>> updateMypage(HttpServletRequest request,
-        @RequestBody CounselorMypageRequestDto requestDto){
+        @RequestPart("requestDto") CounselorMypageRequestDto requestDto,
+        @RequestPart("profileImage") MultipartFile profileImage
+    ) throws IOException {
         String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
         Long counselorId = jwtTokenProvider.getIdFromToken(token);
         counselorService.updateMypage(
             counselorId,
             requestDto.getPassword(),
             requestDto.getSelfIntroduction(),
-            requestDto.getProfileUrl()
+            profileImage
         );
 
 

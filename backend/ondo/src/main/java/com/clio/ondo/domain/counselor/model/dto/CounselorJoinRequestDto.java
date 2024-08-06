@@ -20,9 +20,9 @@ public class CounselorJoinRequestDto {
     private String name;
     private String field;
     private String selfIntroduction;
-    private String profileUrl;
+
     @Builder
-    public Counselor toEntity() {
+    public Counselor toEntity(String profileUrl) {
         return Counselor.builder()
                 .counselorId(id)
                 .selfIntroduction(selfIntroduction)

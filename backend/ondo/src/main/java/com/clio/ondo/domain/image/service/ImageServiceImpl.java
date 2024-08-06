@@ -81,9 +81,9 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	@Override
-	public void delete(String imageUrl){
+	public void delete(String imageUrl,String dirName){
 		try{
-			String decodeUrl=extractAndDecodePath(imageUrl);
+			String decodeUrl=extractAndDecodePath(imageUrl,dirName);
 			amazonS3.deleteObject(bucket, decodeUrl);
 		}catch(UnsupportedEncodingException e){
 			System.out.println("디코딩 중 오류가 발생했습니다: " + e.getMessage());
@@ -92,9 +92,9 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 
-	public static String extractAndDecodePath(String url) throws UnsupportedEncodingException {
+	public static String extractAndDecodePath(String url, String dirName) throws UnsupportedEncodingException {
 		// ".com/" 이후의 경로 추출
-		int startIndex = url.indexOf("MemberProfile/");
+		int startIndex = url.indexOf(dirName+"/");
 		String path = url.substring(startIndex);
 
 		// 경로 전체를 URL 디코딩

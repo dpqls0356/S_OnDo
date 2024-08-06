@@ -9,5 +9,5 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ImageService {
 
 	String upload(MultipartFile multipartFile, String dirName) throws IOException;
-	void delete(String imageUrl);
+	void delete(String imageUrl,String dirName);
 }
