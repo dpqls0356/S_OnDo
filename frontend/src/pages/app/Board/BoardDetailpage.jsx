@@ -28,7 +28,7 @@ const BoardDetailpage = () => {
     const commentData = {
       content: comment.current.value,
       article_id: articleId,
-      // 아래 정보는 실제 로그인된 사용자 정보로 대체
+      // 아래 정보는 실제 로그인된 사용자 정보로 대체(로그인 될 때는 user, 게시판에서는 member)
       member_id: user.id, 
       member_name: user.name
     };
