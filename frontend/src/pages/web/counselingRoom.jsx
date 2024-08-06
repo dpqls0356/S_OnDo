@@ -54,6 +54,7 @@ const Nav = styled.div`
     height: 60px;
     border-radius: 50%;
     margin: 0px 5px;
+    color: white;
     background-color: #333333;
     & > div > svg {
       color: white;
@@ -147,12 +148,8 @@ const CounselingRoom = () => {
     [myUserName, sessionId]
   );
 
-  const leaveSession = useCallback(() => {
-    if (session) {
-      session.disconnect();
-    }
-
-    axios
+  const leaveSession = useCallback(async () => {
+    const response = await axios
       .post(
         `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/leave`,
         { reservationId: reservationId },
@@ -160,16 +157,20 @@ const CounselingRoom = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials: true, // 쿠키를 포함하여 요청
         }
       )
       .catch((error) => {
         console.error("Error notifying server about leaving session:", error);
       });
-
+    console.log(response);
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
     navigate("/counselor");
+    if (session) {
+      session.disconnect();
+    }
   }, [session, sessionId, myUserName]);
 
   const getToken = async (sessionId) => {
@@ -177,7 +178,10 @@ const CounselingRoom = () => {
       `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
       {},
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true, // 쿠키를 포함하여 요청
       }
     );
     return response.data.data.token;
@@ -305,7 +309,13 @@ const CounselingRoom = () => {
                   </svg>
                 </div>
               </button>
-              <button id="buttonLeaveSession" onClick={leaveSession}>
+              <button
+                id="buttonLeaveSession"
+                onClick={() => {
+                  console.log("상담종료 버튼 클릭됨");
+                  leaveSession();
+                }}
+              >
                 <div>상담종료</div>
               </button>
             </Nav>
