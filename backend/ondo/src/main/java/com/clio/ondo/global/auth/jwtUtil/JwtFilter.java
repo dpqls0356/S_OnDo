@@ -28,15 +28,16 @@ public class JwtFilter extends OncePerRequestFilter {
 		String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 		try {
 			if (token != null) {
-				Claims claims = jwtTokenProvider.decodeJwt(token);
 				if (jwtTokenProvider.validateToken(token) && jwtTokenProvider.isTokenBlacklisted(token)) {
+					Claims claims = jwtTokenProvider.decodeJwt(token);
 					if (jwtTokenProvider.hasClaim(claims, "type", "access")) {
 						String role = claims.get("role",String.class);
+						log.error("role: {}", role);
 						Authentication authentication;
-						if (role.equals("COUNSELOR")) {
-							authentication = jwtTokenProvider.getCounselorAuthentication(token);
-						} else {
+						if ("ROLE_USER".equals(role)) {
 							authentication = jwtTokenProvider.getMemberAuthentication(token);
+						} else {
+							authentication = jwtTokenProvider.getCounselorAuthentication(token);
 						}
 						SecurityContextHolder.getContext().setAuthentication(authentication);
 					} else {
@@ -46,6 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
 				}
 			}
 		} catch (ExpiredJwtException e) {
+			log.error("token:{}",token);
 			handleExpiredToken(request, response, token, e);
 		} catch (RedisConnectionFailureException e) {
 			SecurityContextHolder.clearContext();
@@ -66,6 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	private void handleExpiredToken(HttpServletRequest request, HttpServletResponse response,
 		String token, ExpiredJwtException e) throws IOException {
 		Claims claims = e.getClaims();
+		log.error("expired token");
 		if (claims != null && jwtTokenProvider.hasClaim(claims, "type", "access")) {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JwtFilter: handleExpiredToken 첫번째");
 		} else {
@@ -74,5 +77,4 @@ public class JwtFilter extends OncePerRequestFilter {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWTFilter: handleExpiredToken 두번째");
 		}
 	}
-
 }
