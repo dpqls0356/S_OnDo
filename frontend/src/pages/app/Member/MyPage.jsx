@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/app/authStore';
 import axios from 'axios';
 import Button from "../../../components/app/Button";
@@ -8,8 +8,10 @@ import profile from './../../../assets/images/test.png'
 import notice from './../../../assets/images/notice.png'
 import './Mypage.css'
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: baseUrl,
   withCredentials: true // 쿠키를 포함하기 위해 필요
 });
 
