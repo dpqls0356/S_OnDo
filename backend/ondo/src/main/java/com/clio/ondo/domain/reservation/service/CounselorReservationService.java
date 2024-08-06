@@ -29,6 +29,8 @@ public interface CounselorReservationService {
 
 	List<CounselorReservationDto> getAllReservation(Long counselorId, Pageable pageable);
 
+	List<CounselorReservationDto> searchReservationByName(Long counselorId, String name, Pageable pageable);
+
 	LocalDateTime convertStartDate(String dateStr);
 
 	LocalDateTime convertEndDate(String dateStr);
