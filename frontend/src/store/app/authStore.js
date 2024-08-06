@@ -26,7 +26,12 @@ export const useAuthStore = create((set) => ({
   },
   logout: async () => {
     try {
-      await api.post("/member/logout");
+      await api.post("/member/logout", {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       set({ isAuthenticated: false, user: null });
     } catch (error) {
       console.error("Logout failed:", error);
@@ -34,7 +39,12 @@ export const useAuthStore = create((set) => ({
   },
   checkAuth: async () => {
     try {
-      const response = await api.get("/member/me");
+      const response = await api.get("/member/me", {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.data.success) {
         set({ isAuthenticated: true, user: response.data.data.user });
         return true;
