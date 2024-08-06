@@ -10,4 +10,9 @@ import com.clio.ondo.domain.reservation.model.Reservation;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 	List<Reservation> findByMemberId(Long memberId);
 	List<Reservation> findByCounselorId(Long counselorId);
+
+	List<Reservation> findByMemberIdAndCounselorIdOrderByReservationDateDesc(Long memberId, Long counselorId);
+
+	Optional<Reservation> findById(Long id);
+	Optional<Reservation> findByCounselingUrl(String counselingUrl);
 }

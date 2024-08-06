@@ -1,19 +1,11 @@
 package com.clio.ondo.domain.counselor.service;
 
-import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.clio.ondo.domain.counselor.model.Counselor;
-import com.clio.ondo.domain.counselor.model.QCounselor;
-import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
-import com.clio.ondo.domain.counselor.repository.CounselorRepository;
-import com.clio.ondo.domain.member.model.Gender;
-import com.clio.ondo.domain.schedule.model.Schedule;
-import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
+import java.util.stream.Collectors;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,16 +13,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.career.service.CareerService;
+import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.counselor.model.QCounselor;
 import com.clio.ondo.domain.counselor.model.dto.CounselorLoginRequestDto;
+import com.clio.ondo.domain.counselor.model.dto.CounselorMyPageResponseDto;
+import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
+import com.clio.ondo.domain.counselor.repository.CounselorRepository;
+import com.clio.ondo.domain.member.model.Gender;
+import com.clio.ondo.domain.schedule.model.Schedule;
+import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
+import com.clio.ondo.global.exception.counselor.CounselorAlreadyExistsException;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,7 @@ public class CounselorServiceImpl implements CounselorService {
     private final DaoAuthenticationProvider counselorAuthenticationProvider;
     private final CounselorRepository counselorRepository;
     private final ScheduleRepository scheduleRepository;
+    private final CareerService careerService;
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory queryFactory;
     private final RedisTemplate<String, String> redisTemplate;
@@ -62,11 +66,59 @@ public class CounselorServiceImpl implements CounselorService {
     @Override
     @Transactional
     public void join(Counselor counselor) {
+        Optional<Counselor> optionalCounselor = counselorRepository.findByCounselorId(counselor.getCounselorId());
+        if (optionalCounselor.isPresent()) {
+            throw new CounselorAlreadyExistsException("이미 존재하는 상담사입니다.");
+        }
         if (counselor.getSchedule() == null) {
-            counselor.setSchedule(new Schedule(counselor));
-            scheduleRepository.save(counselor.getSchedule());
+            Schedule schedule = new Schedule(counselor);
+            counselor.setSchedule(schedule);
+            schedule.setCounselor(counselor);
+            scheduleRepository.save(schedule);
         }
         counselorRepository.save(counselor);
+    }
+
+    //마이페이지 보기
+    @Override
+    public CounselorMyPageResponseDto getMypage(Long counselorId){
+        Optional<Counselor> counselor=counselorRepository.findById(counselorId);
+
+        if(counselor.isPresent()){
+
+            CounselorMyPageResponseDto counselorDto=new CounselorMyPageResponseDto();
+            Counselor c=counselor.get();
+            counselorDto.setId(counselorId);
+            counselorDto.setCounselorId(c.getCounselorId());
+            counselorDto.setPassword(c.getPassword());
+            counselorDto.setName(c.getName());
+            counselorDto.setGender(c.getGender());
+            counselorDto.setField(c.getField());
+            counselorDto.setSelfIntroduction(c.getSelfIntroduction());
+            counselorDto.setProfileUrl(c.getProfileUrl());
+            counselorDto.setCareer(careerService.getCareer(c.getId()));
+
+            return counselorDto;
+        }
+        return null;
+    }
+
+    //마이페이지 수정하기
+    @Transactional
+    @Override
+    public void updateMypage(Long counselorId,String password,String selfIntroduction, String profileUrl){
+        Optional<Counselor> counselor=counselorRepository.findById(counselorId);
+
+        if(counselor.isPresent()){
+            Counselor changeCounselor=counselor.get();
+            changeCounselor.setPassword(password);
+            changeCounselor.setSelfIntroduction(selfIntroduction);
+            changeCounselor.setProfileUrl(profileUrl);
+
+            counselorRepository.save(changeCounselor);
+        }else{
+            //예외처리
+        }
     }
 
 
@@ -77,6 +129,7 @@ public class CounselorServiceImpl implements CounselorService {
         List<CounselorResponseDto> counselorList=new ArrayList<>();
 
         for(Counselor c:counselors){
+
             CounselorResponseDto dto=new CounselorResponseDto();
             dto.setId(c.getId());
             dto.setName(c.getName());
@@ -84,7 +137,7 @@ public class CounselorServiceImpl implements CounselorService {
             dto.setGender(c.getGender());
             dto.setSelfIntroduction(c.getSelfIntroduction());
             dto.setProfileUrl(c.getProfileUrl());
-
+            dto.setCareer(careerService.getCareer(c.getId()));
             counselorList.add(dto);
         }
 
@@ -105,7 +158,7 @@ public class CounselorServiceImpl implements CounselorService {
             counselorDto.setGender(c.getGender());
             counselorDto.setSelfIntroduction(c.getSelfIntroduction());
             counselorDto.setProfileUrl(c.getProfileUrl());
-
+            counselorDto.setCareer(careerService.getCareer(c.getId()));
             return counselorDto;
         }else{
             return null;
@@ -115,6 +168,7 @@ public class CounselorServiceImpl implements CounselorService {
     //상담사 필터링된 리스트 가져오기
     @Override
     public List<CounselorResponseDto> filteredList(String name, Gender gender,String field){
+
         QCounselor counselor = QCounselor.counselor;
         BooleanBuilder builder=new BooleanBuilder();
         if(gender!=null){
@@ -127,19 +181,31 @@ public class CounselorServiceImpl implements CounselorService {
             builder.and(counselor.name.eq(name));
         }
 
-        return queryFactory.select(Projections.constructor(CounselorResponseDto.class,
-                counselor.id,
-                counselor.name,
-                counselor.gender,
-                counselor.field,
-                counselor.selfIntroduction,
-                counselor.profileUrl))
-            .from(counselor)
+
+        // 기본 Counselor 데이터 조회
+        List<Counselor> counselors = queryFactory.selectFrom(counselor)
             .where(builder)
             .fetch();
+
+        // 엔티티를 DTO로 변환
+        return counselors.stream()
+            .map(c -> {
+                // Counselor의 ID로 Career 정보를 가져오기
+                List<String> careerDescriptions = careerService.getCareer(c.getId());
+
+                // DTO 생성
+                return new CounselorResponseDto(
+                    c.getId(),
+                    c.getName(),
+                    c.getGender(),
+                    c.getField(),
+                    careerDescriptions,
+                    c.getSelfIntroduction(),
+                    c.getProfileUrl()
+                );
+            })
+            .collect(Collectors.toList());
     }
-
-
 
     @Override
     public Optional<Counselor> getCounselorEntity(Long id) {
