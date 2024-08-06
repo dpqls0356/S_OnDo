@@ -23,7 +23,7 @@ public class ImageController {
 	private final ImageService imageService;
 
 	@PostMapping("/upload")
-	public String upload(@RequestParam("data")MultipartFile file) throws IOException{
+	public String upload(@RequestParam("data") MultipartFile file) throws IOException{
 		return imageService.upload(file,"static");
 	}
 }
