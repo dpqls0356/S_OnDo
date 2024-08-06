@@ -15,6 +15,7 @@ import TimeTableComponent from "./pages/web/components/center/TimeTableComponent
 import DayList from "./pages/web/components/center/DayListComponent";
 import CounselorMypage from "./pages/web/components/center/CounselorMypageComponent";
 import UpdatePassword from "./pages/web/components/center/UpdatePassword";
+import Schedul from "./pages/web/components/center/SchedulComponent";
 
 import Logopage from "./pages/app/Member/Logopage";
 import Loginpage from "./pages/app/Member/Loginpage";
@@ -49,8 +50,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/counselor" element={<CounselorLayout />}>
-          <Route path="" element={<TimeTableComponent/> }/>
-          <Route path="detail" element={<DetailSchedulComponent/> }/>
+          <Route path="" element={<Schedul/> }/>
+          {/* <Route path="" element={<TimeTableComponent/> }/> */}
+          {/* <Route path="detail" element={<DetailSchedulComponent/> }/> */}
           <Route path="daylist/:id" element={<DayList/> }/>
           <Route path="mypage" element={<CounselorMypage/> }/>
           <Route path="updatepassword/:id" element={<UpdatePassword/> }/>
