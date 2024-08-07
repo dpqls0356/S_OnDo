@@ -275,11 +275,6 @@ const CounselingRoom = () => {
                   <UserVideoComponent streamManager={publisher} />
                 </div>
               ) : null}
-              {publisher !== undefined ? (
-                <div id="main-video" className="col-md-6">
-                  <UserVideoComponent streamManager={publisher} />
-                </div>
-              ) : null}
               {subscriber !== undefined ? (
                 <div id="sub-video" className="col-md-6">
                   <UserVideoComponent streamManager={subscriber} />
