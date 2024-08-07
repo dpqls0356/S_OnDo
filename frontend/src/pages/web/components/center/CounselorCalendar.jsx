@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import CounselorTimeSlots from "./CounselorTimeSlots";
+// import CounselorTimeSlots from "./CounselorTimeSlots";
 
-const CounselorCalendar = ({ selectedDate, setSelectedDate }) => {
+const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, setSelectedTime }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
@@ -10,6 +10,10 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate }) => {
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
+    setSelectedTime([]);
+    const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+    const formattedDate = fullDate.toISOString().split('T')[0];
+    setSelectedDate2(formattedDate);
   };
 
   const handleMonthChange = (increment) => {
