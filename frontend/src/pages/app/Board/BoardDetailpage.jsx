@@ -1,10 +1,10 @@
 import "./BoardDetailpage.css";
 import { useEffect, useRef } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import authStore from '../../../store/app/authStore'
 import useBoardStore from "../../../store/app/useBoardStore";
 import useCommentStore from "../../../store/app/useCommentStore";
-import authStore from '../../../store/app/authStore'
+import useAuthStore from '../../../store/app/authStore'
 import CommentList from "../../../components/app/Comment/CommentList";
 import Button from "../../../components/app/Button";
 
@@ -28,7 +28,12 @@ const BoardDetailPage = () => {
   const { user } = authStore();
   // console.log('User object:', user);
 
+  // 새로고침 시, 문제 해결 위해서 checkAuth
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+
   useEffect(() => {
+    // 새로고침 시 유저 undefined 문제 해결 위해서
+    checkAuth();
     console.log('Current user:', user);
     if (articleId) {
       getArticleDetail(articleId);
@@ -47,14 +52,10 @@ const BoardDetailPage = () => {
       };
       // 데이터 형식 확인
       console.log('Sending comment data:', commentData);
-      const success = await axios.post(`http://localhost:8080/api/v1/board/comment`, commentData, {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials: true
-    });
-      console.log("=========================================");
-      console.log(success);
+      const success = await addComment(commentData);
+      
+      // console.log("=========================================");
+      // console.log(success);
       if (success) {
         comment.current.value = "";
       }

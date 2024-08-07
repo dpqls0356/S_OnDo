@@ -11,30 +11,31 @@ const api = axios.create({
 });
 
 // 인터셉터 추가
-api.interceptors.request.use(request => {
-  console.log('Starting Request', JSON.stringify(request, null, 2))
-  return request
-})
+// api.interceptors.request.use(request => {
+//   console.log('Starting Request', JSON.stringify(request, null, 2))
+//   return request
+// })
 
-api.interceptors.response.use(response => {
-  console.log('Response:', JSON.stringify(response, null, 2))
-  return response
-}, error => {
-  console.log('Error Response:', JSON.stringify(error.response, null, 2))
-  return Promise.reject(error)
-})
+// api.interceptors.response.use(response => {
+//   console.log('Response:', JSON.stringify(response, null, 2))
+//   return response
+// }, error => {
+//   console.log('Error Response:', JSON.stringify(error.response, null, 2))
+//   return Promise.reject(error)
+// })
 
 const useCommentStore = create((set) => ({
   comments: [],
   addComment: async (comment) => {
     try {
-      const token = document.cookie.replace(/(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-      const response = await api.post('/board/comment', comment, {
-        headers: {
+      // const token = document.cookie.replace(/(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+      const response = await api.post('/board/comment', comment, 
+      //   { headers: {
           
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      //     'Authorization': `Bearer ${token}`
+      //   }
+      // }
+      );
       if (response.status === 201) {
         set((state) => ({ comments: [...state.comments, response.data] }));
         return true;
@@ -77,8 +78,6 @@ const useCommentStore = create((set) => ({
     try {
       const response = await api.patch(`/board/comment/${commentId}`, {
         content: modifiedContent
-      }, {
-        headers: { 'Content-Type': 'application/json' }
       });
       if (response.status === 200) {
         set((state) => ({
