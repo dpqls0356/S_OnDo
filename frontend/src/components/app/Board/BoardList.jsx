@@ -23,7 +23,7 @@ const BoardList = () => {
         const res = await api.get(`/board/list?page=${pagination.currentPage}&size=10`);
         
         // 응답 구조를 확인
-        console.log('API 응답:', res); 
+        // console.log('API 응답:', res); 
 
         if (res.data && res.data.data) {
           setBoards(res.data.data);  // res.data.data를 전달
