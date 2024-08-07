@@ -10,6 +10,10 @@ import back from '../../../assets/images/back.png';
 
 const Reservation = () => {
   const { counselorId } = useParams();
+
+  // counselorId 확인
+  console.log('카운셀러id', counselorId)
+  
   const nav = useNavigate();
   const { selectedCounselor, fetchCounselorSchedule, makeReservation, counselorSchedule } = useCounselorStore();
 
@@ -18,21 +22,33 @@ const Reservation = () => {
   const [note, setNote] = useState('');
 
   useEffect(() => {
-    fetchCounselorSchedule(counselorId);
+    if (counselorId) {
+      fetchCounselorSchedule(counselorId);
+    }
   }, [fetchCounselorSchedule, counselorId]);
 
   const handleReservation = async () => {
+    // 상담사 id 확인
+    if (!counselorId) {
+      alert('상담사 ID가 유효하지 않습니다.');
+      return;
+    }
+
     if (selectedDate && selectedTime) {
       const reservationDate = new Date(selectedDate);
       reservationDate.setHours(selectedTime.split(':')[0]);
       reservationDate.setMinutes(selectedTime.split(':')[1]);
       
-      const result = await makeReservation(counselorId, reservationDate, note);
-      if (result.success) {
-        alert('예약이 확정되었습니다.');
-        nav('/member/counseling/main');
-      } else {
-        alert('예약 실패: ' + result.message);
+      try {
+        const result = await makeReservation(counselorId, reservationDate, note);
+        if (result.success) {
+          alert('예약이 확정되었습니다.');
+          nav('/member/counseling/main');
+        } else {
+          alert('예약 실패: ' + result.message);
+        }
+      } catch (error) {
+        alert('예약 중 오류가 발생했습니다: '  + (error.response?.data?.message || error.message));
       }
     } else {
       alert('날짜와 시간을 선택해주세요.');

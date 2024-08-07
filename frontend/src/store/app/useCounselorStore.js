@@ -50,17 +50,21 @@ const useCounselorStore = create((set, get) => ({
   makeReservation: async (counselorId, reservationDate, detail) => {
     set({ loading: true });
     try {
-      const response = await api.post('/member/reservation/make', {
+      const requestData = {
         counselorId,
         reservationDate: reservationDate.toISOString(),
         detail
-      }, {
+      };
+      console.log('Request data:', requestData);
+      const response = await api.post('/member/reservation/make', requestData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       set({ loading: false });
       return response.data;
     } catch (error) {
+      console.error('Reservation error:', error.response?.data || error.message);
       set({ error: error.message, loading: false });
+      return { success: false, message: error.response?.data?.message || error.message };
     }
   },
 

@@ -81,10 +81,10 @@ function App() {
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
           <Route
-            path="counseling/apply/:id"
+            path="counseling/apply/:counselorId"
             element={<CounselorReservation />}
           />
-          <Route path="counseling/:id/detail" element={<CounselorDetail />} />
+          <Route path="counseling/:counselorId/detail" element={<CounselorDetail />} />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>
         {/* )} */}
