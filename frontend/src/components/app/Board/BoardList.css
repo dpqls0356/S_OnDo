@@ -18,5 +18,5 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    justify-content: space-between;
+    justify-content: space-around;
   }
