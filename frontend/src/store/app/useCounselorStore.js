@@ -5,7 +5,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
   baseURL: baseUrl,
   withCredentials: true,
-})
+});
 
 const useCounselorStore = create((set, get) => ({
   reservations: [],
@@ -23,17 +23,7 @@ const useCounselorStore = create((set, get) => ({
       });
       set({ reservations: response.data.data.reservationList, loading: false });
     } catch (error) {
-      set({ error: error.message, loading: false });
-    }
-  },
-
-  fetchCounselors: async () => {
-    set({ loading: true });
-    try {
-      const response = await api.get('/counselors');
-      set({ counselors: response.data.data.counselors, loading: false });
-    } catch (error) {
-      set({ error: error.message, loading: false });
+      set({ error: error.response?.data?.message || error.message, loading: false });
     }
   },
 
@@ -43,7 +33,7 @@ const useCounselorStore = create((set, get) => ({
       const response = await api.get(`/member/reservation/counselor/${counselorId}`);
       set({ counselorSchedule: response.data.data.counselorSchedule, loading: false });
     } catch (error) {
-      set({ error: error.message, loading: false });
+      set({ error: error.response?.data?.message || error.message, loading: false });
     }
   },
 
@@ -55,13 +45,26 @@ const useCounselorStore = create((set, get) => ({
         reservationDate: reservationDate.toISOString(),
         detail
       };
-      console.log('Request data:', requestData);
       const response = await api.post('/member/reservation/make', requestData);
       set({ loading: false });
-      return response.data;
+      return { success: true, message: response.data.message };
     } catch (error) {
-      console.error('Reservation error:', error.response?.data || error.message);
-      set({ error: error.message, loading: false });
+      set({ error: error.response?.data?.message || error.message, loading: false });
+      return { success: false, message: error.response?.data?.message || error.message };
+    }
+  },
+
+  cancelReservation: async (reservationId) => {
+    set({ loading: true });
+    try {
+      await api.delete(`/member/reservation/cancel/${reservationId}`);
+      set(state => ({
+        reservations: state.reservations.filter(res => res.id !== reservationId),
+        loading: false
+      }));
+      return { success: true, message: "예약이 취소되었습니다." };
+    } catch (error) {
+      set({ error: error.response?.data?.message || error.message, loading: false });
       return { success: false, message: error.response?.data?.message || error.message };
     }
   },
