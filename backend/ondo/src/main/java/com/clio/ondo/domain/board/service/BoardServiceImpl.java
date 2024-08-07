@@ -91,6 +91,12 @@ public class BoardServiceImpl implements BoardService {
       //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
       Board existingArticle = existingArticleOpt.get();
       if(existingArticle.getMember_id().equals(memberId.toString())){
+        List<String> imageUrlList=existingArticle.getImageUrl();
+        if(!imageUrlList.isEmpty()){
+          for(String imageUrl:imageUrlList){
+            imageService.delete(imageUrl,"board");
+          }
+        }
         boardRepository.deleteById(articleId);
       }
       else{
