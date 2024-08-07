@@ -60,7 +60,11 @@ public class MemberServiceImpl implements MemberService {
 	public void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
 
 		//s3이미지 url 생성 및 저장
-		String profileUrl=imageService.upload(profileImage,"MemberProfile");
+		//기본 프로필 이미지
+		String profileUrl="https://d1kbrt3q8264bl.cloudfront.net/MemberProfile/profile.png";
+		if(!profileImage.isEmpty() && profileImage !=null){
+			profileUrl=imageService.upload(profileImage,"MemberProfile");
+		}
 		Member member = joinRequestDto.toEntity(profileUrl);
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
