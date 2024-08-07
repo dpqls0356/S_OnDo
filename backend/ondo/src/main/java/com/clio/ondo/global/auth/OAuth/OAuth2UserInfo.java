@@ -70,7 +70,7 @@ public class OAuth2UserInfo {
                 .profileUrl(profileUrl)
                 .email(email)
                 .birthDate(birthDate)
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
     }
 
