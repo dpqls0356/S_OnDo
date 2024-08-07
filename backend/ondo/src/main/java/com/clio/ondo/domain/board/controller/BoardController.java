@@ -106,11 +106,13 @@ public class BoardController {
 게시글 수정
 */
   @PatchMapping("/{articleId}")
-  public ResponseEntity<ResponseVO<Void>>  updateArticle(@PathVariable String articleId, @RequestBody Board modifiedArticle,HttpServletRequest request) {
+  public ResponseEntity<ResponseVO<Void>>  updateArticle(@PathVariable String articleId,HttpServletRequest request,
+      @RequestPart("board") Board modifiedArticle,
+      @RequestPart("image") List<MultipartFile> imageList) throws IOException{
     try{
       String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
-      boardService.updateArticle(articleId,modifiedArticle,memberId);
+      boardService.updateArticle(articleId,modifiedArticle,memberId,imageList);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
     }catch (UnauthorizedException e){
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));

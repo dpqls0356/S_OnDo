@@ -34,6 +34,9 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
     if (modifiedArticle.getContent() != null) {
       update.set("content", modifiedArticle.getContent());
     }
+
+    update.set("imageUrl",modifiedArticle.getImageUrl());
+
     mongoTemplate.updateFirst(query, update, Board.class);
   }
 

@@ -22,7 +22,8 @@ public interface BoardService {
 
   void deleteArticle(ObjectId articleId,Long   memberId);
 
-  void updateArticle(String articleId, Board modifiedArticle, Long memberId);
+  //void updateArticle(String articleId, Board modifiedArticle, Long memberId);
+  void updateArticle(String articleId, Board modifiedArticle,Long memberId,List<MultipartFile> images) throws IOException;
 
   Optional<Board> getArticle(ObjectId articleId);
 

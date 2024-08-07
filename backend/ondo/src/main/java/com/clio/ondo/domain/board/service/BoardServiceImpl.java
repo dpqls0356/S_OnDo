@@ -52,6 +52,7 @@ public class BoardServiceImpl implements BoardService {
     return boardRepository.findAll(pageble);
   }
 
+  @Override
   public Board saveArticle(Board board,List<MultipartFile> images) throws IOException {
     List<FilteringResponse> titleResponse = moderationService.inspectBadWord(board.getTitle());
     if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
@@ -63,11 +64,13 @@ public class BoardServiceImpl implements BoardService {
       throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
     }
 
-    if( images !=null && !images.isEmpty() ){
+    if( !images.isEmpty()){
       List<String> imageList=new ArrayList<>();
       for(MultipartFile image:images){
-        String imageUrl=imageService.upload(image,"board");
-        imageList.add(imageUrl);
+        if (!image.isEmpty()) {
+          String imageUrl = imageService.upload(image, "board");
+          imageList.add(imageUrl);
+        }
       }
       board.settingImageUrl(imageList);
     }
@@ -91,6 +94,7 @@ public class BoardServiceImpl implements BoardService {
       //요청 보낸 사람과 글의 글쓴이가 동일할 경우에만 레포지토리로 옮겨가기
       Board existingArticle = existingArticleOpt.get();
       if(existingArticle.getMember_id().equals(memberId.toString())){
+        //S3에 있는 이미지 삭제
         List<String> imageUrlList=existingArticle.getImageUrl();
         if(!imageUrlList.isEmpty()){
           for(String imageUrl:imageUrlList){
@@ -119,7 +123,7 @@ public class BoardServiceImpl implements BoardService {
   예외처리
    */
   @Override
-  public void updateArticle(String articleId, Board modifiedArticle,Long memberId) {
+  public void updateArticle(String articleId, Board modifiedArticle,Long memberId,List<MultipartFile> images) throws IOException{
     ObjectId objectArtilceId = new ObjectId(articleId);
     Optional<Board> existingArticleOpt = boardRepository.findById(objectArtilceId);
     if (existingArticleOpt.isPresent()) {
@@ -134,6 +138,30 @@ public class BoardServiceImpl implements BoardService {
         List<FilteringResponse> contentResponse = moderationService.inspectBadWord(modifiedArticle.getContent());
         if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
           throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
+        }
+
+        //S3에 있는 원래 이미지 삭제
+        List<String> imageUrlList=existingArticle.getImageUrl();
+        if(!imageUrlList.isEmpty()){
+          for(String imageUrl:imageUrlList){
+            System.out.println("원래 이미지삭제: "+imageUrl);
+            imageService.delete(imageUrl,"board");
+          }
+        }
+
+        //수정 시 들어온 이미지 재업로드
+        if( images !=null && !images.isEmpty() ){
+          System.out.println("새 이미지 넣기");
+              
+          List<String> newImageList=new ArrayList<>();
+          for(MultipartFile image:images){
+            if (!image.isEmpty()) {
+              String imageUrl = imageService.upload(image, "board");
+              System.out.println("새이미지url: "+imageUrl);
+              newImageList.add(imageUrl);
+            }
+          }
+          modifiedArticle.settingImageUrl(newImageList);
         }
 
         customBoardRepositoryImpl.updateArticle(objectArtilceId,modifiedArticle);
