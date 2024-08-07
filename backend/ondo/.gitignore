@@ -47,5 +47,6 @@ out/
 HELP.md
 /src/main/resources/openaiapi.properties
 /src/main/resources/openvidu.properties
+/src/main/resources/s3.properties
 /src/main/resources/firebase.json
 /src/main/resources/perspectiveapi.properties
