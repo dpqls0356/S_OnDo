@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const api = axios.create({
+  baseURL: baseUrl,
+  // withCredentials: false, // 기본으로 false 세팅 -> 나중에 함수에서 true로 가게
+});
+
 const useCounselorStore = create((set, get) => ({
   reservations: [],
   counselors: [],
@@ -12,7 +18,7 @@ const useCounselorStore = create((set, get) => ({
   fetchReservations: async () => {
     set({ loading: true });
     try {
-      const response = await axios.get('/api/v1/member/reservation/getReservation', {
+      const response = await api.get('/member/reservation/getReservation', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       set({ reservations: response.data.data.reservationList, loading: false });
@@ -24,7 +30,7 @@ const useCounselorStore = create((set, get) => ({
   fetchCounselors: async () => {
     set({ loading: true });
     try {
-      const response = await axios.get('/api/v1/counselors');
+      const response = await api.get('/counselors');
       set({ counselors: response.data.data.counselors, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -34,7 +40,7 @@ const useCounselorStore = create((set, get) => ({
   fetchCounselorSchedule: async (counselorId) => {
     set({ loading: true });
     try {
-      const response = await axios.get(`/api/v1/member/reservation/counselor/${counselorId}`);
+      const response = await api.get(`/member/reservation/counselor/${counselorId}`);
       set({ counselorSchedule: response.data.data.counselorSchedule, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -44,7 +50,7 @@ const useCounselorStore = create((set, get) => ({
   makeReservation: async (counselorId, reservationDate, detail) => {
     set({ loading: true });
     try {
-      const response = await axios.post('/api/v1/member/reservation/make', {
+      const response = await api.post('/member/reservation/make', {
         counselorId,
         reservationDate: reservationDate.toISOString(),
         detail

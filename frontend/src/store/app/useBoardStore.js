@@ -1,4 +1,12 @@
 import { create } from 'zustand';
+import axios from 'axios'
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const api = axios.create({
+  baseURL: baseUrl,
+  withCredentials: true,
+});
+
 
 const useBoardStore = create((set, get) => ({
   // 게시글 목록
@@ -19,6 +27,11 @@ const useBoardStore = create((set, get) => ({
     member_name: '',
     image: null,
   },
+
+  // 상태 추가
+  currentViewArticle: null,
+  isLoadingArticle: false,
+  articleError: null,
 
   // 게시글 목록 설정 (API 응답 구조에 맞게 수정)
   setBoards: (response) => {
@@ -96,6 +109,37 @@ const useBoardStore = create((set, get) => ({
       ...paginationInfo
     }
   }),
+
+
+  getArticleDetail: async (articleId) => {
+    set({ isLoadingArticle: true, articleError: null });
+    try {
+      // 잘 조회되어서 주석처리
+      // console.log('Getting article:', articleId);
+      const response = await api.get(`/board/${articleId}`);
+      // console.log('Article data:', response.data);
+      if (response.data && response.data.success && response.data.data && response.data.data.board) {
+        set({ currentViewArticle: response.data.data.board, isLoadingArticle: false, articleError: null });
+      } else {
+        throw new Error('Invalid response structure');
+      }
+    } catch (error) {
+      console.error('Error getting article detail:', error);
+      set({ 
+        currentViewArticle: null, 
+        isLoadingArticle: false, 
+        articleError: error.response ? error.response.data.message : error.message 
+      });
+    }
+  },
+
+  // 컴포넌트 언마운트, 에러, 페이지 전환 시 데이터 의 초기화를 위한 것
+  resetCurrentViewArticle: () => set({ 
+    currentViewArticle: null, 
+    isLoadingArticle: false, 
+    articleError: null 
+  }),
 }));
+
 
 export default useBoardStore;
