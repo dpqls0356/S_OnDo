@@ -13,7 +13,11 @@ export const useAuthStore = create((set) => ({
   user: null,
   login: async (email, password) => {
     try {
-      const response = await api.post("/member/login", { email, password }, { withCredentials: true });
+      const response = await api.post(
+        "/member/login",
+        { email, password },
+        { withCredentials: true }
+      );
       if (response.data.success) {
         set({ isAuthenticated: true, user: response.data.user });
         return true;
@@ -34,15 +38,22 @@ export const useAuthStore = create((set) => ({
   // },
   logout: async () => {
     try {
-      const response = await api.post("/member/logout", {},{ withCredentials: true });
+      const response = await api.post(
+        "/member/logout",
+        {},
+        { withCredentials: true }
+      );
       if (response.data.success) {
-        set({ isAuthenticated: false, user: null});
+        set({ isAuthenticated: false, user: null });
         return true;
       }
       console.error("Logout failed:", response.data.message);
       return false;
     } catch (error) {
-      console.error("Logout failed:", error.response ? error.response.data : error.message);
+      console.error(
+        "Logout failed:",
+        error.response ? error.response.data : error.message
+      );
       return false;
     }
   },
@@ -63,7 +74,11 @@ export const useAuthStore = create((set) => ({
   },
   counselorLogin: async (id, password) => {
     try {
-      const response = await api.post("/counselor/login", { id, password }, { withCredentials: true });
+      const response = await api.post(
+        "/counselor/login",
+        { id, password },
+        { withCredentials: true }
+      );
       if (response.data.success) {
         localStorage.setItem("isAuthenticated", true);
         return true;
@@ -76,7 +91,7 @@ export const useAuthStore = create((set) => ({
   },
   counselorLogout: async () => {
     try {
-      await api.post("/counselor/logout", {},{ withCredentials: true });
+      await api.post("/counselor/logout", {}, { withCredentials: true });
       localStorage.removeItem("isAuthenticated");
     } catch (error) {
       console.error("Logout failed:", error);
