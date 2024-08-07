@@ -119,7 +119,12 @@ public class CounselorServiceImpl implements CounselorService {
             changeCounselor.updateSelfIntroduction(selfIntroduction);
             
             imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
-            String profileUrl=imageService.upload(profileImage,"CounselorProfile"); //프로필 이미지 넣기
+
+            String profileUrl="https://d1kbrt3q8264bl.cloudfront.net/MemberProfile/profile.png"; //없으면 기본 프로필
+            if(!profileImage.isEmpty()){
+                profileUrl=imageService.upload(profileImage,"CounselorProfile");
+            }
+             //프로필 이미지 넣기
             changeCounselor.updateProfileUrl(profileUrl);
 
             counselorRepository.save(changeCounselor);
