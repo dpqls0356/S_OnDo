@@ -46,8 +46,11 @@ public class CommentController {
   */
   @PostMapping("")
   public ResponseEntity<ResponseVO<Void>> createComment(@RequestBody Comment comment, HttpServletRequest request) {
-    String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+
+    String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+    // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
     Long memberId = jwtTokenProvider.getIdFromToken(token);
+
     comment.settingMemberId(memberId.toString());
     comment.settingCreatedDate();
     try{
@@ -64,8 +67,11 @@ public class CommentController {
   @DeleteMapping("/{commentId}")
   public ResponseEntity<ResponseVO<Void>> deleteComment(@PathVariable ObjectId commentId, HttpServletRequest request) {
     try {
-      String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+
+      String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+      // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
+
       commentServiceImpl.deleteComment(commentId, memberId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     } catch (UnauthorizedException e) {
@@ -82,8 +88,11 @@ public class CommentController {
   public ResponseEntity<ResponseVO<Void>> updateComment(@PathVariable ObjectId commentId,
       @RequestBody Comment modifiedComment, HttpServletRequest request) {
     try {
-      String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+
+      String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+      // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
+
       commentServiceImpl.updateComment(commentId, modifiedComment, memberId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     } catch (UnauthorizedException e) {
