@@ -56,10 +56,9 @@ public class CounselorController {
         try {
             joinRequestDto.setPassword(passwordEncoder.encode(joinRequestDto.getPassword()));
             String profileUrl="https://d1kbrt3q8264bl.cloudfront.net/MemberProfile/profile.png";
-            if(!profileImage.isEmpty() && profileImage!=null){
+            if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
             }
-
             Counselor counselor = joinRequestDto.toEntity(profileUrl);
             counselorService.join(counselor);
             return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
