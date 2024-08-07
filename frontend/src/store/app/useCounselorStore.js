@@ -4,8 +4,8 @@ import axios from 'axios';
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
   baseURL: baseUrl,
-  // withCredentials: false, // 기본으로 false 세팅 -> 나중에 함수에서 true로 가게
-});
+  withCredentials: true,
+})
 
 const useCounselorStore = create((set, get) => ({
   reservations: [],

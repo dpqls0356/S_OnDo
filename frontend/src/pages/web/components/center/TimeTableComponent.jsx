@@ -57,7 +57,7 @@ const TimeTableComponent = () => {
     } else {
       schedule[rowIndex][colIndex] = '0'
     }
-    console.log(schedule)
+    // console.log(schedule)
     return selectcheck
   };
 
@@ -135,12 +135,12 @@ const TimeTableComponent = () => {
     // delete scheduleResult['sunday'];
     // delete scheduleResult['saturday'];
     try {
-      const response = await axios.post(`${baseUrl}/counselor/schedule`,
+      const response = await axios.put(`${baseUrl}/counselor/schedule`,
         {
           monday: scheduleResult.monday,
           tuesday: scheduleResult.tuesday,
           wednesday: scheduleResult.wednesday,
-          thusday: scheduleResult.thusday,
+          thursday: scheduleResult.thursday,
           friday: scheduleResult.friday,
           // saturday: scheduleResult.saturday,
           // sunday: scheduleResult.sunday
@@ -151,8 +151,7 @@ const TimeTableComponent = () => {
           withCredentials: true, // 쿠키를 포함하여 요청
         }
       );
-
-      if (response.status === 201) {
+      if (response.status === 200) {
         console.log('성공적으로 변경되었습니다.')
         console.log('서버 응답:', response.data)
         // setSaveSchedule(response.data)
