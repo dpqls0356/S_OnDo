@@ -4,9 +4,12 @@ import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.repository.BoardRepository;
 import com.clio.ondo.domain.board.repository.CustomBoardRepository;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.domain.moderation.model.FilteringResponse;
 import com.clio.ondo.domain.moderation.service.ModerationService;
 import com.clio.ondo.global.exception.board.ModerationException;
@@ -18,7 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -30,6 +33,8 @@ public class BoardServiceImpl implements BoardService {
   BoardRepository boardRepository;
   @Autowired
   ModerationService moderationService;
+  @Autowired
+  ImageService imageService;
 
     /*
     모든 게시글 가져오기
@@ -47,7 +52,7 @@ public class BoardServiceImpl implements BoardService {
     return boardRepository.findAll(pageble);
   }
 
-  public Board saveArticle(Board board) {
+  public Board saveArticle(Board board,List<MultipartFile> images) throws IOException {
     List<FilteringResponse> titleResponse = moderationService.inspectBadWord(board.getTitle());
     if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
       throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
@@ -56,6 +61,15 @@ public class BoardServiceImpl implements BoardService {
     List<FilteringResponse> contentResponse = moderationService.inspectBadWord(board.getContent());
     if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
       throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
+    }
+
+    if( images !=null && !images.isEmpty() ){
+      List<String> imageList=new ArrayList<>();
+      for(MultipartFile image:images){
+        String imageUrl=imageService.upload(image,"board");
+        imageList.add(imageUrl);
+      }
+      board.settingImageUrl(imageList);
     }
 
     return boardRepository.save(board);
