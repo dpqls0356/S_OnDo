@@ -73,7 +73,7 @@ function App() {
           <Route path="board" element={<Boardpage />} />
           <Route path="board/create" element={<BoardCreatepage />} />
           <Route path="board/:id/update" element={<BoardUpdatepage />} />
-          <Route path="board/:id" element={<BoardDetailpage />} />
+          <Route path="board/:articleId" element={<BoardDetailpage />} />
           <Route path="*" element={<Notfoundpage />} />
           <Route path="join" element={<Join />} />
           <Route path="profile" element={<MyPage />} />
