@@ -48,7 +48,10 @@ const Reservation = () => {
             </div>
             <img src={BorderImg} alt="" className="w-full" />
             <div className="p-4">
-              <textarea onChange={(e) => setNote(e.target.value)} style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px 10px', resize: 'none'}} placeholder='힘든 점이나 고민점을 적어보세요...'></textarea>
+              <textarea onChange={(e) => setNote(e.target.value)} style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px 10px', resize: 'none'}} 
+              placeholder='힘든 점이나 고민점 혹은 하고싶은 말을 자유롭게 적어보세요.
+(ex. 은둔기간: 2024.05~
+      요즘 잠이 안 와요...'></textarea>
               {/* <NoteInput note={note} setNote={setNote} /> */}
               <br />
               <br />
