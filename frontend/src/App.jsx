@@ -37,7 +37,7 @@ import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
 import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
-import UserInfo from "./pages/web/components/center/UserInfoComponent";
+import HomeUserInfoComponent from "./pages/web/components/center/homeUserInfoComponent";
 // import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
 function App() {
@@ -51,14 +51,14 @@ function App() {
     <Router>
       <Routes>
         <Route path="/counselor" element={<CounselorLayout />}>
-          <Route path="" element={<Schedul/> }/>
+          <Route path="" element={<Schedul />} />
           {/* <Route path="" element={<TimeTableComponent/> }/> */}
           {/* <Route path="detail" element={<DetailSchedulComponent/> }/> */}
-          <Route path="daylist/:id" element={<DayList/> }/>
-          <Route path="mypage" element={<CounselorMypage/> }/>
-          <Route path="updatepassword/:id" element={<UpdatePassword/> }/>
-          <Route path="userinfo" element={<UserInfo/> }/>
-          <Route path="info/member" element={<UserInfoComponent/>}></Route>
+          <Route path="daylist/:id" element={<DayList />} />
+          <Route path="mypage" element={<CounselorMypage />} />
+          <Route path="updatepassword/:id" element={<UpdatePassword />} />
+          {/* <Route path="userinfo" element={<UserInfo />} /> */}
+          <Route path="info/member" element={<HomeUserInfoComponent />}></Route>
           <Route path="*" element={<CounselorNotFoundPage />} />
         </Route>
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>

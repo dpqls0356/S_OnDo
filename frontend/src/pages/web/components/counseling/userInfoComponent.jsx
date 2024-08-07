@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation, useNavigate } from "react-router-dom";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import styled from 'styled-components';
+import styled from "styled-components";
 import axios from "axios";
 const View = styled.div`
   padding: 0px 20px 10px 20px;
@@ -39,12 +38,22 @@ const History = styled.div`
   flex: 1;
   background-color: white;
   padding: 0px 30px 20px 30px;
-  border-radius: 5%;
+  border-radius: 15px;
   border: 2px solid black;
   overflow-y: scroll;
   div:last-child {
     border: none;
   }
+  /* Hide scrollbar for WebKit-based browsers (Chrome, Safari) */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none; /* Firefox */
+
+  /* Optional: Hide scrollbar for IE, Edge */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
 `;
 
 const CounselingMemo = styled.div`
@@ -54,7 +63,7 @@ const CounselingMemo = styled.div`
     font-size: 20px;
     font-weight: 800;
   }
-    & > p:nth-child(2) {
+  & > p:nth-child(2) {
     font-size: 18px;
     font-weight: 800;
     margin-bottom: 10px;
@@ -84,12 +93,9 @@ const CounselingMemo = styled.div`
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const UserInfoComponent = ({memberId}) => {
+const UserInfoComponent = ({ memberId }) => {
   const [memberInfo, setMemberInfo] = useState({});
   const [historyList, setHistoryList] = useState([]);
-  const location = useLocation();
-  const memberIdForHome = location.state.memberIdForHome;
-  console.log(memberIdForHome);
 
   useEffect(() => {
     console.log("Fetching member info for ID:", memberId);
@@ -98,7 +104,7 @@ const UserInfoComponent = ({memberId}) => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; // '2024-08-13' 형식으로 변환
+    return date.toISOString().split("T")[0]; // '2024-08-13' 형식으로 변환
   };
 
   const getMemberInfo = async () => {
@@ -115,7 +121,7 @@ const UserInfoComponent = ({memberId}) => {
       const data = response.data.data.member;
       setMemberInfo({
         birthDate: data.birthDate,
-        gender: data.gender === 'MALE' ? "남성" : "여성",
+        gender: data.gender === "MALE" ? "남성" : "여성",
         memberId: data.memberId,
         memberName: data.memberName,
       });
@@ -135,8 +141,17 @@ const UserInfoComponent = ({memberId}) => {
               <img src="" alt="Profile" />
             </div>
           ) : (
-            <div style={{ padding: "20px 10px", border: "2px solid black", backgroundColor: "white" }}>
-              <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faUser} />
+            <div
+              style={{
+                padding: "20px 10px",
+                border: "2px solid black",
+                backgroundColor: "white",
+              }}
+            >
+              <FontAwesomeIcon
+                style={{ width: "100%", height: "100%" }}
+                icon={faUser}
+              />
             </div>
           )}
         </Col>
@@ -145,7 +160,7 @@ const UserInfoComponent = ({memberId}) => {
           <div>
             <div>생년월일: {memberInfo.birthDate}</div>
             <div>성별: {memberInfo.gender}</div>
-            <div>은둔 기간: 2019.05 ~ </div>
+            {/* <div>은둔 기간: 2019.05 ~ </div> */}
           </div>
         </Col>
       </UserProfile>

@@ -167,14 +167,13 @@ function Reservation({ reservation }) {
     }
     setAge(age);
   };
-  const ViewMemberInfo = () =>{
-    navigate("/counselor/info/member",{
-      state:{
-        memberIdForHome:reservation.memberId
+  const ViewMemberInfo = () => {
+    navigate("/counselor/info/member", {
+      state: {
+        memberId: reservation.memberId,
       },
-    }
-    );
-  } 
+    });
+  };
 
   return (
     <View onClick={ViewMemberInfo} past={timeRemaining < 0}>
