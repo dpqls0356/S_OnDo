@@ -40,7 +40,7 @@ public class ChatbotController {
 		try{
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			Long id = jwtTokenProvider.getIdFromToken(token);
-			List<String> responseChatting = chatbotService.getResponseFromOpenAIChatCompletion(id, chatInput.getMessage());
+			ChattingReadDto responseChatting = chatbotService.getResponseFromOpenAIChatCompletion(id, chatInput.getMessage());
 			Map<String, Object> result = new HashMap<>();
 			result.put("responseChatting", responseChatting);
 
