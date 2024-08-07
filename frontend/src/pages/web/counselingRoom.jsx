@@ -1,3 +1,5 @@
+import { FaceMesh } from '@mediapipe/face_mesh';
+import { Camera } from '@mediapipe/camera_utils';
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
@@ -12,6 +14,7 @@ import {
   faMicrophone,
 } from "@fortawesome/free-solid-svg-icons";
 import SideBar from "./components/counseling/sidebarComponent";
+
 const View = styled.div`
   width: 100vw;
   height: 100vh;
@@ -42,7 +45,7 @@ const VideoView = styled.div`
     border-radius: 50px;
     border: 5px solid yellow;
   }
-  video {
+  video,canvas {
     border-radius: 50px;
   }
 
@@ -81,11 +84,12 @@ const Nav = styled.div`
     }
   }
 `;
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : baseUrl;
+const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
 
 const CounselingRoom = () => {
+  const [filterEnabled, setFilterEnabled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -238,6 +242,11 @@ const CounselingRoom = () => {
     //상담사인지 아닌지에 따라 이동해야할 url이 달라짐
     navigate("/counselor");
   };
+
+  const toggleFilter = () => {
+    setFilterEnabled((prev) => !prev);
+  };
+
   useEffect(() => {
     if (publisher) {
       publisher.publishVideo(cameraStatus);
@@ -272,17 +281,12 @@ const CounselingRoom = () => {
             <VideoView>
               {publisher !== undefined ? (
                 <div id="main-video" className="col-md-6">
-                  <UserVideoComponent streamManager={publisher} />
-                </div>
-              ) : null}
-              {publisher !== undefined ? (
-                <div id="main-video" className="col-md-6">
-                  <UserVideoComponent streamManager={publisher} />
+                  <UserVideoComponent streamManager={publisher} filterEnabled={filterEnabled} />
                 </div>
               ) : null}
               {subscriber !== undefined ? (
                 <div id="sub-video" className="col-md-6">
-                  <UserVideoComponent streamManager={subscriber} />
+                  <UserVideoComponent streamManager={subscriber} filterEnabled={filterEnabled} />
                 </div>
               ) : null}
             </VideoView>
@@ -361,10 +365,11 @@ const CounselingRoom = () => {
               >
                 <div>상담종료</div>
               </button>
+              <button onClick={toggleFilter}>
+                <div>필터</div>
+              </button>
             </Nav>
           </WebCamView>
-          {/* 상담사일때만 보이도록 해야함 */}
-          {/* {true ? <SideBar/> : null} */}
           <SideBar memberInfo={memberInfo} />
         </View>
       ) : (
