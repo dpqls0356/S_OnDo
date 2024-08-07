@@ -71,7 +71,6 @@ public class BoardController {
       @RequestPart("board") Board board,
       @RequestPart("image") List<MultipartFile> imageList) throws IOException {
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
-    log.error(token);
     // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
     Long memberId = jwtTokenProvider.getIdFromToken(token);
     board.settingMemberId(memberId.toString());
@@ -91,8 +90,11 @@ public class BoardController {
   @DeleteMapping("/{articleId}")
   public ResponseEntity<ResponseVO<Void>> deleteArticle(@PathVariable ObjectId articleId,HttpServletRequest request) {
     try{
-      String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+
+      String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+      // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
+
       boardService.deleteArticle(articleId,memberId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
     }catch (UnauthorizedException e){
@@ -110,8 +112,10 @@ public class BoardController {
       @RequestPart("board") Board modifiedArticle,
       @RequestPart("image") List<MultipartFile> imageList) throws IOException{
     try{
-      String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+      String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+      // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
+
       boardService.updateArticle(articleId,modifiedArticle,memberId,imageList);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
     }catch (UnauthorizedException e){

@@ -1,9 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesRight, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import styled, { css } from 'styled-components';
 import UserInfoComponent from './userInfoComponent';
 import Chat from './chat'; // userInfoComponent 대신 Chat을 가져와야 합니다.
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Tag = styled.div`
   position: absolute;
@@ -56,10 +58,14 @@ const Col = styled.div`
       border-radius: 50px;
     `}
 `;
-
-const SideBar = () => {
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const SideBar = ({memberId}) => {
+  // const location = useLocation();
   const [isChat, setIsChat] = useState(true);
   const [hidden, setHidden] = useState(true);
+  // const [memberInfo, setMemberInfo] = useState({});
+  // const [historyList, setHistoryList] = useState([]);
+  // const memberId = location.state.memberId;
 
   const toggleChat = useCallback((status) => {
     setIsChat(status);
@@ -72,6 +78,11 @@ const SideBar = () => {
   const showSideBar = () => {
     setHidden(false);
   };
+
+
+
+  useEffect(() => {
+  }, []);
 
   return (
     <>
@@ -90,7 +101,7 @@ const SideBar = () => {
             <FontAwesomeIcon style={{ width: "20px", height: "30px", cursor: "pointer" }} icon={faAnglesRight} onClick={hiddenSidebar} />
           </div>
         </Header>
-        {isChat ? <Chat /> : <UserInfoComponent />}
+        {isChat ? <Chat /> : <UserInfoComponent memberId={memberId} />}
       </View>
       <Tag hidden={hidden} onClick={showSideBar}>
         <FontAwesomeIcon style={{ width: "50px", height: "30px" }} icon={faChevronLeft} />
