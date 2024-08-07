@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class JoinRequestDto {
     private String email;
     private String name;
@@ -34,7 +33,7 @@ public class JoinRequestDto {
                 .password(password)
                 .birthDate(birthDate)
                 .gender(Gender.valueOf(gender))
-                .role(Role.valueOf("USER"))
+                .role(Role.valueOf("ROLE_USER"))
                 .profileUrl(profileImageUrl)
                 .build();
     }
