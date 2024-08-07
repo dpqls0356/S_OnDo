@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.board.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +19,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.clio.ondo.domain.board.model.Board;
 import com.clio.ondo.domain.board.service.BoardService;
+import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.exception.board.ModerationException;
@@ -63,7 +67,9 @@ public class BoardController {
   글 작성하기
    */
   @PostMapping("/article")
-  public ResponseEntity<ResponseVO<Void>> createArticle(@RequestBody Board board,HttpServletRequest request ) {
+  public ResponseEntity<ResponseVO<Void>> createArticle(HttpServletRequest request,
+      @RequestPart("board") Board board,
+      @RequestPart("image") List<MultipartFile> imageList) throws IOException {
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
     log.error(token);
     // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
@@ -72,7 +78,7 @@ public class BoardController {
     board.settingCreatedDate();
     board.settingViews();
     try{
-      boardService.saveArticle(board);
+      boardService.saveArticle(board,imageList);
     }catch(ModerationException me){
       return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }
