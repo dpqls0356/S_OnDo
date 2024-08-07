@@ -2,7 +2,7 @@ import './CounselorCardList.css'
 
 import CounselorCard from '../../../components/app/Counselor/CounselorCard';
 
-// 캐러셀 실패한 컴포넌트
+// 캐러셀 실패한 컴포넌트 --> 감당이 안되니 놔두자!
 const CounselorCardList = () => {
   const swiper = document.querySelector('.carousel_wrapper');
   const prevButtons = document.querySelectorAll('.carousel_prev');

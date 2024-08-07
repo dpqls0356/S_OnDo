@@ -56,9 +56,7 @@ const useCounselorStore = create((set, get) => ({
         detail
       };
       console.log('Request data:', requestData);
-      const response = await api.post('/member/reservation/make', requestData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const response = await api.post('/member/reservation/make', requestData);
       set({ loading: false });
       return response.data;
     } catch (error) {
