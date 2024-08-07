@@ -40,8 +40,14 @@ public class ImageServiceImpl implements ImageService {
 	private String uploadUrl(File uploadFile, String dirName){
 		String fileName=dirName+"/"+uploadFile.getName();
 		String uploadImageUrl=putS3(uploadFile,fileName);
+		
+		//여기서 key 뽑아내고 cloudFront domain 넣기
+		int startIndex = uploadImageUrl.indexOf(dirName+"/");
+		String path = uploadImageUrl.substring(startIndex);
+		String UploadImageUrl="https://d1kbrt3q8264bl.cloudfront.net/"+path;
+		
 		removeNewFile(uploadFile);
-		return uploadImageUrl;
+		return UploadImageUrl;
 	}
 
 	//로컬 서버에서 임시 파일 삭제
