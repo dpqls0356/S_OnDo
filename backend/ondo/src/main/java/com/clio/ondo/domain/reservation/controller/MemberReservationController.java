@@ -63,6 +63,4 @@ public class MemberReservationController {
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("예약 완료"));
 	}
 
-
-
 }
