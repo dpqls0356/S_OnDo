@@ -9,14 +9,18 @@ import chat_send from "./../../../assets/images/chat_send.png";
 import back from "./../../../assets/images/back.png";
 
 const Chatpage = () => {
+  const size = 10;
   const nav = useNavigate();
   const [character, setCharacter] = useState({});
   const [messages, setMessages] = useState([]); // 메세지 기록
-  const [userInput, setUserInput] = useState(""); // 유저가 보낼 메세지
+  const [userInput, setUserInput] = useState({
+    content: "",
+    createdAt: "",
+  }); // 유저가 보낼 메세지
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(0);
-
-  const elementRef = useRef(null);
+  const [refPageNum, setRefPageNum] = useState(true);
+  const containerRef = useRef(null);
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -27,7 +31,9 @@ const Chatpage = () => {
 
   // 챗봇 메세지 페이지 단위로 가져오기
   const getChatbotMessage = async () => {
-    const response = await api.get("/chatbot/list?page=" + pageNum + "&size=2");
+    const response = await api.get(
+      "/chatbot/list?page=" + pageNum + "&size=" + size
+    );
     const chattingList = response.data.data.chattingList;
     const sortedChatting = chattingList.reverse();
     return sortedChatting;
@@ -42,11 +48,11 @@ const Chatpage = () => {
   // 메시지 입력하기
   const typeChattingMessage = async () => {
     // 공백이면 동작하면 안 됨
-    if (userInput.trim() !== "") {
+    if (userInput.content !== undefined) {
       const response = await api.post(
         "/chatbot/insert",
         {
-          message: userInput,
+          message: userInput.content,
         },
         {
           headers: {
@@ -55,59 +61,44 @@ const Chatpage = () => {
         }
       );
 
-      setMessages([...messages, ...response.data.data.responseChatting]);
-      setUserInput("");
+      await referPage();
+      viewPastRecords();
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        ...response.data.data.responseChatting,
+      ]);
+      setUserInput({ content: "", createdAt: "" }); // userInput 초기화
     }
   };
 
-  const onIntersection = (entries) => {
-    const firstEntry = entries[0];
-
-    // 첫 번째 entry가 화면에 나타나고 더 많은 데이터를 불러올 수 있는 상태(hasMore)인 경우 fetchMoreItems 함수를 호출.
-    if (firstEntry.isIntersecting && hasMore) {
-      fetchMoreItems();
-    }
+  const referPage = async () => {
+    setRefPageNum(false);
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(onIntersection);
-
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
-
-    return () => {
-      if (elementRef.current) {
-        observer.unobserve(elementRef.current);
-      }
-    };
-  }, [hasMore]);
 
   const fetchMoreItems = async () => {
     const response = await getChatbotMessage();
-    console.log(response);
 
     // 불러올게 없으면 false
-    if (response.length === 0) {
+    if (response.length < size) {
       setHasMore(false);
     } else {
       setMessages([...response, ...messages]);
-
-      // 페이지 번호를 업데이트하여 다음 요청에 올바른 skip 값을 사용합니다.
-      setPageNum((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handleObserver = (entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && hasMore) {
-      setPageNum((prevPage) => prevPage + 1);
     }
   };
 
   useEffect(() => {
-    fetchMoreItems();
+    console.log(pageNum);
+    if (refPageNum) {
+      fetchMoreItems();
+    } else {
+      setRefPageNum(true);
+    }
   }, [pageNum]);
+
+  const viewPastRecords = () => {
+    if (!hasMore) return;
+    setPageNum((prevPage) => prevPage + 1);
+  };
 
   useEffect(() => {
     const firstRendering = async () => {
@@ -117,25 +108,20 @@ const Chatpage = () => {
     };
 
     firstRendering();
-
-    const observer = new IntersectionObserver(handleObserver, {
-      threshold: 0, //  Intersection Observer의 옵션, 0일 때는 교차점이 한 번만 발생해도 실행, 1은 모든 영역이 교차해야 콜백 함수가 실행.
-    });
-    // 최상단 요소를 관찰 대상으로 지정함
-    const observerTarget = document.getElementById("observer");
-    // 관찰 시작
-    if (observerTarget) {
-      observer.observe(observerTarget);
-    }
   }, []);
 
   const handleInputChange = (event) => {
-    setUserInput(event.target.value);
+    setUserInput({
+      ...userInput,
+      content: event.target.value,
+      createdAt: new Date().toISOString(),
+    });
   };
 
   const onClickBack = () => {
     nav("/member/home");
   };
+
   return (
     <div className="Chat">
       {/* 헤더 */}
@@ -145,12 +131,20 @@ const Chatpage = () => {
       </div>
 
       <div>
-        {character.name}는 기억력이 안 좋아서 채팅 내용을 기억하지 못함;;
+        {character.name}는 기억력이 안 좋아서 채팅 내용을 기억하지 못함;; 로딩
+        하는 화면 만들어서 입력시 적용하면 좋을듯
       </div>
 
       {/* 채팅 화면 */}
-      <div className="ChatScreen text-black">
-        <div id="observer" style={{ height: "10px" }}></div>
+      <button onClick={viewPastRecords}>이전 채팅 기록 보기</button>
+      <div className="ChatScreen text-black" ref={containerRef}>
+        <div
+          id="observer"
+          className="sticky-header"
+          style={{ height: "10px", textAlign: "center" }}
+        >
+          {/* 이전 채팅 기록 보기 */}
+        </div>
         {messages &&
           messages.map((message, index) => {
             return (
@@ -164,8 +158,16 @@ const Chatpage = () => {
 
       {/* 채팅 입력창 */}
       <div className="Chatbox">
-        <input type="text" value={userInput} onChange={handleInputChange} />
-        <img onClick={typeChattingMessage} src={chat_send} />
+        <input
+          type="text"
+          value={userInput.content}
+          onChange={handleInputChange}
+        />
+        <img
+          onClick={typeChattingMessage}
+          src={chat_send}
+          style={{ cursor: "pointer" }}
+        />
       </div>
     </div>
   );
