@@ -1,64 +1,83 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-
-import CounselorListCard from '../../../components/app/Counselor/CounselorListCard';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import useCounselorStore from '../../../store/app/useCounselorStore';
 import CLCard from '../../../components/app/Counselor/CLCard';
-
-import Button2 from '../../../components/app/Button2'
-// import ProfileCard from "../../../components/app/CounselorProfileCard";
-import Calendar from '../../../components/app/Calendar'
-import TimeSlots from '../../../components/app/TimeSlots'
-import NoteInput from '../../../components/app/NoteInput'
-import Footer from '../../../components/app/Footer'
-import BorderImg from '../../../assets/images/구분선.png'
-import back from '../../../assets/images/back.png'
+import Button2 from '../../../components/app/Button2';
+import Calendar from '../../../components/app/Calendar';
+import TimeSlots from '../../../components/app/TimeSlots';
+import BorderImg from '../../../assets/images/구분선.png';
+import back from '../../../assets/images/back.png';
 
 const Reservation = () => {
-    const nav = useNavigate()
+  const { counselorId } = useParams();
+  const nav = useNavigate();
+  const { selectedCounselor, fetchCounselorSchedule, makeReservation, counselorSchedule } = useCounselorStore();
 
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedTime, setSelectedTime] = useState(null);
-    const [note, setNote] = useState('');
-  
-    const handleReservation = () => {
-      if (selectedDate && selectedTime) {
-        alert(`예약이 확정되었습니다.\n날짜: ${selectedDate}\n시간: ${selectedTime}\n메모: ${note}`);
-      } else {
-        alert('날짜와 시간을 선택해주세요.');
-      }
-    };
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [note, setNote] = useState('');
 
-    const onClickBack = () => {
-      nav('/member/counseling/main')
-    }
-  
-    return (
+  useEffect(() => {
+    fetchCounselorSchedule(counselorId);
+  }, [fetchCounselorSchedule, counselorId]);
+
+  const handleReservation = async () => {
+    if (selectedDate && selectedTime) {
+      const reservationDate = new Date(selectedDate);
+      reservationDate.setHours(selectedTime.split(':')[0]);
+      reservationDate.setMinutes(selectedTime.split(':')[1]);
       
-      <div className="flex flex-col h-screen overflow-hidden">
-          <div className='scroll'>
-          <div className="flex-grow">
-            <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-4" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
-              {/* <ProfileCard /> */}
-              <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} />
-              <CLCard name={'김싸피'} gender={'남'} field={'진로 및 취업 상담'} intro={'반갑습니다^^'}  reservId={1} />
-              <br />
-              <h1 className="text-2xl font-bold mb-4">예약일지</h1>
-              <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-              <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
-            </div>
-            <img src={BorderImg} alt="" className="w-full" />
-            <div className="p-4">
-              <textarea onChange={(e) => setNote(e.target.value)} style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px 10px', resize: 'none'}} placeholder='힘든 점이나 고민점을 적어보세요...'></textarea>
-              {/* <NoteInput note={note} setNote={setNote} /> */}
-              <br />
-              <br />
-              <Button2 text="예약 확정하기" onClick={handleReservation} />
-            </div>
+      const result = await makeReservation(counselorId, reservationDate, note);
+      if (result.success) {
+        alert('예약이 확정되었습니다.');
+        nav('/member/counseling/main');
+      } else {
+        alert('예약 실패: ' + result.message);
+      }
+    } else {
+      alert('날짜와 시간을 선택해주세요.');
+    }
+  };
+
+  const onClickBack = () => {
+    nav('/member/counseling/main');
+  };
+
+  return (
+    <div className="flex flex-col h-screen overflow-hidden">
+      <div className='scroll'>
+        <div className="flex-grow">
+          <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-4" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
+            <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} alt="Back" />
+            {selectedCounselor && (
+              <CLCard
+                name={selectedCounselor.name}
+                gender={selectedCounselor.gender}
+                field={selectedCounselor.field}
+                intro={selectedCounselor.intro}
+                reservId={counselorId}
+              />
+            )}
+            <br />
+            <h1 className="text-2xl font-bold mb-4">예약일지</h1>
+            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+            <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} availableTimes={counselorSchedule} />
           </div>
-          {/* <Footer /> */}
+          <img src={BorderImg} alt="" className="w-full" />
+          <div className="p-4">
+            <textarea
+              onChange={(e) => setNote(e.target.value)}
+              style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px 10px', resize: 'none'}}
+              placeholder='힘든 점이나 고민점을 적어보세요...'
+            />
+            <br />
+            <br />
+            <Button2 text="예약 확정하기" onClick={handleReservation} />
           </div>
         </div>
-    );
-  };
-  
-  export default Reservation;
+      </div>
+    </div>
+  );
+};
+
+export default Reservation;
