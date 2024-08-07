@@ -4,13 +4,13 @@ import './CommentList.css'; // CSS 파일 import
 import useCommentStore from '../../../store/app/useCommentStore';
 
 const CommentList = ({ articleId }) => {
-  const { comments, fetchComments } = useCommentStore();
+  const { comments, getComments } = useCommentStore();
 
   useEffect(() => {
     if (articleId) {
-      fetchComments(articleId);
+      getComments(articleId);
     }
-  }, [fetchComments, articleId]);
+  }, [getComments, articleId]);
 
   return (
     <div id="CommentScroll">
