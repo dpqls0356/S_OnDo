@@ -12,8 +12,6 @@ import lombok.Setter;
 public class CounselorMypageRequestDto {
 
 	private String password; //비밀번호 바꾸기 추후 기능 구현
-	
 	private String selfIntroduction;
-	private String profileUrl;
 
 }

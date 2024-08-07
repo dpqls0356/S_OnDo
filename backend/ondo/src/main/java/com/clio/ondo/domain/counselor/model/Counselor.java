@@ -14,7 +14,6 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @ToString
 public class Counselor {
@@ -56,6 +55,24 @@ public class Counselor {
 
 	@OneToMany(mappedBy="counselor")
 	private List<Career> career=new ArrayList<>();
+
+	public void updateSelfIntroduction(String selfIntroduction) {
+		this.selfIntroduction = selfIntroduction;
+	}
+
+	public void updatePassword(String newPassword) {
+		this.password = newPassword;
+	}
+
+	public void updateProfileUrl(String profileUrl) {
+		this.profileUrl = profileUrl;
+	}
+
+	public void updateSchedule(Schedule schedule){
+		this.schedule=schedule;
+	}
+
+
 
 	@Builder
 	public Counselor(String counselorId, String password, String name, String field, String selfIntroduction, String profileUrl, Gender gender, Role role) {

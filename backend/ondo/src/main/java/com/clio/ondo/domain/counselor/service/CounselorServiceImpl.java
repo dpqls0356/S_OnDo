@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.counselor.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.clio.ondo.domain.career.service.CareerService;
 import com.clio.ondo.domain.counselor.model.Counselor;
@@ -22,6 +24,7 @@ import com.clio.ondo.domain.counselor.model.dto.CounselorLoginRequestDto;
 import com.clio.ondo.domain.counselor.model.dto.CounselorMyPageResponseDto;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
+import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.schedule.model.Schedule;
 import com.clio.ondo.domain.schedule.repository.ScheduleRepository;
@@ -46,6 +49,7 @@ public class CounselorServiceImpl implements CounselorService {
     private final CounselorRepository counselorRepository;
     private final ScheduleRepository scheduleRepository;
     private final CareerService careerService;
+    private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory queryFactory;
     private final RedisTemplate<String, String> redisTemplate;
@@ -72,7 +76,7 @@ public class CounselorServiceImpl implements CounselorService {
         }
         if (counselor.getSchedule() == null) {
             Schedule schedule = new Schedule(counselor);
-            counselor.setSchedule(schedule);
+            counselor.updateSchedule(schedule);
             schedule.setCounselor(counselor);
             scheduleRepository.save(schedule);
         }
@@ -106,14 +110,17 @@ public class CounselorServiceImpl implements CounselorService {
     //마이페이지 수정하기
     @Transactional
     @Override
-    public void updateMypage(Long counselorId,String password,String selfIntroduction, String profileUrl){
+    public void updateMypage(Long counselorId,String password,String selfIntroduction, MultipartFile profileImage) throws IOException {
         Optional<Counselor> counselor=counselorRepository.findById(counselorId);
 
         if(counselor.isPresent()){
             Counselor changeCounselor=counselor.get();
-            changeCounselor.setPassword(password);
-            changeCounselor.setSelfIntroduction(selfIntroduction);
-            changeCounselor.setProfileUrl(profileUrl);
+            changeCounselor.updatePassword(password);
+            changeCounselor.updateSelfIntroduction(selfIntroduction);
+            
+            imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
+            String profileUrl=imageService.upload(profileImage,"CounselorProfile"); //프로필 이미지 넣기
+            changeCounselor.updateProfileUrl(profileUrl);
 
             counselorRepository.save(changeCounselor);
         }else{
