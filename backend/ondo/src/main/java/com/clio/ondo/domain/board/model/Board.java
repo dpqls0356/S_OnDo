@@ -2,6 +2,8 @@ package com.clio.ondo.domain.board.model;
 
 import jakarta.persistence.Id;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
@@ -17,6 +19,8 @@ public class Board {
     private Date created_at;    //작성일
     private int views;  //조회수
     private String member_id;   //작성자
+    private List<String> imageUrl; //이미지 url 리스트
+
     private String member_name;
     // 제목을 바꾸는 메서드
     public void changeTitle(String newTitle) {
@@ -41,5 +45,10 @@ public class Board {
     public void settingViews(){
         this.views = 0;
     }
+    //이미지 url 값 넣는 메서드
+    public void settingImageUrl(List<String> imageUrl){
+        this.imageUrl=imageUrl;
+    }
+
 
 }

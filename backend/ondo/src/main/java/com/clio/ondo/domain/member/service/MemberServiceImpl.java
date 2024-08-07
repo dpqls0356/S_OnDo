@@ -1,10 +1,14 @@
 package com.clio.ondo.domain.member.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.clio.ondo.domain.image.service.ImageService;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.clio.ondo.domain.character.model.Character;
 import com.clio.ondo.domain.character.repository.CharacterRepository;
@@ -44,24 +49,29 @@ public class MemberServiceImpl implements MemberService {
 
 	private final MemberRepository memberRepository;
 	private final CharacterRepository characterRepository;
+	private final ImageService imageService;
 	private final RedisTemplate<String, String> redisTemplate;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final DaoAuthenticationProvider memberAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-	public void join(JoinRequestDto joinRequestDto) {
-		Member member = joinRequestDto.toEntity();
-		log.error(String.valueOf(member));
-		log.error("@@@@@@@2");
+	@Override
+	@Transactional
+	public void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
+
+		//s3이미지 url 생성 및 저장
+		String profileUrl=imageService.upload(profileImage,"MemberProfile");
+		Member member = joinRequestDto.toEntity(profileUrl);
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
 		}
 		Character character = member.getCharacter();
+
 		characterRepository.save(character);
 		memberRepository.save(member);
 	}
+
 
 	@Override
 	public Member findOne(Long memberId) {
@@ -118,6 +128,7 @@ public class MemberServiceImpl implements MemberService {
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
 		if (passwordEncoder.matches(deleteRequestDto.getPassword(), findMember.getPassword())) {
 			logout(accessToken);
+			imageService.delete(findMember.getProfileUrl(),"MemberProfile");
 			memberRepository.delete(findMember);
 		} else {
 			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
@@ -126,7 +137,8 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public void updateMember(UpdateRequestDto updateRequestDto, String accessToken) {
+	public void updateMember(UpdateRequestDto updateRequestDto, String accessToken, MultipartFile profileImage) throws
+		IOException {
 		Claims claims = jwtTokenProvider.decodeJwt(accessToken);
 		String user = claims.getSubject();
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
@@ -140,10 +152,14 @@ public class MemberServiceImpl implements MemberService {
 			findMember.updateNickName(updateRequestDto.getNickname());
 			isUpdated = true;
 		}
-		if (StringUtils.hasText(updateRequestDto.getProfileUrl())) {
-			findMember.updateProfileUrl(updateRequestDto.getProfileUrl());
-			isUpdated = true;
-		}
+
+
+		//무조건 update 되어야함.
+		imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
+		String profileUrl=imageService.upload(profileImage,"MemberProfile");
+		findMember.updateProfileUrl(profileUrl);
+		isUpdated=true;
+
 		if (isUpdated) {
 			memberRepository.save(findMember);
 		}
