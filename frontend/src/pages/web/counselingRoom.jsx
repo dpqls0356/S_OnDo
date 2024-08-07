@@ -16,6 +16,12 @@ const View = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
+  @media (max-width: 360px) {
+    & {
+      width: 360px; /* 화면 너비가 360px 이하일 때 width 값 */
+      height: 100vh;
+    }
+  }
 `;
 const WebCamView = styled.div`
   flex: 1;
@@ -30,6 +36,7 @@ const VideoView = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
   #main-video {
     padding: 10px;
     border-radius: 50px;
@@ -37,6 +44,16 @@ const VideoView = styled.div`
   }
   video {
     border-radius: 50px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 0px 10px;
+    & {
+      width: 360px; /* 화면 너비가 360px 이하일 때 width 값 */
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
   }
 `;
 const Nav = styled.div`
@@ -253,6 +270,11 @@ const CounselingRoom = () => {
         <View>
           <WebCamView>
             <VideoView>
+              {publisher !== undefined ? (
+                <div id="main-video" className="col-md-6">
+                  <UserVideoComponent streamManager={publisher} />
+                </div>
+              ) : null}
               {publisher !== undefined ? (
                 <div id="main-video" className="col-md-6">
                   <UserVideoComponent streamManager={publisher} />
