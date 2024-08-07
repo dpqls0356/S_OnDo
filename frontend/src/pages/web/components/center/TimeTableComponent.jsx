@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import './TimeTableComponent.css';
@@ -35,30 +35,37 @@ const api = axios.create({
 
 const TimeTableComponent = () => {
   const [selectedCells, setSelectedCells] = useState([]);
+  const [schedule, setSchedule] = useState([
+    ['0', '0', '0', '0', '0', '0', '0', '0'], 
+    ['0', '0', '0', '0', '0', '0', '0', '0'], 
+    ['0', '0', '0', '0', '0', '0', '0', '0'], 
+    ['0', '0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0', '0'], 
+    ['0', '0', '0', '0', '0', '0', '0', '0'], 
+    ['0', '0', '0', '0', '0', '0', '0', '0'], 
+    ['0', '0', '0', '0', '0', '0', '0', '0'], 
+    ['0', '0', '0', '0', '0', '0', '0', '0']
+  ]);
 
   const handleCellClick = (rowIndex, colIndex) => {
     if (colIndex === 0) return; // 1열은 선택 불가
     const cellKey = `${rowIndex}-${colIndex}`;
-    if (selectedCells.includes(cellKey)) {
-      setSelectedCells(selectedCells.filter(key => key !== cellKey));
-    } else {
-      setSelectedCells([...selectedCells, cellKey]);
-    }
+    const newSelectedCells = selectedCells.includes(cellKey)
+      ? selectedCells.filter(key => key !== cellKey)
+      : [...selectedCells, cellKey];
+
+    const newSchedule = schedule.map((row, rIndex) =>
+      row.map((cell, cIndex) =>
+        newSelectedCells.includes(`${rIndex}-${cIndex}`) ? '1' : '0'
+      )
+    );
+
+    setSelectedCells(newSelectedCells);
+    setSchedule(newSchedule);
   };
 
   const isSelected = (rowIndex, colIndex) => {
-    // if (selectedCells.includes(`${rowIndex}-${colIndex}`)) {
-    //   schedule[rowIndex][colIndex] = 1
-    // }
-    // return selectedCells.includes(`${rowIndex}-${colIndex}`);
-    const selectcheck = selectedCells.includes(`${rowIndex}-${colIndex}`)
-    if (selectcheck) {
-      schedule[rowIndex][colIndex] = '1'
-    } else {
-      schedule[rowIndex][colIndex] = '0'
-    }
-    // console.log(schedule)
-    return selectcheck
+    return selectedCells.includes(`${rowIndex}-${colIndex}`);
   };
 
   const renderCell = (content, rowIndex, colIndex) => (
@@ -108,23 +115,37 @@ const TimeTableComponent = () => {
       6:00', '', '', '', '', '', '', ''],
   ];
 
-  const schedule = [
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0'], 
-    ['0', '0', '0', '0', '0', '0', '0', '0']
-  ]
-
-  // const [ saveSchedule, setSaveSchedule ] = useState({})
-
   const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  // const [SaveSchedule, handleSaveSchedule] = useState({})
+  
+  useEffect((e) => {
+    ReadSchedule()
+    console.log('뭐가 있지', e)
+  })
+  // 요일별 일정을 조회
+  const ReadSchedule = async () => {
+    try{
+      const response = await axios.get(`${baseUrl}/counselor/schedule`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      handleSaveSchedule(response.data.data.schedule)
+      console.log(SaveSchedule)
+      // setSchedule(새롭게 바뀔 행렬 집어넣기)
+      if (response.status === 200) {
+        console.log('요일별 일정 조회 성공');
+        console.log('서버 응답:', response.data);
+      }
+    } catch (err) {
+      console.error('에러 발생:', err)
+    }
+  } 
 
-  // 요일별 일정 저장
+  // 요일별 일정을 수정
   const SaveSchedule = async () => {
     const scheduleResult = {};
     daysOfWeek.forEach((day, colIndex) => {
@@ -132,8 +153,6 @@ const TimeTableComponent = () => {
       scheduleResult[day] = dayValues.join('');
     });
 
-    // delete scheduleResult['sunday'];
-    // delete scheduleResult['saturday'];
     try {
       const response = await axios.put(`${baseUrl}/counselor/schedule`,
         {
@@ -142,8 +161,6 @@ const TimeTableComponent = () => {
           wednesday: scheduleResult.wednesday,
           thursday: scheduleResult.thursday,
           friday: scheduleResult.friday,
-          // saturday: scheduleResult.saturday,
-          // sunday: scheduleResult.sunday
         }, {
           headers: {
             'Content-Type': 'application/json'
@@ -152,29 +169,23 @@ const TimeTableComponent = () => {
         }
       );
       if (response.status === 200) {
-        console.log('성공적으로 변경되었습니다.')
-        console.log('서버 응답:', response.data)
-        // setSaveSchedule(response.data)
+        console.log('성공적으로 변경되었습니다.');
+        console.log('서버 응답:', response.data);
       }
     } catch (error) {
-      console.error('에러 발생:', error)
-      console.log(scheduleResult)
+      console.error('에러 발생:', error);
+      console.log(scheduleResult);
     }
-  }
-
+  };
 
   return (
     <View>
       <Table>
         <table>
           <thead>
-            {/* tr: 테이블 행, th: 테이블 헤더_ tableContent의 0번째 요소(요일 배열)의 요소(요일)들을 순회하며 각 요소들을 th요소로 변환함 */}
-            {/* 이때 colIndex === 1이면, 즉 첫 번째 열(SUN)이면 빨간색으로 표시하고 나머지 열은 검은색으로 표시 */}
             <tr>{tableContent[0].map((content, colIndex) => <th key={colIndex} style={{ color: colIndex === 1 ? '#FF0000' : 'black' }}>{content}</th>)}</tr>
           </thead>
           <tbody>
-            {/* tableContent.slice(1): 첫 번째 행을 제외한 나머지 행을 가져옴 */}
-            {/* map을 통해 순회할 때 rowContent는 현재 배열(행). rowIndex는 현재 행의 인덱스 */}
             {tableContent.slice(1).map((rowContent, rowIndex) => renderRow(rowContent, rowIndex))}
           </tbody>
         </table>
