@@ -8,7 +8,7 @@ import './CounselorList.css';
 
 const CounselorList = () => {
   const nav = useNavigate();
-  const { reservations, fetchReservations } = useCounselorStore();
+  const { reservations, fetchReservations, cancelReservation, loading, error } = useCounselorStore();
 
   useEffect(() => {
     fetchReservations();
@@ -21,6 +21,18 @@ const CounselorList = () => {
   const onClickSort = () => {
     console.log('날짜순 정렬 기능 추가해야 함');
   };
+
+  const handleCancelReservation = async (reservationId) => {
+    const result = await cancelReservation(reservationId);
+    if (result.success) {
+      alert(result.message);
+    } else {
+      alert('예약 취소 실패: ' + result.message);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className='scroll'>
@@ -40,6 +52,7 @@ const CounselorList = () => {
               intro={reservation.counselorIntro}
               dday={reservation.dday}
               is_complete={reservation.is_complete}
+              onCancel={() => handleCancelReservation(reservation.id)}
             />
           ))}
         </div>
