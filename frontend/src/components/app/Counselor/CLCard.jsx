@@ -4,7 +4,7 @@ import profile from './../../../assets/images/ic_user.png'
 
 import { useNavigate, Link } from 'react-router-dom';
 
-const CLCard = ({name, gender, field, dday, intro, is_complete, reservId}) => {
+const CLCard = ({name, date, gender, field, dday, intro, is_complete, reservId}) => {
   // const is_complete = true
   // 상담 날짜 지났는지 체크할 용
 
@@ -16,7 +16,7 @@ const CLCard = ({name, gender, field, dday, intro, is_complete, reservId}) => {
     <div className="CLCard" style={is_complete ? {backgroundColor: 'rgb(238, 237, 237)'} : null}>
       {/* {is_complete && (<div id='CLCard-disable'></div>)} */}
 
-      {!reservId && (<p id='CL-Date'>2024.08.20</p>)}
+      {!reservId && (<p id='CL-Date'>{date}</p>)}
     
       <div className='CLCardIn'>
         <div>
