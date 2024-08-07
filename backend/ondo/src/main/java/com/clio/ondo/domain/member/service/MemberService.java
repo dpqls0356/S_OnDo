@@ -15,8 +15,9 @@ import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 public interface MemberService {
-	//void join(JoinRequestDto joinRequestDto) throws IOException;
+
 	void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException;
+
 	Member findOne(Long memberId);
 
 	TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException;
