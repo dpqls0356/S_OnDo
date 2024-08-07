@@ -1,19 +1,51 @@
 import { useState, useEffect } from 'react';
-// import CounselorTimeSlots from "./CounselorTimeSlots";
+import axios from "axios";
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, setSelectedTime }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [dayScheduleList, setDayScheduleList] = useState([]);
 
   useEffect(() => {
     setSelectedDate(currentDate.getDate());
   }, []);
 
-  const handleDateClick = (date) => {
+  const handleDateClick = async (date) => {
     setSelectedDate(date);
     setSelectedTime([]);
     const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
-    const formattedDate = fullDate.toISOString().split('T')[0];
-    setSelectedDate2(formattedDate);
+    // Local time to UTC
+    const formattedDate = new Date(Date.UTC(fullDate.getFullYear(), fullDate.getMonth(), fullDate.getDate()));
+    const inputdate = formattedDate.toISOString().split('T')[0].replace(/-/g, '');
+    console.log('url 확인용:', inputdate);
+    setSelectedDate2(formattedDate.toISOString().split('T')[0]); // Update setSelectedDate2 with UTC date
+    try {
+      const response = await axios.get(`${baseUrl}/counselor/schedule/${inputdate}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      // Convert received schedule dates from UTC to local time
+      const scheduleInLocalTime = response.data.data.schedule.map(time => {
+        const localTime = new Date(time);
+        const hours = String(localTime.getHours()).padStart(2, '0');
+        const minutes = String(localTime.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+      });
+      setDayScheduleList(scheduleInLocalTime);
+      console.log(dayScheduleList)
+      if (response.status === 200) {
+        console.log('상세 일정 조회 성공')
+        console.log('서버 응답:', response.data)
+      }
+
+    } catch (err) {
+      console.error("에러 발생:", err)
+    }
   };
 
   const handleMonthChange = (increment) => {
@@ -74,7 +106,6 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
           ))}
         </div>
       </div>
-      {/* <CounselorTimeSlots /> */}
     </>
   );
 };
