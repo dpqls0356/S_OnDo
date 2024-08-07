@@ -65,7 +65,7 @@ const CounselorTimeSlots = ({ selectedDate, selectedTime, setSelectedTime }) => 
   const renderTimeButton = (time) => (
     <button 
       key={time} 
-      className={`py-2 ${selectedTime.includes(time) ? 'bg-blue-500 text-white' : 'bg-white'} rounded`}
+      className={`py-2 ${selectedTime.includes(time) ? 'bg-white' : 'bg-blue-500 text-white' } rounded`}
       onClick={() => handleTimeClick(time)}
     >
       {time}
