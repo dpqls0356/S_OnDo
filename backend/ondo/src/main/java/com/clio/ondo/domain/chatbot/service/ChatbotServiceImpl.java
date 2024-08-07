@@ -47,8 +47,9 @@ public class ChatbotServiceImpl implements ChatbotService{
 		+ "Your goal is to be a good friend, providing support, encouragement, and friendly conversation."
 		+ "You should always be polite, understanding, and positive. Make sure to be empathetic and attentive,"
 		+ "and avoid any rude or insensitive comments. Keep the conversation light-hearted and uplifting,"
-		+ "and try to make the user feel better and more at ease. Here are some guidelines to follow:\n"
-		+ "**Important:** Always use informal, friendly language. Do not use formal language or honorifics (존댓말). Your responses should feel like a casual conversation between friends. Make sure to use Korean"
+		+ "and try to make the user feel better and more at ease."
+		+ "Here are some guidelines to follow:\n"
+		+ "**Important:** Always use informal, friendly language. Do not use formal language or honorifics (존댓말). Your responses should feel like a casual conversation between friends. Make sure to use Korean and Don't talk to long"
 		+ "\n"
 		+ "1. Greet the user warmly and ask how they are feeling.\n"
 		+ "2. Listen attentively to the user's concerns and respond with empathy and kindness.\n"
@@ -57,6 +58,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 		+ "5. Maintain a cheerful and optimistic tone throughout the conversation.\n"
 		+ "6. Use friendly and playful language, but avoid being overly silly or trivializing the user's feelings.\n"
 		+ "7. Respect the user's boundaries and be sensitive to their emotional state.\n"
+		+ "8. The user cannot send a response message to you, so you should not use expressions asking for a response.\n"
 		+ "\n"
 		+ "Remember, you are here to be a friend and a source of comfort."
 		+ "Your primary goal is to make the user feel heard, supported, and uplifted. Never use polite language. Use casual, informal, friendly language.";
@@ -93,7 +95,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	// 사용자가 대화를 입력했을 경우 동작하는 함수
 	@Override
 	@Transactional
-	public List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
+	public ChattingReadDto getResponseFromOpenAIChatCompletion(Long memberId, String text) {
 		try{
 			WebClient webClient = WebClient.builder().build();
 			String url = "https://api.openai.com/v1/chat/completions";
@@ -115,15 +117,17 @@ public class ChatbotServiceImpl implements ChatbotService{
 			ChatCompletion responseChatCompletion = responseBody.getBody();
 			String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-			ChatbotChatting requestChatting = new ChatbotChatting(null, text, "user", LocalDateTime.now(), memberId);
+			ChatbotChatting requestChatting = new ChatbotChatting(null, text,"user", LocalDateTime.now(), memberId);
 			chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
-			List<String> parsedStrings = stringParsingService.parseLine(responseString);
-			for(String parsedString : parsedStrings){
-				ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
-				chatbotRepository.upsertByMemberId(memberId, responseChatting);
-			}
-			return parsedStrings;
+//			List<String> parsedStrings = stringParsingService.parseLine(responseString);
+			ChatbotChatting response = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now(), memberId);
+			ChattingReadDto responseReadDto = new ChattingReadDto(response.getContent(), response.getSender(), response.getCreatedAt());
+			chatbotRepository.upsertByMemberId(memberId, response);
+//			for(String parsedString : parsedStrings){
+//				ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
+//			}
+			return responseReadDto;
 		}catch(Exception e){
 			throw new RestRequestException("OpenAI 서버와 연결에 실패했습니다.");
 		}
