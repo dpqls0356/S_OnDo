@@ -1,8 +1,10 @@
 package com.clio.ondo.global.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -13,6 +15,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.AllArgsConstructor;
 
 @Configuration
+@PropertySource("classpath:s3.properties")
+@EnableConfigurationProperties
 public class S3Config {
 	// 공개키 가져오기
 	@Value("${cloud.aws.credentials.accessKey}")
