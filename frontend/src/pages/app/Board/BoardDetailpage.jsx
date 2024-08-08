@@ -1,10 +1,10 @@
 import "./BoardDetailpage.css";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import authStore from '../../../store/app/authStore'
-import useBoardStore from "../../../store/app/useBoardStore";
-import useCommentStore from "../../../store/app/useCommentStore";
-import useAuthStore from '../../../store/app/authStore'
+import authStore from '../../../store/app/AuthStore'
+import useBoardStore from "../../../store/app/BoardStore";
+import useCommentStore from "../../../store/app/CommentStore";
+import useAuthStore from '../../../store/app/AuthStore'
 import CommentList from "../../../components/app/Comment/CommentList";
 import Button from "../../../components/app/Button";
 
