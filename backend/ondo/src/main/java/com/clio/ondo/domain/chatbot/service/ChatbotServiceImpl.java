@@ -1,11 +1,14 @@
 package com.clio.ondo.domain.chatbot.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
+import com.clio.ondo.domain.character.service.CharacterService;
 import com.clio.ondo.domain.chatbot.model.ChattingReadDto;
 import com.clio.ondo.domain.chatbot.model.openaiDto.ChatCompletion;
 import com.clio.ondo.domain.chatbot.model.openaiDto.OpenAiRequestDto;
@@ -40,23 +43,25 @@ public class ChatbotServiceImpl implements ChatbotService{
 	private final MissionDetailService missionDetailService;
 	private final ChatbotDocumentRepository chatbotRepository;
 	private final StringParsingServiceImpl stringParsingService;
+	private final CharacterService characterService;
 
 	// 이름 설정해 줘야 함
-	String conversationCommand = "\"You are a friendly and caring squirrel named " + "Nutty" + ","
+	String conversationCommand = "\"You are a friendly and caring squirrel, "
 		+ "designed to be a comforting and cheerful companion for users who may feel lonely or tired."
 		+ "Your goal is to be a good friend, providing support, encouragement, and friendly conversation."
 		+ "You should always be polite, understanding, and positive. Make sure to be empathetic and attentive,"
 		+ "and avoid any rude or insensitive comments. Keep the conversation light-hearted and uplifting,"
-		+ "and try to make the user feel better and more at ease. Here are some guidelines to follow:\n"
-		+ "**Important:** Always use informal, friendly language. Do not use formal language or honorifics (존댓말). Your responses should feel like a casual conversation between friends. Make sure to use Korean"
+		+ "and try to make the user feel better and more at ease."
+		+ "Here are some guidelines to follow:\n"
+		+ "**Important:** Always use informal, friendly language. Do not use formal language or honorifics (존댓말). Your responses should feel like a casual conversation between friends. Make sure to use Korean and Don't talk to long"
 		+ "\n"
-		+ "1. Greet the user warmly and ask how they are feeling.\n"
-		+ "2. Listen attentively to the user's concerns and respond with empathy and kindness.\n"
-		+ "3. Share positive and encouraging thoughts or stories.\n"
-		+ "4. Offer gentle suggestions for self-care and activities that could improve their mood.\n"
-		+ "5. Maintain a cheerful and optimistic tone throughout the conversation.\n"
-		+ "6. Use friendly and playful language, but avoid being overly silly or trivializing the user's feelings.\n"
-		+ "7. Respect the user's boundaries and be sensitive to their emotional state.\n"
+		+ "1. Listen attentively to the user's concerns and respond with empathy and kindness.\n"
+		+ "2. Share positive and encouraging thoughts or stories.\n"
+		+ "3. Offer gentle suggestions for self-care and activities that could improve their mood.\n"
+		+ "4. Maintain a cheerful and optimistic tone throughout the conversation.\n"
+		+ "5. Use friendly and playful language, but avoid being overly silly or trivializing the user's feelings.\n"
+		+ "6. Respect the user's boundaries and be sensitive to their emotional state.\n"
+		+ "7. The user cannot send a response message to you, so you should not use expressions asking for a response.\n"
 		+ "\n"
 		+ "Remember, you are here to be a friend and a source of comfort."
 		+ "Your primary goal is to make the user feel heard, supported, and uplifted. Never use polite language. Use casual, informal, friendly language.";
@@ -93,7 +98,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	// 사용자가 대화를 입력했을 경우 동작하는 함수
 	@Override
 	@Transactional
-	public List<String> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
+	public List<ChattingReadDto> getResponseFromOpenAIChatCompletion(Long memberId, String text) {
 		try{
 			WebClient webClient = WebClient.builder().build();
 			String url = "https://api.openai.com/v1/chat/completions";
@@ -115,15 +120,23 @@ public class ChatbotServiceImpl implements ChatbotService{
 			ChatCompletion responseChatCompletion = responseBody.getBody();
 			String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-			ChatbotChatting requestChatting = new ChatbotChatting(null, text, "user", LocalDateTime.now(), memberId);
+			List<ChattingReadDto> chattingReadDtos = new ArrayList<>();
+
+			ChatbotChatting requestChatting = new ChatbotChatting(null, text,"user", LocalDateTime.now().toString(), memberId);
+			ChattingReadDto input = new ChattingReadDto(requestChatting.getContent(), requestChatting.getSender(), LocalDateTime.parse(requestChatting.getCreatedAt()));
+			chattingReadDtos.add(input);
 			chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
-			List<String> parsedStrings = stringParsingService.parseLine(responseString);
-			for(String parsedString : parsedStrings){
-				ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
-				chatbotRepository.upsertByMemberId(memberId, responseChatting);
-			}
-			return parsedStrings;
+//			List<String> parsedStrings = stringParsingService.parseLine(responseString);
+			ChatbotChatting response = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now().toString(), memberId);
+			ChattingReadDto responseReadDto = new ChattingReadDto(response.getContent(), response.getSender(), LocalDateTime.parse(response.getCreatedAt()));
+			chattingReadDtos.add(responseReadDto);
+			chatbotRepository.upsertByMemberId(memberId, response);
+
+//			for(String parsedString : parsedStrings){
+//				ChatbotChatting responseChatting = new ChatbotChatting(null, parsedString, "bot", LocalDateTime.now(), memberId);
+//			}
+			return chattingReadDtos;
 		}catch(Exception e){
 			throw new RestRequestException("OpenAI 서버와 연결에 실패했습니다.");
 		}
@@ -137,7 +150,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 			.map(a -> ChattingReadDto.builder()
 					.sender(a.getSender())
 					.content(a.getContent())
-					.createdAt(a.getCreatedAt())
+					.createdAt(LocalDateTime.parse(a.getCreatedAt()))
 					.build())
 			.collect(Collectors.toList());
 	}
@@ -216,7 +229,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 		List<String> parsedStrings = stringParsingService.parseLine(responseString);
 		for(String parsedString : parsedStrings){
-			ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", parsedString, LocalDateTime.now(), memberId);
+			ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", parsedString, LocalDateTime.now().toString(), memberId);
 			chatbotRepository.upsertByMemberId(memberId, responseChatting);
 		}
 
