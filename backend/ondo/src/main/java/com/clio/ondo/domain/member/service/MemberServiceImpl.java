@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +32,6 @@ import com.clio.ondo.domain.member.model.dto.LoginRequestDto;
 import com.clio.ondo.domain.member.model.dto.UpdateRequestDto;
 import com.clio.ondo.domain.member.repository.MemberRepository;
 import com.clio.ondo.domain.reservation.model.Reservation;
-import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 import com.clio.ondo.global.exception.member.MemberAlreadyExistsException;
@@ -44,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@PropertySource("classpath:s3.properties")
 @Slf4j
 public class MemberServiceImpl implements MemberService {
 
@@ -55,13 +57,15 @@ public class MemberServiceImpl implements MemberService {
 	private final DaoAuthenticationProvider memberAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
 
+	@Value("${profile.url}")
+	String profileUrl; //기본 프로필 이미지
+
 	@Override
 	@Transactional
 	public void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
 
 		//s3이미지 url 생성 및 저장
-		//기본 프로필 이미지
-		String profileUrl="https://d1kbrt3q8264bl.cloudfront.net/MemberProfile/profile.png";
+
 		if(!profileImage.isEmpty()){
 			profileUrl=imageService.upload(profileImage,"MemberProfile");
 		}
@@ -161,7 +165,6 @@ public class MemberServiceImpl implements MemberService {
 		//무조건 update 되어야함.
 		imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
 
-		String profileUrl="https://d1kbrt3q8264bl.cloudfront.net/MemberProfile/profile.png";
 		if(!profileImage.isEmpty()){
 			profileUrl=imageService.upload(profileImage,"MemberProfile");
 		}
