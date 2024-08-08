@@ -121,8 +121,12 @@ public class CounselorServiceImpl implements CounselorService {
             Counselor changeCounselor=counselor.get();
             changeCounselor.updatePassword(password);
             changeCounselor.updateSelfIntroduction(selfIntroduction);
-            
-            imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
+
+            //기본 이미지가 아니라면
+            if(changeCounselor.getProfileUrl()!=profileUrl){
+                imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
+            }
+
 
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
