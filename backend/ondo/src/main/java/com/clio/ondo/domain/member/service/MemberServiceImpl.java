@@ -66,9 +66,12 @@ public class MemberServiceImpl implements MemberService {
 
 		//s3이미지 url 생성 및 저장
 
+		System.out.println(profileImage);
 		if(!profileImage.isEmpty()){
 			profileUrl=imageService.upload(profileImage,"MemberProfile");
 		}
+
+
 		Member member = joinRequestDto.toEntity(profileUrl);
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
@@ -163,14 +166,22 @@ public class MemberServiceImpl implements MemberService {
 
 
 		//무조건 update 되어야함.
-		imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
+		if(findMember.getProfileUrl()!=profileUrl){ //기본 이미지가 아니라면
+			imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
+		}
+
+
 
 		if(!profileImage.isEmpty()){
 			profileUrl=imageService.upload(profileImage,"MemberProfile");
 		}
 
+
 		findMember.updateProfileUrl(profileUrl);
 		isUpdated=true;
+
+
+
 
 		if (isUpdated) {
 			memberRepository.save(findMember);
