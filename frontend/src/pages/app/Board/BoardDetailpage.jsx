@@ -24,7 +24,7 @@ const BoardDetailPage = () => {
     resetCurrentViewArticle 
   } = useBoardStore();
   
-  const { addComment } = useCommentStore();
+  const { addComment, getComments } = useCommentStore();
   const { user } = authStore();
   // console.log('User object:', user);
 
@@ -58,6 +58,8 @@ const BoardDetailPage = () => {
       // console.log(success);
       if (success) {
         comment.current.value = "";
+        // 댓글 목록 불러오기
+        getComments(articleId)
       }
     };
 
