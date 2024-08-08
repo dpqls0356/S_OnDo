@@ -29,31 +29,20 @@ const useCommentStore = create((set) => ({
   addComment: async (comment) => {
     try {
       // const token = document.cookie.replace(/(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-      const response = await api.post('/board/comment', comment, 
-      //   { headers: {
-          
-      //     'Authorization': `Bearer ${token}`
-      //   }
-      // }
-      );
-      if (response.status === 201) {
-        set((state) => ({ comments: [...state.comments, response.data] }));
-        return true;
+      const response = await api.post('/board/comment', comment)
+        if (response.status === 201) {
+          // 댓글 추가 후 즉시 댓글 목록을 다시 가져오기
+          const articleId = comment.article_id;
+          const commentsResponse = await api.get(`/board/comment/${articleId}`);
+          set({ comments: commentsResponse.data });
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error('댓글 추가 실패:', error);
       }
-      return false  // 201 아니면ㅠ
-    } catch (error) {
-      console.error('댓글 추가 실패:', error);
-      if (error.response) {
-        console.error('서버 응답:', error.response.data);
-        console.error('상태 코드:', error.response.status);
-      } else if (error.request) {
-        console.error('응답을 받지 못했습니다');
-      } else {
-        console.error('에러 메시지:', error.message);
-      }
-    }
-    return false;
-  },
+      return false;
+    },
   getComments: async (articleId) => {
     try {
       const response = await api.get(`/board/comment/${articleId}`);

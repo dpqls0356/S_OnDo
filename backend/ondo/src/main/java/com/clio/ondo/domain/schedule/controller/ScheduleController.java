@@ -65,7 +65,6 @@ public class ScheduleController {
 					.body(new ResponseVO<>(true, "일정 조회 성공", retMap));
 		}
 		catch(Exception e){
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(new ResponseVO<>(false, "일정을 가져올 수 없습니다.", null));
 		}
