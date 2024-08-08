@@ -91,8 +91,6 @@ public class Member {
 		Gender gender, String profileUrl) {
 		this.email = email;
 		this.password = password;
-		this.name = name;
-		this.nickname = nickname;
 		this.joinDate = new Date();
 		this.role = role;
 		this.birthDate = birthDate;
