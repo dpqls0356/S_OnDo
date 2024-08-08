@@ -1,5 +1,3 @@
-import { FaceMesh } from '@mediapipe/face_mesh';
-import { Camera } from '@mediapipe/camera_utils';
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
@@ -14,6 +12,7 @@ import {
   faMicrophone,
 } from "@fortawesome/free-solid-svg-icons";
 import SideBar from "./components/counseling/sidebarComponent";
+import useAuthStore from "../../store/app/authStore";
 
 const View = styled.div`
   width: 100vw;
@@ -89,6 +88,11 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
 
 const CounselingRoom = () => {
+
+    const { role } = useAuthStore((state) => ({
+    role: state.role,
+    }));  
+
   const [filterEnabled, setFilterEnabled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -99,8 +103,6 @@ const CounselingRoom = () => {
   const [memberInfo, setMemberInfo] = useState({});
 
   const [preJoin, setPreJoin] = useState(true);
-
-  const [role, setRole] = useState("counselor");
 
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -211,7 +213,12 @@ const CounselingRoom = () => {
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
-    navigate("/counselor");
+    if(role==="USER"){
+      navigate("/counseling/list");
+    }
+    else{
+      navigate("/counselor");
+    }
     if (session) {
       session.disconnect();
     }
@@ -220,7 +227,7 @@ const CounselingRoom = () => {
   const getToken = async (sessionId) => {
     const response = await axios.post(
       `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
-      { role: role },
+      { role: role==="COUNSELOR"?"counselor":"user" },
       {
         headers: {
           "Content-Type": "application/json",
@@ -357,14 +364,17 @@ const CounselingRoom = () => {
                   </svg>
                 </div>
               </button>
-              <button
-                id="buttonLeaveSession"
-                onClick={() => {
-                  leaveSession();
-                }}
-              >
-                <div>상담종료</div>
-              </button>
+              {
+                role==="COUNSELOR"?              
+                  <button
+                  id="buttonLeaveSession"
+                  onClick={() => {
+                    leaveSession();
+                  }}
+                >
+                  <div>상담종료</div>
+                </button>:null
+              }
               <button onClick={toggleFilter}>
                 <div>필터</div>
               </button>

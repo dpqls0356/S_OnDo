@@ -6,6 +6,7 @@ import UserInfoComponent from './userInfoComponent';
 import Chat from './chat'; // userInfoComponent 대신 Chat을 가져와야 합니다.
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import useAuthStore from "../../../../store/app/authStore";
 
 const Tag = styled.div`
   position: absolute;
@@ -60,6 +61,12 @@ const Col = styled.div`
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const SideBar = ({memberInfo}) => {
+  
+      const { role } = useAuthStore((state) => ({
+    role: state.role,
+    }));  
+
+
   // const location = useLocation();
   const [isChat, setIsChat] = useState(true);
   const [hidden, setHidden] = useState(true);
@@ -92,16 +99,24 @@ const SideBar = ({memberInfo}) => {
             <Col onClick={() => toggleChat(true)} active={isChat}>
               채팅
             </Col>
-            <Col>|</Col>
-            <Col onClick={() => toggleChat(false)} active={!isChat}>
-              내담자 정보
-            </Col>
+            {role==="COUNSELOR"?
+            <div>
+                <Col>|</Col>
+                <Col onClick={() => toggleChat(false)} active={!isChat}>
+                내담자 정보</Col>
+            </div>
+                :null
+            }
           </div>
           <div>
             <FontAwesomeIcon style={{ width: "20px", height: "30px", cursor: "pointer" }} icon={faAnglesRight} onClick={hiddenSidebar} />
           </div>
         </Header>
-        {isChat ? <Chat /> : <UserInfoComponent memberInfo={memberInfo} />}
+          {role === "COUNSELOR" ? (
+            isChat ? <Chat /> : <UserInfoComponent memberInfo={memberInfo} />
+          ) : (
+            <Chat />
+          )}
       </View>
       <Tag hidden={hidden} onClick={showSideBar}>
         <FontAwesomeIcon style={{ width: "50px", height: "30px" }} icon={faChevronLeft} />
