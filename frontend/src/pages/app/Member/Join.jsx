@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/app/Button.jsx';
 import Input from '../../../components/app/Input';
-import useJoinStore from '../../../store/app/useJoinStore';
+import useJoinStore from '../../../store/app/JoinStore';
 import axios from 'axios';
 
 import camera from './../../../assets/images/camera.png'
