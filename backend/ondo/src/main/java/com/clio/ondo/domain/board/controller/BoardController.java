@@ -67,7 +67,7 @@ public class BoardController {
   글 작성하기
    */
   @PostMapping("/article")
-  public ResponseEntity<ResponseVO<Void>> createArticle(HttpServletRequest request,
+  public ResponseEntity<ResponseVO<?>> createArticle(HttpServletRequest request,
       @RequestPart("board") Board board,
       @RequestPart("image") List<MultipartFile> imageList) throws IOException {
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
@@ -76,12 +76,13 @@ public class BoardController {
     board.settingMemberId(memberId.toString());
     board.settingCreatedDate();
     board.settingViews();
+    Board newBoard;
     try{
-      boardService.saveArticle(board,imageList);
+      newBoard = boardService.saveArticle(board,imageList);
     }catch(ModerationException me){
       return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }
-    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("id", newBoard.get_id()));
   }
 
   /*
