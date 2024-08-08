@@ -52,3 +52,29 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+
+/* 캐러셀 원 누르면 이동하게 하고 싶어서 해보는 것
+.carousel_pagination {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+}
+
+.carousel_circle {
+  width: 10px;
+  height: 10px;
+  background-color: #aaa;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carousel_circle.active {
+  background-color: #333;
+} */

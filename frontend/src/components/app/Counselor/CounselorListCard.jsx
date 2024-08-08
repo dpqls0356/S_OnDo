@@ -4,10 +4,10 @@ import vector from './../../../assets/images/Vector.png';
 
 import { Link } from 'react-router-dom';
 
-const CounselorListCard = ({name, date, gender, field, intro, dday, reservId}) => {
+const CounselorListCard = ({name, gender, field, intro, dday, reservId}) => {
   return (
     <div className="CounselorListCard">
-      {dday &&(<p id='CS-Date'>{date}</p>)}
+      {dday &&(<p id='CS-Date'>2024.08.20</p>)}
       
       <div className='ConSelorCardIn'>
         <div>

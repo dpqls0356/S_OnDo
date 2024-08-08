@@ -84,7 +84,7 @@ function App() {
             path="counseling/apply/:counselorId"
             element={<CounselorReservation />}
           />
-          <Route path="counseling/:counselorId/detail" element={<CounselorDetail />} />
+          <Route path="counseling/:counselorId" element={<CounselorDetail />} />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>
         {/* )} */}
