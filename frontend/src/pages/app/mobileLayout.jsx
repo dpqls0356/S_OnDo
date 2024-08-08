@@ -1,18 +1,15 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { styled } from "styled-components";
-import { Link } from "react-router-dom";
 import Footer from "../../components/app/Footer";
 import useAuthStore from "../../store/app/authStore";
-import IncorrectAccessModal from "../../pages/web/components/counselorNotFoundPage";
+import IncorrectAccessModal from "../../pages/web/components/incorrectAccessModal";
 
 const View = styled.div`
   position: relative;
   background-color: #fff9e9;
   width: 100%;
   max-width: 420px;
-  // max-height: 1000px;
   margin: auto;
   height: 100vh;
   overflow-y: hidden;
@@ -24,11 +21,11 @@ const View = styled.div`
     font-weight: normal;
     font-style: normal;
   }
-      @font-face {
-     font-family: 'DungGeunMo';
-     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
-     font-weight: normal;
-     font-style: normal;
+  @font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
   }
   @font-face {
     font-family: '양진체';
@@ -37,30 +34,30 @@ const View = styled.div`
     font-style: normal;
   }
   @font-face {
-      font-family: 'NIXGONM-Vb';
-      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/NIXGONM-Vb.woff') format('woff');
-      font-weight: normal;
-      font-style: normal;
+    font-family: 'NIXGONM-Vb';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/NIXGONM-Vb.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
   }
   @font-face {
-    font-family: 'NIXGONFONTS B 2.0'
-    src: url('./../fonts/NIXGONFONTS B 2.0.ttf')
+    font-family: 'NIXGONFONTS B 2.0';
+    src: url('./../fonts/NIXGONFONTS B 2.0.ttf');
   }
   @font-face {
-    font-family: 'NIXGONFONTS L 2.0'
-    src: url('./../fonts/NIXGONFONTS L 2.0.ttf')
+    font-family: 'NIXGONFONTS L 2.0';
+    src: url('./../fonts/NIXGONFONTS L 2.0.ttf');
   }
   @font-face {
-    font-family: 'NIXGONFONTS M 2.0'
-    src: url('./../fonts/NIXGONFONTS M 2.0.ttf')
+    font-family: 'NIXGONFONTS M 2.0';
+    src: url('./../fonts/NIXGONFONTS M 2.0.ttf');
   }
   @font-face {
-    font-family: 'morris9'
-    src: url('./../fonts/모리스체-heroine762.ttf')
+    font-family: 'morris9';
+    src: url('./../fonts/모리스체-heroine762.ttf');
   }
   @font-face {
-    font-family: 'PF스타더스트'
-    src: url('./../fonts/PF스타더스트.ttf')
+    font-family: 'PF스타더스트';
+    src: url('./../fonts/PF스타더스트.ttf');
   }
 `;
 
@@ -68,38 +65,62 @@ export default function MobileLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user } = useAuthStore((state) => ({ user: state.user }));
-  const { role } = useAuthStore((state) => ({ user: state.role }));
+  const { role } = useAuthStore((state) => ({
+    role: state.role,
+  }));
 
   useEffect(() => {
-    const checkAuthentication = async () => {
-      // 현재 경로가 /member/로 시작하는지 확인하고 올바른 유저인지 판단
+    const checkAuthentication = () => {
+      // 유저가 아닌데 유저만 입장 가능한 URI에 접근하는 경우
       if (
-        location.pathname.startsWith("/member/") &&
+        !location.pathname.startsWith("/member/main") &&
         !location.pathname.startsWith("/member/login") &&
-        !location.pathname.startsWith("/member/join")
+        !location.pathname.startsWith("/member/join") &&
+        role !== "USER"
       ) {
-        console.log("hegrer,jnfskldfj");
         setIsModalOpen(true);
+      }
+      // 유저가 맞는데 로그인/조인 화면에 들어가는 경우
+      else if (
+        (location.pathname.startsWith("/member/main") || location.pathname.startsWith("/member/join") ||
+          location.pathname.startsWith("/member/login")) &&
+        role === "USER"
+      ) {
+        setIsModalOpen(true);
+      } else {
+        setIsModalOpen(false);
       }
     };
 
     checkAuthentication();
-  }, [navigate, location.pathname]);
+  }, [location.pathname, role]);
 
-  const mobileCloseModal = async () => {
-    console.log("mobileLayout");
+  useEffect(() => {
+    console.log("isModalOpen: " + isModalOpen);
+  }, [isModalOpen]);
+
+  const mobileCloseModal = () => {
     setIsModalOpen(false);
-    if (role != null && role !== "COUNSELOR") {
+    // 상담사가 들어온 경우
+    if (role === "COUNSELOR") {
       navigate("/counselor");
-    } else if (role === null || role !== "USER") {
-      navigate("/member/login");
+    }
+    // 유저인데 로그인으로 들어온 경우 
+    else if (
+      (location.pathname.startsWith("/member/main") ||location.pathname.startsWith("/member/join") ||
+        location.pathname.startsWith("/member/login")) &&
+      role === "USER"
+    ) {
+      navigate("/member/home");
+    }
+    // 유저가 아닌 경우 홈화면으로 이동
+    else {
+      navigate("/member/main");
     }
   };
 
-  // Footer를 제외할 경로 목록
   const noFooterPaths = [
-    "/member",
+    "/member/main",
     "/member/",
     "/member/join",
     "/member/login",
@@ -107,8 +128,8 @@ export default function MobileLayout() {
     "/member/chat",
   ];
 
-  // 현재 경로가 noFooterPaths에 포함되어 있는지 확인
   const shouldShowFooter = !noFooterPaths.includes(location.pathname);
+
   return (
     <View>
       <Outlet />

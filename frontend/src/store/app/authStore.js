@@ -22,10 +22,10 @@ export const useAuthStore = create(
             { email, password },
             { withCredentials: true }
           );
+          console.log(response);
           if (response.data.success) {
             set({
               role: "USER",
-              user: response.data.user,
               accessToken: response.data.data.token.accessToken,
               refreshToken: response.data.data.token.refreshToken,
             });
@@ -69,14 +69,14 @@ export const useAuthStore = create(
             withCredentials: true,
           });
           if (response.data.success) {
-            set({ isAuthenticated: true, user: response.data.data.user });
+            set({  user: response.data.data.user });
             return true;
           }
-          set({ isAuthenticated: false, user: null });
+          set({  user: null });
           return false;
         } catch (error) {
           console.error("Auth check failed:", error);
-          set({ isAuthenticated: false, user: null });
+          set({ user: null });
           return false;
         }
       },
@@ -87,8 +87,11 @@ export const useAuthStore = create(
             { id, password },
             { withCredentials: true }
           );
+          console.log(response.data);
           if (response.data.success) {
+            console.log("==================")
             set({
+              user:id,
               role: "COUNSELOR",
               accessToken: response.data.data.token.accessToken,
               refreshToken: response.data.data.token.refreshToken,
