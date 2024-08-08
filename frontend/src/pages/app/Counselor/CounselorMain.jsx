@@ -6,14 +6,11 @@ import CounselorListCard from '../../../components/app/Counselor/CounselorListCa
 import './CounselorMain.css';
 
 const CounselorMain = () => {
-  const { reservations, counselors, fetchReservations, loading, error } = useCounselorStore();
+  const { reservations, counselors, fetchReservations } = useCounselorStore();
 
   useEffect(() => {
     fetchReservations();
   }, [fetchReservations]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="scroll">

@@ -8,7 +8,7 @@ import './CounselorDetail.css';
 const CounselorDetail = () => {
   const nav = useNavigate();
   const { counselorId } = useParams();
-  const { selectedCounselor, setSelectedCounselor, getCounselorById, loading, error } = useCounselorStore();
+  const { selectedCounselor, setSelectedCounselor, getCounselorById } = useCounselorStore();
 
   useEffect(() => {
     const counselor = getCounselorById(parseInt(counselorId));
@@ -21,9 +21,7 @@ const CounselorDetail = () => {
     nav(`/member/counseling/apply/${counselorId}`);
   };
   
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!selectedCounselor) return <div>상담사 정보를 찾을 수 없습니다.</div>;
+  if (!selectedCounselor) return null;
 
   return(
     <div className='scroll'>
