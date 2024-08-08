@@ -68,16 +68,6 @@ services:
     networks:
       - backwebnet
 
-  openvidu:
-    build:
-      context: ./frontend/docker
-      dockerfile: Dockerfile
-    container_name: openvidu
-    ports:
-      - "4443:4443"
-    networks:
-      - backwebnet
-
 volumes:
   mysql-data:
   redis-data:

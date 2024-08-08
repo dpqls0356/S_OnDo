@@ -40,7 +40,7 @@ public class ChatbotController {
 		try{
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
 			Long id = jwtTokenProvider.getIdFromToken(token);
-			List<String> responseChatting = chatbotService.getResponseFromOpenAIChatCompletion(id, chatInput.getMessage());
+			List<ChattingReadDto> responseChatting = chatbotService.getResponseFromOpenAIChatCompletion(id, chatInput.getMessage());
 			Map<String, Object> result = new HashMap<>();
 			result.put("responseChatting", responseChatting);
 
@@ -51,6 +51,7 @@ public class ChatbotController {
 				.body(new ResponseVO<>(false, rre.getMessage(), null));
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(new ResponseVO<>(false, "채팅 입력 실패", null));
 		}
@@ -69,6 +70,7 @@ public class ChatbotController {
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseVO<>(true, "채팅 기록 조회 성공", result));
 		}catch(Exception e){
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(new ResponseVO<>(false, "채팅 기록 조회 실패", null));
 		}
