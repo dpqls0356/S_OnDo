@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost/ondo?serverTimezone=UTC
+    url: jdbc:mysql://localhost/ondo?serverTimezone=Asia/Seoul
     username: clio
     password: clio
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,7 +21,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -43,23 +43,15 @@ spring:
 
 logging:
   level:
+    org.hibernate.sql: debug
     org:
       springframework:
-        security:
-          DEBUG
-
+        web: debug
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+    # org.hibernate.type: trace
 openvidu:
   url: "http://localhost:4443/"
   secret: "ondo_project_openvidu"
-
-cloud:
-  aws:
-    region:
-      static: us-east-2  # 지역 코드 (한국 서울)
-    stack:
-      auto: false  # CloudFormation 자동 구성을 비활성화
-    s3:
-      bucket: ssafy-common-project-ondo
-    credentials:
-      accessKey: DUMMY_AWS_ACCESS_KEY
-      secretKey: DUMMY_AWS_SECRET_KEY
