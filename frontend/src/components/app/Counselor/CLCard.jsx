@@ -23,7 +23,7 @@ const CLCard = ({
   const enterCounselingRoom = () => {
     nav("/counselingroom", {
       state: {
-        sessionId: "b116e38c-5b00-495f-b538-5a2b6e4db7df",
+        sessionId: "e29031a3-f938-45ce-965e-694bacc33408",
       },
     });
   };
