@@ -41,7 +41,7 @@ const MyPage = () => {
   const onClickLogout = async () => {
     const success = await logout();
     if (success) {
-      nav("/member/login");
+      nav('/member/main');
     } else {
       alert("로그아웃 실패!");
     }
