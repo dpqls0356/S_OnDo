@@ -59,7 +59,7 @@ const Col = styled.div`
     `}
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const SideBar = ({memberId}) => {
+const SideBar = ({memberInfo}) => {
   // const location = useLocation();
   const [isChat, setIsChat] = useState(true);
   const [hidden, setHidden] = useState(true);
@@ -101,7 +101,7 @@ const SideBar = ({memberId}) => {
             <FontAwesomeIcon style={{ width: "20px", height: "30px", cursor: "pointer" }} icon={faAnglesRight} onClick={hiddenSidebar} />
           </div>
         </Header>
-        {isChat ? <Chat /> : <UserInfoComponent memberId={memberId} />}
+        {isChat ? <Chat /> : <UserInfoComponent memberInfo={memberInfo} />}
       </View>
       <Tag hidden={hidden} onClick={showSideBar}>
         <FontAwesomeIcon style={{ width: "50px", height: "30px" }} icon={faChevronLeft} />

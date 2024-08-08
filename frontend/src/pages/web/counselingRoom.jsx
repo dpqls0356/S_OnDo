@@ -179,7 +179,7 @@ const CounselingRoom = () => {
   const getMemberInfo = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/counselor/member?memberId=${memberId}`,
+        `${baseUrl}/counselor/member?memberId=${memberId}`,
         {
           withCredentials: true,
           headers: {
@@ -187,7 +187,7 @@ const CounselingRoom = () => {
           },
         }
       );
-      console.log(response);
+      setMemberInfo(response.data.data.member);
     } catch (e) {
       console.log(e);
     }
