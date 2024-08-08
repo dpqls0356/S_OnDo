@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../../store/app/authStore';
+import useAuthStore from '../../../store/app/AuthStore';
 import axios from 'axios';
 import Button from "../../../components/app/Button";
 import Footer from '../../../components/app/Footer'

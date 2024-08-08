@@ -3,7 +3,7 @@ import { useState } from "react";
 import Button from "../../../components/app/Button";
 import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
-import useAuthStore from "../../../store/app/authStore";
+import useAuthStore from "../../../store/app/AuthStore";
 
 
 import { useNavigate } from "react-router-dom";

@@ -11,7 +11,7 @@ import back_img from './../../../assets/images/home_back2.jpg'
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect } from "react";
 import axios from "axios";
-import useAuthStore from '../../../store/app/authStore';
+import useAuthStore from '../../../store/app/AuthStore';
 
 const Homepage = () => {
   const { isAuthenticated } = useAuthStore()
