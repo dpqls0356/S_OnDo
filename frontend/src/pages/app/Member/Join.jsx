@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
@@ -15,12 +15,27 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const JoinForm = () => {
   const nav = useNavigate();
   const { error, success } = useJoinStore();
-  const [selectedFile, setSelectedFile] = useState(null);
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const handleFileChange = (event) => {
-    console.log(event.target.files[0]);
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file); // 파일의 미리보기 URL 생성
+      setPreviewUrl(url); // 미리보기 URL을 상태에 저장
+    }
   };
+
+  // 컴포넌트 언마운트 시 URL 객체 해제
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl); // URL 객체 해제
+      }
+    };
+  }, [previewUrl]);
+
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -51,6 +66,7 @@ const JoinForm = () => {
       return;
     }
 
+    // 이미지 포함한 form-Dat 보내기
     const userData = new Blob(
       [
         JSON.stringify({
@@ -112,7 +128,9 @@ const JoinForm = () => {
         <div className="JoinProfile">
           {/* <img src={profile} /> */}
           {/* 이 부분 수정 부탁드립니당 */}
-          <input type="file" onChange={handleFileChange} />
+          {/* 기본 이미지는 "https://d1kbrt3q8264bl.cloudfront.net/profile.png"로 부탁드립니다 */}
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+          {previewUrl && <img src={previewUrl} alt="미리보기" />}
         </div>
         <form id="JoinForm" onSubmit={join} className="flex flex-col space-y-4">
           <Input
