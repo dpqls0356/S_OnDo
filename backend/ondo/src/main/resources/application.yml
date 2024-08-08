@@ -21,7 +21,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -40,6 +40,8 @@ spring:
   batch:
     job:
       enabled: false
+  config:
+    import: "classpath:s3.properties"
 
 logging:
   level:
@@ -48,9 +50,6 @@ logging:
         security:
           DEBUG
 
-openvidu:
-  url: "http://localhost:4443/"
-  secret: "ondo_project_openvidu"
 
 cloud:
   aws:
@@ -59,7 +58,8 @@ cloud:
     stack:
       auto: false  # CloudFormation 자동 구성을 비활성화
     s3:
-      bucket: ssafy-common-project-ondo
+      bucket: ${BUCKET_NAME}
     credentials:
-      accessKey: DUMMY_AWS_ACCESS_KEY
-      secretKey: DUMMY_AWS_SECRET_KEY
+      accessKey: ${ACCESS_KEY}
+      secretKey: ${SECRET_KEY}
+
