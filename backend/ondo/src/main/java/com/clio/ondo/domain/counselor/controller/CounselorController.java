@@ -3,6 +3,7 @@ package com.clio.ondo.domain.counselor.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -49,13 +50,16 @@ public class CounselorController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Value("${profile.url}")
+    String profileUrl;
+
     @PostMapping("/join")
     public ResponseEntity<ResponseVO<Void>> join(
         @RequestPart("joinRequestDto") CounselorJoinRequestDto joinRequestDto,
         @RequestPart("profileImage") MultipartFile profileImage) {
         try {
             joinRequestDto.setPassword(passwordEncoder.encode(joinRequestDto.getPassword()));
-            String profileUrl="https://d1kbrt3q8264bl.cloudfront.net/MemberProfile/profile.png";
+
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
             }
