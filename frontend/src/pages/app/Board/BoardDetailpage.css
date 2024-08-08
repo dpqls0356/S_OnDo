@@ -70,6 +70,7 @@
 
 #comment-line {
   border-left: 6px dashed #6abfb4;
+  height: auto;
   /* height: 500px; */
   /* left: 50%; */
   /* margin-left: -3px; */

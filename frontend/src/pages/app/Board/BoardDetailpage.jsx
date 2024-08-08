@@ -1,6 +1,7 @@
 import "./BoardDetailpage.css";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import authStore from "../../../store/app/authStore";
 import useBoardStore from "../../../store/app/useBoardStore";
 import useCommentStore from "../../../store/app/useCommentStore";
@@ -22,11 +23,18 @@ const BoardDetailPage = () => {
     articleError,
     getArticleDetail,
     resetCurrentViewArticle,
+    deleteBoard,
   } = useBoardStore();
 
   const { addComment, getComments } = useCommentStore();
   const { user } = authStore();
-  // console.log('User object:', user);
+
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
+  const api = axios.create({
+    baseURL: baseUrl,
+    withCredentials: true,
+  });
 
   // 새로고침 시, 문제 해결 위해서 checkAuth
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -34,7 +42,7 @@ const BoardDetailPage = () => {
   useEffect(() => {
     // 새로고침 시 유저 undefined 문제 해결 위해서
     checkAuth();
-    console.log("Current user:", user);
+    //console.log("Current user:", user);
     if (articleId) {
       getArticleDetail(articleId);
     }
@@ -51,7 +59,7 @@ const BoardDetailPage = () => {
       member_name: user.name,
     };
     // 데이터 형식 확인
-    console.log("Sending comment data:", commentData);
+    //console.log("Sending comment data:", commentData);
     const success = await addComment(commentData);
 
     // console.log("=========================================");
@@ -64,7 +72,25 @@ const BoardDetailPage = () => {
   };
 
   const onClickUpdate = () => {
-    nav(`/member/board/${articleId}/update`);
+    if (user.id.toString() === currentViewArticle.member_id) {
+      nav(`/member/board/${articleId}/update`);
+    } else alert("글 작성자만 수정할 수 있습니다.");
+  };
+
+  const onClickDelete = async () => {
+    if (user.id.toString() === currentViewArticle.member_id) {
+      try {
+        const response = await api.delete("/board/" + articleId, {
+          headers: {
+            "Content-Type": "application/json", // form-data 아니고 json으로
+          },
+        });
+        deleteBoard(articleId);
+        nav(`/member/board`);
+      } catch {
+        alert("글 삭제에 실패했습니다.");
+      }
+    } else alert("글 작성자만 수정할 수 있습니다.");
   };
 
   const formatDate = (dateString) => {
@@ -96,6 +122,9 @@ const BoardDetailPage = () => {
               <div>
                 <Button onClick={onClickUpdate} text={"수정"} />
               </div>
+              <div>
+                <Button onClick={onClickDelete} text={"삭제"} />
+              </div>
             </div>
 
             <div className="DetailDate">
@@ -113,6 +142,9 @@ const BoardDetailPage = () => {
 
             <div className="DetailContent">
               <p>{currentViewArticle.content}</p>
+            </div>
+            <div>
+              <img src={currentViewArticle.imageUrl}></img>
             </div>
           </div>
 

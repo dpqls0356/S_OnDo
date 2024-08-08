@@ -87,7 +87,7 @@ const useBoardStore = create((set, get) => ({
     const { currentBoard, boards } = get();
     set({
       boards: boards.map((board) =>
-        board.id === id
+        board._id === id
           ? { ...board, ...currentBoard, updatedAt: new Date().toISOString() }
           : board
       ),
@@ -104,13 +104,13 @@ const useBoardStore = create((set, get) => ({
   // 게시글 삭제
   deleteBoard: (id) =>
     set((state) => ({
-      boards: state.boards.filter((board) => board.id !== id),
+      boards: state.boards.filter((board) => board._id !== id),
     })),
 
   // 게시글 불러오기 (수정을 위해)
   loadBoard: (id) => {
     const { boards } = get();
-    const boardToEdit = boards.find((board) => board.id === id);
+    const boardToEdit = boards.find((board) => board._id === id);
     if (boardToEdit) {
       set({ currentBoard: { ...boardToEdit } });
     }
