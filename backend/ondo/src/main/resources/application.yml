@@ -50,9 +50,6 @@ logging:
         security:
           DEBUG
 
-openvidu:
-  url: "http://localhost:4443/"
-  secret: "ondo_project_openvidu"
 
 cloud:
   aws:
@@ -65,3 +62,4 @@ cloud:
     credentials:
       accessKey: ${ACCESS_KEY}
       secretKey: ${SECRET_KEY}
+
