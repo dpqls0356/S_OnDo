@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost/ondo?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/ondo?serverTimezone=UTC
     username: clio
     password: clio
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,6 +14,8 @@ spring:
       host: localhost
       port: 27017
       database: ondo
+      username: clio
+      password: clioondoclio
 
     redis:
       host: localhost
@@ -34,7 +36,6 @@ spring:
     refresh-token-expiration: 1209600000
 
   profiles:
-    active: local
     include: oauth
 
   batch:
