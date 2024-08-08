@@ -35,7 +35,7 @@ public class CharacterController {
 		Long memberId = jwtTokenProvider.getIdFromToken(token);
 
 		Character character = characterService.getCharacters(memberId);
-		CharacterResponseDto res = new CharacterResponseDto(character.getName(), character.getExp(), character.getLevel());
+		CharacterResponseDto res = new CharacterResponseDto(character.getName(), character.getLevel(), character.getExp());
 
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("character", res));
 	}
