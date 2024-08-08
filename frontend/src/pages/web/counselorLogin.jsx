@@ -78,11 +78,13 @@ const InputArea = styled.div`
 
 const CounselorLogin = () => {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
-  const counselorLogin = useAuthStore((state) => state.counselorLogin);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user } = useAuthStore((state) => ({ user: state.user }));
-  const { role } = useAuthStore((state) => ({ user: state.role }));
-  const navigate = useNavigate();
+   const { role, user, counselorLogin } = useAuthStore((state) => ({
+    role: state.role,
+    user: state.user,
+    counselorLogin: state.counselorLogin,
+    checkAuth: state.checkAuth,
+  }));  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials({
@@ -103,28 +105,27 @@ const CounselorLogin = () => {
   };
 
   const counselorCloseModal = async () => {
-    console.log("counselorLogin");
     setIsModalOpen(false);
     if (role === "USER") {
       navigate("/member/home");
-    }
+    }else if (role === "COUNSELOR") {
+        navigate("/counselor");
+      }
   };
 
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      //상담사가 로그인 페이지에  들어온 경우
+    const checkAuthentication = () => {
+      console.log("counselorLogin - "+ role)
       //유저가 로그인 페이지에 들어온 경우
-      //상담사도 아니고 유저도 아닌 경우
-      if (role === "USER") {
+      console.log(isModalOpen)
+      if (role === "USER"||role==="COUNSELOR") {
         setIsModalOpen(true);
-      } else if (role === "COUNSELOR") {
-        navigate("/counselor");
-      } else {
+        //상담사가 로그인 페이지에  들어온 경우
       }
+      //그 외엔 로그인 하러 들어온 사람...
     };
-
+  useEffect(() => {
     checkAuthentication();
-  }, [navigate]);
+  }, []);
 
   return (
     <View>

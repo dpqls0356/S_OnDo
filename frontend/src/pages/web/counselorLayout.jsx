@@ -69,38 +69,45 @@ const ChangeSpot = styled.div`
 `;
 
 function CounselorLayout() {
-  const counselorLogout = useAuthStore((state) => state.counselorLogout);
+  const { role, user, counselorLogout, checkAuth } = useAuthStore((state) => ({
+    role: state.role,
+    counselorLogout: state.counselorLogout,
+    checkAuth: state.checkAuth,
+  }));
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user } = useAuthStore((state) => ({ user: state.user }));
-  const { role } = useAuthStore((state) => ({ user: state.role }));
+
   const logout = async () => {
     console.log("logout");
     await counselorLogout();
     navigate("/counselor/login");
   };
 
-  const counselorCloseModal = async () => {
-    console.log("counselorLogin");
+  const counselorCloseModal = () => {
     setIsModalOpen(false);
-    //유저로는 접근 불가하도록 함
-    if (role != null && role === "USER") {
-      if (role === "USER") navigate("/member/home");
-    } else if (role === null) {
+    //로그인이 안된 경우
+    if (!role) {
       navigate("/counselor/login");
+    }
+    //로그인이 되어있는데 유저인 경우
+    else if(role === "USER"){
+      navigate("/counselor/home");
     }
   };
 
   useEffect(() => {
     const checkAuthentication = async () => {
+      console.log("counselorLayout - role:", role, "user:", user);
+      // await checkAuth(); // 인증 상태를 먼저 확인합니다.
+
       //로그인이 안된 경우 또는 로그인이 되어있긴한데 유저가 해당 페이지로 와버린 경우
-      if (user === null || user.role !== "COUNSELOR") {
+      if (!role || role !== "COUNSELOR") {
         setIsModalOpen(true);
       }
     };
 
     checkAuthentication();
-  }, [navigate]);
+  }, [role, user, checkAuth]);
 
   return (
     <View>
@@ -124,7 +131,7 @@ function CounselorLayout() {
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="size-6"
+                className="size-6"
               >
                 <path
                   stroke-linecap="round"
@@ -140,16 +147,11 @@ function CounselorLayout() {
           <StyledLink to="">일정관리</StyledLink>
           <StyledLink to="daylist/상담사아이디">상담내역</StyledLink>
           <StyledLink to="mypage">마이페이지</StyledLink>
-          <StyledLink to="updatepassword/상담사아이디">
-            비밀번호 변경
-          </StyledLink>
+          <StyledLink to="updatepassword/상담사아이디">비밀번호 변경</StyledLink>
         </Nav>
         <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
       </HomeRight>
-      <IncorrectAccessModal
-        isOpen={isModalOpen}
-        closeModal={counselorCloseModal}
-      />
+      <IncorrectAccessModal isOpen={isModalOpen} closeModal={counselorCloseModal} />
     </View>
   );
 }

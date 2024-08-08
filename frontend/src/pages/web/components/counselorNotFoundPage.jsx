@@ -5,15 +5,16 @@ import useAuthStore from "../../../store/app/authStore";
 import IncorrectAccessModal from "./incorrectAccessModal";
 
 export default function CounselorNotFoundPage() {
-  const checkLoggedIn = useAuthStore((state) => state.checkLoggedIn);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(true);
-
+  const { role} = useAuthStore((state) => ({
+    role: state.role,
+  }));
   const closeModal = async () => {
-    console.log("WTF?");
+    console.log("hi");
     setIsModalOpen(false);
-    const loggedIn = await checkLoggedIn();
-    if (!loggedIn) {
+
+    if (!role) {
       navigate("/counselor/login");
     } else {
       navigate("/counselor");
