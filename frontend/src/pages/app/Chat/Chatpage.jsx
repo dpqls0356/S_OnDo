@@ -1,62 +1,176 @@
-import './Chat.css'
+import "./Chat.css";
 
-import axios from 'axios';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect, useRef } from "react";
 
-import chat_send from './../../../assets/images/chat_send.png'
+import chat_send from "./../../../assets/images/chat_send.png";
 
-import back from './../../../assets/images/back.png'
+import back from "./../../../assets/images/back.png";
 
 const Chatpage = () => {
-  const nav = useNavigate()
-  // const [messages, setMessages] = useState([]) // 메세지 기록
-  // const [userInput, setUserInput] = useState('') // 유저가 보낼 메세지
-  // const [loading, setLoading ] = useState(false);
+  const size = 10;
+  const nav = useNavigate();
+  const [character, setCharacter] = useState({});
+  const [messages, setMessages] = useState([]); // 메세지 기록
+  const [userInput, setUserInput] = useState({
+    content: "",
+    createdAt: "",
+  }); // 유저가 보낼 메세지
+  const [hasMore, setHasMore] = useState(true);
+  const [pageNum, setPageNum] = useState(0);
+  const [refPageNum, setRefPageNum] = useState(true);
+  const containerRef = useRef(null);
 
-  // const apikey = '';
-  // const addMessage = (sender, message) => {
-  //   setMessages(prevMessages => [...prevMessages, { sender, message }]);
-  // };
+  const baseUrl = import.meta.env.VITE_BASE_URL;
 
-  // const handleSendMessage = async () => {
-  //   const message = userInput.trim(); // 공백 제거해서 유저가 보낸 메시지가 공백인지 확인가능하게 함
-  //   if (message.length === 0) return;
+  const api = axios.create({
+    baseURL: baseUrl,
+    withCredentials: true,
+  });
 
-  //   addMessage('user', message);
-  //   setUserInput(''); // 유저 메시지 초기화
-  //   setLoading(true); // 로딩중
+  // 챗봇 메세지 페이지 단위로 가져오기
+  const getChatbotMessage = async () => {
+    const response = await api.get(
+      "/chatbot/list?page=" + pageNum + "&size=" + size
+    );
+    const chattingList = response.data.data.chattingList;
+    const sortedChatting = chattingList.reverse();
+    return sortedChatting;
+  };
 
-  //   try {
-  //     const response = await axios.post('', {
-  //       //사용자가 입력한 메시지를 전송
-  //     })
-  //   }
-  // }
+  // 캐릭터 가져오기
+  const getCharacter = async () => {
+    const characterResponse = await api.get("/character/getCharacter");
+    setCharacter(characterResponse.data.data.character);
+  };
+
+  // 메시지 입력하기
+  const typeChattingMessage = async () => {
+    // 공백이면 동작하면 안 됨
+    if (userInput.content !== undefined) {
+      const response = await api.post(
+        "/chatbot/insert",
+        {
+          message: userInput.content,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json", // form-data 아니고 json으로
+          },
+        }
+      );
+
+      await referPage();
+      viewPastRecords();
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        ...response.data.data.responseChatting,
+      ]);
+      setUserInput({ content: "", createdAt: "" }); // userInput 초기화
+    }
+  };
+
+  const referPage = async () => {
+    setRefPageNum(false);
+  };
+
+  const fetchMoreItems = async () => {
+    const response = await getChatbotMessage();
+
+    // 불러올게 없으면 false
+    if (response.length < size) {
+      setHasMore(false);
+    } else {
+      setMessages([...response, ...messages]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(pageNum);
+    if (refPageNum) {
+      fetchMoreItems();
+    } else {
+      setRefPageNum(true);
+    }
+  }, [pageNum]);
+
+  const viewPastRecords = () => {
+    if (!hasMore) return;
+    setPageNum((prevPage) => prevPage + 1);
+  };
+
+  useEffect(() => {
+    const firstRendering = async () => {
+      const chattings = await getChatbotMessage();
+      setMessages([...chattings]);
+      await getCharacter();
+    };
+
+    firstRendering();
+  }, []);
+
+  const handleInputChange = (event) => {
+    setUserInput({
+      ...userInput,
+      content: event.target.value,
+      createdAt: new Date().toISOString(),
+    });
+  };
 
   const onClickBack = () => {
-    nav('/member/home')
-  }
+    nav("/member/home");
+  };
+
   return (
-    <div className='Chat'>
+    <div className="Chat">
       {/* 헤더 */}
-      <div className='CharacterName'>
-        <img onClick={onClickBack} style={{cursor: 'pointer'}} src={back} />
-        <div>캐릭터이름</div>
+      <div className="CharacterName">
+        <img onClick={onClickBack} style={{ cursor: "pointer" }} src={back} />
+        <div>{character.name}</div>
+      </div>
+
+      <div>
+        {character.name}는 기억력이 안 좋아서 채팅 내용을 기억하지 못함;; 로딩
+        하는 화면 만들어서 입력시 적용하면 좋을듯
       </div>
 
       {/* 채팅 화면 */}
-      <div className='ChatScreen'>
-          dskjas
+      <button onClick={viewPastRecords}>이전 채팅 기록 보기</button>
+      <div className="ChatScreen text-black" ref={containerRef}>
+        <div
+          id="observer"
+          className="sticky-header"
+          style={{ height: "10px", textAlign: "center" }}
+        >
+          {/* 이전 채팅 기록 보기 */}
+        </div>
+        {messages &&
+          messages.map((message, index) => {
+            return (
+              <li key={index}>
+                {message.content}
+                <div>{message.createdAt}</div>
+              </li>
+            );
+          })}
       </div>
-      
+
       {/* 채팅 입력창 */}
-      <div className='Chatbox'>
-        <input type="text" />
-        <img src={chat_send} />
+      <div className="Chatbox">
+        <input
+          type="text"
+          value={userInput.content}
+          onChange={handleInputChange}
+        />
+        <img
+          onClick={typeChattingMessage}
+          src={chat_send}
+          style={{ cursor: "pointer" }}
+        />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Chatpage;

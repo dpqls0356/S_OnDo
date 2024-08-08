@@ -18,6 +18,6 @@ public class ChatbotChatting {
 	private ObjectId id;
 	private String content;
 	private String sender;
-	private LocalDateTime createdAt;
+	private String createdAt;
 	private Long member_id;
 }
