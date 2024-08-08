@@ -20,12 +20,16 @@ const BoardCreatepage = () => {
     useBoardStore();
   const { user } = useAuthStore();
 
+  // 새로고침 시, 문제 해결 위해서 checkAuth
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+
   const onClickCancel = () => {
     resetCurrentBoard();
     nav("/member/board");
   };
 
   useEffect(() => {
+    checkAuth();
     console.log(user);
     setCurrentBoard("member_name", user.nickname);
   }, []);
