@@ -10,6 +10,7 @@ export default function CounselorNotFoundPage() {
   const [isModalOpen, setIsModalOpen] = useState(true);
 
   const closeModal = async () => {
+    console.log("WTF?");
     setIsModalOpen(false);
     const loggedIn = await checkLoggedIn();
     if (!loggedIn) {
