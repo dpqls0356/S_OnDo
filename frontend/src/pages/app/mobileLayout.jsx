@@ -1,9 +1,11 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import Footer from "../../components/app/Footer";
+import useAuthStore from "../../store/app/authStore";
+import IncorrectAccessModal from "../../pages/web/components/counselorNotFoundPage";
 
 const View = styled.div`
   position: relative;
@@ -61,11 +63,49 @@ const View = styled.div`
     src: url('./../fonts/PF스타더스트.ttf')
   }
 `;
+
 export default function MobileLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuthStore((state) => ({ user: state.user }));
+  const { role } = useAuthStore((state) => ({ user: state.role }));
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      // 현재 경로가 /member/로 시작하는지 확인하고 올바른 유저인지 판단
+      if (
+        location.pathname.startsWith("/member/") &&
+        !location.pathname.startsWith("/member/login") &&
+        !location.pathname.startsWith("/member/join")
+      ) {
+        console.log("hegrer,jnfskldfj");
+        setIsModalOpen(true);
+      }
+    };
+
+    checkAuthentication();
+  }, [navigate, location.pathname]);
+
+  const mobileCloseModal = async () => {
+    console.log("mobileLayout");
+    setIsModalOpen(false);
+    if (role != null && role !== "COUNSELOR") {
+      navigate("/counselor");
+    } else if (role === null || role !== "USER") {
+      navigate("/member/login");
+    }
+  };
 
   // Footer를 제외할 경로 목록
-  const noFooterPaths = ['/member', '/member/', '/member/join', '/member/login', '/member/name','/member/chat'];
+  const noFooterPaths = [
+    "/member",
+    "/member/",
+    "/member/join",
+    "/member/login",
+    "/member/name",
+    "/member/chat",
+  ];
 
   // 현재 경로가 noFooterPaths에 포함되어 있는지 확인
   const shouldShowFooter = !noFooterPaths.includes(location.pathname);
@@ -73,6 +113,10 @@ export default function MobileLayout() {
     <View>
       <Outlet />
       {shouldShowFooter && <Footer id="footer" />}
+      <IncorrectAccessModal
+        isOpen={isModalOpen}
+        closeModal={mobileCloseModal}
+      />
     </View>
   );
 }

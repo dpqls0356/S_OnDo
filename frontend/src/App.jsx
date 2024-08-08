@@ -41,12 +41,6 @@ import HomeUserInfoComponent from "./pages/web/components/center/homeUserInfoCom
 // import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
 function App() {
-  // const test = false;
-  const checkAuth = useAuthStore((state) => state.checkAuth);
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
   return (
     <Router>
       <Routes>
@@ -84,7 +78,10 @@ function App() {
             path="counseling/apply/:counselorId"
             element={<CounselorReservation />}
           />
-          <Route path="counseling/:counselorId/detail" element={<CounselorDetail />} />
+          <Route
+            path="counseling/:counselorId/detail"
+            element={<CounselorDetail />}
+          />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
         </Route>
         {/* )} */}

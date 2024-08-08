@@ -69,41 +69,45 @@ const ChangeSpot = styled.div`
 `;
 
 function CounselorLayout() {
-  const checkLoggedIn = useAuthStore((state) => state.checkLoggedIn);
   const counselorLogout = useAuthStore((state) => state.counselorLogout);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { user } = useAuthStore((state) => ({ user: state.user }));
+  const { role } = useAuthStore((state) => ({ user: state.role }));
   const logout = async () => {
     console.log("logout");
     await counselorLogout();
     navigate("/counselor/login");
   };
 
-  const closeModal = () => {
+  const counselorCloseModal = async () => {
+    console.log("counselorLogin");
     setIsModalOpen(false);
-    navigate("/counselor/login");
+    //유저로는 접근 불가하도록 함
+    if (role != null && role === "USER") {
+      if (role === "USER") navigate("/member/home");
+    } else if (role === null) {
+      navigate("/counselor/login");
+    }
   };
 
-  // 로그인 페이지에 들어올 때마다 인증 여부 확인
   useEffect(() => {
     const checkAuthentication = async () => {
-      const loggedIn = await checkLoggedIn();
-      console.log("layout: " + loggedIn);
-      if (!loggedIn) {
+      //로그인이 안된 경우 또는 로그인이 되어있긴한데 유저가 해당 페이지로 와버린 경우
+      if (user === null || user.role !== "COUNSELOR") {
         setIsModalOpen(true);
       }
     };
 
     checkAuthentication();
-  }, [checkLoggedIn, navigate]);
+  }, [navigate]);
 
   return (
     <View>
       <HomeLeft>
         <ReservationSpot />
         <ChangeSpot>
-          <Centerpage/>
+          <Centerpage />
         </ChangeSpot>
       </HomeLeft>
       <HomeRight>
@@ -136,11 +140,16 @@ function CounselorLayout() {
           <StyledLink to="">일정관리</StyledLink>
           <StyledLink to="daylist/상담사아이디">상담내역</StyledLink>
           <StyledLink to="mypage">마이페이지</StyledLink>
-          <StyledLink to="updatepassword/상담사아이디">비밀번호 변경</StyledLink>
+          <StyledLink to="updatepassword/상담사아이디">
+            비밀번호 변경
+          </StyledLink>
         </Nav>
         <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
       </HomeRight>
-      <IncorrectAccessModal isOpen={isModalOpen} closeModal={closeModal} />
+      <IncorrectAccessModal
+        isOpen={isModalOpen}
+        closeModal={counselorCloseModal}
+      />
     </View>
   );
 }
