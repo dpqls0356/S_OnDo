@@ -157,27 +157,14 @@ const MyUpdateForm = () => {
             src={previewUrl || user.profileUrl}
             alt="프로필 이미지"
             style={{
-              width: "200px", // 부모 요소 크기에 맞춤
-              height: "200px", // 부모 요소 크기에 맞춤
-              borderRadius: "50%", // 원형으로 만듦
-              objectFit: "cover", // 이미지를 고정된 크기에 맞추고 비율을 유지하며 잘라냄
-              objectPosition: "center", // 이미지의 중심을 기준으로 자름
+              width: "200px",
+              height: "200px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              objectPosition: "center",
             }}
           />
-          <img
-            id="JoinCamera"
-            src={camera}
-            alt="카메라 아이콘"
-            onClick={handleImageClick}
-            style={{
-              position: "absolute",
-              bottom: "5px", // 이미지의 경계선에서 5px 위에 위치
-              right: "5px", // 이미지의 경계선에서 5px 안쪽에 위치
-              width: "40px", // 아이콘 크기 조정
-              height: "40px",
-              cursor: "pointer",
-            }}
-          />
+          <img id="JoinCamera" src={camera} alt="카메라 아이콘" onClick={handleImageClick} />
           <input
             type="file"
             ref={fileInputRef} // input에 대한 참조 설정
