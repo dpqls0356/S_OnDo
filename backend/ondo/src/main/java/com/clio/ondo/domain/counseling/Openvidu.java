@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
 @PropertySource("classpath:openvidu.properties")
 @CrossOrigin(origins = "*")
 @RestController()
@@ -42,10 +41,10 @@ public class Openvidu {
   private final JwtTokenProvider jwtTokenProvider;
   private final ReservationRepository reservationRepository;
 
-  @Value("${openvidu.url}")
+  @Value("${OPENVIDU_URL}")
   private String OPENVIDU_URL;
 
-  @Value("${openvidu.secret}")
+  @Value("${OPENVIDU_SECRET}")
   private String OPENVIDU_SECRET;
 
   private OpenVidu openvidu; // OpenVidu 인스턴스를 저장할 변수
@@ -108,12 +107,6 @@ public class Openvidu {
     }
   }
 
-
-
-
-
-
-
   @PostMapping("/counseling/sessions/{sessionId}/connections")
   public ResponseEntity<ResponseVO<String>> createConnection(@PathVariable("sessionId") String sessionId,
       @RequestBody(required = false) Map<String, Object> params, HttpServletRequest request)
@@ -163,13 +156,6 @@ public class Openvidu {
     Connection connection = session.createConnection(properties); // ConnectionProperties 객체를 생성
     return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", connection.getToken()));
   }
-
-
-
-
-
-
-
 
   @PostMapping("/counseling/sessions/{sessionId}/leave")
   public ResponseEntity<ResponseVO<String>> leaveSession(@PathVariable("sessionId") String sessionId,
