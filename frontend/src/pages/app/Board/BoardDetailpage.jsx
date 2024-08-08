@@ -67,7 +67,7 @@ const BoardDetailPage = () => {
     if (success) {
       comment.current.value = "";
       // 댓글 목록 불러오기
-      getComments(articleId);
+      await getComments(articleId);
     }
   };
 
