@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
@@ -24,6 +24,13 @@ const JoinForm = () => {
       setSelectedFile(file);
       const url = URL.createObjectURL(file); // 파일의 미리보기 URL 생성
       setPreviewUrl(url); // 미리보기 URL을 상태에 저장
+    }
+  };
+
+  const fileInputRef = useRef(null);
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // img 클릭 시 input 클릭하도록 함
     }
   };
 
@@ -121,16 +128,44 @@ const JoinForm = () => {
     transition: "all 0.3s ease",
   });
 
+  const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   return (
     <div className="scroll">
       <div className="JoinPage">
-        <img id="JoinCamera" src={camera} />
         <div className="JoinProfile">
-          {/* <img src={profile} /> */}
-          {/* 이 부분 수정 부탁드립니당 */}
-          {/* 기본 이미지는 "https://d1kbrt3q8264bl.cloudfront.net/profile.png"로 부탁드립니다 */}
-          <input type="file" accept="image/*" onChange={handleFileChange} />
-          {previewUrl && <img src={previewUrl} alt="미리보기" />}
+          <img
+            src={previewUrl || mainProfileUrl}
+            alt="프로필 이미지"
+            style={{
+              width: "200px", // 부모 요소 크기에 맞춤
+              height: "200px", // 부모 요소 크기에 맞춤
+              borderRadius: "50%", // 원형으로 만듦
+              objectFit: "cover", // 이미지를 고정된 크기에 맞추고 비율을 유지하며 잘라냄
+              objectPosition: "center", // 이미지의 중심을 기준으로 자름
+            }}
+          />
+          <img
+            id="JoinCamera"
+            src={camera}
+            alt="카메라 아이콘"
+            onClick={handleImageClick}
+            style={{
+              position: "absolute",
+              bottom: "5px", // 이미지의 경계선에서 5px 위에 위치
+              right: "5px", // 이미지의 경계선에서 5px 안쪽에 위치
+              width: "40px", // 아이콘 크기 조정
+              height: "40px",
+              cursor: "pointer",
+            }}
+          />
+          <input
+            type="file"
+            ref={fileInputRef} // input에 대한 참조 설정
+            onChange={handleFileChange}
+            style={{
+              display: "none",
+            }} // input 요소를 숨김
+          />
         </div>
         <form id="JoinForm" onSubmit={join} className="flex flex-col space-y-4">
           <Input

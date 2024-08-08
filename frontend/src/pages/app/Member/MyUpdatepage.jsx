@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../../store/app/authStore";
 import axios from "axios";
@@ -42,6 +42,13 @@ const MyUpdateForm = () => {
       setSelectedFile(file);
       const url = URL.createObjectURL(file); // 파일의 미리보기 URL 생성
       setPreviewUrl(url); // 미리보기 URL을 상태에 저장
+    }
+  };
+
+  const fileInputRef = useRef(null);
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // img 클릭 시 input 클릭하도록 함
     }
   };
 
@@ -132,20 +139,59 @@ const MyUpdateForm = () => {
 
   //----------------------------------------------------------------
 
+  const genderButtonStyle = (selectedGender) => ({
+    backgroundColor: user.gender === selectedGender ? "#61C0BF" : "white",
+    color: user.gender === selectedGender ? "white" : "#61C0BF",
+    border: "2px solid #61C0BF",
+    padding: "10px 20px",
+    margin: "5px",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+  });
+
   return (
     <div className="scroll">
       <div className="UpdatePage">
-        <img id="JoinCamera" src={camera} />
         <div className="JoinProfile">
-          <img src={previewUrl || user.profileUrl} alt="프로필 이미지" />
-          <input type="file" onChange={handleFileChange} />
+          <img
+            src={previewUrl || user.profileUrl}
+            alt="프로필 이미지"
+            style={{
+              width: "200px", // 부모 요소 크기에 맞춤
+              height: "200px", // 부모 요소 크기에 맞춤
+              borderRadius: "50%", // 원형으로 만듦
+              objectFit: "cover", // 이미지를 고정된 크기에 맞추고 비율을 유지하며 잘라냄
+              objectPosition: "center", // 이미지의 중심을 기준으로 자름
+            }}
+          />
+          <img
+            id="JoinCamera"
+            src={camera}
+            alt="카메라 아이콘"
+            onClick={handleImageClick}
+            style={{
+              position: "absolute",
+              bottom: "5px", // 이미지의 경계선에서 5px 위에 위치
+              right: "5px", // 이미지의 경계선에서 5px 안쪽에 위치
+              width: "40px", // 아이콘 크기 조정
+              height: "40px",
+              cursor: "pointer",
+            }}
+          />
+          <input
+            type="file"
+            ref={fileInputRef} // input에 대한 참조 설정
+            onChange={handleFileChange}
+            style={{
+              display: "none",
+            }} // input 요소를 숨김
+          />
         </div>
         <form id="JoinForm" className="flex flex-col space-y-4" onSubmit={updateMypage}>
           <Input
             label="이름"
             placeholder=" 이름을 입력해주세요"
-            value={user.name}
-            // onChange={handleInputChange('name')}
+            value={formData.name}
             labelClassName="text-left"
           />
           <Input
@@ -159,8 +205,7 @@ const MyUpdateForm = () => {
             label="이메일"
             placeholder=" 이메일을 입력해주세요"
             type="email"
-            value={user.email}
-            // onChange={handleInputChange('email')}
+            value={formData.email}
             labelClassName="text-left"
           />
           <Input
@@ -183,23 +228,14 @@ const MyUpdateForm = () => {
             label="생년월일"
             placeholder=" 생년월일을 입력해주세요"
             type="date"
-            value={user.birthDate}
-            // onChange={handleInputChange('birthDate')}
+            value={formData.birthDate}
             labelClassName="text-left"
           />
           <div className="flex justify-center space-x-4">
-            <button
-              type="button"
-              //style={genderButtonStyle('MALE')}
-              // onClick={() => handleGenderSelect('남')}
-            >
+            <button type="button" style={genderButtonStyle("MALE")}>
               남
             </button>
-            <button
-              type="button"
-              //style={genderButtonStyle('FEMALE')}
-              // onClick={() => handleGenderSelect('여')}
-            >
+            <button type="button" style={genderButtonStyle("FEMALE")}>
               여
             </button>
           </div>
