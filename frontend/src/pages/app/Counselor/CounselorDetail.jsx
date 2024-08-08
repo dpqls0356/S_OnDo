@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/useCounselorStore';
+import useCounselorStore from '../../../store/app/CounselorStore';
 import profile from './../../../assets/images/ic_user.png';
 import back from './../../../assets/images/back.png';
 import './CounselorDetail.css';

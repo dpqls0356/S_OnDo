@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/useCounselorStore';
+import useCounselorStore from '../../../store/app/CounselorStore';
 import CLCard from '../../../components/app/Counselor/CLCard';
 import back from './../../../assets/images/back.png';
 import sort from './../../../assets/images/Shape.png';

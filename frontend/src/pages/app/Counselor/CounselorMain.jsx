@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/useCounselorStore';
+import useCounselorStore from '../../../store/app/CounselorStore';
 import CounselorCard from '../../../components/app/Counselor/CounselorCard';
 import CounselorListCard from '../../../components/app/Counselor/CounselorListCard';
 import './CounselorMain.css';
