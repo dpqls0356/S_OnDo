@@ -5,33 +5,37 @@ import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
 import useAuthStore from "../../../store/app/AuthStore";
 
-
 import { useNavigate } from "react-router-dom";
 
 const Loginpage = () => {
   const nav = useNavigate();
   const login = useAuthStore((state) => state.login);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('')    // 에러 메시지 초기화
+    setError(""); // 에러 메시지 초기화
     try {
       const success = await login(email, password);
       if (success) {
-      nav('/member/home')
-      alert('로그인 성공!')
-    } else {
-      setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.')
-    } 
-  }   catch (error) {
-      setError('로그인 중 오류가 발생했습니다. 다시 시도해 주세요.');
-      console.error('Login error:', error);
+        nav("/member/home");
+        alert("로그인 성공!");
+      } else {
+        setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
+      }
+    } catch (error) {
+      setError("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      console.error("Login error:", error);
     }
-  }
+  };
+
+  const onClickJoin = () => {
+    nav("/member/join");
+  };
+
   const onClickKakao = () => {
     nav("/member/kakaologin");
   };
@@ -42,15 +46,15 @@ const Loginpage = () => {
 
   return (
     <main className="Loginpage">
-      <p id="Title">로그인</p>      
+      <p id="Title">로그인</p>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="login-id">아이디</label>
           <br />
-          <input 
-            id="login-id" 
-            type="text" 
-            placeholder="아이디" 
+          <input
+            id="login-id"
+            type="text"
+            placeholder="아이디"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -59,19 +63,21 @@ const Loginpage = () => {
         <div>
           <label htmlFor="password">비밀번호</label>
           <br />
-          <input 
-            id="password" 
-            type="password" 
-            placeholder="비밀번호" 
+          <input
+            id="password"
+            type="password"
+            placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <br />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <Button text={"로그인"} type="submit" />
       </form>
-      <br />
+      <p onClick={onClickJoin} style={{ cursor: "pointer", color: "gray" }}>
+        회원가입하기
+      </p>
       <hr />
       <img
         onClick={onClickKakao}

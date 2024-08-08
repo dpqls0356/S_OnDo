@@ -21,7 +21,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -58,8 +58,7 @@ cloud:
     stack:
       auto: false  # CloudFormation 자동 구성을 비활성화
     s3:
-      bucket: ${BUCKET_NAME}
+      bucket: ${bucket.name}
     credentials:
-      accessKey: ${ACCESS_KEY}
-      secretKey: ${SECRET_KEY}
-
+      accessKey: ${access.key}
+      secretKey: ${secret.key}
