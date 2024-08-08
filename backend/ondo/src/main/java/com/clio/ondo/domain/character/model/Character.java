@@ -21,10 +21,10 @@ public class Character {
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
+	@Column(name = "level", nullable = false)
 	private int level;
 
-	@Column(nullable = false)
+	@Column(name = "exp", nullable = false)
 	private int exp;
 	
 	public Character() {
