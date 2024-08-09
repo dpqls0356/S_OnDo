@@ -62,6 +62,11 @@ const useBoardStore = create((set, get) => ({
       currentBoard: { ...state.currentBoard, [field]: value },
     })),
 
+  setCurrentViewArticle: (field, value) =>
+    set((state) => ({
+      currentViewArticle: { ...state.currentViewArticle, [field]: value },
+    })),
+
   deleteCurrentImage: (newImage) =>
     set((state) => ({
       currentBoard: {
