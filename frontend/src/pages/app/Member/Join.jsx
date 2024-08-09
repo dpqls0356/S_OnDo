@@ -159,10 +159,12 @@ const JoinForm = () => {
               borderRadius: "50%", // 원형으로 만듦
               objectFit: "cover", // 이미지를 고정된 크기에 맞추고 비율을 유지하며 잘라냄
               objectPosition: "center", // 이미지의 중심을 기준으로 자름
+              cursor: "pointer",
             }}
           />
           <img
             id="JoinCamera"
+            style={{ cursor: "pointer" }}
             src={camera}
             alt="카메라 아이콘"
             onClick={handleImageClick}
