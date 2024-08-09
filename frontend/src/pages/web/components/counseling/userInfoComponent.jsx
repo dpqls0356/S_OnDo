@@ -93,43 +93,46 @@ const CounselingMemo = styled.div`
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const UserInfoComponent = ({ memberId }) => {
-  const [memberInfo, setMemberInfo] = useState({});
+const UserInfoComponent = ({ memberInfo }) => {
+  // const [memberInfo, setMemberInfo] = useState({});
   const [historyList, setHistoryList] = useState([]);
 
-  useEffect(() => {
-    console.log("Fetching member info for ID:", memberId);
-    getMemberInfo();
-  }, [memberId]);
+  // useEffect(() => {
+  //   console.log("Fetching member info for ID:", memberId);
+  //   getMemberInfo();
+  // }, [memberId]);
 
+  useEffect(()=>{
+    setHistoryList([...memberInfo.reservations]);
+  },[])
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0]; // '2024-08-13' 형식으로 변환
   };
 
-  const getMemberInfo = async () => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}/counselor/member?memberId=${memberId}`,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = response.data.data.member;
-      setMemberInfo({
-        birthDate: data.birthDate,
-        gender: data.gender === "MALE" ? "남성" : "여성",
-        memberId: data.memberId,
-        memberName: data.memberName,
-      });
-      setHistoryList([...data.reservations]);
-    } catch (e) {
-      console.log("Error fetching member info:", e);
-    }
-  };
+  // const getMemberInfo = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${baseUrl}/counselor/member?memberId=${memberId}`,
+  //       {
+  //         withCredentials: true,
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     const data = response.data.data.member;
+  //     setMemberInfo({
+  //       birthDate: data.birthDate,
+  //       gender: data.gender === "MALE" ? "남성" : "여성",
+  //       memberId: data.memberId,
+  //       memberName: data.memberName,
+  //     });
+  //     setHistoryList([...data.reservations]);
+  //   } catch (e) {
+  //     console.log("Error fetching member info:", e);
+  //   }
+  // };
 
   return (
     <View>

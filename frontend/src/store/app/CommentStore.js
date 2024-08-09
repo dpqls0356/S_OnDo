@@ -46,7 +46,7 @@ const useCommentStore = create((set) => ({
   getComments: async (articleId) => {
     try {
       const response = await api.get(`/board/comment/${articleId}`);
-      set({ comments: response.data });
+      set({ comments: response.data.data.comments.content });
     } catch (error) {
       console.error('댓글 목록 불러오기 실패:', error);
     }
@@ -68,6 +68,7 @@ const useCommentStore = create((set) => ({
       const response = await api.patch(`/board/comment/${commentId}`, {
         content: modifiedContent
       });
+      console.log(response);
       if (response.status === 200) {
         set((state) => ({
           comments: state.comments.map(comment => 

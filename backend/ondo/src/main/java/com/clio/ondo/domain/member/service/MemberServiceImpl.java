@@ -58,7 +58,8 @@ public class MemberServiceImpl implements MemberService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Value("${profile.url}")
-	String profileUrl; //기본 프로필 이미지
+	String defaultProfileUrl; //기본 프로필 이미지
+	String profileUrl;
 
 	@Override
 	@Transactional
@@ -66,12 +67,11 @@ public class MemberServiceImpl implements MemberService {
 
 		//s3이미지 url 생성 및 저장
 
-		System.out.println(profileImage);
 		if(!profileImage.isEmpty()){
 			profileUrl=imageService.upload(profileImage,"MemberProfile");
+		}else{
+			profileUrl=defaultProfileUrl;
 		}
-
-
 		Member member = joinRequestDto.toEntity(profileUrl);
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
@@ -139,7 +139,12 @@ public class MemberServiceImpl implements MemberService {
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
 		if (passwordEncoder.matches(deleteRequestDto.getPassword(), findMember.getPassword())) {
 			logout(accessToken);
-			imageService.delete(findMember.getProfileUrl(),"MemberProfile");
+			if(Objects.equals(findMember.getProfileUrl(), defaultProfileUrl)){
+				imageService.delete(findMember.getProfileUrl(),"");
+			}else{
+				imageService.delete(findMember.getProfileUrl(),"MemberProfile");
+			}
+
 			memberRepository.delete(findMember);
 		} else {
 			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
@@ -153,39 +158,30 @@ public class MemberServiceImpl implements MemberService {
 		Claims claims = jwtTokenProvider.decodeJwt(accessToken);
 		String user = claims.getSubject();
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
-		boolean isUpdated = false;
 		if (StringUtils.hasText(updateRequestDto.getPassword())) {
 			updateRequestDto.setPassword(passwordEncoder.encode(updateRequestDto.getPassword()));
 			findMember.updatePassword(updateRequestDto.getPassword());
-			isUpdated = true;
 		}
 		if (StringUtils.hasText(updateRequestDto.getNickname())) {
 			findMember.updateNickName(updateRequestDto.getNickname());
-			isUpdated = true;
 		}
 
 
 		//무조건 update 되어야함.
-		if(findMember.getProfileUrl()!=profileUrl){ //기본 이미지가 아니라면
+		if(!Objects.equals(findMember.getProfileUrl(), defaultProfileUrl)){ //기본 이미지가 아니라면
 			imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
 		}
 
-
-
 		if(!profileImage.isEmpty()){
 			profileUrl=imageService.upload(profileImage,"MemberProfile");
+		}else{
+			profileUrl=defaultProfileUrl;
 		}
-
 
 		findMember.updateProfileUrl(profileUrl);
-		isUpdated=true;
 
+		memberRepository.save(findMember);
 
-
-
-		if (isUpdated) {
-			memberRepository.save(findMember);
-		}
 	}
 
 	@Override

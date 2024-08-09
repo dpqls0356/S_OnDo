@@ -43,9 +43,11 @@ const IncorrectAccessModal = ({ isOpen, closeModal }) => {
           bottom: "auto",
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
+          zIndex: 1001,
         },
         overlay: {
           backgroundColor: "#f5f5f5",
+          zIndex: 1000,
         },
       }}
     >

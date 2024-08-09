@@ -51,6 +51,7 @@ public class CounselorController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${profile.url}")
+    String defaultProfileUrl; //기본 프로필 이미지
     String profileUrl;
 
     @PostMapping("/join")
@@ -62,7 +63,10 @@ public class CounselorController {
 
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
+            }else{
+                profileUrl=defaultProfileUrl;
             }
+
             Counselor counselor = joinRequestDto.toEntity(profileUrl);
             counselorService.join(counselor);
             return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
@@ -157,30 +161,7 @@ public class CounselorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("상담사 마이페이지 업데이트"));
     }
 
-    //상담사 전체 리스트 가져오기
-    @GetMapping("/list")
-    public ResponseEntity<ResponseVO<List<CounselorResponseDto>>> getCounselorList(){
-        List<CounselorResponseDto> counselorList=counselorService.getCounselorList();
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselorList", counselorList));
-    }
 
-    //상담사 상세보기
-    @GetMapping("/list/{counselorId}")
-    public ResponseEntity<ResponseVO<CounselorResponseDto>> getCounselor(@PathVariable Long counselorId){
-        CounselorResponseDto counselor=counselorService.getCounselor(counselorId);
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("counselor", counselor));
-    }
-
-    //상담사 필터링
-    @GetMapping("/filter")
-    public ResponseEntity<ResponseVO<List<CounselorResponseDto>>> getFilteredList(
-        @RequestParam(required = false) Gender gender,
-        @RequestParam(required = false) String field,
-        @RequestParam(required = false) String name){
-
-        List<CounselorResponseDto> counselorList=counselorService.filteredList(name,gender,field);
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("FilteredCounselorList", counselorList));
-    }
 
 
 
