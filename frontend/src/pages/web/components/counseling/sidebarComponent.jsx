@@ -9,7 +9,7 @@ import UserInfoComponent from "./userInfoComponent";
 import Chat from "./chat"; // userInfoComponent 대신 Chat을 가져와야 합니다.
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuthStore from "../../../../store/app/AuthStore";
+import useAuthStore from "../../../../store/app/authStore";
 
 const Tag = styled.div`
   position: absolute;
