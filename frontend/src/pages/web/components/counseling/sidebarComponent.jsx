@@ -1,17 +1,20 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesRight, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import styled, { css } from 'styled-components';
-import UserInfoComponent from './userInfoComponent';
-import Chat from './chat'; // userInfoComponent 대신 Chat을 가져와야 합니다.
+import {
+  faAnglesRight,
+  faChevronLeft,
+} from "@fortawesome/free-solid-svg-icons";
+import styled, { css } from "styled-components";
+import UserInfoComponent from "./userInfoComponent";
+import Chat from "./chat"; // userInfoComponent 대신 Chat을 가져와야 합니다.
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuthStore from "../../../../store/app/authStore";
+import useAuthStore from "../../../../store/app/AuthStore";
 
 const Tag = styled.div`
   position: absolute;
   top: 50px;
-  right: ${({ hidden }) => (hidden ? '0px' : '-50px')};
+  right: ${({ hidden }) => (hidden ? "0px" : "-50px")};
   width: 50px;
   height: 100px;
   border-top-left-radius: 20px;
@@ -25,7 +28,7 @@ const Tag = styled.div`
 `;
 
 const View = styled.div`
-  width: ${({ hidden }) => (hidden ? '0' : '35%')};
+  width: ${({ hidden }) => (hidden ? "0" : "35%")};
   background-color: #fae6e6;
   display: flex;
   flex-direction: column;
@@ -60,12 +63,10 @@ const Col = styled.div`
     `}
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const SideBar = ({memberInfo}) => {
-  
-      const { role } = useAuthStore((state) => ({
+const SideBar = ({ memberInfo }) => {
+  const { role } = useAuthStore((state) => ({
     role: state.role,
-    }));  
-
+  }));
 
   // const location = useLocation();
   const [isChat, setIsChat] = useState(true);
@@ -86,10 +87,7 @@ const SideBar = ({memberInfo}) => {
     setHidden(false);
   };
 
-
-
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -99,27 +97,38 @@ const SideBar = ({memberInfo}) => {
             <Col onClick={() => toggleChat(true)} active={isChat}>
               채팅
             </Col>
-            {role==="COUNSELOR"?
-            <div>
+            {role === "COUNSELOR" ? (
+              <div>
                 <Col>|</Col>
                 <Col onClick={() => toggleChat(false)} active={!isChat}>
-                내담자 정보</Col>
-            </div>
-                :null
-            }
+                  내담자 정보
+                </Col>
+              </div>
+            ) : null}
           </div>
           <div>
-            <FontAwesomeIcon style={{ width: "20px", height: "30px", cursor: "pointer" }} icon={faAnglesRight} onClick={hiddenSidebar} />
+            <FontAwesomeIcon
+              style={{ width: "20px", height: "30px", cursor: "pointer" }}
+              icon={faAnglesRight}
+              onClick={hiddenSidebar}
+            />
           </div>
         </Header>
-          {role === "COUNSELOR" ? (
-            isChat ? <Chat /> : <UserInfoComponent memberInfo={memberInfo} />
-          ) : (
+        {role === "COUNSELOR" ? (
+          isChat ? (
             <Chat />
-          )}
+          ) : (
+            <UserInfoComponent memberInfo={memberInfo} />
+          )
+        ) : (
+          <Chat />
+        )}
       </View>
       <Tag hidden={hidden} onClick={showSideBar}>
-        <FontAwesomeIcon style={{ width: "50px", height: "30px" }} icon={faChevronLeft} />
+        <FontAwesomeIcon
+          style={{ width: "50px", height: "30px" }}
+          icon={faChevronLeft}
+        />
       </Tag>
     </>
   );
