@@ -3,7 +3,7 @@ import useBoardStore from "../../../store/app/useBoardStore";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import useAuthStore from "../../../store/app/AuthStore";
+import useAuthStore from "../../../store/app/authStore";
 import Button from "../../../components/app/Button";
 import LoadingSpinner from "../../../components/app/Spinner";
 

@@ -7,7 +7,7 @@ import Input from "../../../components/app/Input";
 
 import camera from "./../../../assets/images/camera.png";
 import profile from "./../../../assets/images/ic_user.png";
-import useAuthStore from "../../../store/app/AuthStore.js";
+import useAuthStore from "../../../store/app/authStore.js";
 import "./Join.css";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;

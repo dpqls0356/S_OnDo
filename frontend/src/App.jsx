@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import useAuthStore from "./store/app/AuthStore";
+import useAuthStore from "./store/app/authStore";
 
 import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
 import CounselorLogin from "./pages/web/counselorLogin";
