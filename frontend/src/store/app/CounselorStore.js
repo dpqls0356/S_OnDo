@@ -7,6 +7,18 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// 성별 매핑 추가
+const GENDER_MAP = {
+  MALE: '남',
+  FEMALE: '여'
+};
+
+const GENDER_REVERSE_MAP = {
+  남: 'MALE',
+  여: 'FEMALE'
+};
+
+
 const calculateDday = (reservationDate) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -29,11 +41,16 @@ const useCounselorStore = create((set, get) => ({
   isLoading: false, // 비동기 작업 위한 로딩 상태
   error: null,
 
+   // 성별 매핑 함수 추가
+   displayGender: (gender) => GENDER_MAP[gender] || gender,
+   searchGender: (gender) => GENDER_REVERSE_MAP[gender] || gender,
+
+
   // 모든 상담사 목록 가져오기
   fetchCounselors: async () => {
     set({ isLoading: true });
     try {
-      const response = await api.get('/counselor/list');
+      const response = await api.get('/member/counselor/list');
       set({ counselors: response.data.data.counselorList, isLoading: false });
     } catch (error) {
       console.error("Error fetching counselors:", error);
@@ -45,14 +62,13 @@ const useCounselorStore = create((set, get) => ({
   fetchCounselorDetails: async (counselorId) => {
     set({ isLoading: true });
     try {
-      const response = await api.get(`/counselor/list/${counselorId}`);
+      const response = await api.get(`/member/counselor/list/${counselorId}`);
       set({ selectedCounselor: response.data.data.counselor, isLoading: false });
     } catch (error) {
       console.error("Error fetching counselor details:", error);
       set({ error: error.message, isLoading: false });
     }
   },
-
 
   // 상담사의 가능한 일정 가져오기
   fetchCounselorSchedule: async (counselorId, date) => {
@@ -103,35 +119,41 @@ const useCounselorStore = create((set, get) => ({
 
 
   // 사용자의 예약 목록 가져오기
-  // fetchUserReservations: async () => {
-  //   set({ isLoading: true });
-  //   try {
-  //     const response = await api.get('/member/reservation/getReservation');
-  //     const reservations = response.data.data.reservationList.map(reservation => ({
-  //       ...reservation,
-  //       dday: calculateDday(reservation.reservationDate)
-  //     }));
-  //     set({ userReservations: reservations, isLoading: false });
-  //   } catch (error) {
-  //     set({ error: error.message, isLoading: false });
-  //   }
-  // },
-
   fetchUserReservations: async () => {
-  set({ isLoading: true });
-  try {
-    const response = await api.get('/member/reservation/getReservation');
-    const reservations = response.data.data.reservationList.map(reservation => ({
-      ...reservation,
-      dday: calculateDday(reservation.reservationDate)
-    }));
-    set({ userReservations: reservations, isLoading: false });
-  } catch (error) {
-    console.error("Error fetching user reservations:", error);
-    set({ error: error.message, isLoading: false });
-  }
-},
-
+    set({ isLoading: true });
+    try {
+      const response = await api.get('/member/reservation/getReservation');
+      // console.log("Raw reservation data:", JSON.stringify(response.data, null, 2));
+  
+      const reservations = await Promise.all(response.data.data.reservationList.map(async (reservation) => {
+        // console.log("Processing reservation:", JSON.stringify(reservation, null, 2));
+        
+        try {
+          const counselorResponse = await api.get(`/member/counselor/list/${reservation.counselorId}`);
+          // console.log("Counselor data for reservation:", JSON.stringify(counselorResponse.data, null, 2));
+  
+          return {
+            ...reservation,
+            dday: calculateDday(reservation.reservationDate),
+            counselor: counselorResponse.data.data.counselor
+          };
+        } catch (counselorError) {
+          console.error("Error fetching counselor data:", counselorError);
+          return {
+            ...reservation,
+            dday: calculateDday(reservation.reservationDate),
+            counselor: null
+          };
+        }
+      }));
+  
+      // console.log("Processed reservations:", JSON.stringify(reservations, null, 2));
+      set({ userReservations: reservations, isLoading: false });
+    } catch (error) {
+      console.error("Error fetching user reservations:", error);
+      set({ error: error.message, isLoading: false });
+    }
+  },
 
   // 예약 취소하기
   cancelReservation: async (reservationId) => {
