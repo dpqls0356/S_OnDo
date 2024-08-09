@@ -43,7 +43,7 @@ const useBoardStore = create((set, get) => ({
       ) {
         // console.log('새로운 boards 상태:', response.boardList.content);
         return {
-          boards: [...state.boards, ...response.boardList.content],
+          boards: [...response.boardList.content],
           pagination: {
             currentPage: response.boardList.number || 0,
             totalPages: response.boardList.totalPages || 0,
