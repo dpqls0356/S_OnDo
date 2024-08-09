@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import useCounselorStore from '../../../store/app/CounselorStore';
 
 const CounselorListCard = ({name, gender, field, intro, reservationDate, reservId}) => {
-  const { calculateDday } = useCounselorStore();
+  const { calculateDday, displayGender } = useCounselorStore();
   
   const dday = reservationDate ? calculateDday(reservationDate) : null;
 
@@ -18,7 +18,7 @@ const CounselorListCard = ({name, gender, field, intro, reservationDate, reservI
           <img src={profile} alt="Profile" />
         </div>
         <div className='CounselorInfo'>
-          <p id='MP-CounselorName'>{name} 상담사({gender})</p>
+          <p id='MP-CounselorName'>{name} 상담사({displayGender(gender)})</p>
           <p id='MP-Counselorfield'>{field}</p>
           <p id='MP-Counselorintro'>{intro}</p>
         </div>

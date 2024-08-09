@@ -8,12 +8,16 @@ import './CounselorList.css';
 
 const CounselorList = () => {
   const nav = useNavigate();
-  const { userReservations, fetchUserReservations, isLoading } = useCounselorStore();
+  const { userReservations, fetchUserReservations, isLoading, displayGender } = useCounselorStore();
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
 
   useEffect(() => {
     fetchUserReservations();
   }, [fetchUserReservations]);
+
+  // useEffect(() => {
+  //   console.log("Current userReservations:", userReservations); // 디버깅용 로그
+  // }, [userReservations]);
 
   const sortedReservations = useMemo(() => {
     return [...userReservations].sort((a, b) => {
@@ -30,7 +34,7 @@ const CounselorList = () => {
   const onClickSort = () => {
     setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
   };
-
+  
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -47,18 +51,19 @@ const CounselorList = () => {
       </div>
       <div className='CL-main'>
         <div className='CS-List'>
-          {sortedReservations.map(reservation => (
-            <CLCard
-              key={reservation.id}
-              name={reservation.counselor?.name || '이름 없음'}
-              gender={reservation.counselor?.gender || '성별 미상'}
-              field={reservation.counselor?.field || '분야 미상'}
-              intro={reservation.counselor?.intro || '소개 없음'}
-              dday={reservation.dday}
-              is_complete={reservation.is_complete}
-              reservationDate={reservation.reservationDate}
-            />
-          ))}
+        {sortedReservations.map(reservation => (
+          <CLCard
+            key={reservation.id}
+            name={reservation.counselor?.name}
+            gender={reservation.counselor?.gender}
+            field={reservation.counselor?.field}
+            intro={reservation.counselor?.intro}
+            dday={reservation.dday}
+            is_complete={reservation.is_complete}
+            reservationDate={reservation.reservationDate}
+            id={reservation.id}
+          />
+        ))}
         </div>
       </div>
       <div id='CL-empty'></div>
