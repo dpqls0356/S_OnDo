@@ -1,11 +1,12 @@
 import "./BoardCreatepage.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
 import useBoardStore from "../../../store/app/BoardStore";
 import useAuthStore from "../../../store/app/AuthStore";
+import LoadingSpinner from "../../../components/app/Spinner";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -19,6 +20,7 @@ const BoardCreatepage = () => {
   const { currentBoard, setCurrentBoard, createBoard, resetCurrentBoard } =
     useBoardStore();
   const { user } = useAuthStore();
+  const [spinnerLoading, setSpinnerLoading] = useState(false);
 
   // 새로고침 시, 문제 해결 위해서 checkAuth
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -31,7 +33,6 @@ const BoardCreatepage = () => {
   useEffect(() => {
     const checkAuthAndSetBoard = async () => {
       await checkAuth();
-      console.log(user);
       setCurrentBoard("member_name", user.nickname);
     };
 
@@ -41,6 +42,7 @@ const BoardCreatepage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setSpinnerLoading(true);
     try {
       const boardData = new Blob(
         [
@@ -95,10 +97,12 @@ const BoardCreatepage = () => {
         console.error("Headers:", error.response.headers);
       }
     }
+    setSpinnerLoading(false);
   };
 
   return (
     <>
+      {spinnerLoading && <LoadingSpinner />}
       <form className="CreateForm" onSubmit={handleSubmit}>
         <div>
           <input
