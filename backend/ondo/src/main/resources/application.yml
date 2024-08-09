@@ -8,3 +8,9 @@ spring:
       - "classpath:openvidu.properties"
       - "classpath:perspectiveapi.properties"
       - "classpath:s3.properties"
+
+logging:
+  level:
+    org:
+      springframework:
+        DEBUG
