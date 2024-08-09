@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,6 +54,9 @@ public class CounselorServiceImpl implements CounselorService {
     private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory queryFactory;
     private final RedisTemplate<String, String> redisTemplate;
+
+    @Value("${profile.url}")
+    String profileUrl;
 
     @Override
     public TokenDto login(CounselorLoginRequestDto loginRequestDto) throws AuthenticationException {
@@ -117,10 +121,13 @@ public class CounselorServiceImpl implements CounselorService {
             Counselor changeCounselor=counselor.get();
             changeCounselor.updatePassword(password);
             changeCounselor.updateSelfIntroduction(selfIntroduction);
-            
-            imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
 
-            String profileUrl="https://d1kbrt3q8264bl.cloudfront.net/MemberProfile/profile.png"; //없으면 기본 프로필
+            //기본 이미지가 아니라면
+            if(changeCounselor.getProfileUrl()!=profileUrl){
+                imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
+            }
+
+
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
             }

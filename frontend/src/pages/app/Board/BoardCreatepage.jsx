@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
-import useBoardStore from "../../../store/app/useBoardStore";
+import useBoardStore from "../../../store/app/BoardStore";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
