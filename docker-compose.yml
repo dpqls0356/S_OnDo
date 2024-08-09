@@ -1,36 +1,22 @@
 version: "3.8"
 
 services:
-
   nginx:
     image: nginx
     container_name: nginx
     volumes:
-      - /home/ubuntu/nginx/conf.d/:/etc/nginx/conf.d
+      - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /etc/nginx/conf.d/:/etc/nginx/conf.d
       - /home/ubuntu/etc/ssl:/etc/ssl
-
     ports:
       - 80:80
       - 443:443
     networks:
-      - ci
       - ondo
+      - ci
     depends_on:
       - backend
       - frontend
-
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /jenkins:/var/jenkins_home
-    ports:
-      - "8080:8080"
-    privileged: true
-    user: root
-    networks:
-      - ci
 
   mysql:
     image: mysql:8.0
@@ -98,7 +84,7 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "${FRONTEND_PORT}:80"
+      - "${FRONTEND_PORT}:3000"
     networks:
       - ondo
 
