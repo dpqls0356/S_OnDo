@@ -20,13 +20,6 @@ const api = axios.create({
   withCredentials: true, // 쿠키를 포함하기 위해 필요
 });
 
-const DeleteForm = () => {
-  const nav = useNavigate();
-  const [deleteFormData, setDeleteFormData] = useState({
-    password: "",
-  });
-};
-
 const MyUpdateForm = () => {
   const nav = useNavigate();
   const { checkAuth, user } = useAuthStore();
@@ -72,39 +65,51 @@ const MyUpdateForm = () => {
   const DeleteAccountModal = ({ isOpen, onClose, onDelete, userPassword }) => {
     const [password, setPassword] = useState("");
     const [step, setStep] = useState(1);
+    const nav = useNavigate();
+    const [deleteFormData, setDeleteFormData] = useState({
+      password: "",
+    });
 
     const handlePasswordChange = (e) => {
+      setDeleteFormData({
+        ...deleteFormData,
+        password: e.target.value,
+      });
       setPassword(e.target.value);
     };
 
-    const handlePasswordSubmit = () => {
-      if (password === userPassword) {
-        setStep(2);
-      } else {
-        alert("비밀번호가 일치하지 않습니다.");
+    const handleConfirmDelete = () => {
+      setStep(2); // 비밀번호 입력 단계로 이동
+    };
+
+    const handlePasswordSubmit = async () => {
+      try {
+        console.log(deleteFormData.password);
+
+        const response = await api.delete(`${baseUrl}/member/delete`, {
+          data: { password: deleteFormData.password },
+          withCredentials: true,
+        });
+        console.log(response);
+        if (response.data.success) {
+          alert("탈퇴가 완료되었습니다.");
+          nav("/member/main"); //이렇게 가니까 잘못된 접근입니다가 뜬다. 로그아웃도 동시에 진행되서 그런가??
+        }
+      } catch (error) {
+        alert("비밀 번호가 일치하지 않습니다.");
+        console.error(error);
       }
     };
 
-    const handleDelete = () => {
-      onDelete();
-      onClose();
-    };
-
-    if (!isOpen) return null; // 모달이 열리지 않았으면 아무것도 렌더링하지 않음
+    if (!isOpen) return null;
 
     return (
       <div style={styles.overlay}>
         <div style={styles.modal}>
           {step === 1 && (
             <div>
-              <Input
-                type="password"
-                label="비밀번호를 다시 입력해주세요."
-                placeholder="비밀번호 입력"
-                onChange={handlePasswordChange}
-                labelClassName="text-left"
-              />
-              <button onClick={handlePasswordSubmit} style={styles.button}>
+              <h2>정말 탈퇴하시겠습니까?</h2>
+              <button onClick={handleConfirmDelete} style={styles.button}>
                 확인
               </button>
               <button onClick={onClose} style={styles.button}>
@@ -114,8 +119,15 @@ const MyUpdateForm = () => {
           )}
           {step === 2 && (
             <div>
-              <h2>정말 탈퇴하시겠습니까?</h2>
-              <button onClick={handleDelete} style={styles.button}>
+              <h2>비밀번호를 다시 입력해주세요</h2>
+              <input
+                type="password"
+                value={deleteFormData.password}
+                onChange={handlePasswordChange}
+                placeholder="비밀번호를 입력하세요"
+                style={styles.input}
+              />
+              <button onClick={handlePasswordSubmit} style={styles.button}>
                 확인
               </button>
               <button onClick={onClose} style={styles.button}>
@@ -158,7 +170,7 @@ const MyUpdateForm = () => {
       justifyContent: "space-between",
     },
     button: {
-      width: "100px",
+      width: "80px",
       padding: "10px 20px",
       marginTop: "10px",
       cursor: "pointer",
@@ -225,7 +237,7 @@ const MyUpdateForm = () => {
     return null;
   }
 
-  //---------------------------------------------------------------
+  //수정 데이터 전달하기 ------------------------------------------------------
   const updateMypage = async (event) => {
     event.preventDefault();
     if (formData.password !== formData.confirmPassword) {
