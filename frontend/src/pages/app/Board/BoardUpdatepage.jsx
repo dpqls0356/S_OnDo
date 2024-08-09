@@ -1,23 +1,29 @@
 import "./BoardCreatepage.css";
-import useBoardStore from "../../../store/app/BoardStore";
-import { useNavigate, useParams } from "react-router-dom";
+import useBoardStore from "../../../store/app/useBoardStore";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuthStore from "../../../store/app/AuthStore";
 import Button from "../../../components/app/Button";
+import LoadingSpinner from "../../../components/app/Spinner";
 
 const BoardUpdatepage = () => {
   const nav = useNavigate();
   const {
-    currentBoard,
-    setCurrentBoard,
+    currentViewArticle,
+    getArticleDetail,
+    setCurrentViewArticle,
     isLoadingArticle,
     articleError,
-    loadBoard,
   } = useBoardStore();
 
   const checkAuth = useAuthStore((state) => state.checkAuth);
-  const { id } = useParams();
+  // URL기반으로 ID를 가져옴
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/"); // ['member', 'board', '66b55850f1dbc46fda08593b', 'update']
+  const id = pathSegments[3]; // index 2 is '66b55850f1dbc46fda08593b'
+
+  const [spinnerLoading, setSpinnerLoading] = useState(false);
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -35,7 +41,7 @@ const BoardUpdatepage = () => {
 
   useEffect(() => {
     const loadAndProcessBoard = async (id) => {
-      await loadBoard(id);
+      await getArticleDetail(id);
     };
 
     if (id) {
@@ -44,20 +50,10 @@ const BoardUpdatepage = () => {
   }, []);
 
   useEffect(() => {
-    if (currentBoard) {
-      setImgName(extractAndDecodePath(currentBoard.imageUrl, "board"));
+    if (currentViewArticle) {
+      setImgName(extractAndDecodePath(currentViewArticle.imageUrl, "board"));
     }
-  }, [currentBoard]);
-
-  // useEffect(() => {
-  //   setImgName("");
-  // }, [currentBoard.imageUrl]);
-
-  // const formatDate = (dateString) => {
-  //   if (!dateString) return "";
-  //   const date = new Date(dateString);
-  //   return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
-  // };
+  }, [currentViewArticle]);
 
   if (isLoadingArticle) {
     return <div>로딩 중...</div>;
@@ -67,7 +63,7 @@ const BoardUpdatepage = () => {
     return <div>에러 발생: {articleError}</div>;
   }
 
-  if (!currentBoard) {
+  if (!currentViewArticle) {
     return <div>게시글을 찾을 수 없습니다.</div>;
   }
 
@@ -76,13 +72,11 @@ const BoardUpdatepage = () => {
   };
 
   const updateBoard = async () => {
-    console.log(currentBoard);
-
     const boardData = new Blob(
       [
         JSON.stringify({
-          title: currentBoard.title,
-          content: currentBoard.content,
+          title: currentViewArticle.title,
+          content: currentViewArticle.content,
         }),
       ],
       { type: "application/json" }
@@ -92,8 +86,8 @@ const BoardUpdatepage = () => {
     const formData = new FormData();
     formData.append("board", boardData);
 
-    if (currentBoard.image) {
-      formData.append("image", currentBoard.image);
+    if (currentViewArticle.image) {
+      formData.append("image", currentViewArticle.image);
     } else {
       const emptyFile = new Blob([""], { type: "image/jpeg" });
       formData.append("image", emptyFile, "empty.jpg");
@@ -110,8 +104,12 @@ const BoardUpdatepage = () => {
   const onClickUpdate = async (event) => {
     event.preventDefault();
 
-    await updateBoard();
-    nav(`/member/board/${id}`); // 바로 이전 페이지로 이동
+    setSpinnerLoading(true);
+    try {
+      await updateBoard();
+      nav(`/member/board/${id}`); // 바로 이전 페이지로 이동
+    } catch {}
+    setSpinnerLoading(false);
   };
 
   const extractAndDecodePath = (url, dirName) => {
@@ -143,14 +141,15 @@ const BoardUpdatepage = () => {
 
   return (
     <>
+      {spinnerLoading && <LoadingSpinner />}
       <form className="CreateForm">
         <div className="CF-Title">
           <input
             maxLength={20}
             id="CreateTitle"
             type="text"
-            value={currentBoard.title}
-            onChange={(e) => setCurrentBoard("title", e.target.value)}
+            value={currentViewArticle.title}
+            onChange={(e) => setCurrentViewArticle("title", e.target.value)}
           />
           <p onClick={onClickCancel} style={{ cursor: "pointer" }}>
             X
@@ -160,19 +159,19 @@ const BoardUpdatepage = () => {
           maxLength={300}
           name=""
           id=""
-          value={currentBoard.content}
-          onChange={(e) => setCurrentBoard("content", e.target.value)}
+          value={currentViewArticle.content}
+          onChange={(e) => setCurrentViewArticle("content", e.target.value)}
         ></textarea>
 
         <label>{"기존 파일 : " + imgName}</label>
         <div id="deleteOriginFile" style={{ fontSize: "small" }}>
-          클릭시 삭제되며 새로운 파일 업로드시 덮어씌워집니다.
+          수정시 기존의 파일은 사라집니다.
         </div>
         <input
           id="AddImage"
           type="file"
           accept="image/*"
-          onChange={(e) => setCurrentBoard("image", e.target.files[0])}
+          onChange={(e) => setCurrentViewArticle("image", e.target.files[0])}
         />
         {/* <button onClick={onClickUpdate}>수정</button> */}
         <Button text={"수정"} onClick={onClickUpdate} />
