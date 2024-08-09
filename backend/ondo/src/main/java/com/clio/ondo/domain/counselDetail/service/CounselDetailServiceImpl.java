@@ -3,11 +3,13 @@ package com.clio.ondo.domain.counselDetail.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.counselDetail.model.CounselDetail;
-import com.clio.ondo.domain.counselDetail.model.MemberWithReservationDto;
+import com.clio.ondo.domain.counselDetail.model.MemberForCounselorDto;
 import com.clio.ondo.domain.counselDetail.model.ReservationWithDetailDto;
 import com.clio.ondo.domain.counselDetail.repository.CounselDetailRepository;
 import com.clio.ondo.domain.member.model.Member;
@@ -30,9 +32,21 @@ public class CounselDetailServiceImpl implements CounselDetailService {
 	}
 
 	@Override
-	public MemberWithReservationDto getRerservationWithDetail(Long memberId, Long counselorId){
+	public MemberForCounselorDto getMemberForCounselor(Long memberId){
 		Member member = memberRepository.findById(memberId).orElse(null);
-		List<Reservation> reservations = reservationRepository.findByMemberIdAndCounselorIdOrderByReservationDateDesc(memberId, counselorId);
+		MemberForCounselorDto memberForCounselorDto = MemberForCounselorDto.builder()
+			.memberId(member.getId())
+			.memberName(member.getName())
+			.birthDate(member.getBirthDate())
+			.gender(member.getGender())
+			.build();
+
+		return memberForCounselorDto;
+	}
+
+	@Override
+	public List<ReservationWithDetailDto> getRerservationWithDetail(Long memberId, Long counselorId, Pageable pageable){
+		Page<Reservation> reservations = reservationRepository.findByMemberIdAndCounselorIdOrderByReservationDateDesc(memberId, counselorId, pageable);
 		List<ReservationWithDetailDto> reservationWithDetailDtos = new ArrayList<>();
 		for(Reservation reservation : reservations){
 			CounselDetail counselDetail = counselDetailRepository.findCounselDetailById(reservation.getId());
@@ -46,27 +60,24 @@ public class CounselDetailServiceImpl implements CounselDetailService {
 			reservationWithDetailDtos.add(reservationWithDetailDto);
 		}
 
-		MemberWithReservationDto memberWIthReservationto = MemberWithReservationDto.builder()
-			.memberId(member.getId())
-			.memberName(member.getName())
-			.birthDate(member.getBirthDate())
-			.gender(member.getGender())
-			.reservations(reservationWithDetailDtos)
-			.build();
-
-		return memberWIthReservationto;
+		return reservationWithDetailDtos;
 	}
 
 	@Override
 	@Transactional
-	public MemberWithReservationDto updateReservationCounselingDetail(Long counselorId,
+	public ReservationWithDetailDto updateReservationCounselingDetail(Long counselorId,
 		ReservationWithDetailDto reservationWithDetailDto){
 		Reservation reservation = reservationRepository.findById(reservationWithDetailDto.getReservationId()).orElse(null);
 		CounselDetail counselDetail = counselDetailRepository.findCounselDetailById(reservation.getId());
 		counselDetail.updateContent(reservationWithDetailDto.getCounsellingDetail());
 
-		Long memberId = reservation.getMember().getId();
+		ReservationWithDetailDto updated = ReservationWithDetailDto.builder()
+			.reservationId(reservation.getId())
+			.reservationDate(reservation.getReservationDate())
+			.counselingReservationDetail(reservation.getDetail())
+			.counsellingDetail(counselDetail.getContent())
+			.build();
 
-		return getRerservationWithDetail(memberId, counselorId);
+		return updated;
 	}
 }

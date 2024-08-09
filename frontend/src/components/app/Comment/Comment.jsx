@@ -2,7 +2,7 @@ import "./Comment.css";
 import { useState } from "react";
 import profile from "./../../../assets/images/test.png";
 import useCommentStore from "../../../store/app/CommentStore";
-import useAuthStore from "../../../store/app/AuthStore";
+import useAuthStore from "../../../store/app/authStore";
 
 const Comment = ({ comment }) => {
   const { deleteComment, updateComment } = useCommentStore();
