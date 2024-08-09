@@ -5,7 +5,7 @@ import axios from "axios";
 import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
 import useBoardStore from "../../../store/app/BoardStore";
-import useAuthStore from "../../../store/app/AuthStore";
+import useAuthStore from "../../../store/app/authStore";
 import LoadingSpinner from "../../../components/app/Spinner";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;

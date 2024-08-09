@@ -10,10 +10,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MemberWithReservationDto {
+public class MemberForCounselorDto {
 	private Long memberId;
 	private String memberName;
 	private Gender gender;
 	private LocalDate birthDate;
-	private List<ReservationWithDetailDto> reservations;
+	// private List<ReservationWithDetailDto> reservations;
 }
