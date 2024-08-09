@@ -1,12 +1,9 @@
 import "./BoardCreatepage.css";
-
-import { useNavigate } from "react-router-dom";
 import useBoardStore from "../../../store/app/BoardStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import useBoardStore from "../../../store/app/useBoardStore";
-import useAuthStore from "../../../store/app/authStore";
+import useAuthStore from "../../../store/app/AuthStore";
 import Button from "../../../components/app/Button";
 
 const BoardUpdatepage = () => {
