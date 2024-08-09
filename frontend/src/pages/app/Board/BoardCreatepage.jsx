@@ -29,9 +29,13 @@ const BoardCreatepage = () => {
   };
 
   useEffect(() => {
-    checkAuth();
-    console.log(user);
-    setCurrentBoard("member_name", user.nickname);
+    const checkAuthAndSetBoard = async () => {
+      await checkAuth();
+      console.log(user);
+      setCurrentBoard("member_name", user.nickname);
+    };
+
+    checkAuthAndSetBoard();
   }, []);
 
   const handleSubmit = async (e) => {
