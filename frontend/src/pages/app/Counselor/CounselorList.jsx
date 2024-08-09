@@ -15,10 +15,6 @@ const CounselorList = () => {
     fetchUserReservations();
   }, [fetchUserReservations]);
 
-  // useEffect(() => {
-  //   console.log("Current userReservations:", userReservations); // 디버깅용 로그
-  // }, [userReservations]);
-
   const sortedReservations = useMemo(() => {
     return [...userReservations].sort((a, b) => {
       const dateA = new Date(a.reservationDate);
@@ -50,21 +46,25 @@ const CounselorList = () => {
         </div>
       </div>
       <div className='CL-main'>
-        <div className='CS-List'>
-        {sortedReservations.map(reservation => (
-          <CLCard
-            key={reservation.id}
-            name={reservation.counselor?.name}
-            gender={reservation.counselor?.gender}
-            field={reservation.counselor?.field}
-            intro={reservation.counselor?.intro}
-            dday={reservation.dday}
-            is_complete={reservation.is_complete}
-            reservationDate={reservation.reservationDate}
-            id={reservation.id}
-          />
-        ))}
-        </div>
+        {sortedReservations.length === 0 ? (
+          <div className="no-reservations">예약된 상담이 없습니다.</div>
+        ) : (
+          <div className='CS-List'>
+            {sortedReservations.map(reservation => (
+              <CLCard
+                key={reservation.id}
+                name={reservation.counselor?.name}
+                gender={reservation.counselor?.gender}
+                field={reservation.counselor?.field}
+                intro={reservation.counselor?.intro}
+                dday={reservation.dday}
+                is_complete={reservation.is_complete}
+                reservationDate={reservation.reservationDate}
+                id={reservation.id}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <div id='CL-empty'></div>
     </div>
