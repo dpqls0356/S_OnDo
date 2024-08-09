@@ -4,6 +4,7 @@ import useAuthStore from "../../../store/app/AuthStore.js";
 import axios from "axios";
 import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input.jsx";
+import DisabledInput from "../../../components/app/DisabledInput.jsx";
 import InputImg from "../../../components/app/InputImg.jsx";
 
 import camera from "./../../../assets/images/camera.png";
@@ -164,7 +165,7 @@ const MyUpdateForm = () => {
               objectPosition: "center",
             }}
           />
-          <img id="JoinCamera" src={camera} alt="카메라 아이콘" onClick={handleImageClick} />
+          <img id="JoinCamera" style={{cursor: "pointer"}} src={camera} alt="카메라 아이콘" onClick={handleImageClick} />
           <input
             type="file"
             ref={fileInputRef} // input에 대한 참조 설정
@@ -175,7 +176,7 @@ const MyUpdateForm = () => {
           />
         </div>
         <form id="JoinForm" className="flex flex-col space-y-4" onSubmit={updateMypage}>
-          <Input
+          <DisabledInput
             label="이름"
             placeholder=" 이름을 입력해주세요"
             value={formData.name}
@@ -188,7 +189,7 @@ const MyUpdateForm = () => {
             onChange={handleInputChange("nickname")}
             labelClassName="text-left"
           />
-          <Input
+          <DisabledInput
             label="이메일"
             placeholder=" 이메일을 입력해주세요"
             type="email"
@@ -211,7 +212,7 @@ const MyUpdateForm = () => {
             onChange={handleInputChange("confirmPassword")}
             labelClassName="text-left"
           />
-          <Input
+          <DisabledInput
             label="생년월일"
             placeholder=" 생년월일을 입력해주세요"
             type="date"
@@ -219,10 +220,10 @@ const MyUpdateForm = () => {
             labelClassName="text-left"
           />
           <div className="flex justify-center space-x-4">
-            <button type="button" style={genderButtonStyle("MALE")}>
+            <button type="button" style={genderButtonStyle("MALE")} disabled>
               남
             </button>
-            <button type="button" style={genderButtonStyle("FEMALE")}>
+            <button type="button" style={genderButtonStyle("FEMALE")} disabled>
               여
             </button>
           </div>
