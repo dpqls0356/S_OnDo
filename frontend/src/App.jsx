@@ -20,6 +20,7 @@ import Schedul from "./pages/web/components/center/SchedulComponent";
 
 import Logopage from "./pages/app/Member/Logopage";
 import Loginpage from "./pages/app/Member/Loginpage";
+import Story from "./pages/app/OurStory/story";
 import Namepage from "./pages/app/Home/Namepage";
 import Notfoundpage from "./pages/app/Notfoundpage";
 import Homepage from "./pages/app/Home/Homepage";
@@ -44,7 +45,7 @@ function App() {
   return (
     <Router>
       <Routes>
-         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
+        <Route path="/counselor/login" element={<CounselorLogin />}></Route>
         <Route path="/counselor" element={<CounselorLayout />}>
           <Route path="" element={<Schedul />} />
           {/* <Route path="" element={<TimeTableComponent/> }/> */}
@@ -61,7 +62,7 @@ function App() {
         <Route path="/member" element={<MobileLayout />}>
           <Route path="main" element={<Logopage />} />
           <Route path="login" element={<Loginpage />} />
-          <Route path="name" element={<Namepage />} />
+          <Route path="story" element={<Story />} />
           <Route path="home" element={<Homepage />} />
           <Route path="chat" element={<Chatpage />} />
           <Route path="board" element={<Boardpage />} />
