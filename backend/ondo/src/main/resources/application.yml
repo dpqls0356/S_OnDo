@@ -1,3 +1,5 @@
 spring:
   profiles:
-    active: oauth, secret
+    active: oauth
+  config:
+    import: "classpath:application-secret.yml"
