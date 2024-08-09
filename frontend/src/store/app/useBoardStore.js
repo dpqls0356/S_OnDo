@@ -62,6 +62,14 @@ const useBoardStore = create((set, get) => ({
       currentBoard: { ...state.currentBoard, [field]: value },
     })),
 
+  deleteCurrentImage: (newImage) =>
+    set((state) => ({
+      currentBoard: {
+        ...state.currentBoard, // 기존의 currentBoard 속성 유지
+        imageUrl: newImage, // image 속성만 업데이트
+      },
+    })),
+
   // 게시글 생성
   createBoard: () => {
     const { currentBoard, boards } = get();

@@ -21,20 +21,19 @@ const Comment = ({ comment }) => {
 
   const onSaveEdit = async () => {
     const success = await updateComment(comment.id, editedContent);
-    if (success) {
-      setIsEditing(false);
-      console.log("댓글 수정 완료");
-    }
+    console.log(success.status);
+    setIsEditing(false);
+    // 백에서 리턴을 주는게 아니라서 새로고침 해야 할듯?
+    window.location.reload();
+    console.log("댓글 수정 완료");
   };
-
-  console.log(comment);
 
   return (
     <div className="CommentCard">
       <div className="CommentWriter">
         <div>
           <img src={profile} alt="프로필" />
-          <p>{comment.member_nickname}</p>
+          <p>{comment.member_name}</p>
         </div>
         <div>
           <p onClick={onClickCommentEdit} style={{ cursor: "pointer" }}>

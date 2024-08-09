@@ -56,7 +56,7 @@ const BoardDetailPage = () => {
       content: comment.current.value,
       article_id: articleId,
       member_id: user.id.toString(),
-      member_name: user.name,
+      member_name: user.nickname,
     };
     // 데이터 형식 확인
     //console.log("Sending comment data:", commentData);
