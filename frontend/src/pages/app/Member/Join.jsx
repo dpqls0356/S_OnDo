@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
-import axios from "axios";
 
 import camera from "./../../../assets/images/camera.png";
 import profile from "./../../../assets/images/ic_user.png";
