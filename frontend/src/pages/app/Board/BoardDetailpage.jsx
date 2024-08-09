@@ -1,10 +1,9 @@
 import "./BoardDetailpage.css";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import authStore from "../../../store/app/AuthStore";
 import useBoardStore from "../../../store/app/useBoardStore";
 import useCommentStore from "../../../store/app/CommentStore";
-import useAuthStore from "../../../store/app/AuthStore";
+import useAuthStore from "../../../store/app/authStore";
 import CommentList from "../../../components/app/Comment/CommentList";
 import Button from "../../../components/app/Button";
 import axios from "axios";
@@ -27,7 +26,6 @@ const BoardDetailPage = () => {
   } = useBoardStore();
 
   const { addComment, getComments } = useCommentStore();
-  //const { user } = authStore();
   const [spinnerLoading, setSpinnerLoading] = useState(false);
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
