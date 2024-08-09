@@ -5,8 +5,8 @@ import useCounselorStore from '../../../store/app/CounselorStore';
 
 const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reservId}) => {
   const nav = useNavigate();
-  const { calculateDday } = useCounselorStore();
-
+  const { calculateDday, displayGender } = useCounselorStore();
+  
   const dday = calculateDday(reservationDate);
 
   const MobileCounseling = () => {
@@ -22,7 +22,7 @@ const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reser
           <img src={profile} alt="Profile" />
         </div>
         <div className='CSInfo'>
-          <p id='CS-CounselorName'>{name} 상담자({gender})</p>
+          <p id='CS-CounselorName'>{name} 상담자({displayGender(gender)})</p>
           <p id='CS-Counselorfield'>{field}</p>
           <p id='CS-Counselorintro'>{intro}</p>
         </div>

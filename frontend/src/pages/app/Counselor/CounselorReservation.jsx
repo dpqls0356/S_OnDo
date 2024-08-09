@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useCounselorStore from '../../../store/app/CounselorStore';
 import CLCard from '../../../components/app/Counselor/CLCard';
@@ -16,7 +16,8 @@ const Reservation = () => {
     fetchCounselorDetails, 
     fetchCounselorSchedule, 
     makeReservation, 
-    counselorSchedule 
+    counselorSchedule ,
+    displayGender
   } = useCounselorStore();
 
   const [selectedDate, setSelectedDate] = useState(null);
@@ -70,7 +71,7 @@ const Reservation = () => {
             {selectedCounselor && (
               <CLCard
                 name={selectedCounselor.name}
-                gender={selectedCounselor.gender}
+                gender={displayGender(selectedCounselor.gender)}
                 field={selectedCounselor.field}
                 intro={selectedCounselor.intro}
                 reservId={counselorId}

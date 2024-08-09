@@ -1,4 +1,4 @@
-import './Namepage1.css'
+import './Namepage.css'
 
 import character from "./../../../assets/images/공통_캐릭터.png";
 import Balloon from "../../../components/app/Balloon";
@@ -6,7 +6,7 @@ import Name from '../../../components/app/Name';
 import name_bottom from "./../../../assets/images/name_bottom.png";
 
 
-const Navbarpage = () => {
+const Namepage = () => {
   return (
     <div>
       {/* 나중에 푸터 없애기 */}
@@ -34,4 +34,4 @@ const Navbarpage = () => {
   )
 }
 
-export default Navbarpage;
+export default Namepage;
