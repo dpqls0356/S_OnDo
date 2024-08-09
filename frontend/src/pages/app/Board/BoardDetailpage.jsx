@@ -1,5 +1,5 @@
 import "./BoardDetailpage.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import authStore from "../../../store/app/AuthStore";
 import useBoardStore from "../../../store/app/useBoardStore";
@@ -11,6 +11,7 @@ import axios from "axios";
 import calendar from "./../../../assets/images/calendar.png";
 import profile from "./../../../assets/images/test.png";
 import commentbtn from "./../../../assets/images/send.png";
+import LoadingSpinner from "../../../components/app/Spinner";
 
 const BoardDetailPage = () => {
   const { articleId } = useParams();
@@ -26,7 +27,8 @@ const BoardDetailPage = () => {
   } = useBoardStore();
 
   const { addComment, getComments } = useCommentStore();
-  const { user } = authStore();
+  //const { user } = authStore();
+  const [spinnerLoading, setSpinnerLoading] = useState(false);
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -49,6 +51,7 @@ const BoardDetailPage = () => {
   }, [articleId, getArticleDetail, resetCurrentViewArticle]);
 
   const onClickCreateComment = async () => {
+    setSpinnerLoading(true);
     if (comment.current.value.trim() === "") return;
 
     const commentData = {
@@ -68,6 +71,7 @@ const BoardDetailPage = () => {
       // 댓글 목록 불러오기
       await getComments(articleId);
     }
+    setSpinnerLoading(false);
   };
 
   const onClickUpdate = () => {
@@ -114,6 +118,7 @@ const BoardDetailPage = () => {
 
   return (
     <div className="scroll">
+      {spinnerLoading && <LoadingSpinner />}
       <div className="DetailScroll">
         <div id="CommentScroll">
           {/* 게시글 */}

@@ -3,7 +3,7 @@ import "./Chat.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-
+import LoadingSpinner from "../../../components/app/Spinner";
 import chat_send from "./../../../assets/images/chat_send.png";
 
 import back from "./../../../assets/images/back.png";
@@ -21,6 +21,7 @@ const Chatpage = () => {
   const [pageNum, setPageNum] = useState(0);
   const [refPageNum, setRefPageNum] = useState(true);
   const containerRef = useRef(null);
+  const [spinnerLoading, setSpinnerLoading] = useState(false);
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -49,6 +50,8 @@ const Chatpage = () => {
   const typeChattingMessage = async () => {
     // 공백이면 동작하면 안 됨
     if (userInput.content !== undefined) {
+      setSpinnerLoading(true);
+
       const response = await api.post(
         "/chatbot/insert",
         {
@@ -68,6 +71,8 @@ const Chatpage = () => {
         ...response.data.data.responseChatting,
       ]);
       setUserInput({ content: "", createdAt: "" }); // userInput 초기화
+
+      setSpinnerLoading(false);
     }
   };
 
@@ -124,6 +129,7 @@ const Chatpage = () => {
 
   return (
     <div className="Chat">
+      {spinnerLoading && <LoadingSpinner />}
       {/* 헤더 */}
       <div className="CharacterName">
         <img onClick={onClickBack} style={{ cursor: "pointer" }} src={back} />

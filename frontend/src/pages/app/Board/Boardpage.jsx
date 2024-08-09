@@ -9,7 +9,6 @@ import filter from "./../../../assets/images/filter.png";
 import search from "./../../../assets/images/search.png";
 
 const Boardpage = () => {
-
   const nav = useNavigate();
 
   const onClickCreate = () => {
@@ -30,43 +29,46 @@ const Boardpage = () => {
 
   return (
     <div className="scroll">
-    <div className="BoardScroll">
-      {/* 헤더 */}
-      <div className="BoardHeader">
-        <p>온도의 소통공간</p>
-        <img
-          onClick={onClickCreate}
-          src={create}
-          style={{ cursor: "pointer" }}
-        />
-      </div>
-
-      {/* 검색바 */}
-      <div className="BoardSearch">
-        <div>
-          <form>
-            <img
-              onClick={onClickSearch}
-              src={search}
-              style={{ cursor: "pointer" }}
-            />
-            <input type="text" ref={text} placeholder="검색" />
-          </form>
+      <div className="BoardScroll">
+        {/* 헤더 */}
+        <div className="BoardHeader">
+          <p>온도의 소통공간</p>
+          <img
+            onClick={onClickCreate}
+            src={create}
+            style={{ cursor: "pointer" }}
+          />
         </div>
 
-        <img onClick={onClickSort} src={filter} style={{ cursor: "pointer" }} />
-      </div>
+        {/* 검색바 */}
+        <div className="BoardSearch">
+          <div>
+            <form>
+              <img
+                onClick={onClickSearch}
+                src={search}
+                style={{ cursor: "pointer" }}
+              />
+              <input type="text" ref={text} placeholder="검색" />
+            </form>
+          </div>
 
-      {/* 게시글 목록 컨테이너 */}
-      <div className="BoardContentContainer">
-        <div className="BoardContentList">
-          <BoardList />
+          <img
+            onClick={onClickSort}
+            src={filter}
+            style={{ cursor: "pointer" }}
+          />
         </div>
+
+        {/* 게시글 목록 컨테이너 */}
+        <div className="BoardContentContainer">
+          <div className="BoardContentList">
+            <BoardList />
+          </div>
+        </div>
+
+        <div className="emptybox3"></div>
       </div>
-
-      <div className="emptybox3"></div>
-
-    </div>
     </div>
   );
 };
