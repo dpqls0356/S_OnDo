@@ -11,10 +11,8 @@ import back_img from "./../../../assets/images/home_back2.jpg";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import useAuthStore from '../../../store/app/AuthStore';
 
 const Homepage = () => {
-  const { isAuthenticated } = useAuthStore();
   const renderCount = useRef(0);
   const [character, setCharacter] = useState({});
 
@@ -39,8 +37,6 @@ const Homepage = () => {
 
   useEffect(() => {
     renderCount.current += 1;
-    console.log("Render count:", renderCount.current);
-    console.log("isAuthenticated:", isAuthenticated);
   });
   // const { getAccessToken } = useAuthStore();
   // const getBoard = async()=>{
