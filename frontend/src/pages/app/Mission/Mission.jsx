@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
-import useMissionStore from '../../../store/app/useMissionStore';
+import useMissionStore from '../../../store/app/MissionStore';
 import MissionButton from '../../../components/app/MissionButton';
 import char from './../../../assets/images/test_chara.png'
 import './Mission.css'

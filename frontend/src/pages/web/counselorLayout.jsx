@@ -5,7 +5,7 @@ import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import ReservationSpot from "./components/checkReservation/ReservationSpot";
-import useAuthStore from "../../store/app/authStore";
+import useAuthStore from "../../store/app/AuthStore";
 import IncorrectAccessModal from "./components/incorrectAccessModal";
 import Centerpage from "./centerpage";
 
@@ -69,8 +69,11 @@ const ChangeSpot = styled.div`
 `;
 
 function CounselorLayout() {
-  const checkLoggedIn = useAuthStore((state) => state.checkLoggedIn);
-  const counselorLogout = useAuthStore((state) => state.counselorLogout);
+  const { role, user, counselorLogout, checkAuth } = useAuthStore((state) => ({
+    role: state.role,
+    counselorLogout: state.counselorLogout,
+    checkAuth: state.checkAuth,
+  }));
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -80,30 +83,38 @@ function CounselorLayout() {
     navigate("/counselor/login");
   };
 
-  const closeModal = () => {
+  const counselorCloseModal = () => {
     setIsModalOpen(false);
-    navigate("/counselor/login");
+    //로그인이 안된 경우
+    if (!role) {
+      navigate("/counselor/login");
+    }
+    //로그인이 되어있는데 유저인 경우
+    else if (role === "USER") {
+      navigate("/member/home");
+    }
   };
 
-  // 로그인 페이지에 들어올 때마다 인증 여부 확인
   useEffect(() => {
     const checkAuthentication = async () => {
-      const loggedIn = await checkLoggedIn();
-      console.log("layout: " + loggedIn);
-      if (!loggedIn) {
+      console.log("counselorLayout - role:", role, "user:", user);
+      // await checkAuth(); // 인증 상태를 먼저 확인합니다.
+
+      //로그인이 안된 경우 또는 로그인이 되어있긴한데 유저가 해당 페이지로 와버린 경우
+      if (!role || role !== "COUNSELOR") {
         setIsModalOpen(true);
       }
     };
 
     checkAuthentication();
-  }, [checkLoggedIn, navigate]);
+  }, [role, user, checkAuth]);
 
   return (
     <View>
       <HomeLeft>
         <ReservationSpot />
         <ChangeSpot>
-          <Centerpage/>
+          <Centerpage />
         </ChangeSpot>
       </HomeLeft>
       <HomeRight>
@@ -120,7 +131,7 @@ function CounselorLayout() {
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="size-6"
+                className="size-6"
               >
                 <path
                   stroke-linecap="round"
@@ -136,11 +147,16 @@ function CounselorLayout() {
           <StyledLink to="">일정관리</StyledLink>
           <StyledLink to="daylist/상담사아이디">상담내역</StyledLink>
           <StyledLink to="mypage">마이페이지</StyledLink>
-          <StyledLink to="updatepassword/상담사아이디">비밀번호 변경</StyledLink>
+          <StyledLink to="updatepassword/상담사아이디">
+            비밀번호 변경
+          </StyledLink>
         </Nav>
         <LogoutBtn onClick={logout}>로그아웃</LogoutBtn>
       </HomeRight>
-      <IncorrectAccessModal isOpen={isModalOpen} closeModal={closeModal} />
+      <IncorrectAccessModal
+        isOpen={isModalOpen}
+        closeModal={counselorCloseModal}
+      />
     </View>
   );
 }

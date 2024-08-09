@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../../../store/app/authStore";
+import useAuthStore from "../../../store/app/AuthStore";
 import axios from "axios";
 import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
@@ -41,7 +41,7 @@ const MyPage = () => {
   const onClickLogout = async () => {
     const success = await logout();
     if (success) {
-      nav("/member/login");
+      nav("/member/main");
     } else {
       alert("로그아웃 실패!");
     }
@@ -67,7 +67,7 @@ const MyPage = () => {
             src={user.profileUrl || profile}
             alt="Profile"
             style={{
-              width: "120px",
+              width: "100px",
               height: "100px",
               borderRadius: "50%",
               objectFit: "cover",
