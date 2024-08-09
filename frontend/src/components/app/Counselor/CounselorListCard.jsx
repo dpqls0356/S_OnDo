@@ -1,13 +1,17 @@
 import './CounselorListCard.css';
 import profile from './../../../assets/images/ic_user.png';
 import vector from './../../../assets/images/Vector.png';
-
 import { Link } from 'react-router-dom';
+import useCounselorStore from '../../../store/app/CounselorStore';
 
-const CounselorListCard = ({name, gender, field, intro, dday, reservId}) => {
+const CounselorListCard = ({name, gender, field, intro, reservationDate, reservId}) => {
+  const { calculateDday } = useCounselorStore();
+  
+  const dday = reservationDate ? calculateDday(reservationDate) : null;
+
   return (
     <div className="CounselorListCard">
-      {dday &&(<p id='CS-Date'>2024.08.20</p>)}
+      {reservationDate && (<p id='CS-Date'>{new Date(reservationDate).toLocaleDateString()}</p>)}
       
       <div className='ConSelorCardIn'>
         <div>
@@ -18,14 +22,17 @@ const CounselorListCard = ({name, gender, field, intro, dday, reservId}) => {
           <p id='MP-Counselorfield'>{field}</p>
           <p id='MP-Counselorintro'>{intro}</p>
         </div>
-        {!dday&& !reservId &&(<div><img src={vector} /></div>)}
+        {!dday && !reservId && (<div><img src={vector} alt="Vector" /></div>)}
       </div>
 
-      {/* 예약 화면-상담사 카드 출력용 */}
-      {reservId &&(<Link to={`/member/counseling/${reservId}/detail`}><div style={{textAlign: 'right', fontSize: '80%',color: 'black', textDecoration: 'underline'}}>더보기</div></Link>)}
+      {reservId && (
+        <Link to={`/member/counseling/${reservId}/detail`}>
+          <div style={{textAlign: 'right', fontSize: '80%', color: 'black', textDecoration: 'underline'}}>
+            더보기
+          </div>
+        </Link>
+      )}
       
-      
-      {/* dday 값이 있을 경우에만 아래가 출력됨 */}
       {dday && (
         <div className='CSCardFooter'>
           <div>
