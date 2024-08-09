@@ -14,8 +14,8 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const JoinForm = () => {
   const nav = useNavigate();
+  const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   const { error, success } = useJoinStore();
-
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const handleFileChange = (event) => {
@@ -31,6 +31,13 @@ const JoinForm = () => {
   const handleImageClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click(); // img 클릭 시 input 클릭하도록 함
+    }
+  };
+
+  const handleImageDelete = () => {
+    if (confirm("이미지를 삭제하시겠습니까?")) {
+      setPreviewUrl(mainProfileUrl); // '네'를 클릭 시 기본 이미지로 설정
+      setSelectedFile(null);
     }
   };
 
@@ -128,7 +135,6 @@ const JoinForm = () => {
     transition: "all 0.3s ease",
   });
 
-  const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   return (
     <div className="scroll">
       <div className="JoinPage">
@@ -136,6 +142,7 @@ const JoinForm = () => {
           <img
             src={previewUrl || mainProfileUrl}
             alt="프로필 이미지"
+            onClick={handleImageDelete}
             style={{
               width: "200px", // 부모 요소 크기에 맞춤
               height: "200px", // 부모 요소 크기에 맞춤
