@@ -3,6 +3,7 @@ package com.clio.ondo.domain.counselor.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -56,6 +57,7 @@ public class CounselorServiceImpl implements CounselorService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Value("${profile.url}")
+    String defaultProfileUrl;
     String profileUrl;
 
     @Override
@@ -84,6 +86,8 @@ public class CounselorServiceImpl implements CounselorService {
             schedule.setCounselor(counselor);
             scheduleRepository.save(schedule);
         }
+
+
         counselorRepository.save(counselor);
     }
 
@@ -123,13 +127,14 @@ public class CounselorServiceImpl implements CounselorService {
             changeCounselor.updateSelfIntroduction(selfIntroduction);
 
             //기본 이미지가 아니라면
-            if(changeCounselor.getProfileUrl()!=profileUrl){
+            if(!Objects.equals(changeCounselor.getProfileUrl(), defaultProfileUrl)){
                 imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
             }
 
-
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
+            }else{
+                profileUrl=defaultProfileUrl;
             }
              //프로필 이미지 넣기
             changeCounselor.updateProfileUrl(profileUrl);
