@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useNavigate } from "react-router-dom";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -99,7 +99,11 @@ const HomeUserInfoComponent = () => {
   const [historyList, setHistoryList] = useState([]);
   const location = useLocation();
   const memberId = location.state.memberId;
-  console.log(memberId);
+  const [page, setPage] = useState(0);
+  const size = 10;
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true); // 일반 리스트
+  const observerTarget = useRef(null);
 
   useEffect(() => {
     console.log("Fetching member info for ID:", memberId);
