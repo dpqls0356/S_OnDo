@@ -2,4 +2,9 @@ spring:
   profiles:
     active: oauth
   config:
-    import: "classpath:application-secret.yml"
+    import:
+      - "classpath:application-secret.yml"
+      - "classpath:openaiapi.properties"
+      - "classpath:openvidu.properties"
+      - "classpath:perspectiveapi.properties"
+      - "classpath:s3.properties"
