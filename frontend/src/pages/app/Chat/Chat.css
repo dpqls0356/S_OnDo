@@ -2,62 +2,120 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 15px;
-  box-sizing: border-box;
 }
 
 .CharacterName {
-  flex-shrink: 0;
   display: flex;
-  justify-content: left;
   align-items: center;
-  gap: 3%;
-  font-size: 140%;
-  height: 10vh;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.CharacterName img {
+  width: 24px;
+  height: 24px;
+  margin-right: 15px;
+  cursor: pointer;
 }
 
 .ChatContent {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
+  padding: 20px 15px;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  position: relative;
+}
+
+.ChatContent::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+.load-more-button {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .ChatScreen {
-  flex: 1;
-  overflow-y: auto;
-  padding: 10px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
 }
 
-.ChatScreen::-webkit-scrollbar {
-  display: none;
+.message-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+  margin-bottom: 10px;
 }
 
-.sticky-header {
-  position: sticky;
-  top: 0;
-  background-color: #fff;
-  z-index: 1;
-  cursor: pointer;
-  padding: 5px 0;
-  text-align: center;
+.message-container.user {
+  align-self: flex-end;
+}
+
+.message-container.bot {
+  align-self: flex-start;
+}
+
+.user-message, .bot-message {
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.user-message {
+  background-color: #BDECEB;
+  color: #000000;
+}
+
+.bot-message {
+  background-color: #FAE6E6;
+  color: #000000;
+}
+
+.message-time {
+  font-size: 11px;
+  color: #888;
+  margin-top: 5px;
+}
+
+.user-message + .message-time {
+  text-align: right;
 }
 
 .Chatbox {
-  flex-shrink: 0;
-  width: 100%;
-  height: 55px;
+  display: flex;
+  align-items: center;
   padding: 10px 15px;
   background-color: #fae6e6;
-  display: flex;
   border-radius: 20px;
-  gap: 10px;
-  margin-top: 10px;
+  margin: 10px;
 }
 
-.Chatbox > input {
-  background-color: #fae6e6;
-  width: 100%;
+.Chatbox input {
+  flex: 1;
+  border: none;
+  background-color: transparent;
+  font-size: 14px;
+}
+
+.Chatbox input:focus {
+  outline: none;
+}
+
+.Chatbox img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }

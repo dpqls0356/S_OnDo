@@ -1,4 +1,3 @@
-import React from "react";
 import { PacmanLoader } from "react-spinners";
 
 const LoadingSpinner = () => {
