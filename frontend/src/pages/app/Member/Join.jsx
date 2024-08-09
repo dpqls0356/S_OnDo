@@ -1,5 +1,5 @@
-import useJoinStore from '../../../store/app/JoinStore';
-import axios from 'axios';
+import useJoinStore from "../../../store/app/JoinStore";
+import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/app/Button.jsx";
@@ -144,8 +144,8 @@ const JoinForm = () => {
             alt="프로필 이미지"
             onClick={handleImageDelete}
             style={{
-              width: "200px", // 부모 요소 크기에 맞춤
-              height: "200px", // 부모 요소 크기에 맞춤
+              width: "150px", // 부모 요소 크기에 맞춤
+              height: "150px", // 부모 요소 크기에 맞춤
               borderRadius: "50%", // 원형으로 만듦
               objectFit: "cover", // 이미지를 고정된 크기에 맞추고 비율을 유지하며 잘라냄
               objectPosition: "center", // 이미지의 중심을 기준으로 자름
