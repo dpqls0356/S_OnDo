@@ -127,6 +127,12 @@ const Chatpage = () => {
     nav("/member/home");
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      typeChattingMessage();
+    }
+  };
+
   return (
     <div className="Chat">
       {spinnerLoading && <LoadingSpinner />}
@@ -135,44 +141,45 @@ const Chatpage = () => {
         <img onClick={onClickBack} style={{ cursor: "pointer" }} src={back} />
         <div>{character.name}</div>
       </div>
-
-      <div>
-        {character.name}는 기억력이 안 좋아서 채팅 내용을 기억하지 못함;; 로딩
-        하는 화면 만들어서 입력시 적용하면 좋을듯
-      </div>
-
-      {/* 채팅 화면 */}
-      <button onClick={viewPastRecords}>이전 채팅 기록 보기</button>
-      <div className="ChatScreen text-black" ref={containerRef}>
-        <div
-          id="observer"
-          className="sticky-header"
-          style={{ height: "10px", textAlign: "center" }}
-        >
-          {/* 이전 채팅 기록 보기 */}
+  
+      <div className="ChatContent">
+        <div>
+          {character.name}는 기억력이 안 좋아서 채팅 내용을 기억하지 못함;; 
+          {/* 로딩하는 화면 만들어서 입력시 적용하면 좋을듯 */}
         </div>
-        {messages &&
-          messages.map((message, index) => {
-            return (
+  
+        {/* 채팅 화면 */}
+        <div className="ChatScreen text-black" ref={containerRef}>
+          <div
+            id="observer"
+            className="sticky-header"
+            onClick={viewPastRecords}
+          >
+            이전 채팅 기록 보기
+          </div>
+          {messages &&
+            messages.map((message, index) => (
               <li key={index}>
                 {message.content}
                 <div>{message.createdAt}</div>
               </li>
-            );
-          })}
+            ))}
+        </div>
       </div>
-
+  
       {/* 채팅 입력창 */}
       <div className="Chatbox">
         <input
           type="text"
           value={userInput.content}
           onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
         />
         <img
           onClick={typeChattingMessage}
           src={chat_send}
           style={{ cursor: "pointer" }}
+          alt="Send"
         />
       </div>
     </div>
