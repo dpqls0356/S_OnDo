@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/useCounselorStore';
+import useCounselorStore from '../../../store/app/CounselorStore';
 import CLCard from '../../../components/app/Counselor/CLCard';
 import back from './../../../assets/images/back.png';
 import sort from './../../../assets/images/Shape.png';
@@ -8,38 +8,55 @@ import './CounselorList.css';
 
 const CounselorList = () => {
   const nav = useNavigate();
-  const { reservations, fetchReservations } = useCounselorStore();
+  const { userReservations, fetchUserReservations, isLoading } = useCounselorStore();
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
 
   useEffect(() => {
-    fetchReservations();
-  }, [fetchReservations]);
+    fetchUserReservations();
+  }, [fetchUserReservations]);
+
+  const sortedReservations = useMemo(() => {
+    return [...userReservations].sort((a, b) => {
+      const dateA = new Date(a.reservationDate);
+      const dateB = new Date(b.reservationDate);
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+  }, [userReservations, sortOrder]);
 
   const onClickBack = () => {
     nav('/member/counseling/main');
   };
 
   const onClickSort = () => {
-    console.log('날짜순 정렬 기능 추가해야 함');
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className='scroll'>
       <div className='CL-header'>
         <img onClick={onClickBack} style={{cursor: "pointer"}} src={back} alt="Back" />
         <p>상담예약내역</p>
-        <img onClick={onClickSort} style={{cursor: "pointer"}} src={sort} alt="Sort" />
+        <div onClick={onClickSort} style={{cursor: "pointer"}}>
+          <img src={sort} alt="Sort" />
+          <span>{sortOrder === 'asc' ? '오름차순' : '내림차순'}</span>
+        </div>
       </div>
       <div className='CL-main'>
         <div className='CS-List'>
-          {reservations.map(reservation => (
+          {sortedReservations.map(reservation => (
             <CLCard
               key={reservation.id}
-              name={reservation.counselorName}
-              gender={reservation.counselorGender}
-              field={reservation.counselorField}
-              intro={reservation.counselorIntro}
+              name={reservation.counselor?.name || '이름 없음'}
+              gender={reservation.counselor?.gender || '성별 미상'}
+              field={reservation.counselor?.field || '분야 미상'}
+              intro={reservation.counselor?.intro || '소개 없음'}
               dday={reservation.dday}
               is_complete={reservation.is_complete}
+              reservationDate={reservation.reservationDate}
             />
           ))}
         </div>

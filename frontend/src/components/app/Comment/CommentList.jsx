@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Comment from "./Comment";
 import './CommentList.css';
-import useCommentStore from '../../../store/app/useCommentStore';
+import useCommentStore from '../../../store/app/CommentStore';
 
 const CommentList = ({ articleId }) => {
   const { comments, getComments } = useCommentStore();

@@ -5,7 +5,7 @@ import axios from "axios";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import ReservationSpot from "./components/checkReservation/ReservationSpot";
-import useAuthStore from "../../store/app/authStore";
+import useAuthStore from "../../store/app/AuthStore";
 import IncorrectAccessModal from "./components/incorrectAccessModal";
 import Centerpage from "./centerpage";
 
