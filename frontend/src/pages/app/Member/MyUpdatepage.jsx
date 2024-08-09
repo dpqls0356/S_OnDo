@@ -20,7 +20,13 @@ const api = axios.create({
   withCredentials: true, // 쿠키를 포함하기 위해 필요
 });
 
-// 수정 관련으로 바꿔야 함
+const DeleteForm = () => {
+  const nav = useNavigate();
+  const [deleteFormData, setDeleteFormData] = useState({
+    password: "",
+  });
+};
+
 const MyUpdateForm = () => {
   const nav = useNavigate();
   const { checkAuth, user } = useAuthStore();
@@ -60,6 +66,124 @@ const MyUpdateForm = () => {
       setSelectedFile(null);
     }
   };
+
+  //모달----------------------------------------------
+
+  const DeleteAccountModal = ({ isOpen, onClose, onDelete, userPassword }) => {
+    const [password, setPassword] = useState("");
+    const [step, setStep] = useState(1);
+
+    const handlePasswordChange = (e) => {
+      setPassword(e.target.value);
+    };
+
+    const handlePasswordSubmit = () => {
+      if (password === userPassword) {
+        setStep(2);
+      } else {
+        alert("비밀번호가 일치하지 않습니다.");
+      }
+    };
+
+    const handleDelete = () => {
+      onDelete();
+      onClose();
+    };
+
+    if (!isOpen) return null; // 모달이 열리지 않았으면 아무것도 렌더링하지 않음
+
+    return (
+      <div style={styles.overlay}>
+        <div style={styles.modal}>
+          {step === 1 && (
+            <div>
+              <Input
+                type="password"
+                label="비밀번호를 다시 입력해주세요."
+                placeholder="비밀번호 입력"
+                onChange={handlePasswordChange}
+                labelClassName="text-left"
+              />
+              <button onClick={handlePasswordSubmit} style={styles.button}>
+                확인
+              </button>
+              <button onClick={onClose} style={styles.button}>
+                취소
+              </button>
+            </div>
+          )}
+          {step === 2 && (
+            <div>
+              <h2>정말 탈퇴하시겠습니까?</h2>
+              <button onClick={handleDelete} style={styles.button}>
+                확인
+              </button>
+              <button onClick={onClose} style={styles.button}>
+                취소
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const styles = {
+    overlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    modal: {
+      backgroundColor: "white",
+      padding: "20px",
+      borderRadius: "10px",
+      width: "300px",
+      textAlign: "center",
+    },
+    input: {
+      width: "100%",
+      padding: "10px",
+      margin: "10px 0",
+      boxSizing: "border-box",
+    },
+    buttonContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+    button: {
+      width: "100px",
+      padding: "10px 20px",
+      marginTop: "10px",
+      cursor: "pointer",
+    },
+  };
+  //-------------------------------------------------
+
+  //모달 작동----------------------------------------
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const userPassword = "ssafy"; //필요없음. 내가 적은 패스워드 그대로 넘겨주기때문
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteAccount = () => {
+    // 실제 탈퇴 처리 로직을 여기에 추가합니다.
+    alert("탈퇴가 완료되었습니다.");
+  };
+
+  //-----------------------------------------------
 
   useEffect(() => {
     const init = async () => {
@@ -167,14 +291,21 @@ const MyUpdateForm = () => {
             alt="프로필 이미지"
             onClick={handleImageDelete}
             style={{
-              width: "200px",
-              height: "200px",
+              width: "150px",
+              height: "150px",
               borderRadius: "50%",
               objectFit: "cover",
               objectPosition: "center",
+              cursor: "pointer",
             }}
           />
-          <img id="JoinCamera" style={{cursor: "pointer"}} src={camera} alt="카메라 아이콘" onClick={handleImageClick} />
+          <img
+            id="JoinCamera"
+            style={{ cursor: "pointer" }}
+            src={camera}
+            alt="카메라 아이콘"
+            onClick={handleImageClick}
+          />
           <input
             type="file"
             ref={fileInputRef} // input에 대한 참조 설정
@@ -238,6 +369,17 @@ const MyUpdateForm = () => {
           </div>
           <Button text="수정하기" type="submit Button_PINK" onClick={updateMypage} />
         </form>
+        <div style={{ textAlign: "center", padding: "10px" }}>
+          <p style={{ cursor: "pointer", color: "gray" }} onClick={handleOpenModal}>
+            탈퇴하기
+          </p>
+          <DeleteAccountModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onDelete={handleDeleteAccount}
+            userPassword={userPassword}
+          />
+        </div>
       </div>
     </div>
   );
