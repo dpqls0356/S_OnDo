@@ -80,13 +80,15 @@ const BoardDetailPage = () => {
   const onClickDelete = async () => {
     if (user.id.toString() === currentViewArticle.member_id) {
       try {
-        const response = await api.delete("/board/" + articleId, {
-          headers: {
-            "Content-Type": "application/json", // form-data 아니고 json으로
-          },
-        });
-        deleteBoard(articleId);
-        nav(`/member/board`);
+        if (confirm("정말 삭제하시겠습니까?")) {
+          const response = await api.delete("/board/" + articleId, {
+            headers: {
+              "Content-Type": "application/json", // form-data 아니고 json으로
+            },
+          });
+          deleteBoard(articleId);
+          nav(`/member/board`);
+        }
       } catch {
         alert("글 삭제에 실패했습니다.");
       }
