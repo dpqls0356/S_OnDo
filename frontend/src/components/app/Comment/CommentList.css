@@ -1,6 +1,6 @@
 /* 스크롤바 구현하는 중 조금 더 손 봐야함 */
 
-#CommentScroll{
+#CommentScroll {
   overflow-y: scroll;
   /* display: grid; */
 }
@@ -19,14 +19,13 @@ body {
   /* gap: 25px; */
 }
 
-
 #CommentScroll::-webkit-scrollbar {
   /* 스크롤바의 너비 */
-  width: 5px;  
+  width: 5px;
 }
 #CommentScroll::-webkit-scrollbar-thumb {
   /* 스크롤바의 길이 */
-  height: 30%; 
+  height: 30%;
   /* 스크롤바의 색상 */
   background: #ffffff;
   border-radius: 10px;

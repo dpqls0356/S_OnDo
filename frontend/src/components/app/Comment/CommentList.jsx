@@ -18,7 +18,7 @@ const CommentList = ({ articleId }) => {
   }, [comments]);
 
   return (
-    <div id="CommentScroll">
+    <div>
     {comments && comments.length > 0 ? (
       comments.map((comment) => (
         <Comment key={comment.id} comment={comment} />
