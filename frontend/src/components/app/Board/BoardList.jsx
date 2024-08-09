@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './BoardList.css';
-import useBoardStore from "../../../store/app/useBoardStore";
+import useBoardStore from "../../../store/app/BoardStore";
 import Board from './Board';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;

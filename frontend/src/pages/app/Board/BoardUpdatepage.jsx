@@ -1,7 +1,7 @@
 import "./BoardCreatepage.css";
 
 import { useNavigate } from "react-router-dom";
-import useBoardStore from "../../../store/app/useBoardStore";
+import useBoardStore from "../../../store/app/BoardStore";
 import Button from "../../../components/app/Button";
 
 

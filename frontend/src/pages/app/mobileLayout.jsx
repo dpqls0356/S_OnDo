@@ -2,7 +2,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import Footer from "../../components/app/Footer";
-import useAuthStore from "../../store/app/authStore";
+import useAuthStore from "../../store/app/AuthStore";
 import IncorrectAccessModal from "../../pages/web/components/incorrectAccessModal";
 
 const View = styled.div`
