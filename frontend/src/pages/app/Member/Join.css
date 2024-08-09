@@ -24,8 +24,11 @@
 
   #JoinCamera{
     position: absolute;
-    left: 56%;
-    top: 12%;
+    left: 69%;
+    top: 60%;
     z-index: 100;
+    width: "45px";
+    height: "45px";
+    cursor: "pointer";
     /* position: static; */
   }

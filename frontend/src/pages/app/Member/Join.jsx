@@ -14,6 +14,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const JoinForm = () => {
   const nav = useNavigate();
+  const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   const { error, success } = useJoinStore();
   const login = useAuthStore((state) => state.login);
 
@@ -32,6 +33,13 @@ const JoinForm = () => {
   const handleImageClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click(); // img 클릭 시 input 클릭하도록 함
+    }
+  };
+
+  const handleImageDelete = () => {
+    if (confirm("이미지를 삭제하시겠습니까?")) {
+      setPreviewUrl(mainProfileUrl); // '네'를 클릭 시 기본 이미지로 설정
+      setSelectedFile(null);
     }
   };
 
@@ -137,7 +145,6 @@ const JoinForm = () => {
     transition: "all 0.3s ease",
   });
 
-  const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   return (
     <div className="scroll">
       <div className="JoinPage">
@@ -145,9 +152,10 @@ const JoinForm = () => {
           <img
             src={previewUrl || mainProfileUrl}
             alt="프로필 이미지"
+            onClick={handleImageDelete}
             style={{
-              width: "200px", // 부모 요소 크기에 맞춤
-              height: "200px", // 부모 요소 크기에 맞춤
+              width: "150px", // 부모 요소 크기에 맞춤
+              height: "150px", // 부모 요소 크기에 맞춤
               borderRadius: "50%", // 원형으로 만듦
               objectFit: "cover", // 이미지를 고정된 크기에 맞추고 비율을 유지하며 잘라냄
               objectPosition: "center", // 이미지의 중심을 기준으로 자름
@@ -158,14 +166,6 @@ const JoinForm = () => {
             src={camera}
             alt="카메라 아이콘"
             onClick={handleImageClick}
-            style={{
-              position: "absolute",
-              bottom: "5px", // 이미지의 경계선에서 5px 위에 위치
-              right: "5px", // 이미지의 경계선에서 5px 안쪽에 위치
-              width: "40px", // 아이콘 크기 조정
-              height: "40px",
-              cursor: "pointer",
-            }}
           />
           <input
             type="file"
