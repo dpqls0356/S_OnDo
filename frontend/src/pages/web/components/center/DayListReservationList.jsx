@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from "styled-components"
+import axios from "axios";
+import Reservation from '../checkReservation/reservation';
 
 const ReservationList = styled.div`
   height: 90%;
@@ -15,10 +17,38 @@ const ReservationList = styled.div`
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 // 상담내역(DayListComponent.jsx) 하단 
-const DayListReservationList = () => {
+const DayListReservationList = ({selectedDate}) => {
   const [reservationList, setReservationList] = useState([]);
+  console.log('선택된 날짜가 넘어오긴 하는지', selectedDate)
+  useEffect(()=>{
+    getReservationList(selectedDate)
+    setReservationList([])
+  }, [selectedDate])
+  // const date = selectedDate
 
-  // const getReservationList = await axios.get()
+  const getReservationList = async (selectedDate) => {
+    console.log(1)
+    try {
+      const response = await axios.get(
+        `${baseUrl}/counselor/reservation/${selectedDate}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // 쿠키를 포함하여 요청
+        }
+      );
+      console.log(2)
+      if (response.status === 200){
+        console.log('날짜별 일정 조회 성공')
+        console.log('응답 데이터:', response.data)
+      }
+      setReservationList([response.data.reservations]);
+    } catch (err) {
+      console.log(3)
+      console.error("에러 발생:", err);
+    }
+  };
 
   return(
     <ReservationList>
