@@ -1,5 +1,5 @@
-import useJoinStore from '../../../store/app/JoinStore';
-import axios from 'axios';
+import useJoinStore from "../../../store/app/JoinStore";
+import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/app/Button.jsx";
@@ -7,7 +7,7 @@ import Input from "../../../components/app/Input";
 
 import camera from "./../../../assets/images/camera.png";
 import profile from "./../../../assets/images/ic_user.png";
-
+import useAuthStore from "../../../store/app/AuthStore";
 import "./Join.css";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -15,6 +15,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const JoinForm = () => {
   const nav = useNavigate();
   const { error, success } = useJoinStore();
+  const login = useAuthStore((state) => state.login);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -99,22 +100,30 @@ const JoinForm = () => {
     }
 
     try {
-      const response = await axios.post(`${baseUrl}/member/join`, userFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${baseUrl}/member/join`,
+        userFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.data.success) {
         alert("회원가입이 완료되었습니다.");
         // nav('/member/login');
         // 회원가입 후에 캐릭터 생성 페이지로 넘어가야 해서
+        console.log(formData);
+        await login(formData.email, formData.password);
         nav("/member/name");
       } else {
         alert(response.data.message || "회원가입에 실패했습니다.");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "회원가입 중 오류가 발생했습니다.");
+      alert(
+        error.response?.data?.message || "회원가입 중 오류가 발생했습니다."
+      );
     }
   };
 
@@ -230,7 +239,11 @@ const JoinForm = () => {
               여
             </button>
           </div>
-          <Button text="회원가입하기" type="submit Button_PINK" onClick={join} />
+          <Button
+            text="회원가입하기"
+            type="submit Button_PINK"
+            onClick={join}
+          />
           <p
             onClick={onClickLogin}
             className="cursor-pointer text-center text-sm text-gray-500 mt-4"

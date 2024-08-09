@@ -22,42 +22,45 @@ const View = styled.div`
     font-style: normal;
   }
   @font-face {
-    font-family: 'DungGeunMo';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-family: "DungGeunMo";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff")
+      format("woff");
     font-weight: normal;
     font-style: normal;
   }
   @font-face {
-    font-family: '양진체';
-    src: url('https://fastly.jsdelivr.net/gh/supernovice-lab/font@0.9/yangjin.woff') format('woff');
+    font-family: "양진체";
+    src: url("https://fastly.jsdelivr.net/gh/supernovice-lab/font@0.9/yangjin.woff")
+      format("woff");
     font-weight: normal;
     font-style: normal;
   }
   @font-face {
-    font-family: 'NIXGONM-Vb';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/NIXGONM-Vb.woff') format('woff');
+    font-family: "NIXGONM-Vb";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/NIXGONM-Vb.woff")
+      format("woff");
     font-weight: normal;
     font-style: normal;
   }
   @font-face {
-    font-family: 'NIXGONFONTS B 2.0';
-    src: url('./../fonts/NIXGONFONTS B 2.0.ttf');
+    font-family: "NIXGONFONTS B 2.0";
+    src: url("./../fonts/NIXGONFONTS B 2.0.ttf");
   }
   @font-face {
-    font-family: 'NIXGONFONTS L 2.0';
-    src: url('./../fonts/NIXGONFONTS L 2.0.ttf');
+    font-family: "NIXGONFONTS L 2.0";
+    src: url("./../fonts/NIXGONFONTS L 2.0.ttf");
   }
   @font-face {
-    font-family: 'NIXGONFONTS M 2.0';
-    src: url('./../fonts/NIXGONFONTS M 2.0.ttf');
+    font-family: "NIXGONFONTS M 2.0";
+    src: url("./../fonts/NIXGONFONTS M 2.0.ttf");
   }
   @font-face {
-    font-family: 'morris9';
-    src: url('./../fonts/모리스체-heroine762.ttf');
+    font-family: "morris9";
+    src: url("./../fonts/모리스체-heroine762.ttf");
   }
   @font-face {
-    font-family: 'PF스타더스트';
-    src: url('./../fonts/PF스타더스트.ttf');
+    font-family: "PF스타더스트";
+    src: url("./../fonts/PF스타더스트.ttf");
   }
 `;
 
@@ -82,7 +85,8 @@ export default function MobileLayout() {
       }
       // 유저가 맞는데 로그인/조인 화면에 들어가는 경우
       else if (
-        (location.pathname.startsWith("/member/main") || location.pathname.startsWith("/member/join") ||
+        (location.pathname.startsWith("/member/main") ||
+          location.pathname.startsWith("/member/join") ||
           location.pathname.startsWith("/member/login")) &&
         role === "USER"
       ) {
@@ -105,9 +109,10 @@ export default function MobileLayout() {
     if (role === "COUNSELOR") {
       navigate("/counselor");
     }
-    // 유저인데 로그인으로 들어온 경우 
+    // 유저인데 로그인으로 들어온 경우
     else if (
-      (location.pathname.startsWith("/member/main") ||location.pathname.startsWith("/member/join") ||
+      (location.pathname.startsWith("/member/main") ||
+        location.pathname.startsWith("/member/join") ||
         location.pathname.startsWith("/member/login")) &&
       role === "USER"
     ) {

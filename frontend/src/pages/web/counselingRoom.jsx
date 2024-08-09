@@ -12,7 +12,7 @@ import {
   faMicrophone,
 } from "@fortawesome/free-solid-svg-icons";
 import SideBar from "./components/counseling/sidebarComponent";
-import useAuthStore from "../../store/app/authStore";
+import useAuthStore from "../../store/app/AuthStore";
 
 const View = styled.div`
   width: 100vw;
@@ -44,7 +44,8 @@ const VideoView = styled.div`
     border-radius: 50px;
     border: 5px solid yellow;
   }
-  video,canvas {
+  video,
+  canvas {
     border-radius: 50px;
   }
 
@@ -85,13 +86,13 @@ const Nav = styled.div`
 `;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === "production" ? "" : baseUrl;
 
 const CounselingRoom = () => {
-
-    const { role } = useAuthStore((state) => ({
+  const { role } = useAuthStore((state) => ({
     role: state.role,
-    }));  
+  }));
 
   const [filterEnabled, setFilterEnabled] = useState(false);
   const location = useLocation();
@@ -213,10 +214,9 @@ const CounselingRoom = () => {
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
-    if(role==="USER"){
+    if (role === "USER") {
       navigate("/counseling/list");
-    }
-    else{
+    } else {
       navigate("/counselor");
     }
     if (session) {
@@ -227,7 +227,7 @@ const CounselingRoom = () => {
   const getToken = async (sessionId) => {
     const response = await axios.post(
       `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
-      { role: role==="COUNSELOR"?"counselor":"user" },
+      { role: role === "COUNSELOR" ? "counselor" : "user" },
       {
         headers: {
           "Content-Type": "application/json",
@@ -288,12 +288,18 @@ const CounselingRoom = () => {
             <VideoView>
               {publisher !== undefined ? (
                 <div id="main-video" className="col-md-6">
-                  <UserVideoComponent streamManager={publisher} filterEnabled={filterEnabled} />
+                  <UserVideoComponent
+                    streamManager={publisher}
+                    filterEnabled={filterEnabled}
+                  />
                 </div>
               ) : null}
               {subscriber !== undefined ? (
                 <div id="sub-video" className="col-md-6">
-                  <UserVideoComponent streamManager={subscriber} filterEnabled={filterEnabled} />
+                  <UserVideoComponent
+                    streamManager={subscriber}
+                    filterEnabled={filterEnabled}
+                  />
                 </div>
               ) : null}
             </VideoView>
@@ -364,17 +370,16 @@ const CounselingRoom = () => {
                   </svg>
                 </div>
               </button>
-              {
-                role==="COUNSELOR"?              
-                  <button
+              {role === "COUNSELOR" ? (
+                <button
                   id="buttonLeaveSession"
                   onClick={() => {
                     leaveSession();
                   }}
                 >
                   <div>상담종료</div>
-                </button>:null
-              }
+                </button>
+              ) : null}
               <button onClick={toggleFilter}>
                 <div>필터</div>
               </button>
