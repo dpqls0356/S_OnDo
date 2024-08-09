@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../../../store/app/AuthStore";
+import useAuthStore from "../../../store/app/authStore";
 import IncorrectAccessModal from "./incorrectAccessModal";
 
 export default function CounselorNotFoundPage() {

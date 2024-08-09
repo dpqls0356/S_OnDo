@@ -12,7 +12,7 @@ import {
   faMicrophone,
 } from "@fortawesome/free-solid-svg-icons";
 import SideBar from "./components/counseling/sidebarComponent";
-import useAuthStore from "../../store/app/AuthStore";
+import useAuthStore from "../../store/app/authStore";
 
 const View = styled.div`
   width: 100vw;

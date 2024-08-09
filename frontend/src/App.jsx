@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import useAuthStore from "./store/app/AuthStore";
+import useAuthStore from "./store/app/authStore";
 
 import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
 import CounselorLogin from "./pages/web/counselorLogin";
@@ -33,6 +33,7 @@ import MyUpdateForm from "./pages/app/Member/MyUpdatepage";
 import Join from "../src/pages/app/Member/Join";
 import MyPage from "../src/pages/app/Member/MyPage";
 import Mission from "./pages/app/Mission/Mission";
+import CompletedMission from './pages/app/Mission/CompletedMissions'
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
@@ -72,6 +73,8 @@ function App() {
           <Route path="join" element={<Join />} />
           <Route path="profile" element={<MyPage />} />
           <Route path="mission/list" element={<Mission />} />
+          {/* 완료된 미션 목록 페이지 */}
+          <Route path="mission/completed" element={<CompletedMission />} />
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
           <Route
