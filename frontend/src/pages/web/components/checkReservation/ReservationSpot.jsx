@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import styled from "styled-components";
+import styled, { ServerStyleSheet } from "styled-components";
 import Reservation from "./reservation";
 
 const View = styled.div`
@@ -38,7 +38,7 @@ const Search = styled.div`
 const ReservationList = styled.div`
   height: 90%;
   overflow-y: scroll;
-  -ms-overflow-style: none; /* IE and Edge */
+  -ms-overflow-style: none; /* IE와 Edge */
   scrollbar-width: none; /* Firefox */
 
   &::-webkit-scrollbar {
@@ -50,11 +50,21 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 function ReservationSpot() {
   const [reservationList, setReservationList] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(0);
+  const [searchPage, setSearchPage] = useState(0);
   const size = 10;
   const [searchWord, setSearchWord] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true); // 일반 리스트
+  const [hasMoreSearchResults, setHasMoreSearchResults] = useState(true); // 검색 결과
+  const [isSearching, setIsSearching] = useState(false); // 검색 중인지 여부
+  const observerTarget = useRef(null);
 
-  const getReservationList = async () => {
+  const getReservationList = async (reset = false) => {
+    if (!hasMore) return;
+
+    setIsLoading(true);
     try {
       const response = await axios.get(
         `${baseUrl}/counselor/reservation?page=${page}&size=${size}`,
@@ -65,41 +75,99 @@ function ReservationSpot() {
           withCredentials: true, // 쿠키를 포함하여 요청
         }
       );
-      setReservationList(response.data.data.reservations);
+
+      const newReservations = response.data.data.reservations;
+      if (newReservations.length < size) {
+        setHasMore(false);
+      }
+
+      setReservationList((prevList) =>
+        reset ? newReservations : [...prevList, ...newReservations]
+      );
     } catch (err) {
       console.error("Error fetching reservations:", err);
     }
+    setIsLoading(false);
   };
-  const searchByName = async () => {
-    setPage(0);
-    if (searchWord === "") {
+
+  const getSearchResults = async (reset = false) => {
+    if (!hasMoreSearchResults) return;
+    //
+    if (searchWord == "") {
+      setIsSearching(false);
       getReservationList();
-    } else {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/counselor/reservation/search/${encodeURIComponent(searchWord)}?page=${page}&size=${size}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setReservationList(response.data.data.reservations);
-      } catch (e) {
-        console.log(e);
-      }
+      return;
     }
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${baseUrl}/counselor/reservation/search/${encodeURIComponent(
+          searchWord
+        )}?page=${searchPage}&size=${size}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const newSearchResults = response.data.data.reservations;
+      if (newSearchResults.length < size) {
+        setHasMoreSearchResults(false);
+      }
+
+      setSearchResults((prevList) =>
+        reset ? newSearchResults : [...prevList, ...newSearchResults]
+      );
+    } catch (err) {
+      console.error("Error fetching search results:", err);
+    }
+    setIsLoading(false);
   };
+
+  const searchByName = () => {
+    setIsSearching(true);
+    setSearchPage(0);
+    setPage(0);
+    setHasMoreSearchResults(true);
+    getSearchResults(true);
+  };
+
   const handleInputChange = (event) => {
     setSearchWord(event.target.value);
   };
+
+  const handleObserver = (entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && !isLoading) {
+      if (isSearching) {
+        setSearchPage((prevPage) => prevPage + 1);
+      } else {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      await getReservationList();
+    const observer = new IntersectionObserver(handleObserver, {
+      threshold: 0,
+    });
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+    return () => {
+      if (observerTarget.current) observer.unobserve(observerTarget.current);
     };
-    fetchData();
-  }, [page]);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isSearching) {
+      getSearchResults();
+    } else {
+      getReservationList();
+    }
+  }, [page, searchPage]);
 
   return (
     <View>
@@ -109,13 +177,17 @@ function ReservationSpot() {
         <button onClick={searchByName}>검색</button>
       </Search>
       <ReservationList>
-        {reservationList.length > 0 ? (
-          reservationList.map((reservation, index) => (
-            <Reservation key={index} reservation={reservation} />
-          ))
+        {(isSearching ? searchResults : reservationList).length > 0 ? (
+          (isSearching ? searchResults : reservationList).map(
+            (reservation, index) => (
+              <Reservation key={index} reservation={reservation} />
+            )
+          )
         ) : (
           <div>예약된 상담 일정이 없습니다.</div>
         )}
+        {isLoading && <p>Loading...</p>}
+        <div ref={observerTarget} style={{ height: "10px" }}></div>
       </ReservationList>
     </View>
   );

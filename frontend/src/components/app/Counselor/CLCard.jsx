@@ -6,7 +6,7 @@ import useCounselorStore from '../../../store/app/CounselorStore';
 const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reservId}) => {
   const nav = useNavigate();
   const { calculateDday } = useCounselorStore();
-  
+
   const dday = calculateDday(reservationDate);
 
   const MobileCounseling = () => {
@@ -16,7 +16,7 @@ const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reser
   return(
     <div className="CLCard" style={is_complete ? {backgroundColor: 'rgb(238, 237, 237)'} : null}>
       {reservationDate && (<p id='CL-Date'>{new Date(reservationDate).toLocaleDateString()}</p>)}
-    
+
       <div className='CLCardIn'>
         <div>
           <img src={profile} alt="Profile" />
@@ -29,7 +29,7 @@ const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reser
       </div>
 
       {reservId && (<Link to={`/member/counseling/${reservId}/detail`}><div style={{textAlign: 'right', fontSize: '80%',color: 'black', textDecoration: 'underline'}}>더보기</div></Link>)}
-    
+
       <div className='CS-CardFooter'>
         <div>
           {dday && (

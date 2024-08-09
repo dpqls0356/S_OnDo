@@ -11,7 +11,7 @@ const OpenViduVideoComponent = ({ streamManager, filterEnabled }) => {
   // 이미지를 불러오는 함수
   useEffect(() => {
     const img = new Image();
-    img.src = '/assets/icons/character_icon.png'; // 여기에 이미지 경로를 설정 - public에 담겨있어야한다.
+    img.src = '/assets/icons/not_background_character.png'; // 여기에 이미지 경로를 설정 - public에 담겨있어야한다.
     img.onload = () => {
       setOverlayImage(img);
     };
@@ -59,8 +59,8 @@ const OpenViduVideoComponent = ({ streamManager, filterEnabled }) => {
           const overlayX = (leftEye.x + rightEye.x) / 2 * canvasRef.current.width;
           const overlayY = nose.y * canvasRef.current.height;
 
-          const overlayWidth = 300; // 이미지의 너비를 설정하세요
-          const overlayHeight = 200; // 이미지의 높이를 설정하세요
+          const overlayWidth = 500; // 이미지의 너비를 설정하세요
+          const overlayHeight = 600; // 이미지의 높이를 설정하세요
 
           canvasCtx.drawImage(overlayImage, overlayX - overlayWidth / 2, overlayY - overlayHeight / 2, overlayWidth, overlayHeight);
         }
