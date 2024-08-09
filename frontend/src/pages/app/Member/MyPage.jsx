@@ -47,6 +47,10 @@ const MyPage = () => {
     }
   };
 
+  const onClickCounseling = () => {
+    nav('/member/counseling/list')
+  }
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -83,7 +87,8 @@ const MyPage = () => {
         </div>
       </div>
 
-      <div className="MypageCenter">
+      <div className="MypageCenter" >
+        <Button onClick={onClickCounseling} text="내 상담리스트" />
         <Button onClick={onClickInfoEdit} text="내 정보 수정" />
         <Button onClick={onClickLogout} text="로그아웃" />
       </div>
