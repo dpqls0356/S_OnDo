@@ -11,6 +11,4 @@ spring:
 
 logging:
   level:
-    org:
-      springframework:
-        DEBUG
+    org.springframework.boot.context.config: DEBUG
