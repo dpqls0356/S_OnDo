@@ -51,6 +51,7 @@ public class CounselorController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${profile.url}")
+    String defaultProfileUrl; //기본 프로필 이미지
     String profileUrl;
 
     @PostMapping("/join")
@@ -62,7 +63,10 @@ public class CounselorController {
 
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
+            }else{
+                profileUrl=defaultProfileUrl;
             }
+
             Counselor counselor = joinRequestDto.toEntity(profileUrl);
             counselorService.join(counselor);
             return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
