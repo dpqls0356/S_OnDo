@@ -50,3 +50,4 @@ HELP.md
 /src/main/resources/s3.properties
 /src/main/resources/firebase.json
 /src/main/resources/perspectiveapi.properties
+/src/main/resources/application-secret.yml
