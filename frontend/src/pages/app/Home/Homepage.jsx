@@ -3,7 +3,7 @@ import "./Homepage.css";
 // import Balloon from "./../../../components/app/Ballon"
 import Thermometer from "../../../components/app/Thermometer";
 import Balloon from "../../../components/app/Balloon";
-import character from "./../../../assets/images/공통_캐릭터.png";
+import characterImg from "./../../../assets/images/공통_캐릭터.png";
 import chat from "./../../../assets/images/chat.png";
 
 import back_img from "./../../../assets/images/home_back2.jpg";
@@ -77,7 +77,7 @@ const Homepage = () => {
           />
         </div>
         <div className="Char-daram">
-          <img style={{ height: 170 }} src={character} />
+          <img style={{ height: 170 }} src={characterImg} />
         </div>
         <div className="chatBtn">
           <img onClick={onClickChat} src={chat} style={{ cursor: "pointer" }} />
