@@ -1,14 +1,16 @@
 import { styled } from "styled-components";
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Forest from "./components/forest";
-// 기본 바탕을 z-index 10d으로 해서 클릭 막기
-// 버튼 레이아웃의 z-index를 20으로 하기 + 부모 설정해서 위치 조정
+import BlackView from "./components/blackView";
+
 const View = styled.div`
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 10;
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
 `;
 
 const Story = () => {
@@ -16,16 +18,15 @@ const Story = () => {
 
   const handleClick = () => {
     setClickCount((prevCount) => prevCount + 1);
+    console.log(clickCount)
   };
 
-  const renderView = () => {
-    switch (clickCount) {
-      case 0:
-        return <Forest clickCount={clickCount} handleClick={handleClick} />;
-    }
-  };
-
-  return <View>{renderView()}</View>;
+  return (
+    <View>
+      {clickCount < 3 && <Forest clickCount={clickCount} handleClick={handleClick} />}
+      {1<clickCount&&clickCount <4 && <BlackView clickCount={clickCount} handleClick={handleClick} />}
+    </View>
+  );
 };
 
 export default Story;
