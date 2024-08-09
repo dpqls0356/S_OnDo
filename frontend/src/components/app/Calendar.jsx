@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Calendar = ({ selectedDate, setSelectedDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
-    setSelectedDate(currentDate.getDate());
-  }, []);
+    if (!selectedDate) {
+      setSelectedDate(new Date(currentDate));
+    }
+  }, [currentDate, setSelectedDate, selectedDate]);
 
   const handleDateClick = (date) => {
-    setSelectedDate(date);
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+    setSelectedDate(newDate);
   };
 
   const handleMonthChange = (increment) => {
@@ -57,7 +60,7 @@ const Calendar = ({ selectedDate, setSelectedDate }) => {
           <div 
             key={date} 
             className={`cursor-pointer ${
-              date === selectedDate ? 'bg-blue-100 rounded-full' : ''
+              selectedDate && date === selectedDate.getDate() && currentDate.getMonth() === selectedDate.getMonth() ? 'bg-blue-100 rounded-full' : ''
             } ${
               [0, 6].includes(new Date(currentDate.getFullYear(), currentDate.getMonth(), date).getDay()) ? 'text-red-500' : ''
             }`}

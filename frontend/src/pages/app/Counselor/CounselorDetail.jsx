@@ -8,17 +8,16 @@ import './CounselorDetail.css';
 const CounselorDetail = () => {
   const nav = useNavigate();
   const { counselorId } = useParams();
-  const { selectedCounselor, setSelectedCounselor, getCounselorById } = useCounselorStore();
+  const { selectedCounselor, fetchCounselorDetails } = useCounselorStore();
 
   useEffect(() => {
-    const counselor = getCounselorById(parseInt(counselorId));
-    if (counselor) {
-      setSelectedCounselor(counselor);
+    if (counselorId) {
+      fetchCounselorDetails(parseInt(counselorId));
     }
-  }, [counselorId, getCounselorById, setSelectedCounselor]);
+  }, [counselorId, fetchCounselorDetails]);
 
   const onClickBack = () => {
-    nav(`/member/counseling/apply/${counselorId}`);
+    nav(`/member/counseling/reserve/${counselorId}`);
   };
   
   if (!selectedCounselor) return null;

@@ -1,105 +1,206 @@
-import './CounselorCard.css';
-import { useNavigate } from 'react-router-dom';
-import profile from './../../../assets/images/ic_user.png';
-import vector from './../../../assets/images/Vector.png';
-import search from './../../../assets/images/ic_search.png';
-import { useState } from 'react';
-import CardCarousel from './CardCarousel';
-
-import React from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import Slider from 'react-slick';
+import CardCarousel from './CardCarousel';
+import search from './../../../assets/images/ic_search.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-const NextArrow = ({ onClick }) => { // props로 onClick을 전달해줘야 한다.
-	return (
-    <></>
-		// <button
-		// 	onClick={onClick}
-		// 	type='button'
-		// >
-		// </button>
-	);
-};
-const PrevArrow = ({ onClick }) => {
-	return (
-    <></>
-	);
-};
-// 상담 메인 페이지 상단 노출 화면
-const CounselorCard = ({name, gender, field, intro, dday}) => {
-  
+import './CounselorCard.css';
+
+const GenderFilter = ({ selectedGender, onGenderChange }) => (
+  <div className='OptionSelect'>
+    {['전체', '남', '여'].map(gender => (
+      <div key={gender}>
+        <input
+          type="radio"
+          name="gender"
+          value={gender}
+          checked={selectedGender === gender}
+          onChange={() => onGenderChange(gender)}
+        /> {gender}
+      </div>
+    ))}
+  </div>
+);
+
+const SearchFilter = ({ searchField, onSearchFieldChange, searchKeyword, onSearchKeywordChange }) => (
+  <div className='FilterSearch'>
+    <select className='FS-Filter' onChange={e => onSearchFieldChange(e.target.value)} value={searchField}>
+      <option value="">▽ 선택</option>
+      <option value="name">이름</option>
+      <option value="field">분야</option>
+    </select>
+    <div className='FS-Search'>
+      <input
+        type="text"
+        placeholder={searchField ? (searchField === 'name' ? '이름으로 검색하기' : '상담 분야로 검색하기') : '검색어를 입력하세요.'}
+        value={searchKeyword}
+        onChange={e => onSearchKeywordChange(e.target.value)}
+      />
+      <img src={search} alt="Search" />
+    </div>
+  </div>
+);
+
+const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange }) => {
+  const [selectedGender, setSelectedGender] = useState('전체');
+  const [searchField, setSearchField] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const filteredCounselors = useMemo(() => {
+    return counselors.filter(counselor => {
+      const genderMatch = selectedGender === '전체' || counselor.gender === selectedGender;
+      const keywordMatch = !searchKeyword || 
+        (searchField === 'name' && counselor.name.includes(searchKeyword)) ||
+        (searchField === 'field' && counselor.field.includes(searchKeyword));
+      return genderMatch && keywordMatch;
+    });
+  }, [counselors, selectedGender, searchField, searchKeyword]);
+
+  useEffect(() => {
+    onFilteredCounselorsChange(filteredCounselors);
+  }, [filteredCounselors, onFilteredCounselorsChange]);
+
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    nextArrow: <NextArrow/>,
-    prevArrow: <PrevArrow/>,
+    nextArrow: <></>,
+    prevArrow: <></>,
   };
-  const [ selected , setSelected ] = useState()
-  const handleSelect = (e) => {
-    setSelected(e.target.value)
-  }
-  
-  const checkOnlyOne = (checkThis) => {
-    const checkboxes = document.getElementsByName('test')
-    for (let i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i] !== checkThis) {
-        checkboxes[i].checked = false
-      }
-    }
-  }
-
-  const nav = useNavigate()
-
-  const counselorList = (event) => {
-    event.stopPropagation();
-    nav('/member/counseling/list')
-  }
-
-  const MobileCounseling = (event) => {
-    event.stopPropagation();
-    nav('/member/home')
-  }
 
   return (
     <div className='CounselorPageTop'>
-      <div onClick={counselorList} style={{cursor: 'pointer'}} className="CounselorCard">
-      <Slider {...settings}>
-        <CardCarousel name={'이싸피'} date={'2024.08.20'} gender={'여'} field={'심리 상담'} dday={'입장'} intro={'반갑습니다^^'}/>
-        <CardCarousel name={'김싸피'} date={'2024.08.22'} gender={'남'} field={'진로 및 취업 상담'} dday={'D-2'} intro={'안녕하세요~'}/>
-        <CardCarousel name={'이싸피'} date={'2024.08.25'} gender={'남'} field={'심리 상담'} dday={'D-5'} intro={'안녕하십니까:)'}/>
-        <CardCarousel name={'정싸피'} date={'2024.08.29'} gender={'여'} field={'가족 상담'} dday={'D-9'} intro={'반가습니다*^_^*'}/>
-        <CardCarousel name={'이싸피'} date={'2024.09.01'} gender={'여'} field={'심리 상담'} dday={'D-12'} intro={'오늘도 웃어볼까요~?'}/>
-      </Slider>
+      <div className="CounselorCard">
+        <Slider {...settings}>
+          {reservations.map((reservation, index) => (
+            <CardCarousel
+              key={index}
+              {...reservation}
+              counselor={reservation.counselor}
+            />
+          ))}
+        </Slider>
       </div>
 
-      <div className='OptionSelect'>
-        <div>
-          <input type="radio" name="test" value="전체" onChange={(e) => checkOnlyOne(e.target)}/> 전체
-        </div>
-        <div>
-          <input type="radio" name="test" value="남" onChange={(e) => checkOnlyOne(e.target)} /> 남
-        </div>
-        <div>
-          <input type="radio" name="test" value="여" onChange={(e) => checkOnlyOne(e.target)}/> 여
-        </div>
-      </div>
+      <GenderFilter
+        selectedGender={selectedGender}
+        onGenderChange={setSelectedGender}
+      />
       
-      <div className='FilterSearch'>
-        <select className='FS-Filter' onChange={handleSelect} value={selected}>
-          <option value="">▽ 선택</option>
-          <option value="name">이름</option>
-          <option value="field">분야</option>
-        </select>
-        <div className='FS-Search'>
-          <input type="text" placeholder={selected? (selected === 'name' ? '이름으로 검색하기': '상담 분야로 검색하기') : '검색어를 입력하세요.'}/>
-          <img src={search} alt="Search" />
-        </div>
-      </div>
+      <SearchFilter
+        searchField={searchField}
+        onSearchFieldChange={setSearchField}
+        searchKeyword={searchKeyword}
+        onSearchKeywordChange={setSearchKeyword}
+      />
     </div>
   );
-}
+};
+
+CounselorCard.propTypes = {
+  reservations: PropTypes.array.isRequired,
+  counselors: PropTypes.array.isRequired,
+  onFilteredCounselorsChange: PropTypes.func.isRequired,
+};
 
 export default CounselorCard;
+
+
+// 더미데이터 테스트
+// import PropTypes from 'prop-types';
+// import Slider from 'react-slick';
+// import CardCarousel from './CardCarousel';
+// import search from './../../../assets/images/ic_search.png';
+// import 'slick-carousel/slick/slick.css';
+// import 'slick-carousel/slick/slick-theme.css';
+// import './CounselorCard.css';
+
+// const GenderFilter = ({ selectedGender, onGenderChange }) => (
+//   <div className='OptionSelect'>
+//     {['전체', '남', '여'].map(gender => (
+//       <div key={gender}>
+//         <input
+//           type="radio"
+//           name="gender"
+//           value={gender}
+//           checked={selectedGender === gender}
+//           onChange={() => onGenderChange(gender)}
+//         /> {gender}
+//       </div>
+//     ))}
+//   </div>
+// );
+
+// const SearchFilter = ({ searchField, onSearchFieldChange, searchKeyword, onSearchKeywordChange }) => (
+//   <div className='FilterSearch'>
+//     <select className='FS-Filter' onChange={e => onSearchFieldChange(e.target.value)} value={searchField}>
+//       <option value="">▽ 선택</option>
+//       <option value="name">이름</option>
+//       <option value="field">분야</option>
+//     </select>
+//     <div className='FS-Search'>
+//       <input
+//         type="text"
+//         placeholder={searchField ? (searchField === 'name' ? '이름으로 검색하기' : '상담 분야로 검색하기') : '검색어를 입력하세요.'}
+//         value={searchKeyword}
+//         onChange={e => onSearchKeywordChange(e.target.value)}
+//       />
+//       <img src={search} alt="Search" />
+//     </div>
+//   </div>
+// );
+
+// const CounselorCard = ({ reservations, selectedGender, setSelectedGender, searchField, setSearchField, searchKeyword, setSearchKeyword }) => {
+//   const settings = {
+//     dots: true,
+//     infinite: true,
+//     speed: 500,
+//     slidesToShow: 1,
+//     slidesToScroll: 1,
+//     nextArrow: <></>,
+//     prevArrow: <></>,
+//   };
+
+//   return (
+//     <div className='CounselorPageTop'>
+//       <div className="CounselorCard">
+//         <Slider {...settings}>
+//           {reservations.map((reservation, index) => (
+//             <CardCarousel
+//               key={index}
+//               {...reservation}
+//               counselor={reservation.counselor}
+//             />
+//           ))}
+//         </Slider>
+//       </div>
+
+//       <GenderFilter
+//         selectedGender={selectedGender}
+//         onGenderChange={setSelectedGender}
+//       />
+      
+//       <SearchFilter
+//         searchField={searchField}
+//         onSearchFieldChange={setSearchField}
+//         searchKeyword={searchKeyword}
+//         onSearchKeywordChange={setSearchKeyword}
+//       />
+//     </div>
+//   );
+// };
+
+// CounselorCard.propTypes = {
+//   reservations: PropTypes.array.isRequired,
+//   selectedGender: PropTypes.string.isRequired,
+//   setSelectedGender: PropTypes.func.isRequired,
+//   searchField: PropTypes.string.isRequired,
+//   setSearchField: PropTypes.func.isRequired,
+//   searchKeyword: PropTypes.string.isRequired,
+//   setSearchKeyword: PropTypes.func.isRequired,
+// };
+
+// export default CounselorCard;

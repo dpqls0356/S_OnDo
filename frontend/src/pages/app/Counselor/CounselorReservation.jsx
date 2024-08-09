@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/useCounselorStore';
+import useCounselorStore from '../../../store/app/CounselorStore';
 import CLCard from '../../../components/app/Counselor/CLCard';
 import Button2 from '../../../components/app/Button2';
 import Calendar from '../../../components/app/Calendar';
@@ -10,12 +10,14 @@ import back from '../../../assets/images/back.png';
 
 const Reservation = () => {
   const { counselorId } = useParams();
-
-  // counselorId 확인
-  console.log('카운셀러id', counselorId)
-  
   const nav = useNavigate();
-  const { selectedCounselor, fetchCounselorSchedule, makeReservation, counselorSchedule } = useCounselorStore();
+  const { 
+    selectedCounselor, 
+    fetchCounselorDetails, 
+    fetchCounselorSchedule, 
+    makeReservation, 
+    counselorSchedule 
+  } = useCounselorStore();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -23,12 +25,12 @@ const Reservation = () => {
 
   useEffect(() => {
     if (counselorId) {
+      fetchCounselorDetails(counselorId);
       fetchCounselorSchedule(counselorId);
     }
-  }, [fetchCounselorSchedule, counselorId]);
+  }, [counselorId, fetchCounselorDetails, fetchCounselorSchedule]);
 
   const handleReservation = async () => {
-    // 상담사 id 확인
     if (!counselorId) {
       alert('상담사 ID가 유효하지 않습니다.');
       return;
@@ -36,11 +38,11 @@ const Reservation = () => {
 
     if (selectedDate && selectedTime) {
       const reservationDate = new Date(selectedDate);
-      reservationDate.setHours(selectedTime.split(':')[0]);
-      reservationDate.setMinutes(selectedTime.split(':')[1]);
+      const [hours, minutes] = selectedTime.split(':');
+      reservationDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
       
       try {
-        const result = await makeReservation(counselorId, reservationDate, note);
+        const result = await makeReservation(parseInt(counselorId), reservationDate, note);
         if (result.success) {
           alert('예약이 확정되었습니다.');
           nav('/member/counseling/main');
@@ -48,7 +50,7 @@ const Reservation = () => {
           alert('예약 실패: ' + result.message);
         }
       } catch (error) {
-        alert('예약 중 오류가 발생했습니다: '  + (error.response?.data?.message || error.message));
+        alert('예약 중 오류가 발생했습니다: ' + (error.response?.data?.message || error.message));
       }
     } else {
       alert('날짜와 시간을 선택해주세요.');
@@ -77,14 +79,24 @@ const Reservation = () => {
             <br />
             <h1 className="text-2xl font-bold mb-4">예약일지</h1>
             <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-            <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} availableTimes={counselorSchedule} />
+            <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
           </div>
           <img src={BorderImg} alt="" className="w-full" />
           <div className="p-4">
-          <textarea onChange={(e) => setNote(e.target.value)} style={{width: '100%', border: '1px black solid', borderRadius: '10px', height: '80px', padding: '5px 10px', resize: 'none'}} 
+            <textarea 
+              onChange={(e) => setNote(e.target.value)} 
+              style={{
+                width: '100%', 
+                border: '1px black solid', 
+                borderRadius: '10px', 
+                height: '80px', 
+                padding: '5px 10px', 
+                resize: 'none'
+              }} 
               placeholder='힘든 점이나 고민점 혹은 하고싶은 말을 자유롭게 적어보세요.
 (ex. 은둔기간: 2024.05~
-      요즘 잠이 안 와요...'></textarea>
+      요즘 잠이 안 와요...'
+            ></textarea>
             <br />
             <br />
             <Button2 text="예약 확정하기" onClick={handleReservation} />
