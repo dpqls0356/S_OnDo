@@ -6,7 +6,7 @@ import CounselorListCard from '../../../components/app/Counselor/CounselorListCa
 import './CounselorMain.css';
 
 const CounselorMain = () => {
-  const { userReservations, counselors, fetchUserReservations, fetchCounselors } = useCounselorStore();
+  const { userReservations, counselors, fetchUserReservations, fetchCounselors, displayGender } = useCounselorStore();
   const [filteredCounselors, setFilteredCounselors] = useState([]);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const CounselorMain = () => {
             <Link key={counselor.id} to={`/member/counseling/reserve/${counselor.id}`} style={{textDecoration: "none", color: 'black'}}>
               <CounselorListCard
                 name={counselor.name}
-                gender={counselor.gender}
+                gender={displayGender(counselor.gender)}
                 field={counselor.field}
                 intro={counselor.intro}
               />
