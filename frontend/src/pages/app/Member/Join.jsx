@@ -156,14 +156,6 @@ const JoinForm = () => {
             src={camera}
             alt="카메라 아이콘"
             onClick={handleImageClick}
-            style={{
-              position: "absolute",
-              bottom: "5px", // 이미지의 경계선에서 5px 위에 위치
-              right: "5px", // 이미지의 경계선에서 5px 안쪽에 위치
-              width: "40px", // 아이콘 크기 조정
-              height: "40px",
-              cursor: "pointer",
-            }}
           />
           <input
             type="file"
