@@ -8,7 +8,7 @@ import './CounselorDetail.css';
 const CounselorDetail = () => {
   const nav = useNavigate();
   const { counselorId } = useParams();
-  const { selectedCounselor, fetchCounselorDetails } = useCounselorStore();
+  const { selectedCounselor, fetchCounselorDetails, displayGender } = useCounselorStore();
 
   useEffect(() => {
     if (counselorId) {
@@ -28,7 +28,7 @@ const CounselorDetail = () => {
       <p>상담사 소개</p>
       <div className='CD-Card'>
         <div>
-          <p id='CD-name'>{selectedCounselor.name} 상담사({selectedCounselor.gender})</p>
+          <p id='CD-name'>{selectedCounselor.name} 상담사({displayGender(selectedCounselor.gender)})</p>
           <img src={profile} alt="상담사 프로필" />
           <p>분야</p>
           <p>{selectedCounselor.field}</p>
