@@ -13,6 +13,7 @@ import profile from "./../../../assets/images/ic_user.png";
 import "./MyUpdatepage.css";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -50,6 +51,13 @@ const MyUpdateForm = () => {
   const handleImageClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click(); // img 클릭 시 input 클릭하도록 함
+    }
+  };
+
+  const handleImageDelete = () => {
+    if (confirm("이미지를 삭제하시겠습니까?")) {
+      setPreviewUrl(mainProfileUrl); // '네'를 클릭 시 기본 이미지로 설정
+      setSelectedFile(null);
     }
   };
 
@@ -157,6 +165,7 @@ const MyUpdateForm = () => {
           <img
             src={previewUrl || user.profileUrl}
             alt="프로필 이미지"
+            onClick={handleImageDelete}
             style={{
               width: "200px",
               height: "200px",
