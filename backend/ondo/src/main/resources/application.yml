@@ -14,6 +14,8 @@ spring:
       host: localhost
       port: 27017
       database: ondo
+      username: clio
+      password: clioondoclio
 
     redis:
       host: localhost
@@ -34,22 +36,14 @@ spring:
     refresh-token-expiration: 1209600000
 
   profiles:
-    active: local
     include: oauth
 
   batch:
     job:
       enabled: false
+
   config:
     import: "classpath:s3.properties"
-
-logging:
-  level:
-    org:
-      springframework:
-        security:
-          DEBUG
-
 
 cloud:
   aws:
