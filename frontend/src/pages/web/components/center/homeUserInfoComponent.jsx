@@ -99,7 +99,6 @@ const HomeUserInfoComponent = () => {
   const [historyList, setHistoryList] = useState([]);
   const location = useLocation();
   const memberId = location.state.memberId;
-  console.log(memberId);
 
   useEffect(() => {
     console.log("Fetching member info for ID:", memberId);

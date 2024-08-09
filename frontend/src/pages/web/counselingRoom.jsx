@@ -1,5 +1,3 @@
-import { FaceMesh } from '@mediapipe/face_mesh';
-import { Camera } from '@mediapipe/camera_utils';
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OpenVidu } from "openvidu-browser";
@@ -14,6 +12,7 @@ import {
   faMicrophone,
 } from "@fortawesome/free-solid-svg-icons";
 import SideBar from "./components/counseling/sidebarComponent";
+import useAuthStore from "../../store/app/AuthStore";
 
 const View = styled.div`
   width: 100vw;
@@ -45,7 +44,8 @@ const VideoView = styled.div`
     border-radius: 50px;
     border: 5px solid yellow;
   }
-  video,canvas {
+  video,
+  canvas {
     border-radius: 50px;
   }
 
@@ -86,9 +86,14 @@ const Nav = styled.div`
 `;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === "production" ? "" : baseUrl;
 
 const CounselingRoom = () => {
+  const { role } = useAuthStore((state) => ({
+    role: state.role,
+  }));
+
   const [filterEnabled, setFilterEnabled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -99,8 +104,6 @@ const CounselingRoom = () => {
   const [memberInfo, setMemberInfo] = useState({});
 
   const [preJoin, setPreJoin] = useState(true);
-
-  const [role, setRole] = useState("counselor");
 
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -179,7 +182,7 @@ const CounselingRoom = () => {
   const getMemberInfo = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/counselor/member?memberId=${memberId}`,
+        `${baseUrl}/counselor/member?memberId=${memberId}`,
         {
           withCredentials: true,
           headers: {
@@ -187,7 +190,7 @@ const CounselingRoom = () => {
           },
         }
       );
-      console.log(response);
+      setMemberInfo(response.data.data.member);
     } catch (e) {
       console.log(e);
     }
@@ -211,7 +214,11 @@ const CounselingRoom = () => {
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
-    navigate("/counselor");
+    if (role === "USER") {
+      navigate("/counseling/list");
+    } else {
+      navigate("/counselor");
+    }
     if (session) {
       session.disconnect();
     }
@@ -220,7 +227,7 @@ const CounselingRoom = () => {
   const getToken = async (sessionId) => {
     const response = await axios.post(
       `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
-      { role: role },
+      { role: role === "COUNSELOR" ? "counselor" : "user" },
       {
         headers: {
           "Content-Type": "application/json",
@@ -281,12 +288,18 @@ const CounselingRoom = () => {
             <VideoView>
               {publisher !== undefined ? (
                 <div id="main-video" className="col-md-6">
-                  <UserVideoComponent streamManager={publisher} filterEnabled={filterEnabled} />
+                  <UserVideoComponent
+                    streamManager={publisher}
+                    filterEnabled={filterEnabled}
+                  />
                 </div>
               ) : null}
               {subscriber !== undefined ? (
                 <div id="sub-video" className="col-md-6">
-                  <UserVideoComponent streamManager={subscriber} filterEnabled={filterEnabled} />
+                  <UserVideoComponent
+                    streamManager={subscriber}
+                    filterEnabled={filterEnabled}
+                  />
                 </div>
               ) : null}
             </VideoView>
@@ -357,14 +370,16 @@ const CounselingRoom = () => {
                   </svg>
                 </div>
               </button>
-              <button
-                id="buttonLeaveSession"
-                onClick={() => {
-                  leaveSession();
-                }}
-              >
-                <div>상담종료</div>
-              </button>
+              {role === "COUNSELOR" ? (
+                <button
+                  id="buttonLeaveSession"
+                  onClick={() => {
+                    leaveSession();
+                  }}
+                >
+                  <div>상담종료</div>
+                </button>
+              ) : null}
               <button onClick={toggleFilter}>
                 <div>필터</div>
               </button>
