@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useAuthStore from "../../store/app/authStore";
+import useAuthStore from "../../store/app/AuthStore";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import IncorrectAccessModal from "./components/incorrectAccessModal";

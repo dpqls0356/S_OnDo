@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import useAuthStore from "./store/app/authStore";
+import useAuthStore from "./store/app/AuthStore";
 
 import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
 import CounselorLogin from "./pages/web/counselorLogin";
@@ -66,7 +66,7 @@ function App() {
           <Route path="chat" element={<Chatpage />} />
           <Route path="board" element={<Boardpage />} />
           <Route path="board/create" element={<BoardCreatepage />} />
-          <Route path="board/:id/update" element={<BoardUpdatepage />} />
+          <Route path="board/:articleId/update" element={<BoardUpdatepage />} />
           <Route path="board/:articleId" element={<BoardDetailpage />} />
           <Route path="*" element={<Notfoundpage />} />
           <Route path="join" element={<Join />} />
@@ -75,7 +75,7 @@ function App() {
           <Route path="counseling/list" element={<CounselorList />} />
           <Route path="counseling/main" element={<CounselorMain />} />
           <Route
-            path="counseling/apply/:counselorId"
+            path="counseling/reserve/:counselorId"
             element={<CounselorReservation />}
           />
           <Route

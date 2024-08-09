@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/useCounselorStore';
+import useCounselorStore from '../../../store/app/CounselorStore';
 import profile from './../../../assets/images/ic_user.png';
 import back from './../../../assets/images/back.png';
 import './CounselorDetail.css';
@@ -8,17 +8,16 @@ import './CounselorDetail.css';
 const CounselorDetail = () => {
   const nav = useNavigate();
   const { counselorId } = useParams();
-  const { selectedCounselor, setSelectedCounselor, getCounselorById } = useCounselorStore();
+  const { selectedCounselor, fetchCounselorDetails } = useCounselorStore();
 
   useEffect(() => {
-    const counselor = getCounselorById(parseInt(counselorId));
-    if (counselor) {
-      setSelectedCounselor(counselor);
+    if (counselorId) {
+      fetchCounselorDetails(parseInt(counselorId));
     }
-  }, [counselorId, getCounselorById, setSelectedCounselor]);
+  }, [counselorId, fetchCounselorDetails]);
 
   const onClickBack = () => {
-    nav(`/member/counseling/apply/${counselorId}`);
+    nav(`/member/counseling/reserve/${counselorId}`);
   };
   
   if (!selectedCounselor) return null;
