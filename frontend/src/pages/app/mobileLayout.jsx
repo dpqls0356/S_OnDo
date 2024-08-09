@@ -131,6 +131,7 @@ export default function MobileLayout() {
     "/member/login",
     "/member/name",
     "/member/chat",
+    "/member/story",
   ];
 
   const shouldShowFooter = !noFooterPaths.includes(location.pathname);

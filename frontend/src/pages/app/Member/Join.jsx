@@ -124,7 +124,7 @@ const JoinForm = () => {
         // 회원가입 후에 캐릭터 생성 페이지로 넘어가야 해서
         console.log(formData);
         await login(formData.email, formData.password);
-        nav("/member/name");
+        nav("/member/story");
       } else {
         alert(response.data.message || "회원가입에 실패했습니다.");
       }
