@@ -1,4 +1,4 @@
-.BoardDetail{
+.BoardDetail {
   /* height: 100%;
   width: 80%; */
   border: 1px black solid;
@@ -10,11 +10,11 @@
   box-shadow: -4px 6px 0px 0px #001429;
 }
 
-#boardtitle{
+#boardtitle {
   width: 180%;
 }
 
-.DetailTitle{
+.DetailTitle {
   font-size: 25px;
   padding: 10px 17px;
   display: flex;
@@ -22,23 +22,22 @@
   justify-content: space-between;
 }
 
-.DetailUserInfo p{
+.DetailUserInfo p {
   margin: 0px 4px;
   width: 100%;
 }
-.DetailUserInfo img{
+.DetailUserInfo img {
   margin: 0px 4px;
   border-radius: 100%;
   width: 20%;
 }
 
-
-.DetailCreate *{
+.DetailCreate * {
   font-size: 90%;
   margin: 0px 4px;
 }
 
-.DetailDate{
+.DetailDate {
   padding: 10px 20px;
   border-top: 1px black solid;
   border-bottom: 1px black solid;
@@ -52,40 +51,40 @@
   align-items: center;
 }
 
-.DetailContent{
+.DetailContent {
   padding: 15px 30px;
-  word-break:break-all;
+  word-break: break-all;
 }
 
-.CommentList{
-  /* height: 100%; */
+.CommentList {
+  height: 100%;
   width: 80%;
   margin: 20px auto;
   display: flex;
   justify-content: space-between;
 }
 
-.CmtList{
+.CmtList {
   width: 90%;
 }
 
-#comment-line{
-  border-left: 6px dashed #6ABFB4;
+#comment-line {
+  border-left: 6px dashed #6abfb4;
+  height: auto;
   /* height: 500px; */
   /* left: 50%; */
   /* margin-left: -3px; */
   /* top: 0; */
 }
 
-
-.CommentForm{
+.CommentForm {
   /* position: ; */
   top: 100px;
   width: 86%;
   background-color: white;
   margin: 0 auto;
   padding: 10px 20px;
-  border: 4px #FDA79A solid;
+  border: 4px #fda79a solid;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -103,20 +102,19 @@
   display: none;
 }
 
-.CommentForm > textarea:focus{
+.CommentForm > textarea:focus {
   outline: none;
 }
 
-.emptybox2{
+.emptybox2 {
   height: 2vh;
   background-color: #fff9e900;
 }
 
-
 /* 댓글 스크롤 */
 /* 스크롤바 구현하는 중 조금 더 손 봐야함 */
 
-#CommentScroll{
+#CommentScroll {
   overflow-y: scroll;
   /* display: grid; */
 }
@@ -134,8 +132,6 @@ body {
   overflow-y: scroll;
   /* gap: 25px; */
 }
-
-
 
 .DetailScroll ::-webkit-scrollbar {
   /* display: none; */
