@@ -5,13 +5,8 @@ import useCounselorStore from '../../../store/app/CounselorStore';
 
 const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reservId}) => {
   const nav = useNavigate();
-<<<<<<< HEAD
   const { calculateDday, displayGender } = useCounselorStore();
   
-=======
-  const { calculateDday } = useCounselorStore();
-
->>>>>>> Front
   const dday = calculateDday(reservationDate);
 
   const MobileCounseling = () => {
