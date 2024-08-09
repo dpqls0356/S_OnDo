@@ -1,11 +1,11 @@
 import "./BoardCreatepage.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import axios from "axios";
 import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
 import useBoardStore from "../../../store/app/BoardStore";
-import useBoardStore from "../../../store/app/useBoardStore";
-import useAuthStore from "../../../store/app/authStore";
+import useAuthStore from "../../../store/app/AuthStore";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 

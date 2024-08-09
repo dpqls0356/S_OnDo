@@ -1,13 +1,13 @@
 import "./BoardDetailpage.css";
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import authStore from '../../../store/app/authStore'
+import authStore from "../../../store/app/AuthStore";
 import useBoardStore from "../../../store/app/useBoardStore";
-import useCommentStore from "../../../store/app/useCommentStore";
-import useAuthStore from '../../../store/app/authStore'
+import useCommentStore from "../../../store/app/CommentStore";
+import useAuthStore from "../../../store/app/AuthStore";
 import CommentList from "../../../components/app/Comment/CommentList";
 import Button from "../../../components/app/Button";
-
+import axios from "axios";
 import calendar from "./../../../assets/images/calendar.png";
 import profile from "./../../../assets/images/test.png";
 import commentbtn from "./../../../assets/images/send.png";

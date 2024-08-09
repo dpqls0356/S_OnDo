@@ -1,11 +1,7 @@
-import './Comment.css'
-import { useState } from 'react'
-import profile from './../../../assets/images/test.png'
-import useCommentStore from '../../../store/app/CommentStore'
 import "./Comment.css";
 import { useState } from "react";
 import profile from "./../../../assets/images/test.png";
-import useCommentStore from "../../../store/app/useCommentStore";
+import useCommentStore from "../../../store/app/CommentStore";
 
 const Comment = ({ comment }) => {
   const { deleteComment, updateComment } = useCommentStore();
