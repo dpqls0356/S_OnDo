@@ -37,8 +37,11 @@ spring:
       enabled: false
 
   config:
-    import: "classpath:s3.properties", "classpath:openaiapi.properties, classpath:perspectiveapi.properties", "classpath:firebase.json"
-
+    import:
+      - "classpath:s3.properties"
+      - "classpath:openaiapi.properties"
+      - "classpath:perspectiveapi.properties"
+      - "classpath:firebase.json"
 
 logging:
   level:
