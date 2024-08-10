@@ -64,7 +64,7 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		// counselorId로 서비스에서 가져와야겠네..
 		reservation.setCounselor(counselorService.getCounselorEntity(counselorReservationAddDto.getCounselorId()).get());
 		reservation.setCounselingUrl(null);
-		reservation.setCounselingDetail(null);
+		reservation.setCounselDetail(null);
 
 		counselorReservationRepository.save(reservation);
 	}
@@ -83,7 +83,7 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		// counselorId로 서비스에서 가져와야겠네..
 		reservation.setCounselor(counselorService.getCounselorEntity(counselorReservationAddRequestDto.getCounselorId()).get());
 		reservation.setCounselingUrl(null);
-		reservation.setCounselingDetail(null);
+		reservation.setCounselDetail(null);
 
 		counselorReservationRepository.save(reservation);
 	}
