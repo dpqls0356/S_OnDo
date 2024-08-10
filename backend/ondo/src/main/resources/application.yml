@@ -16,6 +16,8 @@ spring:
     redis:
       host: redis
       port: 6379
+      url: jdbc:redis://clio:${REDIS_PASSWORD}@redis:${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
   jpa:
     hibernate:
