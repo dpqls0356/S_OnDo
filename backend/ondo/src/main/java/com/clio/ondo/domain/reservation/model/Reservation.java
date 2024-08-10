@@ -7,6 +7,7 @@ import com.clio.ondo.domain.counselDetail.model.CounselDetail;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.member.model.Member;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -49,9 +50,8 @@ public class Reservation {
 	@Column(name = "counseling_url")
 	private	String counselingUrl;
 
-
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "counsel_detail_id")
-	private CounselDetail counselingDetail;
+	private CounselDetail counselDetail;
 
 }
