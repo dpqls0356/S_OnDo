@@ -92,7 +92,7 @@ function Reservation({ reservation }) {
 
   const createCounselingRoom = async (event) => {
     event.stopPropagation();
-    if (timeRemaining === 0) {
+    // if (timeRemaining === 0) {
       try {
         const sessionResponse = await axios.post(
           `${baseUrl}/counseling/sessions`,
@@ -114,7 +114,7 @@ function Reservation({ reservation }) {
       } catch (error) {
         console.error("Error creating counseling room:", error);
       }
-    } else return;
+    // } else return;
   };
 
   const changeDateFormat = () => {
