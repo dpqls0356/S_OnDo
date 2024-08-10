@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.clio.ondo.domain.counselDetail.model.CounselDetail;
+import com.clio.ondo.domain.counselDetail.repository.CounselDetailRepository;
 import com.clio.ondo.domain.counselDetail.service.CounselDetailService;
 import com.clio.ondo.domain.counselor.model.Counselor;
 import com.clio.ondo.domain.counselor.repository.CounselorRepository;
@@ -35,6 +36,7 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 	private final ReservationRepository reservationRepository;
 	private final MemberRepository memberRepository;
 	private final CounselorRepository counselorRepository;
+	private final CounselDetailRepository counselDetailRepository;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final CounselDetailService counselDetailService;
 
@@ -69,6 +71,15 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 	@Override
 	@Transactional
 	public void cancelReservation(Long reservationId){
+		// Reservation을 조회
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 예약이 없습니다. id=" + reservationId));
+
+		// CounselDetail을 가져와서 삭제합니다.
+		CounselDetail counselDetail = reservation.getCounselDetail();
+		if (counselDetail != null) {
+			counselDetailRepository.delete(counselDetail);
+		}
 		reservationRepository.deleteById(reservationId);
 	}
 
@@ -131,6 +142,7 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 		Counselor counselor = counselorRepository.findById(requestDto.getCounselorId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 상담사가 없습니다. id=" + requestDto.getCounselorId()));
 
+
 		//받은 날짜 String -> LocalDateTime 으로 변환
 		String stringDate=requestDto.getReservationDate();
 
@@ -146,10 +158,13 @@ public class MemberReservationServiceImpl implements MemberReservationService{
 		reservation.setMember(member);
 		reservation.setCounselor(counselor);
 
+		CounselDetail counselDetail=new CounselDetail(reservation, null);
+
+		reservation.setCounselDetail(counselDetail);
+
 		// 예약 저장
 		reservationRepository.save(reservation);
-
-		counselDetailService.save(new CounselDetail(reservation, null));
+		counselDetailService.save(counselDetail);
 	}
 
 
