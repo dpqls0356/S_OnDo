@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const Loginpage = () => {
   const nav = useNavigate();
   const login = useAuthStore((state) => state.login);
-
+  const checkAuth = useAuthStore((state) => state.checkAuth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,6 +21,7 @@ const Loginpage = () => {
     try {
       const success = await login(email, password);
       if (success) {
+        checkAuth();
         nav("/member/home");
         alert("로그인 성공!");
       } else {
