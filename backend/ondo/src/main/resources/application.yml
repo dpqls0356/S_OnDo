@@ -11,12 +11,14 @@ spring:
 
   data:
     mongodb:
-      host: localhost
+      host: mongo
       port: 27017
       database: ondo
+      username: clio
+      password: clioondoclio
 
     redis:
-      host: localhost
+      host: redis
       port: 6379
 
   jpa:
