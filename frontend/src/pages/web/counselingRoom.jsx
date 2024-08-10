@@ -199,7 +199,7 @@ const CounselingRoom = () => {
   const leaveSession = useCallback(async () => {
     const response = await axios
       .post(
-        `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/leave`,
+        `${baseUrl}/counseling/sessions/${sessionId}/leave`,
         { reservationId: reservationId },
         {
           headers: {
@@ -226,7 +226,7 @@ const CounselingRoom = () => {
 
   const getToken = async (sessionId) => {
     const response = await axios.post(
-      `${APPLICATION_SERVER_URL}/counseling/sessions/${sessionId}/connections`,
+      `${baseUrl}/counseling/sessions/${sessionId}/connections`,
       { role: role === "COUNSELOR" ? "counselor" : "user" },
       {
         headers: {
