@@ -21,7 +21,7 @@ const Loginpage = () => {
     try {
       const success = await login(email, password);
       if (success) {
-        checkAuth()
+        await checkAuth()
         nav("/member/home");
         alert("로그인 성공!");
       } else {
