@@ -175,7 +175,12 @@ public class MemberServiceImpl implements MemberService {
 		if(!profileImage.isEmpty()){
 			profileUrl=imageService.upload(profileImage,"MemberProfile");
 		}else{
-			profileUrl=defaultProfileUrl;
+			String fileName = profileImage.getOriginalFilename();
+			if ("default.jpg".equals(fileName)) {
+				profileUrl = defaultProfileUrl;
+			} else if ("empty.jpg".equals(fileName)) {
+				profileUrl = findMember.getProfileUrl();
+			}
 		}
 
 		findMember.updateProfileUrl(profileUrl);
