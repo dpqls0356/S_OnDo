@@ -81,6 +81,7 @@ export default function MobileLayout() {
         !location.pathname.startsWith("/member/join") &&
         role !== "USER"
       ) {
+        console.log("1")
         setIsModalOpen(true);
       }
       // 유저가 맞는데 로그인/조인 화면에 들어가는 경우
@@ -90,6 +91,7 @@ export default function MobileLayout() {
           location.pathname.startsWith("/member/login")) &&
         role === "USER"
       ) {
+        console.log("2")
         setIsModalOpen(true);
       } else {
         setIsModalOpen(false);
@@ -97,7 +99,7 @@ export default function MobileLayout() {
     };
 
     checkAuthentication();
-  }, [location.pathname, role]);
+  }, [location.pathname]);
 
   useEffect(() => {
     console.log("isModalOpen: " + isModalOpen);
