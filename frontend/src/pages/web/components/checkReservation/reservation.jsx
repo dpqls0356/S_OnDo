@@ -95,7 +95,7 @@ function Reservation({ reservation }) {
     // if (timeRemaining === 0) {
       try {
         const sessionResponse = await axios.post(
-          `${APPLICATION_SERVER_URL}/counseling/sessions`,
+          `${baseUrl}/counseling/sessions`,
           { reservationId: reservation.reservationId },
           {
             headers: { "Content-Type": "application/json" },
