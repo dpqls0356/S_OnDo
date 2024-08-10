@@ -130,7 +130,11 @@ const MyUpdateForm = () => {
     userFormData.append("updateRequestDto", userData);
 
     if (selectedFile) {
+      console.log(selectedFile);
       userFormData.append("profileImage", selectedFile);
+    } else if (previewUrl === mainProfileUrl) {
+      const defaultFile = new Blob([""], { type: "image/jpeg" });
+      userFormData.append("profileImage", defaultFile, "default.jpg");
     } else {
       const emptyFile = new Blob([""], { type: "image/jpeg" });
       userFormData.append("profileImage", emptyFile, "empty.jpg");
