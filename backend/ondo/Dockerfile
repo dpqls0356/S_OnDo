@@ -11,6 +11,6 @@ COPY build/libs/*.jar app.jar
 
 EXPOSE 8081
 
-ENV SPRING_PROFILES_ACTIVE=oauth,secret
+ENV SPRING_PROFILES_ACTIVE=oauth
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
