@@ -34,7 +34,6 @@ import java.util.UUID;
 @PropertySource("classpath:openvidu.properties")
 @CrossOrigin(origins = "*")
 @RestController()
-@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class Openvidu {
 
