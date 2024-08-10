@@ -32,8 +32,13 @@ function CounselorJoin() {
     
     const data = new FormData();
     data.append('joinRequestDto', new Blob([JSON.stringify(formData)], { type: 'application/json' }));
+
+    // profileImage가 선택되지 않은 경우 빈 파일 추가
     if (profileImage) {
       data.append('profileImage', profileImage);
+    } else {
+      const emptyFile = new Blob([''], { type: 'image/jpeg' });
+      data.append('profileImage', emptyFile, 'empty.jpg');
     }
 
     try {
