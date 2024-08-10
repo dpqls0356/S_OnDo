@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import axios from "axios";
+
 const View = styled.div`
   padding: 0px 20px 10px 20px;
   width: 100%;
@@ -44,16 +45,11 @@ const History = styled.div`
   div:last-child {
     border: none;
   }
-  /* Hide scrollbar for WebKit-based browsers (Chrome, Safari) */
   &::-webkit-scrollbar {
     display: none;
   }
-
-  /* Hide scrollbar for Firefox */
-  scrollbar-width: none; /* Firefox */
-
-  /* Optional: Hide scrollbar for IE, Edge */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 `;
 
 const CounselingMemo = styled.div`
@@ -94,51 +90,60 @@ const CounselingMemo = styled.div`
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const UserInfoComponent = ({ memberInfo }) => {
-  // const [memberInfo, setMemberInfo] = useState({});
   const [historyList, setHistoryList] = useState([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef();
+  const memberId = memberInfo.memberId;
+  const size = 10;
 
-  // useEffect(() => {
-  //   console.log("Fetching member info for ID:", memberId);
-  //   getMemberInfo();
-  // }, [memberId]);
+  useEffect(() => {
+    getReservationHistory();
+  }, [page]);
 
-  useEffect(()=>{
-    setHistoryList([...memberInfo.reservations]);
-  },[])
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split("T")[0]; // '2024-08-13' 형식으로 변환
+    return date.toISOString().split("T")[0];
   };
 
-  // const getMemberInfo = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${baseUrl}/counselor/member?memberId=${memberId}`,
-  //       {
-  //         withCredentials: true,
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     const data = response.data.data.member;
-  //     setMemberInfo({
-  //       birthDate: data.birthDate,
-  //       gender: data.gender === "MALE" ? "남성" : "여성",
-  //       memberId: data.memberId,
-  //       memberName: data.memberName,
-  //     });
-  //     setHistoryList([...data.reservations]);
-  //   } catch (e) {
-  //     console.log("Error fetching member info:", e);
-  //   }
-  // };
+  const getReservationHistory = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/counselor/memberReservation?memberId=${memberId}&page=${page}&size=${size}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const newHistories = response.data.data.reservations;
+      setHistoryList((prev) => [...prev, ...newHistories]);
+      if (newHistories.length < size) {
+        setHasMore(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const lastHistoryElementRef = useCallback(
+    (node) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [hasMore]
+  );
 
   return (
     <View>
       <UserProfile>
         <Col>
-          {/* 프로필 사진 여부따라서 */}
           {false ? (
             <div>
               <img src="" alt="Profile" />
@@ -163,25 +168,43 @@ const UserInfoComponent = ({ memberInfo }) => {
           <div>
             <div>생년월일: {memberInfo.birthDate}</div>
             <div>성별: {memberInfo.gender}</div>
-            {/* <div>은둔 기간: 2019.05 ~ </div> */}
           </div>
         </Col>
       </UserProfile>
       <History>
-        {historyList.map((history, index) => (
-          <CounselingMemo key={index}>
-            <p>{formatDate(history.reservationDate)}</p>
-            <p>{history.counselingReservationDetail}</p>
-            <div className="memo">
-              <div>
-                <textarea>{history.counsellingDetail}</textarea>
-              </div>
-              <div>
-                <button>수정</button>
-              </div>
-            </div>
-          </CounselingMemo>
-        ))}
+        {historyList.map((history, index) => {
+          if (historyList.length === index + 1) {
+            return (
+              <CounselingMemo key={index} ref={lastHistoryElementRef}>
+                <p>{formatDate(history.reservationDate)}</p>
+                <p>{history.counselingReservationDetail}</p>
+                <div className="memo">
+                  <div>
+                    <textarea>{history.counsellingDetail}</textarea>
+                  </div>
+                  <div>
+                    <button>수정</button>
+                  </div>
+                </div>
+              </CounselingMemo>
+            );
+          } else {
+            return (
+              <CounselingMemo key={index}>
+                <p>{formatDate(history.reservationDate)}</p>
+                <p>{history.counselingReservationDetail}</p>
+                <div className="memo">
+                  <div>
+                    <textarea>{history.counsellingDetail}</textarea>
+                  </div>
+                  <div>
+                    <button>수정</button>
+                  </div>
+                </div>
+              </CounselingMemo>
+            );
+          }
+        })}
       </History>
     </View>
   );

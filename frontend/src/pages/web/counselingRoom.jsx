@@ -182,7 +182,7 @@ const CounselingRoom = () => {
   const getMemberInfo = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}/counselor/member?memberId=${memberId}`,
+        `${baseUrl}/counselor/getMember?memberId=${memberId}`,
         {
           withCredentials: true,
           headers: {
