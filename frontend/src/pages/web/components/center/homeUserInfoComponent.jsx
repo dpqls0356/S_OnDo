@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import axios from "axios";
+
 const View = styled.div`
   padding: 0px 20px 0px 20px;
   width: 90%;
@@ -97,12 +98,16 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const HomeUserInfoComponent = () => {
   const [memberInfo, setMemberInfo] = useState({});
   const [historyList, setHistoryList] = useState([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef();
   const location = useLocation();
   const memberId = location.state.memberId;
+  const size = 10;
 
   useEffect(() => {
-    console.log("Fetching member info for ID:", memberId);
     getMemberInfo();
+    getReservationHistory();
   }, [memberId]);
 
   const formatDate = (dateString) => {
@@ -113,7 +118,7 @@ const HomeUserInfoComponent = () => {
   const getMemberInfo = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}/counselor/member?memberId=${memberId}`,
+        `${baseUrl}/counselor/getMember?memberId=${memberId}`,
         {
           withCredentials: true,
           headers: {
@@ -128,17 +133,55 @@ const HomeUserInfoComponent = () => {
         memberId: data.memberId,
         memberName: data.memberName,
       });
-      setHistoryList([...data.reservations]);
     } catch (e) {
       console.log("Error fetching member info:", e);
     }
   };
 
+  const getReservationHistory = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/counselor/memberReservation?memberId=${memberId}&page=${page}&size=${size}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const newHistories = response.data.data.reservations;
+      setHistoryList((prev) => [...prev, ...newHistories]);
+      if (newHistories.length < size) {
+        setHasMore(false); // 더 이상 로드할 데이터가 없을 때
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const lastHistoryElementRef = useCallback(
+    (node) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [hasMore]
+  );
+
+  useEffect(() => {
+    if (page !== 0) {
+      getReservationHistory();
+    }
+  }, [page]);
+
   return (
     <View>
       <UserProfile>
         <Col>
-          {/* 프로필 사진 여부따라서 */}
           {false ? (
             <div>
               <img src="" alt="Profile" />
@@ -163,25 +206,43 @@ const HomeUserInfoComponent = () => {
           <div>
             <div>생년월일: {memberInfo.birthDate}</div>
             <div>성별: {memberInfo.gender}</div>
-            {/* <div>은둔 기간: 2019.05 ~ </div> */}
           </div>
         </Col>
       </UserProfile>
       <History>
-        {historyList.map((history, index) => (
-          <CounselingMemo key={index}>
-            <p>{formatDate(history.reservationDate)}</p>
-            <p>{history.counselingReservationDetail}</p>
-            <div className="memo">
-              <div>
-                <textarea>{history.counsellingDetail}</textarea>
-              </div>
-              <div>
-                <button>수정</button>
-              </div>
-            </div>
-          </CounselingMemo>
-        ))}
+        {historyList.map((history, index) => {
+          if (historyList.length === index + 1) {
+            return (
+              <CounselingMemo key={index} ref={lastHistoryElementRef}>
+                <p>{formatDate(history.reservationDate)}</p>
+                <p>{history.counselingReservationDetail}</p>
+                <div className="memo">
+                  <div>
+                    <textarea>{history.counsellingDetail}</textarea>
+                  </div>
+                  <div>
+                    <button>수정</button>
+                  </div>
+                </div>
+              </CounselingMemo>
+            );
+          } else {
+            return (
+              <CounselingMemo key={index}>
+                <p>{formatDate(history.reservationDate)}</p>
+                <p>{history.counselingReservationDetail}</p>
+                <div className="memo">
+                  <div>
+                    <textarea>{history.counsellingDetail}</textarea>
+                  </div>
+                  <div>
+                    <button>수정</button>
+                  </div>
+                </div>
+              </CounselingMemo>
+            );
+          }
+        })}
       </History>
     </View>
   );
