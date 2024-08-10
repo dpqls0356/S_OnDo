@@ -5,6 +5,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import java.util.Arrays;
 
+@Slf4j
 class MongoDBConfig {
 
 	@Value("${spring.data.mongodb.host}")
@@ -38,6 +40,7 @@ class MongoDBConfig {
 
 	@Bean
 	public MongoClient mongoClient() {
+		log.error("host: {}, port: {}, database:{}, username: {}, password: {}",host, port,database,username,password);
 		MongoCredential credential = MongoCredential.createCredential(username, database, password.toCharArray());
 		return MongoClients.create(MongoClientSettings.builder()
 				.applyToClusterSettings(builder ->
