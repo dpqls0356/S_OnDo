@@ -14,9 +14,12 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const JoinForm = () => {
   const nav = useNavigate();
+  
   const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   const { error, success } = useJoinStore();
+  
   const login = useAuthStore((state) => state.login);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -120,10 +123,11 @@ const JoinForm = () => {
 
       if (response.data.success) {
         alert("회원가입이 완료되었습니다.");
-        // nav('/member/login');
         // 회원가입 후에 캐릭터 생성 페이지로 넘어가야 해서
-        console.log(formData);
+        console.log("login")
         await login(formData.email, formData.password);
+        console.log("정보 가져오기")
+        await checkAuth();
         nav("/member/story");
       } else {
         alert(response.data.message || "회원가입에 실패했습니다.");
