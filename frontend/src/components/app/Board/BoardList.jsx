@@ -1,7 +1,8 @@
+import React, { useImperativeHandle, forwardRef } from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./BoardList.css";
-import useBoardStore from "../../../store/app/BoardStore";
+import useBoardStore from "../../../store/app/useBoardStore";
 import Board from "./Board";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -12,9 +13,68 @@ const api = axios.create({
 });
 
 // api랑 맞추려고 게시글들은 boards, 단일 게시글은 article로
-const BoardList = () => {
-  const { boards, setBoards, pagination, updatePagination } = useBoardStore();
+const BoardList = forwardRef((props, ref) => {
+  const { boards, setSearchBoards, setBoards, pagination, updatePagination, toggleBoards } = useBoardStore();
   const [isLoading, setIsLoading] = useState(true);
+
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const api = axios.create({
+    baseURL: baseUrl,
+    withCredentials: true,
+  });
+
+  const updateBoard = async (text) => {
+    try{
+      // 입력이 비어있으면 전체 조회 해야됨
+      if(text === ""){
+        try {
+          setIsLoading(true);
+          const res = await api.get(
+            `/board/list?page=${pagination.currentPage}&size=10`
+          );
+  
+          // 응답 구조를 확인
+          // console.log('API 응답:', res);
+  
+          if (res.data && res.data.data) {
+            setBoards(res.data.data); // res.data.data를 전달
+          } else {
+            console.error("Unexpected API response structure:", res.data);
+            setBoards({ boardList: { content: [] } });
+          }
+        } catch (error) {
+          console.error("게시글 목록을 가져오는데 실패했습니다:", error);
+          setBoards({ boardList: [] });
+        } finally {
+          setIsLoading(false);
+        }
+
+        return;
+      }
+      const response = await api.get(`/board/search?searchWord=`+ text);
+      
+      if(response.data && response.data.data){
+        await setSearchBoards(response.data.data);
+      }
+      else{
+        setSearchBoards({ boardList: { content: [] } });
+      }
+    }
+    catch(error){
+      console.log(error);
+      setSearchBoards({ boardList: { content: [] } });
+    }
+
+  }
+
+  const toggleSortBy = async () => {
+    await toggleBoards();
+  }
+
+  useImperativeHandle(ref, () => ({
+    trigerUpdateBoard: updateBoard,
+    trigerToggleSortBy: toggleSortBy,
+  }));
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -93,5 +153,5 @@ const BoardList = () => {
       )}
     </div>
   );
-};
+});
 export default BoardList;
