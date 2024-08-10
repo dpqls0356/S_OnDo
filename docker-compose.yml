@@ -17,47 +17,6 @@ services:
       - backend
       - frontend
 
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      MYSQL_USER: "${MYSQL_USER}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-    ports:
-      - "${MYSQL_PORT}:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - ondo
-    restart: always
-
-  redis:
-    container_name: redis
-    image: redis
-    ports:
-      - "${REDIS_PORT}:6379"
-    networks:
-      - ondo
-    volumes:
-      - redis-data:/data
-    restart: always
-
-  mongo:
-    container_name: mongo
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
-      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    restart: always
-    networks:
-      - ondo
-
   backend:
     build:
       context: ./backend/ondo
@@ -86,11 +45,6 @@ services:
       - "${FRONTEND_PORT}:3000"
     networks:
       - ondo
-
-volumes:
-  mysql-data:
-  redis-data:
-  mongo-data:
 
 networks:
   ondo:
