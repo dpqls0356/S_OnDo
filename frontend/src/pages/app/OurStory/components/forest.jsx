@@ -87,9 +87,11 @@ const Btn = styled.div`
 
 const Text = styled.pre`
   position: fixed;
-  top: 0;
   margin-top: 20px;
+  width:90%;
+  max-width: 360px;
   width: 90%;
+  min-height: 10%;
   padding: 10px 20px;
   background-color: #0000008d;
   color: white;

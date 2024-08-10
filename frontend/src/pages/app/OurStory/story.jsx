@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
 import { useState, useEffect } from "react";
 import Forest from "./components/forest";
+import Box from "./components/Box"
 import BlackView from "./components/blackView";
 
 const View = styled.div`
@@ -24,7 +25,8 @@ const Story = () => {
   return (
     <View>
       {clickCount < 3 && <Forest clickCount={clickCount} handleClick={handleClick} />}
-      {1<clickCount&&clickCount <4 && <BlackView clickCount={clickCount} handleClick={handleClick} />}
+      {1<clickCount&&clickCount <5 && <BlackView clickCount={clickCount} handleClick={handleClick} />}
+      {3<clickCount&&clickCount <16&& <Box clickCount={clickCount} handleClick={handleClick} />}
     </View>
   );
 };
