@@ -177,7 +177,7 @@ const CounselorMypage = () => {
   }, [])
 
 
-
+//  마이페이지 수정(자기소개 및 프로필 사진)
   const putMyInfo = async () => {
     const changeSelfIntroduction = info
 
@@ -216,8 +216,17 @@ const CounselorMypage = () => {
       });
       if (response.data.success) {
         console.log('마이페이지 수정 완료')
+        alert("수정이 완료되었습니다.")
         InfoState('') // 입력창 초기화
         EditState(!edit) // 수정모드 비활성화
+        
+        // 여기서 MyInfo 상태를 직접 업데이트함으로써 수정 후 바로 수정된 정보가 보이게 함
+        setMyInfo((prev) => ({
+          ...prev,
+          selfIntroduction: changeSelfIntroduction,
+          profileUrl: previewUrl || user.profileUrl, // 프로필 이미지도 업데이트
+        }));
+        await getMyInfo();
         // nav('/counselor/')        
         // nav('/counselor/mypage')        
       }
@@ -243,13 +252,17 @@ const CounselorMypage = () => {
     <View>
       <Tab>마이페이지</Tab>
       {edit ? 
-      <ProfileImg>
-      <img src={mypageuser} onClick={handleImageClick}/>
-      <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{display: "none"}}/>
-    </ProfileImg>
+        <ProfileImg>
+          <img 
+            src={previewUrl || user.profileUrl} 
+            style={{cursor: "pointer"}}
+            alt="프로필 이미지" onClick={handleImageClick}/>
+          <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{display: "none"}}/>
+        </ProfileImg>
       :
       <ProfileImg>
-        <img src={mypageuser} /></ProfileImg>
+        <img src={user.profileUrl} />
+      </ProfileImg>
       
       }
       <Name>{MyInfo.name}</Name>
