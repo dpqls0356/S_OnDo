@@ -37,6 +37,7 @@ const MyUpdateForm = () => {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -260,7 +261,11 @@ const MyUpdateForm = () => {
     userFormData.append("updateRequestDto", userData);
 
     if (selectedFile) {
+      console.log(selectedFile);
       userFormData.append("profileImage", selectedFile);
+    } else if (previewUrl === mainProfileUrl) {
+      const defaultFile = new Blob([""], { type: "image/jpeg" });
+      userFormData.append("profileImage", defaultFile, "default.jpg");
     } else {
       const emptyFile = new Blob([""], { type: "image/jpeg" });
       userFormData.append("profileImage", emptyFile, "empty.jpg");
