@@ -9,10 +9,9 @@ spring:
     mongodb:
       host: mongo
       port: 27017
-#      username: ${MONGO_INITDB_ROOT_USERNAME}
-#      password: ${MONGO_INITDB_ROOT_PASSWORD}
-#      database: ondo
-      uri: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/ondo?authSource=admin
+      username: ${MONGO_INITDB_ROOT_USERNAME}
+      password: ${MONGO_INITDB_ROOT_PASSWORD}
+      database: ondo
 
     redis:
       host: redis
