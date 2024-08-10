@@ -1,6 +1,4 @@
 import { styled, keyframes } from "styled-components";
-import { useEffect, useRef, useState } from "react";
-
 
 const fadeIn = keyframes`
   from {
@@ -11,20 +9,32 @@ const fadeIn = keyframes`
   }
 `;
 
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    z-index: -10;
+  }
+`;
+
 const waveAnimation = keyframes`
   0% { transform: translateY(0); }
   50% { transform: translateY(-20px); }
   100% { transform: translateY(0); }
 `;
 
-const BlackBackGround = styled.div`
+const BlackBackGround = styled.div.attrs((props) => ({
+  fadeOutTrigger: props.fadeOutTrigger,
+}))`
   width: 100%;
   height: 100%;
   background-color: black;
   position: absolute;
   z-index: 20;
   opacity: 0;
-  animation: ${fadeIn} 2s forwards;
+  animation: ${({ fadeOutTrigger }) => fadeOutTrigger ? fadeOut : fadeIn} 2s forwards;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,9 +65,11 @@ const Btn = styled.div`
     border: none;
   }
 `;
+
 const Text = styled.div`
-    font-size: 25px;
-`
+  font-size: 25px;
+  animation: ${fadeIn} 2s forwards;
+`;
 
 export default function BlackView({ clickCount, handleClick }) {
   const renderWaveText = (text) => {
@@ -70,7 +82,7 @@ export default function BlackView({ clickCount, handleClick }) {
 
   return (
     <>
-      <BlackBackGround>
+      <BlackBackGround >
         {clickCount === 2 && <Text>{renderWaveText("이동중 ...")}</Text>}
         {clickCount === 3 && <Text>저기...</Text>}
       </BlackBackGround>
