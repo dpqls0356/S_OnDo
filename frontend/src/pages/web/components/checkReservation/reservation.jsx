@@ -206,7 +206,8 @@ function Reservation({ reservation }) {
         <div>상담일: {reservationFormattedDate}</div>
       </Col>
       <Col>
-        {timeRemaining >= 0 ? (
+        <CreateCounselingRoomBtn onClick={createCounselingRoom}>입장</CreateCounselingRoomBtn>
+        {/* {timeRemaining >= 0 ? (
           <CreateCounselingRoomBtn onClick={createCounselingRoom}>
             {timeRemaining > 1
               ? `D-${Math.floor(timeRemaining)}`
@@ -214,7 +215,7 @@ function Reservation({ reservation }) {
                 ? `입장`
                 : `D-day`}
           </CreateCounselingRoomBtn>
-        ) : null}
+        ) : null} */}
       </Col>
       {timeRemaining > 0 ? (
         <CancelReservationBtn>
