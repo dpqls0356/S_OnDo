@@ -5,6 +5,7 @@ import useAuthStore from "./store/app/authStore";
 import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
 import CounselorLogin from "./pages/web/counselorLogin";
 import CounselingRoom from "./pages/web/counselingRoom";
+import CounselorJoin from "./pages/web/counselorJoin"
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
 
@@ -47,6 +48,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
+        <Route path="/counselor/join" element={<CounselorJoin/>}></Route>
         <Route path="/counselor" element={<CounselorLayout />}>
           <Route path="" element={<Schedul />} />
           {/* <Route path="" element={<TimeTableComponent/> }/> */}
