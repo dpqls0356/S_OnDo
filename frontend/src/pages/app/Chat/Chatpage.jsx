@@ -10,7 +10,7 @@ import './Chatpage.css';
 const Chatpage = () => {
   const size = 10;
   const nav = useNavigate();
-  const [character, setCharacter] = useState({});
+  const [character, setCharacter] = useState(null);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [hasMore, setHasMore] = useState(true);
@@ -28,8 +28,13 @@ const Chatpage = () => {
   }, [api, pageNum, size]);
 
   const getCharacter = useCallback(async () => {
-    const characterResponse = await api.get('/character/getCharacter');
-    setCharacter(characterResponse.data.data.character);
+    try {
+      const characterResponse = await api.get('/character/getCharacter');
+      setCharacter(characterResponse.data.data.character);
+    } catch (error) {
+      console.error("Error fetching character:", error);
+      setCharacter({ name: "Unknown" });
+    }
   }, [api]);
 
   const scrollToBottom = useCallback(() => {
@@ -38,7 +43,7 @@ const Chatpage = () => {
     }
   }, []);
 
-  const typeChattingMessage = useCallback(async () => {
+  const sendMessage = useCallback(async () => {
     if (userInput.trim() !== '' && !isLoading) {
       setIsLoading(true);
       const currentInput = userInput;
@@ -50,19 +55,17 @@ const Chatpage = () => {
           { headers: { 'Content-Type': 'application/json' } }
         );
 
-        // 서버 응답에서 받은 메시지 목록만 사용
         const newMessages = response.data.data.responseChatting;
-
         setMessages(prevMessages => [...prevMessages, ...newMessages]);
-    } catch (error) {
-      console.error("Error sending message:", error);
-      setUserInput(currentInput);
-    } finally {
-      setIsLoading(false);
-      scrollToBottom();
+      } catch (error) {
+        console.error("Error sending message:", error);
+        setUserInput(currentInput);
+      } finally {
+        setIsLoading(false);
+        scrollToBottom();
+      }
     }
-  }
-}, [userInput, isLoading, api, scrollToBottom]);
+  }, [userInput, isLoading, api, scrollToBottom]);
 
   const loadMoreMessages = useCallback(async () => {
     if (isLoading || !hasMore) return;
@@ -87,11 +90,18 @@ const Chatpage = () => {
   useEffect(() => {
     if (!isInitialized) {
       const initializeChat = async () => {
-        const initialMessages = await getChatbotMessage();
-        setMessages(initialMessages.reverse());
-        await getCharacter();
-        scrollToBottom();
-        setIsInitialized(true);
+        setIsLoading(true);
+        try {
+          const initialMessages = await getChatbotMessage();
+          setMessages(initialMessages.reverse());
+          await getCharacter();
+          scrollToBottom();
+        } catch (error) {
+          console.error("Error initializing chat:", error);
+        } finally {
+          setIsInitialized(true);
+          setIsLoading(false);
+        }
       };
       initializeChat();
     }
@@ -102,11 +112,11 @@ const Chatpage = () => {
   }, []);
 
   const handleKeyPress = useCallback((event) => {
-    if (event.key === 'Enter' && userInput.trim() !== '' && !isLoading) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      typeChattingMessage();
+      sendMessage();
     }
-  }, [userInput, isLoading, typeChattingMessage]);
+  }, [sendMessage]);
 
   const formatMessageTime = (dateString) => {
     const date = new Date(dateString);
@@ -122,57 +132,57 @@ const Chatpage = () => {
       <div className="CharacterName">
         <img onClick={() => nav('/member/home')} src={back} alt="Back" />
         <img 
-            src={chrface} 
-            alt="다람이 얼굴" 
-            style={{
-              borderRadius: '50%',
-              border: '2px solid black',
-              width: '50px',  // 원하는 크기로 조정
-              height: '50px', // 원하는 크기로 조정
-              objectFit: 'cover'
-            }}
-          />
-        <div>{character.name}</div>
+          src={chrface} 
+          alt="다람이 얼굴" 
+          style={{
+            borderRadius: '50%',
+            border: '2px solid black',
+            width: '50px',
+            height: '50px',
+            objectFit: 'cover'
+          }}
+        />
+        {character && <div>{character.name}</div>}
       </div>
       
-      {isInitialized && (
-        <div className="ChatContent" ref={chatContainerRef}>
-          <button onClick={loadMoreMessages} disabled={!hasMore || isLoading} className="load-more-button">
-            {isLoading ? '로딩 중...' : '이전 메시지 더 보기'}
-          </button>
-          
-          <div className="ChatScreen">
-            {messages.map((message, index) => (
-              <div key={index} className={`message-container ${message.sender === 'user' ? 'user' : 'bot'}`}>
-                <div className={message.sender === 'user' ? 'user-message' : 'bot-message'}>
-                  {message.content}
+      <div className="ChatContentWrapper">
+        {isInitialized && (
+          <div className="ChatContent" ref={chatContainerRef}>
+            <button onClick={loadMoreMessages} disabled={!hasMore || isLoading} className="load-more-button">
+              {isLoading ? '로딩 중...' : '이전 메시지 더 보기'}
+            </button>
+            
+            <div className="ChatScreen">
+              {messages.map((message, index) => (
+                <div key={index} className={`message-container ${message.sender === 'user' ? 'user' : 'bot'}`}>
+                  <div className={message.sender === 'user' ? 'user-message' : 'bot-message'}>
+                    {message.content}
+                  </div>
+                  <div className="message-time">
+                    {formatMessageTime(message.createdAt)}
+                  </div>
                 </div>
-                <div className="message-time">
-                  {formatMessageTime(message.createdAt)}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       
-      <div className="Chatbox">
-        <input
-          type="text"
-          value={userInput}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          placeholder="메시지를 입력하세요..."
-        />
-        <img
-          onClick={() => {
-            if (!isLoading) {
-              typeChattingMessage();
-            }
-          }}
-          src={chat_send}
-          alt="Send"
-        />
+      <div className="ChatboxWrapper">
+        <div className="Chatbox">
+          <input
+            type="text"
+            value={userInput}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            placeholder="메시지를 입력하세요..."
+          />
+          <img
+            onClick={sendMessage}
+            src={chat_send}
+            alt="Send"
+          />
+        </div>
       </div>
     </div>
   );

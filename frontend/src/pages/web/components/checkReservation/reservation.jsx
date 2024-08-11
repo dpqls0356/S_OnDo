@@ -80,8 +80,12 @@ const CancelReservationBtn = styled.button`
 `;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : baseUrl;
+const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
+
+const api = axios.create({
+  baseURL: baseUrl,
+  withCredentials: true,
+});
 
 function Reservation({ reservation }) {
   const navigate = useNavigate();
@@ -131,6 +135,37 @@ function Reservation({ reservation }) {
     setReservationFormattedDate(formattedDate);
   };
 
+  const handleCancelClick = () => {
+    if (window.confirm("정말 예약을 취소하시겠습니까?")) {
+      cancelRequest(reservation.reservationId);
+    }
+  };
+
+  const cancelRequest = async (reservId) => {
+    console.log(reservId);
+    if (!reservId) {
+      alert("예약 ID가 없습니다.");
+      return;
+    }
+
+    try {
+      const response = await api.delete(`/counselor/reservation`, {
+        data: {
+          reservationId: reservId,
+        },
+      });
+
+      if (response.data.success) {
+        alert("상담 예약이 취소되었습니다.");
+        window.location.reload(); // 페이지 새로고침
+      } else {
+        alert("예약 취소에 실패했습니다.");
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "상담 예약 취소 중 오류가 발생했습니다.");
+    }
+  };
+
   useEffect(() => {
     changeDateFormat();
     calculateTimeRemaining();
@@ -159,10 +194,7 @@ function Reservation({ reservation }) {
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
     setAge(age);
@@ -218,7 +250,7 @@ function Reservation({ reservation }) {
         ) : null} */}
       </Col>
       {timeRemaining > 0 ? (
-        <CancelReservationBtn>
+        <CancelReservationBtn onClick={handleCancelClick}>
           <FontAwesomeIcon icon={faX} />
         </CancelReservationBtn>
       ) : null}
