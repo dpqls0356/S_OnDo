@@ -22,5 +22,5 @@ public interface ChatbotService {
 
 	//추천 받은 미션을 저장하고 챗봇 메시지 생성하는 부분
 	@Transactional
-	List<String> createRecommendMessage(Long memberId, List<MissionDetail> recommendedMissions);
+	String createRecommendMessage(Long memberId, List<MissionDetail> recommendedMissions);
 }
