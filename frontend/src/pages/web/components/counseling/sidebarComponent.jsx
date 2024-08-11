@@ -206,7 +206,7 @@ const SideBar = ({ memberInfo }) => {
         </Header>
         {role === "COUNSELOR" ? (
           <>
-            <div style={{ display: isChat ? "block" : "none" }}>
+            <div style={{ display: isChat ? "block" : "none" ,flex:"1"}}>
               <Chat
                 ref={chatRef}
                 isConnected={isConnected}

@@ -4,11 +4,12 @@ import styled from 'styled-components';
 const View = styled.div`
     display: flex;
     flex-direction: column;
-    height: 1;
+    height: 100%;
 `;
 const InputMessage = styled.div`
     box-sizing: border-box;
     width: 100%;
+    padding-bottom: 20px;
     form{
         padding:5px 20px;
         display: flex;
@@ -25,6 +26,13 @@ const InputMessage = styled.div`
 const MessageList = styled.div`
     flex:1;
 `
+const Message = styled.div`
+`
+const Content = styled.div`
+    
+`
+const UserProfile = styled.div`
+`
 export default function Chat({
   isConnected,
   messages,
@@ -36,6 +44,14 @@ export default function Chat({
 
   return (
     <View>
+        <MessageList>
+            {messages.map((msg, index) => (
+                <Message key={index}>
+                    <UserProfile>{msg.from}:</UserProfile> 
+                    <Content>{msg.content}</Content>
+                </Message>
+            ))}
+        </MessageList>
         <InputMessage>
             <form
               className="form-inline"
@@ -59,17 +75,6 @@ export default function Chat({
                 </div>
             </form>
         </InputMessage>
-        <MessageList>
-              <tbody id="messages">
-                {messages.map((msg, index) => (
-                  <tr key={index}>
-                    <td>
-                      <strong>{msg.from}:</strong> {msg.content}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-        </MessageList>
     </View>
   );
 }
