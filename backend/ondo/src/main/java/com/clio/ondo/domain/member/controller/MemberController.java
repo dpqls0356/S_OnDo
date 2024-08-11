@@ -3,6 +3,7 @@ package com.clio.ondo.domain.member.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -58,7 +59,7 @@ public class MemberController {
 	private final CounselorService counselorService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
-
+	private final ScheduledAlarmService scheduledAlarmService;
 
     @PostMapping("/login")
 	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto, HttpServletResponse response) {
@@ -77,6 +78,14 @@ public class MemberController {
 
 			response.addCookie(accessTokenCookie);
 			response.addCookie(refreshTokenCookie);
+
+//			Long memberId = memberService.findIdByEmail(loginRequestdto.getEmail());
+//			try{
+//				scheduledAlarmService.saveToken(memberId, loginRequestdto.getToken());
+//			}catch(Exception e){
+//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패 (푸쉬알림불가)"));
+//			}
+
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));

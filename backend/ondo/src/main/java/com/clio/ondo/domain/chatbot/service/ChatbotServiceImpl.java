@@ -201,7 +201,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 	//추천 받은 미션을 저장하고 챗봇 메시지 생성하는 부분
 	@Override
 	@Transactional
-	public List<String> createRecommendMessage(Long memberId, List<MissionDetail> recommendedMissions) {
+	public String createRecommendMessage(Long memberId, List<MissionDetail> recommendedMissions) {
 		WebClient webClient = WebClient.builder().build();
 		String url = "https://api.openai.com/v1/chat/completions";
 
@@ -225,15 +225,11 @@ public class ChatbotServiceImpl implements ChatbotService{
 		ChatCompletion responseChatCompletion = responseBody.getBody();
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
+		ChatbotChatting responseChatting = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now().toString(), memberId);
+		chatbotRepository.upsertByMemberId(memberId, responseChatting);
 		//System.out.println(responseString);
 
-		List<String> parsedStrings = stringParsingService.parseLine(responseString);
-		for(String parsedString : parsedStrings){
-			ChatbotChatting responseChatting = new ChatbotChatting(null, "bot", parsedString, LocalDateTime.now().toString(), memberId);
-			chatbotRepository.upsertByMemberId(memberId, responseChatting);
-		}
-
-		return parsedStrings;
+		return responseString;
 	}
 }
 

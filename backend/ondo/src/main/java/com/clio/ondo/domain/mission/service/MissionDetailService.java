@@ -17,6 +17,6 @@ public class MissionDetailService {
 	private final MissionDetailRepository missionDetailRepository;
 
 	public MissionDetailList<MissionDetail> findAll() {
-		return new MissionDetailList<>(missionDetailRepository.findAll());
+		return new MissionDetailList<>(missionDetailRepository.findByType("typical"));
 	}
 }

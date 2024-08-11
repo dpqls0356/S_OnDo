@@ -56,7 +56,7 @@ const useCommentStore = create((set) => ({
         content: modifiedContent
       });
       console.log(response);
-      if (response.status === 200) {
+      if (response.status === 204) {
         set((state) => ({
           comments: state.comments.map(comment => 
             comment.id === commentId ? { ...comment, content: modifiedContent } : comment
