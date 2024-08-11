@@ -98,26 +98,26 @@ function Reservation({ reservation }) {
     event.stopPropagation();
     // if (timeRemaining === 0) {
       try {
-        const sessionResponse = await axios.post(
-          `${baseUrl}/counseling/sessions`,
-          { reservationId: reservation.reservationId },
-          {
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true, // default를 true로 설정
-          }
-        );
-
-      setSessionId(sessionResponse.data.data.session_id);
-      navigate("/counselingroom", {
-        state: {
-          sessionId: sessionResponse.data.data.session_id,
-          reservationId: reservation.reservationId,
-          memberId: reservation.memberId,
-        },
-      });
-    } catch (error) {
-      console.error("Error creating counseling room:", error);
-    }
+        if(!localStorage.getItem("sessionId")){
+            const sessionResponse = await axios.post(
+            `${baseUrl}/counseling/sessions`,
+            { reservationId: reservation.reservationId },
+            {
+              headers: { "Content-Type": "application/json" },
+              withCredentials: true, // default를 true로 설정
+            }
+            );
+              localStorage.setItem("sessionId",sessionResponse.data.data.session_id);
+        } 
+        navigate("/counselingroom", {
+          state: {
+            reservationId: reservation.reservationId,
+            memberId: reservation.memberId,
+          },
+        });
+      } catch (error) {
+        console.error("Error creating counseling room:", error);
+      }
     // } else return;
   };
 

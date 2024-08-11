@@ -13,11 +13,9 @@ const CommentList = ({ articleId }) => {
     }
   }, [getComments, articleId]);
 
-  useEffect(() => {}, [comments]);
-
   return (
     <div>
-      {comments && comments.length > 0 ? (
+      {comments.length > 0 ? (
         comments.map((comment) => (
           <Comment key={comment.id} comment={comment} />
         ))
