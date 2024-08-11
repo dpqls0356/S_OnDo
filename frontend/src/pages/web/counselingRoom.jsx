@@ -15,6 +15,7 @@ import SideBar from "./components/counseling/sidebarComponent";
 import useAuthStore from "../../store/app/authStore";
 
 const View = styled.div`
+  overflow: hidden;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -98,7 +99,7 @@ const CounselingRoom = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const sessionId = location.state.sessionId;
+  const sessionId = localStorage.getItem("sessionId");
   const reservationId = location.state.reservationId;
   const memberId = location.state.memberId;
   const [memberInfo, setMemberInfo] = useState({});
@@ -182,7 +183,7 @@ const CounselingRoom = () => {
   const getMemberInfo = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}/counselor/member?memberId=${memberId}`,
+        `${baseUrl}/counselor/getMember?memberId=${memberId}`,
         {
           withCredentials: true,
           headers: {
@@ -190,6 +191,7 @@ const CounselingRoom = () => {
           },
         }
       );
+      console.log("================유저정보 받아오기===================")
       setMemberInfo(response.data.data.member);
     } catch (e) {
       console.log(e);
@@ -211,6 +213,7 @@ const CounselingRoom = () => {
       .catch((error) => {
         console.error("Error notifying server about leaving session:", error);
       });
+      localStorage.removeItem("sessionId");
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
@@ -254,6 +257,7 @@ const CounselingRoom = () => {
     setFilterEnabled((prev) => !prev);
   };
 
+
   useEffect(() => {
     if (publisher) {
       publisher.publishVideo(cameraStatus);
@@ -278,8 +282,13 @@ const CounselingRoom = () => {
     };
   }, [leaveSession]);
 
+  useEffect(() => {
+    const rootElement = document.getElementById("root");
+      rootElement.style.overflow = "hidden";
+  }, [location.pathname]);
+
   return (
-    <div>
+    <div style={{overflowY:"hidden"}}>
       {preJoin ? (
         <PreJoinComponent onJoin={handleJoin} />
       ) : session !== undefined ? (
