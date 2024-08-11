@@ -7,23 +7,28 @@ import create from "./../../../assets/images/new.png";
 import filter from "./../../../assets/images/filter.png";
 import search from "./../../../assets/images/search.png";
 
+
 const Boardpage = () => {
   const nav = useNavigate();
-  const [sortOrder, setSortOrder] = useState('desc'); // 'desc' for newest first, 'asc' for oldest first
-
+  const boardListRef = useRef();
+  const boardToggleSortBy = useRef();
+  
   const onClickCreate = () => {
+    // 게시글 생성으로 이동w
     nav("/member/board/create");
   };
 
   const text = useRef(null);
-  const onClickSearch = (e) => {
-    console.log(e.target);
-    console.log(text.current.value);
+  const onClickSearch = async (e) => {
+    if(boardListRef.current){
+      boardListRef.current.trigerUpdateBoard(text.current.value);
+    }
   };
 
   const onClickSort = () => {
-    setSortOrder(prevOrder => prevOrder === 'desc' ? 'asc' : 'desc');
-    console.log(`정렬 순서 변경: ${sortOrder === 'desc' ? '오래된 순' : '최신 순'}`);
+    if(boardListRef.current){
+      boardListRef.current.trigerToggleSortBy();
+    }
   };
 
   return (
@@ -59,7 +64,7 @@ const Boardpage = () => {
 
         <div className="BoardContentContainer">
           <div className="BoardContentList">
-            <BoardList sortOrder={sortOrder} />
+            <BoardList ref={boardListRef}/>
           </div>
         </div>
 

@@ -55,9 +55,7 @@ const useCommentStore = create((set) => ({
       const response = await api.patch(`/board/comment/${commentId}`, {
         content: modifiedContent
       });
-      
-      console.log('Update comment response:', response);
-  
+      console.log(response);
       if (response.status === 204) {
         set((state) => ({
           comments: state.comments.map(comment => 

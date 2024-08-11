@@ -1,8 +1,8 @@
-import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
-import "./BoardList.css";
-import useBoardStore from "../../../store/app/BoardStore";
-import Board from "./Board";
+import React, { useEffect, useState, useMemo, useImperativeHandle, forwardRef } from 'react';
+import axios from 'axios';
+import './BoardList.css';
+import useBoardStore from '../../../store/app/useBoardStore';
+import Board from './Board';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -11,18 +11,58 @@ const api = axios.create({
   withCredentials: true,
 });
 
-const BoardList = ({ sortOrder }) => {
-  const { boards, setBoards, pagination, updatePagination } = useBoardStore();
+const BoardList = forwardRef((props, ref) => {
+  const { boards, setSearchBoards, setBoards, pagination, updatePagination, toggleBoards } = useBoardStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState('asc');
+
+  const updateBoard = async (text) => {
+    try {
+      if (text === "") {
+        setIsLoading(true);
+        try {
+          const res = await api.get(`/board/list?page=${pagination.currentPage}&size=10`);
+          if (res.data && res.data.data) {
+            setBoards(res.data.data);
+          } else {
+            console.error("Unexpected API response structure:", res.data);
+            setBoards({ boardList: { content: [] } });
+          }
+        } catch (error) {
+          console.error("게시글 목록을 가져오는데 실패했습니다:", error);
+          setBoards({ boardList: { content: [] } });
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
+      const response = await api.get(`/board/search?searchWord=${text}`);
+      if (response.data && response.data.data) {
+        setSearchBoards(response.data.data);
+      } else {
+        setSearchBoards({ boardList: { content: [] } });
+      }
+    } catch (error) {
+      console.log(error);
+      setSearchBoards({ boardList: { content: [] } });
+    }
+  };
+
+  const toggleSortBy = async () => {
+    setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+    await toggleBoards();
+  };
+
+  useImperativeHandle(ref, () => ({
+    trigerUpdateBoard: updateBoard,
+    trigerToggleSortBy: toggleSortBy,
+  }));
 
   useEffect(() => {
     const fetchBoards = async () => {
       try {
         setIsLoading(true);
-        const res = await api.get(
-          `/board/list?page=${pagination.currentPage}&size=10`
-        );
-
+        const res = await api.get(`/board/list?page=${pagination.currentPage}&size=10`);
         if (res.data && res.data.data && res.data.data.boardList) {
           setBoards(res.data.data);
           updatePagination({
@@ -41,19 +81,16 @@ const BoardList = ({ sortOrder }) => {
         setIsLoading(false);
       }
     };
-
     fetchBoards();
   }, [pagination.currentPage, setBoards, updatePagination]);
 
   const sortedBoards = useMemo(() => {
-    // console.log("정렬 전 boards:", boards); // 디버깅을 위한 로그
     if (!Array.isArray(boards)) return [];
     const sorted = [...boards].sort((a, b) => {
       const dateA = new Date(a.created_at || a.createdAt || 0);
       const dateB = new Date(b.created_at || b.createdAt || 0);
       return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
-    // console.log("정렬 후 boards:", sorted); // 디버깅을 위한 로그
     return sorted;
   }, [boards, sortOrder]);
 
@@ -105,6 +142,9 @@ const BoardList = ({ sortOrder }) => {
       )}
     </div>
   );
-};
+});
+
+// 컴포넌트에 displayName 설정
+BoardList.displayName = 'BoardList';
 
 export default BoardList;
