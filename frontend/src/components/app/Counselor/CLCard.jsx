@@ -108,7 +108,7 @@ const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reser
 // const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reservId}) => {
 //   const nav = useNavigate();
 //   const { calculateDday, displayGender } = useCounselorStore();
-  
+
 //   const dday = calculateDday(reservationDate);
 
 //   const MobileCounseling = () => {
