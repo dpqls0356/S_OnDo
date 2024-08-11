@@ -51,5 +51,6 @@ HELP.md
 /src/main/resources/firebase.json
 /src/main/resources/perspectiveapi.properties
 /src/main/resources/application-oauth.yml
+/src/main/resources/application-prod.yml
 /src/main/resources/application.yml
 /src/main/resources/data.sql

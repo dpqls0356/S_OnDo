@@ -3,7 +3,7 @@ import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const DayListCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, setSelectedTime }) => {
+const DayListCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [dayScheduleList, setDayScheduleList] = useState([]);
 
@@ -14,7 +14,7 @@ const DayListCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, setS
   const handleDateClick = async (date) => {
     setSelectedDate(date);
     console.log('선택된 날짜 확인용', selectedDate)
-    setSelectedTime([]);
+    // setSelectedTime([]);
     const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
     // Local time to UTC
     const formattedDate = new Date(Date.UTC(fullDate.getFullYear(), fullDate.getMonth(), fullDate.getDate()));
