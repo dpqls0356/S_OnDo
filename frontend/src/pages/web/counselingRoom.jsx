@@ -98,7 +98,7 @@ const CounselingRoom = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const sessionId = location.state.sessionId;
+  const sessionId = localStorage.getItem("sessionId");
   const reservationId = location.state.reservationId;
   const memberId = location.state.memberId;
   const [memberInfo, setMemberInfo] = useState({});
@@ -190,6 +190,7 @@ const CounselingRoom = () => {
           },
         }
       );
+      console.log("================유저정보 받아오기===================")
       setMemberInfo(response.data.data.member);
     } catch (e) {
       console.log(e);
@@ -211,6 +212,7 @@ const CounselingRoom = () => {
       .catch((error) => {
         console.error("Error notifying server about leaving session:", error);
       });
+      localStorage.removeItem("sessionId");
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
@@ -253,6 +255,7 @@ const CounselingRoom = () => {
   const toggleFilter = () => {
     setFilterEnabled((prev) => !prev);
   };
+
 
   useEffect(() => {
     if (publisher) {

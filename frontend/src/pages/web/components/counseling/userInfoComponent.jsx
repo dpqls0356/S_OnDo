@@ -96,17 +96,18 @@ const UserInfoComponent = ({ memberInfo }) => {
   const observer = useRef();
   const memberId = memberInfo.memberId;
   const size = 10;
-
   useEffect(() => {
+    console.log("========================유저정보컴포넌트===========================");
+    console.log(memberInfo);
     getReservationHistory();
-  }, [page]);
-
+  }, [page, memberId]);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
   };
 
   const getReservationHistory = async () => {
+    console.log("=========================getReservationHistory=========================="+memberId);
     try {
       const response = await axios.get(
         `${baseUrl}/counselor/memberReservation?memberId=${memberId}&page=${page}&size=${size}`,
