@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class CounselorJoinRequestDto {
+    
     private String id;
     private String password;
     private String gender;

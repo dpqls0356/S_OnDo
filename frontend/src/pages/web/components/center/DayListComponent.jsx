@@ -17,6 +17,9 @@ const View = styled.div`
 `;
 
 const Tab = styled.div`
+  color: #121481;
+  font-weight: 600;
+  // font-size: 36px;
   display: flex;
   gap: 10px;
   margin: 0 auto;
@@ -65,8 +68,10 @@ const DayList = () => {
   console.log(customTodayDate); // 20240809
 
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜만 저장(ex: 2024-08-07이면 selectedDate === 7)
-  const [selectedDate2, setSelectedDate2] = useState(customTodayDate); // 선택된 날짜의 년-월-일
-  const [selectedTime, setSelectedTime] = useState([]);
+  const [selectedDate2, setSelectedDate2] = useState(customTodayDate); // 선택된 날짜의 YYYYMMDD
+  // const [selectedTime, setSelectedTime] = useState([]);
+  const [ loading, setLoading ] = useState(true)
+
   return(
     <View>
       <Tab>상담 내역</Tab>
@@ -76,11 +81,11 @@ const DayList = () => {
                 selectedDate={selectedDate} 
                 setSelectedDate={setSelectedDate} 
                 setSelectedDate2={setSelectedDate2} 
-                setSelectedTime={setSelectedTime} 
+                // setSelectedTime={setSelectedTime} 
               />
         </Calen>
         <br />
-        <DayListReservationList selectedDate={selectedDate2}/>
+          <DayListReservationList selectedDate={selectedDate2} />
       </Content>
     </View>
   )

@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.clio.ondo.domain.counselDetail.model.CounselDetail;
+import com.clio.ondo.domain.counselDetail.repository.CounselDetailRepository;
 import com.clio.ondo.domain.reservation.model.CounselorReservationAddRequestDto;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import com.clio.ondo.domain.reservation.model.CounselorReservationAddDto;
 import com.clio.ondo.domain.reservation.model.Reservation;
 import com.clio.ondo.domain.reservation.model.CounselorReservationDto;
 import com.clio.ondo.domain.reservation.repository.CounselorReservationRepository;
+import com.clio.ondo.domain.reservation.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 public class CounselorReservationServiceImpl implements CounselorReservationService{
 	private final CounselorReservationRepository counselorReservationRepository;
 	private final CounselorService counselorService;
+	private final ReservationRepository reservationRepository;
+	private final CounselDetailRepository counselDetailRepository;
 
 	// 해당 날짜의 예약 기록을 모두 가져오되 Member가 null인 경우를 제한다.
 	@Override
@@ -64,7 +69,7 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		// counselorId로 서비스에서 가져와야겠네..
 		reservation.setCounselor(counselorService.getCounselorEntity(counselorReservationAddDto.getCounselorId()).get());
 		reservation.setCounselingUrl(null);
-		reservation.setCounselingDetail(null);
+		reservation.setCounselDetail(null);
 
 		counselorReservationRepository.save(reservation);
 	}
@@ -83,7 +88,7 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 		// counselorId로 서비스에서 가져와야겠네..
 		reservation.setCounselor(counselorService.getCounselorEntity(counselorReservationAddRequestDto.getCounselorId()).get());
 		reservation.setCounselingUrl(null);
-		reservation.setCounselingDetail(null);
+		reservation.setCounselDetail(null);
 
 		counselorReservationRepository.save(reservation);
 	}
@@ -92,6 +97,15 @@ public class CounselorReservationServiceImpl implements CounselorReservationServ
 	@Override
 	@Transactional
 	public void deleteReservation(Long reservationId) {
+
+		// Reservation을 조회
+		Reservation reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 예약이 없습니다. id=" + reservationId));
+		// CounselDetail을 가져와서 삭제
+		CounselDetail counselDetail = reservation.getCounselDetail();
+		if (counselDetail != null) {
+			counselDetailRepository.delete(counselDetail);
+		}
 		counselorReservationRepository.deleteById(reservationId);
 	}
 
