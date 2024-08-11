@@ -282,7 +282,7 @@ const CounselingRoom = () => {
   }, [leaveSession]);
 
   return (
-    <div>
+    <div style={{overflowY:"hidden"}}>
       {preJoin ? (
         <PreJoinComponent onJoin={handleJoin} />
       ) : session !== undefined ? (

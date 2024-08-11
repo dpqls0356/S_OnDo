@@ -57,14 +57,16 @@ import useCounselorStore from '../../../store/app/CounselorStore';
 const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reservId, counselingUrl}) => {
   const nav = useNavigate();
   const { calculateDday, displayGender } = useCounselorStore();
-
   const dday = calculateDday(reservationDate);
 
   const handleCounselingClick = () => {
     if (counselingUrl) {
+      localStorage.setItem("sessionId",counselingUrl);
       nav(`/counselingroom`, { 
         state: { 
-          sessionId: counselingUrl
+          sessionId: counselingUrl,
+          reservationId:"",
+          memberId:"",
         } 
       });
     } else {
