@@ -16,6 +16,7 @@ const CounselorList = () => {
   }, [fetchUserReservations]);
 
   const sortedReservations = useMemo(() => {
+    console.log(userReservations)
     return [...userReservations].sort((a, b) => {
       const dateA = new Date(a.reservationDate);
       const dateB = new Date(b.reservationDate);
@@ -61,6 +62,7 @@ const CounselorList = () => {
                 is_complete={reservation.is_complete}
                 reservationDate={reservation.reservationDate}
                 reservId={reservation.id}
+                counselingUrl ={reservation.counselingUrl}
               />
             ))}
           </div>
