@@ -20,6 +20,8 @@ public interface MemberService {
 
 	Member findOne(Long memberId);
 
+	Long findIdByEmail(String email);
+
 	TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException;
 
 	void logout(String accessToken) throws AuthenticationException;

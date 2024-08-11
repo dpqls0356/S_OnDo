@@ -128,9 +128,11 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 
 			List<MissionDetail> recommendedMissionDetails = chatbotService.getRecommendFromChatbot(memberId, missions);
 
-			List<String> messages = chatbotService.createRecommendMessage(memberId, recommendedMissionDetails);
+			// 미션을 실제로 추가하는 로직 필요함
 
-			List<FCMResultDto> result = missionAlarmService.sendFcmAlarm(memberId, messages.get(0));
+			String messages = chatbotService.createRecommendMessage(memberId, recommendedMissionDetails);
+
+			List<FCMResultDto> result = missionAlarmService.sendFcmAlarm(memberId, messages);
 
 			return "완료";
 		};
