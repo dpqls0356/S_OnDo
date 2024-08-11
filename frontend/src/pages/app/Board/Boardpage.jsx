@@ -1,6 +1,6 @@
 import "./Boardpage.css";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 // 뿌린 BoadList 컴포넌트 밑에 return 해서 표시
 import BoardList from "../../../components/app/Board/BoardList";
@@ -8,23 +8,28 @@ import create from "./../../../assets/images/new.png";
 import filter from "./../../../assets/images/filter.png";
 import search from "./../../../assets/images/search.png";
 
+
 const Boardpage = () => {
   const nav = useNavigate();
-
+  const boardListRef = useRef();
+  const boardToggleSortBy = useRef();
+  
   const onClickCreate = () => {
-    // 게시글 생성으로 이동
+    // 게시글 생성으로 이동w
     nav("/member/board/create");
   };
 
   const text = useRef(null);
-  const onClickSearch = (e) => {
-    console.log(e.target);
-    console.log(text.current.value);
+  const onClickSearch = async (e) => {
+    if(boardListRef.current){
+      boardListRef.current.trigerUpdateBoard(text.current.value);
+    }
   };
 
   const onClickSort = () => {
-    console.log("나중에 기능 추가되면 onClickSetting으로 바꾸기");
-    console.log("지금은 날짜순 정렬기능만 있음");
+    if(boardListRef.current){
+      boardListRef.current.trigerToggleSortBy();
+    }
   };
 
   return (
@@ -63,7 +68,7 @@ const Boardpage = () => {
         {/* 게시글 목록 컨테이너 */}
         <div className="BoardContentContainer">
           <div className="BoardContentList">
-            <BoardList />
+            <BoardList ref={boardListRef}/>
           </div>
         </div>
 
