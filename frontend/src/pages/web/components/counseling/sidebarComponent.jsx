@@ -98,7 +98,7 @@ const SideBar = ({ memberInfo }) => {
               채팅
             </Col>
             {role === "COUNSELOR" ? (
-              <div>
+              <div style={{display:"flex"}}>
                 <Col>|</Col>
                 <Col onClick={() => toggleChat(false)} active={!isChat}>
                   내담자 정보
