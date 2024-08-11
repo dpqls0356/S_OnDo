@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.clio.ondo.domain.image.service.ImageService;
+import com.clio.ondo.domain.mission.service.MissionService;
 import com.clio.ondo.global.auth.MemberPrincipalDetails;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -56,6 +56,7 @@ public class MemberServiceImpl implements MemberService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final DaoAuthenticationProvider memberAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
+	private final MissionService missionService;
 
 	@Value("${profile.url}")
 	String defaultProfileUrl; //기본 프로필 이미지
@@ -81,6 +82,7 @@ public class MemberServiceImpl implements MemberService {
 
 		characterRepository.save(character);
 		memberRepository.save(member);
+		missionService.createTodayMission(member.getId());
 	}
 
 
@@ -92,6 +94,11 @@ public class MemberServiceImpl implements MemberService {
 		} else {
 			throw new MemberNotFoundException("회원 조회가 실패했습니다.");
 		}
+	}
+
+	@Override
+	public Long findIdByEmail(String email){
+		return memberRepository.findIdByEmail(email);
 	}
 
 	@Override
