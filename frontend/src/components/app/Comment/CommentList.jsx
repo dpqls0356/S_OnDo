@@ -8,7 +8,7 @@ const CommentList = ({ articleId }) => {
 
   useEffect(() => {
     if (articleId) {
-      console.log("Fetching comments for article:", articleId);
+      // console.log("Fetching comments for article:", articleId);
       getComments(articleId);
     }
   }, [getComments, articleId]);
