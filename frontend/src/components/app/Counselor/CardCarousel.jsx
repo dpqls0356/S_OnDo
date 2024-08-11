@@ -5,7 +5,7 @@ import './CardCarousel.css'
 import useCounselorStore from '../../../store/app/CounselorStore';
 import { useEffect } from 'react';
 
-const CardCarousel = ({ name, reservationDate, gender, field, intro, id }) => {
+const CardCarousel = ({ name, reservationDate, gender, field, intro, is_completed, reservId, counselingUrl }) => {
     const nav = useNavigate();
     const { calculateDday, displayGender } = useCounselorStore();
     
@@ -15,10 +15,18 @@ const CardCarousel = ({ name, reservationDate, gender, field, intro, id }) => {
     //     console.log("CardCarousel props:", { name, reservationDate, gender, field, intro, id });
     // }, [name, reservationDate, gender, field, intro, id]);
 
-    const MobileCounseling = (event) => {
-      event.stopPropagation();
-      console.log('nav 통해서 dday 버튼 누르면 상담방에 넘어가야 함')
-    }
+    const handleCounselingClick = () => {
+      if (counselingUrl) {
+        nav(`/counselingroom`, { 
+          state: { 
+            sessionId: counselingUrl
+          } 
+        });
+      } else {
+        alert('아직 상담 시간이 되지 않았습니다. 상담 시간에 다시 시도해주세요.');
+      }
+    };
+
 
     if (!name && !gender && !field && !intro) {
         return <div>상담사 정보를 불러오는 중...</div>;
@@ -45,7 +53,7 @@ const CardCarousel = ({ name, reservationDate, gender, field, intro, id }) => {
               <div>
               </div>
               <div id='CS-Btn'>
-                <button onClick={MobileCounseling} id='DdayBtn'>
+                <button onClick={handleCounselingClick} id='DdayBtn'>
                   <div>
                     {dday}
                   </div>

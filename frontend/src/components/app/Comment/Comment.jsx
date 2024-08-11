@@ -8,31 +8,43 @@ const Comment = ({ comment }) => {
   const { deleteComment, updateComment } = useCommentStore();
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
-  // 새로고침 시, 문제 해결 위해서 checkAuth
   const { user } = useAuthStore();
 
+  const isAuthor = user && user.id.toString() === comment.member_id;
+
   const onClickCommentDelete = async () => {
-    if (user.id.toString() === comment.member_id) {
-      const success = await deleteComment(comment.id);
-      if (success) {
-        console.log("댓글 삭제 완료");
+    if (isAuthor) {
+      if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+        const success = await deleteComment(comment.id, user.id);
+        if (success) {
+          console.log("댓글 삭제 완료");
+        }
       }
-    } else alert("댓글 작성자만 삭제할 수 있습니다.");
+    } else {
+      alert("댓글 작성자만 삭제할 수 있습니다.");
+    }
   };
 
   const onClickCommentEdit = () => {
-    setIsEditing(true);
+    if (isAuthor) {
+      setIsEditing(true);
+    } else {
+      alert("댓글 작성자만 수정할 수 있습니다.");
+    }
   };
 
   const onSaveEdit = async () => {
-    if (user.id.toString() === comment.member_id) {
-      const success = await updateComment(comment.id, editedContent);
-      console.log(success.status);
-      setIsEditing(false);
-      // 백에서 리턴을 주는게 아니라서 새로고침 해야 할듯?
-      window.location.reload();
-      console.log("댓글 수정 완료");
-    } else alert("댓글 작성자만 수정할 수 있습니다.");
+    if (isAuthor) {
+      const success = await updateComment(comment.id, editedContent, user.id);
+      if (success) {
+        setIsEditing(false);
+        console.log("댓글 수정 완료");
+      } else {
+        alert("댓글 수정에 실패했습니다.");
+      }
+    } else {
+      alert("댓글 작성자만 수정할 수 있습니다.");
+    }
   };
 
   return (
@@ -42,14 +54,17 @@ const Comment = ({ comment }) => {
           <img src={profile} alt="프로필" />
           <p>{comment.member_name}</p>
         </div>
-        <div>
-          <p onClick={onClickCommentEdit} style={{ cursor: "pointer" }}>
-            수정
-          </p>
-          <p onClick={onClickCommentDelete} style={{ cursor: "pointer" }}>
-            삭제
-          </p>
-        </div>
+        {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
+        {isAuthor && (
+          <div>
+            <p onClick={onClickCommentEdit} style={{ cursor: "pointer" }}>
+              수정
+            </p>
+            <p onClick={onClickCommentDelete} style={{ cursor: "pointer" }}>
+              삭제
+            </p>
+          </div>
+        )}
       </div>
       <div className="CommentContent">
         {isEditing ? (
@@ -90,7 +105,7 @@ const Comment = ({ comment }) => {
           <div id="CommentContent">{comment.content}</div>
         )}
         <p id="CommentCreateDate">
-          {new Date(Date.parse(comment.createdAt)).toLocaleString()}
+          {new Date(comment.createdAt).toLocaleString()}
         </p>
       </div>
     </div>
