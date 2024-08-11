@@ -39,6 +39,8 @@ const InputMessage = styled.div`
 
 const MessageList = styled.div`
     flex:1;
+    max-height: 90%;
+    overflow-y: scroll;
     background-color: white;
     margin:20px 30px;
     padding:30px 25px;
@@ -64,6 +66,7 @@ const Message = styled.div`
         border-bottom-left-radius: ${({ isOwnMessage }) => (isOwnMessage ? '30px' : '0')};
         border-bottom-right-radius: ${({ isOwnMessage }) => (isOwnMessage ? '0' : '30px')};
     }
+    margin-bottom: 20px;
 `;
 
 export default function Chat({ messages, sendMessage }) {
