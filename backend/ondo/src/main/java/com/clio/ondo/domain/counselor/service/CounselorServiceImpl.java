@@ -123,20 +123,26 @@ public class CounselorServiceImpl implements CounselorService {
 
         if(counselor.isPresent()){
             Counselor changeCounselor=counselor.get();
-            changeCounselor.updatePassword(password);
-            changeCounselor.updateSelfIntroduction(selfIntroduction);
+
+            if (password != null && !password.isEmpty()) {
+                changeCounselor.updatePassword(passwordEncoder.encode(password));
+            }
+            if (selfIntroduction !=null && !selfIntroduction.isEmpty()) {
+                changeCounselor.updateSelfIntroduction(selfIntroduction);
+            }
 
             //기본 이미지가 아니라면
             if(!Objects.equals(changeCounselor.getProfileUrl(), defaultProfileUrl)){
                 imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
             }
 
+            //수정!!!!!!!!!!!!
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
             }else{
                 profileUrl=defaultProfileUrl;
             }
-             //프로필 이미지 넣기
+            //프로필 이미지 넣기
             changeCounselor.updateProfileUrl(profileUrl);
 
             counselorRepository.save(changeCounselor);
