@@ -65,7 +65,7 @@ const Col = styled.div`
 `;
 
 let stompClient = null;
-
+const baseUrl = import.meta.env.VITE_BASE_URL;
 const SideBar = ({ memberInfo }) => {
   const { role } = useAuthStore((state) => ({
     role: state.role,
@@ -208,7 +208,7 @@ const SideBar = ({ memberInfo }) => {
         </Header>
         {role === "COUNSELOR" ? (
           <>
-            <div style={{ display: isChat ? "block" : "none" ,flex:"1"}}>
+            <div style={{ display: isChat ? "block" : "none" ,flex:1}}>
               <Chat
                 ref={chatRef}
                 isConnected={isConnected}
@@ -218,7 +218,7 @@ const SideBar = ({ memberInfo }) => {
                 disconnect={disconnect}
               />
             </div>
-            <div style={{ display: !isChat ? "block" : "none" ,flex:"1"}}>
+            <div style={{ display: !isChat ? "block" : "none" ,flex:1}}>
               <UserInfoComponent ref={userInfoRef} memberInfo={memberInfo} />
             </div>
           </>
