@@ -97,15 +97,15 @@ function Reservation({ reservation }) {
   const createCounselingRoom = async (event) => {
     event.stopPropagation();
     // if (timeRemaining === 0) {
-    try {
-      const sessionResponse = await axios.post(
-        `${APPLICATION_SERVER_URL}/counseling/sessions`,
-        { reservationId: reservation.reservationId },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true, // default를 true로 설정
-        }
-      );
+      try {
+        const sessionResponse = await axios.post(
+          `${baseUrl}/counseling/sessions`,
+          { reservationId: reservation.reservationId },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true, // default를 true로 설정
+          }
+        );
 
       setSessionId(sessionResponse.data.data.session_id);
       navigate("/counselingroom", {
