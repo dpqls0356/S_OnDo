@@ -37,6 +37,7 @@ const BoardDetailPage = () => {
 
   // 새로고침 시, 문제 해결 위해서 checkAuth
   const checkAuth = useAuthStore((state) => state.checkAuth);
+  const { user } = useAuthStore();
 
   useEffect(() => {
     // 새로고침 시 유저 undefined 문제 해결 위해서

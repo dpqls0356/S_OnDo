@@ -118,11 +118,11 @@ public class MissionServiceImpl implements MissionService{
 	public void createTodayMission(Long memberId) {
 
 		//특별 미션 랜덤 3개 추출
-		List<MissionDetail> typicalMissions = createRandomMission(); //랜덤 특별미션 3개
+		//List<MissionDetail> typicalMissions = createRandomMission(); //랜덤 특별미션 3개
 		List<MissionDetail> dailyMissions = missionDetailRepository.findByType("daily"); //데일리 미션
 
 		List<MissionDetail> allMissions = new ArrayList<>();
-		allMissions.addAll(typicalMissions);
+		//allMissions.addAll(typicalMissions);
 		allMissions.addAll(dailyMissions);
 
 		List<Mission> randMissions = allMissions.stream()
