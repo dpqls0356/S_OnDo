@@ -254,7 +254,7 @@ const CounselorMypage = () => {
       {edit ? 
         <ProfileImg>
           <img 
-            src={previewUrl || user.profileUrl} 
+            src={mypageuser || user.profileUrl} //마이페이지 이미지가 안 보임....
             style={{cursor: "pointer"}}
             alt="프로필 이미지" onClick={handleImageClick}/>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{display: "none"}}/>
@@ -268,13 +268,17 @@ const CounselorMypage = () => {
       <Name>{MyInfo.name}</Name>
       <p><Bold>성별:</Bold> {MyInfo.gender}</p>
       <p><Bold>분야:</Bold> {MyInfo.field}</p>
-      <ul>
-        <Bold>경력:</Bold>
-        {MyInfo.career.map((career, index) => (
-          <LiTag key={index}>◾ {career}</LiTag>
-        ))}
-      </ul>
-
+      
+      {MyInfo.career.length > 0  ? 
+        <ul>
+          <Bold>경력:</Bold>
+          {MyInfo.career.map((career, index) => (
+            <LiTag key={index}>◾ {career}</LiTag>
+          ))}
+        </ul>
+      :
+          <div></div>
+      }
       
       <hr />
       <div>

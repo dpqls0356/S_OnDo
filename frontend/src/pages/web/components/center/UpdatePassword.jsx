@@ -110,11 +110,13 @@ const UpdatePassword = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-          }
+          },
+          withCredentials: true,
         })
         
         if (response.data.success) {
           alert("비밀번호가 변경되었습니다.");
+          console.log(userFormData.requestDto.password)
         }
     } catch (err) {
       alert("비밀번호 수정 중 오류가 발생했습니다.")
@@ -129,7 +131,17 @@ const UpdatePassword = () => {
   return(
     <View>
       <Tab>비밀번호 변경</Tab>
+
       <Form>
+            <p>비밀번호</p>
+            <input type="password" onChange={handleInputChange("NewPassword")} placeholder="새로운 비밀번호를 입력하세요."/>
+            <p>비밀번호 확인</p>
+            <input type="password" onChange={handleInputChange("CheckNewPassword")} placeholder="비밀번호를 다시 한 번 입력해주세요."/>
+            <Save>
+              <button onClick={handleSaveClick}>변경</button>
+            </Save>
+      </Form>
+      {/* <Form>
       <p>기존 비밀번호</p>
       <input type="password" onChange={handleInputChange("password")} placeholder="기존 비밀번호를 입력하세요."/>
       {!Authenticated ? 
@@ -150,7 +162,7 @@ const UpdatePassword = () => {
           <button onClick={handleAuthenticatedClick}>확인</button>
         </Save>}
       
-      </Form>
+      </Form> */}
     </View>
   )
 }
