@@ -34,7 +34,7 @@ const useBoardStore = create((set, get) => ({
 
   // 게시글 목록 설정 (API 응답 구조에 맞게 수정)
   setBoards: (response) => {
-    // console.log('setBoards 호출됨:', response); // 이 부분을 추가
+    //console.log('setBoards 호출됨:', response); // 이 부분을 추가
     set((state) => {
       if (
         response &&
@@ -54,6 +54,39 @@ const useBoardStore = create((set, get) => ({
       console.log("유효하지 않은 응답, 빈 배열 반환"); // 이 부분을 추가
       return { boards: [] };
     });
+  },
+
+  setSearchBoards: (response) => {
+    //console.log('setSearchBoards 호출됨:', response); // 이 부분을 추가
+    set((state) => {
+      if (
+        response &&
+        response.boardList &&
+        Array.isArray(response.boardList)
+      ) {
+        console.log('새로운 boards 상태:', response.boardList);
+        return {
+          boards: [...response.boardList],
+          pagination: {
+            currentPage: response.boardList.number || 0,
+            totalPages: response.boardList.totalPages || 0,
+            totalItems: response.boardList.totalElements || 0,
+          },
+        };
+      }
+      console.log("유효하지 않은 응답, 빈 배열 반환"); // 이 부분을 추가
+      return { boards: [] };
+    });
+  },
+
+  toggleBoards: () => {
+      set((state) => {
+        const { boards } = get();
+        const reversedArray = [...boards].reverse();
+        return{
+          boards: [...reversedArray]
+        }
+      })
   },
 
   // 현재 게시글 필드 설정
