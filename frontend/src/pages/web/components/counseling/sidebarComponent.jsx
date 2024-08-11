@@ -29,6 +29,7 @@ const Tag = styled.div`
 
 const View = styled.div`
   width: ${({ hidden }) => (hidden ? "0" : "35%")};
+  height:100%;
   background-color: #fae6e6;
   display: flex;
   flex-direction: column;
@@ -41,7 +42,7 @@ const Header = styled.div`
   background-color: inherit;
   display: flex;
   align-items: center;
-  padding: 10px 0px;
+  padding: 20px 0px 0px 0px;
   padding-left: 20px;
   & > div:nth-child(1) {
     display: flex;
@@ -76,7 +77,8 @@ const SideBar = ({ memberInfo }) => {
   const [messages, setMessages] = useState([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const sessionId = localStorage.getItem("sessionId");
-
+  const { user } = useAuthStore((state) => ({
+    user: state.user}));
   const chatRef = useRef(null);
   const userInfoRef = useRef(null);
 
@@ -164,7 +166,7 @@ const SideBar = ({ memberInfo }) => {
         destination: '/app/chat',
         body: JSON.stringify({
           sessionId: sessionId,
-          from: "상담사",
+          from: user.name,
           content: messageContent,
         }),
       });
@@ -216,7 +218,7 @@ const SideBar = ({ memberInfo }) => {
                 disconnect={disconnect}
               />
             </div>
-            <div style={{ display: !isChat ? "block" : "none" }}>
+            <div style={{ display: !isChat ? "block" : "none" ,flex:"1"}}>
               <UserInfoComponent ref={userInfoRef} memberInfo={memberInfo} />
             </div>
           </>
