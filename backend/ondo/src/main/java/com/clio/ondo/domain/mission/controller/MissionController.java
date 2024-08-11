@@ -33,23 +33,23 @@ public class MissionController {
 	//스케줄링 된 메서드 TEST 용
 	//-------------------------------------------------------
 	//3개의 랜덤 특별 미션 + 데일리 미션 todayMission에 저장
-	// @GetMapping("/update")
-	// public ResponseEntity<ResponseVO<Void>> updateTodayMission(HttpServletRequest request){
-	// 	String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
-	// 	Long memberId = jwtTokenProvider.getIdFromToken(token);
-	// 	missionService.createTodayMission(memberId);
-	// 	return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("오늘 미션 업데이트"));
-	// }
+	@GetMapping("/update")
+	public ResponseEntity<ResponseVO<Void>> updateTodayMission(HttpServletRequest request){
+		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		Long memberId = jwtTokenProvider.getIdFromToken(token);
+		missionService.createTodayMission(memberId);
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("오늘 미션 업데이트"));
+	}
 	//
 	// //완료한 특별 미션 completeMission에 넣기 + 나머지 삭제
-	// @GetMapping("/clearMission")
-	// public ResponseEntity<ResponseVO<Void>> clearMission(HttpServletRequest request) {
-	// 	String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
-	// 	Long memberId = jwtTokenProvider.getIdFromToken(token);
-	//
-	// 	missionService.putCompleteMission(memberId);
-	// 	return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("어제 미션 완료 처리"));
-	// }
+	@GetMapping("/clearMission")
+	public ResponseEntity<ResponseVO<Void>> clearMission(HttpServletRequest request) {
+		String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+		Long memberId = jwtTokenProvider.getIdFromToken(token);
+
+		missionService.putCompleteMission(memberId);
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("어제 미션 완료 처리"));
+	}
 	//-------------------------------------------------------
 
 	//오늘의 특별미션 가져오기
