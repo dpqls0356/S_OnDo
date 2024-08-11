@@ -15,7 +15,7 @@ import LoadingSpinner from "../../../components/app/Spinner";
 const BoardDetailPage = () => {
   const { articleId } = useParams();
   const nav = useNavigate();
-  const comment = useRef(null); // comment ref 추가
+  const comment = useRef(null);
   const {
     currentViewArticle,
     isLoadingArticle,
@@ -35,22 +35,31 @@ const BoardDetailPage = () => {
     withCredentials: true,
   });
 
-  // 새로고침 시, 문제 해결 위해서 checkAuth
-  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const { user, checkAuth } = useAuthStore();
 
   useEffect(() => {
-    // 새로고침 시 유저 undefined 문제 해결 위해서
-    checkAuth();
-    //console.log("Current user:", user);
-    if (articleId) {
-      getArticleDetail(articleId);
-    }
+    const initializeData = async () => {
+      await checkAuth();
+      if (articleId) {
+        await getArticleDetail(articleId);
+      }
+    };
+
+    initializeData();
     return () => resetCurrentViewArticle();
-  }, [articleId, getArticleDetail, resetCurrentViewArticle]);
+  }, [articleId, getArticleDetail, resetCurrentViewArticle, checkAuth]);
 
   const onClickCreateComment = async () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     setSpinnerLoading(true);
-    if (comment.current.value.trim() === "") return;
+    if (comment.current.value.trim() === "") {
+      setSpinnerLoading(false);
+      return;
+    }
 
     const commentData = {
       content: comment.current.value,
@@ -58,33 +67,46 @@ const BoardDetailPage = () => {
       member_id: user.id.toString(),
       member_name: user.nickname,
     };
-    // 데이터 형식 확인
-    //console.log("Sending comment data:", commentData);
+
     const success = await addComment(commentData);
 
-    // console.log("=========================================");
-    // console.log(success);
     if (success) {
       comment.current.value = "";
-      // 댓글 목록 불러오기
       await getComments(articleId);
     }
     setSpinnerLoading(false);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      onClickCreateComment();
+    }
+  };
+
   const onClickUpdate = () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     if (user.id.toString() === currentViewArticle.member_id) {
       nav(`/member/board/${articleId}/update`);
     } else alert("글 작성자만 수정할 수 있습니다.");
   };
 
   const onClickDelete = async () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     if (user.id.toString() === currentViewArticle.member_id) {
       try {
         if (confirm("정말 삭제하시겠습니까?")) {
-          const response = await api.delete("/board/" + articleId, {
+          await api.delete("/board/" + articleId, {
             headers: {
-              "Content-Type": "application/json", // form-data 아니고 json으로
+              "Content-Type": "application/json",
             },
           });
           deleteBoard(articleId);
@@ -93,7 +115,7 @@ const BoardDetailPage = () => {
       } catch {
         alert("글 삭제에 실패했습니다.");
       }
-    } else alert("글 작성자만 수정할 수 있습니다.");
+    } else alert("글 작성자만 삭제할 수 있습니다.");
   };
 
   const formatDate = (dateString) => {
@@ -102,7 +124,7 @@ const BoardDetailPage = () => {
     return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
-  if (isLoadingArticle) {
+  if (isLoadingArticle || !user) {
     return <div>로딩 중...</div>;
   }
 
@@ -117,8 +139,8 @@ const BoardDetailPage = () => {
   return (
     <div className="scroll">
       {spinnerLoading && <LoadingSpinner />}
-      <div className="DetailScroll">
-        <div id="CommentScroll">
+      <div>
+        <div>
           {/* 게시글 */}
           <div className="BoardDetail">
             <div className="DetailTitle">
@@ -147,9 +169,11 @@ const BoardDetailPage = () => {
             <div className="DetailContent">
               <p>{currentViewArticle.content}</p>
             </div>
-            <div>
-              <img src={currentViewArticle.imageUrl}></img>
-            </div>
+            {currentViewArticle.imageUrl && (
+              <div>
+                <img src={currentViewArticle.imageUrl} alt="게시글 이미지" />
+              </div>
+            )}
           </div>
 
           {/* 댓글 목록 */}
@@ -165,6 +189,7 @@ const BoardDetailPage = () => {
                 ref={comment}
                 maxLength={100}
                 placeholder="댓글을 달아보세요."
+                onKeyDown={handleKeyDown}
               ></textarea>
               <img
                 onClick={onClickCreateComment}
