@@ -1,8 +1,7 @@
 import "./Boardpage.css";
 
-import { useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-// 뿌린 BoadList 컴포넌트 밑에 return 해서 표시
 import BoardList from "../../../components/app/Board/BoardList";
 import create from "./../../../assets/images/new.png";
 import filter from "./../../../assets/images/filter.png";
@@ -10,9 +9,9 @@ import search from "./../../../assets/images/search.png";
 
 const Boardpage = () => {
   const nav = useNavigate();
+  const [sortOrder, setSortOrder] = useState('desc'); // 'desc' for newest first, 'asc' for oldest first
 
   const onClickCreate = () => {
-    // 게시글 생성으로 이동
     nav("/member/board/create");
   };
 
@@ -23,14 +22,13 @@ const Boardpage = () => {
   };
 
   const onClickSort = () => {
-    console.log("나중에 기능 추가되면 onClickSetting으로 바꾸기");
-    console.log("지금은 날짜순 정렬기능만 있음");
+    setSortOrder(prevOrder => prevOrder === 'desc' ? 'asc' : 'desc');
+    console.log(`정렬 순서 변경: ${sortOrder === 'desc' ? '오래된 순' : '최신 순'}`);
   };
 
   return (
     <div className="scroll">
       <div className="BoardScroll">
-        {/* 헤더 */}
         <div className="BoardHeader">
           <p>온도의 소통공간</p>
           <img
@@ -40,7 +38,6 @@ const Boardpage = () => {
           />
         </div>
 
-        {/* 검색바 */}
         <div className="BoardSearch">
           <div>
             <form>
@@ -60,10 +57,9 @@ const Boardpage = () => {
           />
         </div>
 
-        {/* 게시글 목록 컨테이너 */}
         <div className="BoardContentContainer">
           <div className="BoardContentList">
-            <BoardList />
+            <BoardList sortOrder={sortOrder} />
           </div>
         </div>
 

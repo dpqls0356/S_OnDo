@@ -34,8 +34,8 @@ const Board = ({ article }) => {
           <p>{article.title || '제목 없음'}</p>
         </div>
         <div className="BoardCreate">
-          <img src={calendar} alt="Calendar icon" />
-          <p>{formatDate(article.created_at)}</p>
+        <img src={calendar} alt="Calendar icon" className="icon-margin" />
+        <p className="inline-text">{formatDate(article.created_at)}</p>
         </div>
       </div>
 

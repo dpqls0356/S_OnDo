@@ -50,25 +50,37 @@ const useCommentStore = create((set) => ({
       return false;
     }
   },
-  updateComment: async (commentId, modifiedContent) => {
+  updateComment : async (commentId, modifiedContent) => {
     try {
       const response = await api.patch(`/board/comment/${commentId}`, {
         content: modifiedContent
       });
-      console.log(response);
-      if (response.status === 200) {
+      
+      console.log('Update comment response:', response);
+  
+      if (response.status === 204) {
         set((state) => ({
           comments: state.comments.map(comment => 
             comment.id === commentId ? { ...comment, content: modifiedContent } : comment
           )
         }));
-        return true;
+        return { success: true };
       }
+  
+      if (response.data && response.data.success === false) {
+        return { success: false, message: response.data.message };
+      }
+  
     } catch (error) {
       console.error('댓글 수정 실패:', error);
+      if (error.response) {
+        console.error('Error status:', error.response.status);
+        console.error('Error data:', error.response.data);
+      }
+      return { success: false, message: '댓글 수정 중 오류가 발생했습니다.' };
     }
-    return false;
-},
-}));
+  }
+}))
+  
 
 export default useCommentStore;

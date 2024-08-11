@@ -64,7 +64,7 @@ export const useAuthStore = create(
         }
       },
       checkAuth: async () => {
-        console.log("hello?")
+        // console.log("hello?")
         try {
           const response = await api.get("/member/me", {
             withCredentials: true,
