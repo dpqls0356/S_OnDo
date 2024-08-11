@@ -118,6 +118,7 @@ const SideBar = ({ memberInfo }) => {
       return;
     }
 
+    //서버로 올릴 때 wss로 변경해야함
     stompClient = new Client({
       brokerURL: 'ws://localhost:8080/gs-guide-websocket',
     });
