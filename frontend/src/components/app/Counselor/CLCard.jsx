@@ -6,7 +6,7 @@
 // const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reservId}) => {
 //   const nav = useNavigate();
 //   const { calculateDday, displayGender } = useCounselorStore();
-  
+
 //   const dday = calculateDday(reservationDate);
 
 //   const MobileCounseling = () => {
@@ -47,14 +47,29 @@
 
 // export default CLCard;
 
-
 // sessionId 로직 추가
-import './CLCard.css';
-import profile from './../../../assets/images/ic_user.png';
-import { useNavigate, Link } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/CounselorStore';
+import "./CLCard.css";
+import profile from "./../../../assets/images/ic_user.png";
+import { useNavigate, Link } from "react-router-dom";
+import useCounselorStore from "../../../store/app/CounselorStore";
+import axios from "axios";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reservId, counselingUrl}) => {
+const api = axios.create({
+  baseURL: baseUrl,
+  withCredentials: true,
+});
+
+const CLCard = ({
+  name,
+  gender,
+  field,
+  reservationDate,
+  intro,
+  is_complete,
+  reservId,
+  counselingUrl,
+}) => {
   const nav = useNavigate();
   const { calculateDday, displayGender } = useCounselorStore();
 
@@ -62,13 +77,13 @@ const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reser
 
   const handleCounselingClick = () => {
     if (counselingUrl) {
-      nav(`/counselingroom`, { 
-        state: { 
-          sessionId: counselingUrl
-        } 
+      nav(`/counselingroom`, {
+        state: {
+          sessionId: counselingUrl,
+        },
       });
     } else {
-      alert('아직 상담 시간이 되지 않았습니다. 상담 시간에 다시 시도해주세요.');
+      alert("아직 상담 시간이 되지 않았습니다. 상담 시간에 다시 시도해주세요.");
     }
   };
 
@@ -136,11 +151,9 @@ const CLCard = ({name, gender, field, reservationDate, intro, is_complete, reser
       <div className="CS-CardFooter">
         <div>
           {dday && (
-          <button onClick={handleCounselingClick} id='DdayBtn'>
-            <div>
-              {dday}
-            </div>
-          </button>
+            <button onClick={handleCounselingClick} id="DdayBtn">
+              <div>{dday}</div>
+            </button>
           )}
         </div>
       </div>
