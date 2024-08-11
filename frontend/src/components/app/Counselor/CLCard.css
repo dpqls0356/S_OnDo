@@ -71,14 +71,14 @@
 
 #DdayBtn {
   width: 85%; /* 버튼 너비 고정 */
-  height: 35px; /* 버튼 높이 고정 */
-  border-radius: 30px;
+  height: 30px; /* 버튼 높이 고정 */
+  border-radius: 25px;
   border: 2px solid #3d3d3d;
   opacity: var(--sds-size-stroke-border);
   background: #ed9c9f;
   box-shadow: -3px 3px 0px 0px #3d3d3d;
   cursor: pointer;
-  font-size: 18px;
+  /* font-size: 18px; */
   white-space: nowrap;
   display: flex;
   align-items: center;
