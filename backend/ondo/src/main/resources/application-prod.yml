@@ -1,0 +1,12 @@
+spring:
+  sql:
+    init:
+      mode: always
+
+  profiles:
+    active: prod
+    include: oauth, secret
+
+  batch:
+    job:
+      enabled: false

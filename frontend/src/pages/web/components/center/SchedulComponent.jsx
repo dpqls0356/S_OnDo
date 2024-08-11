@@ -10,6 +10,9 @@ const View = styled.div`
   width: 100%;
 `
 const Tab = styled.div`
+  color: #121481;
+  font-weight: 600;
+  // font-size: 36px;
   display: flex;
   gap: 10px;
   margin: 0 auto;
