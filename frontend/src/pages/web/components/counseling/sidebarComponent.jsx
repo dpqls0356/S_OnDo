@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAnglesRight,
@@ -6,10 +6,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styled, { css } from "styled-components";
 import UserInfoComponent from "./userInfoComponent";
-import Chat from "./chat"; // userInfoComponent 대신 Chat을 가져와야 합니다.
-import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import Chat from "./chat";
 import useAuthStore from "../../../../store/app/authStore";
+import axios from 'axios';
+import { Client } from '@stomp/stompjs';
 
 const Tag = styled.div`
   position: absolute;
@@ -62,18 +62,23 @@ const Col = styled.div`
       border-radius: 50px;
     `}
 `;
-const baseUrl = import.meta.env.VITE_BASE_URL;
+
+let stompClient = null;
+
 const SideBar = ({ memberInfo }) => {
   const { role } = useAuthStore((state) => ({
     role: state.role,
   }));
 
-  // const location = useLocation();
   const [isChat, setIsChat] = useState(true);
   const [hidden, setHidden] = useState(true);
-  // const [memberInfo, setMemberInfo] = useState({});
-  // const [historyList, setHistoryList] = useState([]);
-  // const memberId = location.state.memberId;
+  const [isConnected, setIsConnected] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const sessionId = localStorage.getItem("sessionId");
+
+  const chatRef = useRef(null);
+  const userInfoRef = useRef(null);
 
   const toggleChat = useCallback((status) => {
     setIsChat(status);
@@ -87,7 +92,92 @@ const SideBar = ({ memberInfo }) => {
     setHidden(false);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (sessionId) {
+      connect();
+    }
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (isConnected && sessionId) {
+      stompClient.subscribe(`/topic/messages/${sessionId}`, (message) => {
+        if (!isHistoryLoading) {
+          showMessage(JSON.parse(message.body));
+        }
+      });
+
+      fetchHistory(sessionId);
+    }
+  }, [isConnected, sessionId]);
+
+  const connect = () => {
+    if (!sessionId) {
+      alert('Please enter a Session ID.');
+      return;
+    }
+
+    stompClient = new Client({
+      brokerURL: 'ws://localhost:8080/gs-guide-websocket',
+    });
+
+    stompClient.onConnect = (frame) => {
+      setIsConnected(true);
+      console.log('Connected: ' + frame);
+    };
+
+    stompClient.onWebSocketError = (error) => {
+      console.error('Error with websocket', error);
+    };
+
+    stompClient.onStompError = (frame) => {
+      console.error('Broker reported error: ' + frame.headers['message']);
+      console.error('Additional details: ' + frame.body);
+    };
+
+    stompClient.activate();
+  };
+
+  const fetchHistory = async (sessionId) => {
+    try {
+      setIsHistoryLoading(true);
+      const response = await axios.get(`${baseUrl}/history/${sessionId}`);
+      const fetchedMessages = Array.isArray(response.data) ? response.data : [];
+      showHistory(fetchedMessages);
+      setIsHistoryLoading(false);
+    } catch (error) {
+      console.error('Error fetching history:', error);
+      setIsHistoryLoading(false);
+    }
+  };
+
+  const disconnect = () => {
+    if (stompClient !== null) {
+      stompClient.deactivate();
+    }
+    setIsConnected(false);
+    console.log('Disconnected');
+  };
+
+  const sendMessage = (messageContent) => {
+    if (stompClient !== null && messageContent.trim() !== '') {
+      stompClient.publish({
+        destination: '/app/chat',
+        body: JSON.stringify({
+          sessionId: sessionId,
+          from: "상담사",
+          content: messageContent,
+        }),
+      });
+    }
+  };
+
+  const showMessage = (message) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  };
+
+  const showHistory = (messages) => {
+    setMessages(messages);
+  };
 
   return (
     <>
@@ -98,7 +188,7 @@ const SideBar = ({ memberInfo }) => {
               채팅
             </Col>
             {role === "COUNSELOR" ? (
-              <div>
+              <div style={{ display: "flex" }}>
                 <Col>|</Col>
                 <Col onClick={() => toggleChat(false)} active={!isChat}>
                   내담자 정보
@@ -115,13 +205,30 @@ const SideBar = ({ memberInfo }) => {
           </div>
         </Header>
         {role === "COUNSELOR" ? (
-          isChat ? (
-            <Chat />
-          ) : (
-            <UserInfoComponent memberInfo={memberInfo} />
-          )
+          <>
+            <div style={{ display: isChat ? "block" : "none" ,flex:"1"}}>
+              <Chat
+                ref={chatRef}
+                isConnected={isConnected}
+                messages={messages}
+                sendMessage={sendMessage}
+                connect={connect}
+                disconnect={disconnect}
+              />
+            </div>
+            <div style={{ display: !isChat ? "block" : "none" }}>
+              <UserInfoComponent ref={userInfoRef} memberInfo={memberInfo} />
+            </div>
+          </>
         ) : (
-          <Chat />
+          <Chat
+            ref={chatRef}
+            isConnected={isConnected}
+            messages={messages}
+            sendMessage={sendMessage}
+            connect={connect}
+            disconnect={disconnect}
+          />
         )}
       </View>
       <Tag hidden={hidden} onClick={showSideBar}>
