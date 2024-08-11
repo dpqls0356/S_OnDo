@@ -139,8 +139,8 @@ const BoardDetailPage = () => {
   return (
     <div className="scroll">
       {spinnerLoading && <LoadingSpinner />}
-      <div className="DetailScroll">
-        <div id="CommentScroll">
+      <div>
+        <div>
           {/* 게시글 */}
           <div className="BoardDetail">
             <div className="DetailTitle">
