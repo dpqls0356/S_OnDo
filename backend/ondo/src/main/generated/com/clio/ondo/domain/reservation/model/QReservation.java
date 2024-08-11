@@ -22,7 +22,7 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public static final QReservation reservation = new QReservation("reservation");
 
-    public final com.clio.ondo.domain.counselDetail.model.QCounselDetail counselingDetail;
+    public final com.clio.ondo.domain.counselDetail.model.QCounselDetail counselDetail;
 
     public final StringPath counselingUrl = createString("counselingUrl");
 
@@ -54,7 +54,7 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public QReservation(Class<? extends Reservation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.counselingDetail = inits.isInitialized("counselingDetail") ? new com.clio.ondo.domain.counselDetail.model.QCounselDetail(forProperty("counselingDetail"), inits.get("counselingDetail")) : null;
+        this.counselDetail = inits.isInitialized("counselDetail") ? new com.clio.ondo.domain.counselDetail.model.QCounselDetail(forProperty("counselDetail"), inits.get("counselDetail")) : null;
         this.counselor = inits.isInitialized("counselor") ? new com.clio.ondo.domain.counselor.model.QCounselor(forProperty("counselor"), inits.get("counselor")) : null;
         this.member = inits.isInitialized("member") ? new com.clio.ondo.domain.member.model.QMember(forProperty("member"), inits.get("member")) : null;
     }

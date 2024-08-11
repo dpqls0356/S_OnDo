@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../../components/app/Spinner';
 import chat_send from './../../../assets/images/chat_send.png';
 import back from './../../../assets/images/back.png';
-import './Chat.css';
+import chrface from './../../../assets/images/test_chara.png'
+import './Chatpage.css';
 
 const Chatpage = () => {
   const size = 10;
@@ -48,20 +49,20 @@ const Chatpage = () => {
           { message: currentInput }, 
           { headers: { 'Content-Type': 'application/json' } }
         );
-        setMessages(prevMessages => [
-          ...prevMessages,
-          { content: currentInput, sender: 'user', createdAt: new Date().toISOString() },
-          ...response.data.data.responseChatting
-        ]);
-      } catch (error) {
-        console.error("Error sending message:", error);
-        setUserInput(currentInput);
-      } finally {
-        setIsLoading(false);
-        scrollToBottom();
-      }
+
+        // 서버 응답에서 받은 메시지 목록만 사용
+        const newMessages = response.data.data.responseChatting;
+
+        setMessages(prevMessages => [...prevMessages, ...newMessages]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setUserInput(currentInput);
+    } finally {
+      setIsLoading(false);
+      scrollToBottom();
     }
-  }, [userInput, isLoading, api, scrollToBottom]);
+  }
+}, [userInput, isLoading, api, scrollToBottom]);
 
   const loadMoreMessages = useCallback(async () => {
     if (isLoading || !hasMore) return;
@@ -107,11 +108,30 @@ const Chatpage = () => {
     }
   }, [userInput, isLoading, typeChattingMessage]);
 
+  const formatMessageTime = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  };
+
   return (
     <div className="Chat">
       {isLoading && <LoadingSpinner />}
       <div className="CharacterName">
         <img onClick={() => nav('/member/home')} src={back} alt="Back" />
+        <img 
+            src={chrface} 
+            alt="다람이 얼굴" 
+            style={{
+              borderRadius: '50%',
+              border: '2px solid black',
+              width: '50px',  // 원하는 크기로 조정
+              height: '50px', // 원하는 크기로 조정
+              objectFit: 'cover'
+            }}
+          />
         <div>{character.name}</div>
       </div>
       
@@ -128,7 +148,7 @@ const Chatpage = () => {
                   {message.content}
                 </div>
                 <div className="message-time">
-                  {new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  {formatMessageTime(message.createdAt)}
                 </div>
               </div>
             ))}

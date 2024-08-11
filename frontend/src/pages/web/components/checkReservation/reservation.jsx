@@ -80,8 +80,12 @@ const CancelReservationBtn = styled.button`
 `;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : baseUrl;
+const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
+
+const api = axios.create({
+  baseURL: baseUrl,
+  withCredentials: true,
+});
 
 function Reservation({ reservation }) {
   const navigate = useNavigate();
@@ -92,10 +96,10 @@ function Reservation({ reservation }) {
 
   const createCounselingRoom = async (event) => {
     event.stopPropagation();
-    if (timeRemaining === 0) {
+    // if (timeRemaining === 0) {
       try {
         const sessionResponse = await axios.post(
-          `${APPLICATION_SERVER_URL}/counseling/sessions`,
+          `${baseUrl}/counseling/sessions`,
           { reservationId: reservation.reservationId },
           {
             headers: { "Content-Type": "application/json" },
@@ -103,18 +107,18 @@ function Reservation({ reservation }) {
           }
         );
 
-        setSessionId(sessionResponse.data.data.session_id);
-        navigate("/counselingroom", {
-          state: {
-            sessionId: sessionResponse.data.data.session_id,
-            reservationId: reservation.reservationId,
-            memberId: reservation.memberId,
-          },
-        });
-      } catch (error) {
-        console.error("Error creating counseling room:", error);
-      }
-    } else return;
+      setSessionId(sessionResponse.data.data.session_id);
+      navigate("/counselingroom", {
+        state: {
+          sessionId: sessionResponse.data.data.session_id,
+          reservationId: reservation.reservationId,
+          memberId: reservation.memberId,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating counseling room:", error);
+    }
+    // } else return;
   };
 
   const changeDateFormat = () => {
@@ -129,6 +133,37 @@ function Reservation({ reservation }) {
     let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
 
     setReservationFormattedDate(formattedDate);
+  };
+
+  const handleCancelClick = () => {
+    if (window.confirm("정말 예약을 취소하시겠습니까?")) {
+      cancelRequest(reservation.reservationId);
+    }
+  };
+
+  const cancelRequest = async (reservId) => {
+    console.log(reservId);
+    if (!reservId) {
+      alert("예약 ID가 없습니다.");
+      return;
+    }
+
+    try {
+      const response = await api.delete(`/counselor/reservation`, {
+        data: {
+          reservationId: reservId,
+        },
+      });
+
+      if (response.data.success) {
+        alert("상담 예약이 취소되었습니다.");
+        window.location.reload(); // 페이지 새로고침
+      } else {
+        alert("예약 취소에 실패했습니다.");
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "상담 예약 취소 중 오류가 발생했습니다.");
+    }
   };
 
   useEffect(() => {
@@ -159,10 +194,7 @@ function Reservation({ reservation }) {
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
     setAge(age);
@@ -206,7 +238,8 @@ function Reservation({ reservation }) {
         <div>상담일: {reservationFormattedDate}</div>
       </Col>
       <Col>
-        {timeRemaining >= 0 ? (
+        <CreateCounselingRoomBtn onClick={createCounselingRoom}>입장</CreateCounselingRoomBtn>
+        {/* {timeRemaining >= 0 ? (
           <CreateCounselingRoomBtn onClick={createCounselingRoom}>
             {timeRemaining > 1
               ? `D-${Math.floor(timeRemaining)}`
@@ -214,10 +247,10 @@ function Reservation({ reservation }) {
                 ? `입장`
                 : `D-day`}
           </CreateCounselingRoomBtn>
-        ) : null}
+        ) : null} */}
       </Col>
       {timeRemaining > 0 ? (
-        <CancelReservationBtn>
+        <CancelReservationBtn onClick={handleCancelClick}>
           <FontAwesomeIcon icon={faX} />
         </CancelReservationBtn>
       ) : null}
