@@ -134,7 +134,12 @@ public class CounselorServiceImpl implements CounselorService {
             if(!profileImage.isEmpty()){
                 profileUrl=imageService.upload(profileImage,"CounselorProfile");
             }else{
-                profileUrl=defaultProfileUrl;
+                String fileName = profileImage.getOriginalFilename();
+                if ("default.jpg".equals(fileName)) {
+                    profileUrl = defaultProfileUrl;
+                } else if ("empty.jpg".equals(fileName)) {
+                    profileUrl = changeCounselor.getProfileUrl();
+                }
             }
              //프로필 이미지 넣기
             changeCounselor.updateProfileUrl(profileUrl);
