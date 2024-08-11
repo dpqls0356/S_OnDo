@@ -10,19 +10,6 @@ const api = axios.create({
   }
 });
 
-// 인터셉터 추가
-// api.interceptors.request.use(request => {
-//   console.log('Starting Request', JSON.stringify(request, null, 2))
-//   return request
-// })
-
-// api.interceptors.response.use(response => {
-//   console.log('Response:', JSON.stringify(response, null, 2))
-//   return response
-// }, error => {
-//   console.log('Error Response:', JSON.stringify(error.response, null, 2))
-//   return Promise.reject(error)
-// })
 
 const useCommentStore = create((set) => ({
   comments: [],
