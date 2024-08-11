@@ -32,3 +32,9 @@
   cursor: "pointer";
   /* position: static; */
 }
+
+#updateCamera {
+  position: absolute;
+  left: 62%;
+  top: 38%;
+}
