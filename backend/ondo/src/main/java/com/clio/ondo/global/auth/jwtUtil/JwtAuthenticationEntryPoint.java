@@ -19,7 +19,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		try {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.setContentType("application/json");
-			response.getWriter().write("{\"message\": \"AuthenticationEntryPoint\"}");
+			response.getWriter().write("{\"message\": \"인증되지 않은 사용자입니다.\"}");
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
