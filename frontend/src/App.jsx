@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route,useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
 
@@ -44,6 +44,7 @@ import HomeUserInfoComponent from "./pages/web/components/center/homeUserInfoCom
 // import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
 function App() {
+
   return (
     <Router>
       <Routes>

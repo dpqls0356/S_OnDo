@@ -15,6 +15,7 @@ import SideBar from "./components/counseling/sidebarComponent";
 import useAuthStore from "../../store/app/authStore";
 
 const View = styled.div`
+  overflow: hidden;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -280,6 +281,11 @@ const CounselingRoom = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [leaveSession]);
+
+  useEffect(() => {
+    const rootElement = document.getElementById("root");
+      rootElement.style.overflow = "hidden";
+  }, [location.pathname]);
 
   return (
     <div style={{overflowY:"hidden"}}>
