@@ -27,7 +27,8 @@ const Thermometer = ({ character }) => {
   const setTemperature = () => {
     const tempElement = document.getElementById("temperature");
     const { exp, maxExp, unit } = config;
-    const temp = maxExp > 0 ? (exp / maxExp) * 100 : 0;
+    // const temp = maxExp > 0 ? (exp / maxExp) * 100 : 0;
+    const temp = 80;
     tempElement.style.height = temp + "%";
     tempElement.dataset.value = temp + units[unit];
   };
@@ -47,16 +48,7 @@ const Thermometer = ({ character }) => {
         <div id="graduations"></div>
       </div>
 
-      <div id="playground">
-        {/* <div id="range">
-          <input id="minTemp" type="text" value={config.minTemp} onChange={handleTempChange} />
-          <input type="range" min={config.minTemp} max={config.maxTemp} value={config.temperature} onChange={handleRangeChange} />
-          <input id="maxTemp" type="text" value={config.maxTemp} onChange={handleTempChange} />
-        </div> */}
-        {/* <p id="unit" onClick={toggleUnit}>{config.unit} {units[config.unit]}</p> */}
-      </div>
-
-      {/* <p id="info">Click on the values to change them!</p> */}
+      <div id="playground"></div>
     </div>
   );
 };
