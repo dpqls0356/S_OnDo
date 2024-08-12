@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
+import com.clio.ondo.domain.character.model.Character;
 import com.clio.ondo.domain.character.service.CharacterService;
 import com.clio.ondo.domain.chatbot.model.ChattingReadDto;
 import com.clio.ondo.domain.chatbot.model.openaiDto.ChatCompletion;
@@ -146,6 +147,10 @@ public class ChatbotServiceImpl implements ChatbotService{
 	@Override
 	public List<ChattingReadDto> getChatbotChattings(Long memberId, int page, int size) {
 		List<ChatbotChatting> chatbotChattings = chatbotRepository.getChattingsByPage(memberId, page, size);
+		if(chatbotChattings == null || chatbotChattings.isEmpty()){
+			return new ArrayList<>();
+		}
+
 		return chatbotChattings.stream()
 			.map(a -> ChattingReadDto.builder()
 					.sender(a.getSender())
@@ -162,7 +167,8 @@ public class ChatbotServiceImpl implements ChatbotService{
 		WebClient webClient = WebClient.builder().build();
 		String url = "https://api.openai.com/v1/chat/completions";
 
-		List<MissionDetail> missionDetails = missionDetailService.findAll();
+		Character c = characterService.getCharacters(memberId);
+		List<MissionDetail> missionDetails = missionDetailService.findByLevel(c.getLevel());
 
 		List<RoleContentMessage> roleContentMessages = new ArrayList<>();
 		roleContentMessages.add(new RoleContentMessage("system", recommendCommand + missionDetails.toString()));

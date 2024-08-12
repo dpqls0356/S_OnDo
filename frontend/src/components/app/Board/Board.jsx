@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import calendar from "./../../../assets/images/calendar.png";
 
 const Board = ({ article }) => {
-  // console.log(article)
   const nav = useNavigate();
 
   const onClickBoard = () => {
@@ -14,8 +13,12 @@ const Board = ({ article }) => {
   // 사용자가 보기 편하게 날짜 변환
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+    return new Date(dateString).toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'Asia/Seoul'
+    });
   };
 
   const truncateContent = (content, maxLength = 100) => {
@@ -34,8 +37,8 @@ const Board = ({ article }) => {
           <p>{article.title || '제목 없음'}</p>
         </div>
         <div className="BoardCreate">
-        <img src={calendar} alt="Calendar icon" className="icon-margin" />
-        <p className="inline-text">{formatDate(article.created_at)}</p>
+          <img src={calendar} alt="Calendar icon" className="icon-margin" />
+          <p className="inline-text">{formatDate(article.created_at)}</p>
         </div>
       </div>
 

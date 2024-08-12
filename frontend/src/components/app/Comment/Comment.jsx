@@ -14,7 +14,7 @@ const Comment = ({ comment }) => {
 
   const onClickCommentDelete = async () => {
     if (isAuthor) {
-      if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+      if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
         const success = await deleteComment(comment.id, user.id);
         if (success) {
           console.log("댓글 삭제 완료");
@@ -33,20 +33,12 @@ const Comment = ({ comment }) => {
     }
   };
 
-
   const onSaveEdit = async () => {
     if (isAuthor) {
       const result = await updateComment(comment.id, editedContent, user.id);
       if (result.success) {
         setIsEditing(false);
         console.log("댓글 수정 완료");
-      } else {
-        // 비속어 필터링 등의 특별한 경우 처리
-        if (result.message && result.message.includes("TOXICITY")) {
-          alert("부적절한 내용이 포함되어 있습니다. 다시 작성해 주세요.");
-        } else {
-          alert(result.message || "댓글 수정에 실패했습니다.");
-        }
       }
     } else {
       alert("댓글 작성자만 수정할 수 있습니다.");
@@ -56,19 +48,21 @@ const Comment = ({ comment }) => {
   return (
     <div className="CommentCard">
       <div className="CommentWriter">
-        <div>
+        <div style={{ width: '65%' }}>
           <img src={profile} alt="프로필" />
           <p>{comment.member_name}</p>
         </div>
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
           <div>
-            <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '13px' }}>
-              수정
-            </p>
-            <p onClick={onClickCommentDelete} style={{ cursor: "pointer", fontSize: '13px' }}>
-              삭제
-            </p>
+            <div>
+              <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '12px' }}>
+                수정
+              </p>
+              <p onClick={onClickCommentDelete} style={{ cursor: "pointer", fontSize: '12px'  }}>
+                삭제
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -111,16 +105,17 @@ const Comment = ({ comment }) => {
           <div id="CommentContent">{comment.content}</div>
         )}
         <p id="CommentCreateDate">
+          {/* UTC 세팅 - toLocaleString() 단지 표시 목적으로만 시간대를 변환할 뿐, 실제 저장된 시간 값은 변경X */}
           {new Date(comment.createdAt).toLocaleString('ko-KR', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
-            // seconds: '2-digit' 이거 빼면 초는 안 나옴
+            // seconds: '2-digit', 이거 빼면 초는 안 나옴
+            timeZone: 'Asia/Seoul' // 이 옵션을 추가하여 확실하게 한국 시간으로 표시
           })}
         </p>
-
       </div>
     </div>
   );
