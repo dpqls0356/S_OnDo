@@ -6,6 +6,7 @@ import axios from "axios";
 import useAuthStore from "../../../store/app/authStore";
 import Button from "../../../components/app/Button";
 import LoadingSpinner from "../../../components/app/Spinner";
+import Swal from "sweetalert2";
 
 const BoardUpdatepage = () => {
   const nav = useNavigate();
@@ -33,6 +34,39 @@ const BoardUpdatepage = () => {
   });
 
   const [imgName, setImgName] = useState("");
+
+  const alertModeration = async (text) => {
+    const alertMessage = await extractType(text);
+
+    Swal.fire({
+      icon: "warning",
+      title: "부적절한 표현이 감지되었습니다.",
+      text: `${alertMessage}`,
+      width: "70%",
+    });
+  };
+
+  const extractType = async (text) => {
+    const type = text.split(" ")[0].slice(0, -1);
+    const score = text.split(" ")[1].slice(2, 4);
+
+    switch (type) {
+      case "TOXICITY":
+        return `유해성(${type}) ${score}점`;
+      case "SEVERE_TOXICITY":
+        return `심각한 유해성(${type}) ${score}점`;
+      case "INSULT":
+        return `모욕(${type}) ${score}점`;
+      case "PROFANITY":
+        return `욕설(${type}) ${score}점`;
+      case "IDENTITY_ATTACK":
+        return `인신공격(${type}) ${score}점`;
+      case "THREAT":
+        return `위협(${type}) ${score}점`;
+      default:
+        return "오류";
+    }
+  };
 
   useEffect(() => {
     // 새로고침 시 유저 undefined 문제 해결 위해서
@@ -99,6 +133,14 @@ const BoardUpdatepage = () => {
         "Content-Type": "multipart/form-data",
       },
     });
+
+    if (response.status === 204) {
+      console.log("게시글 수정 성공.");
+    } else if (response.status === 200) {
+      await alertModeration(response.data.message);
+    } else {
+      console.error("예상치 못한 응답:", response.status);
+    }
   };
 
   const onClickUpdate = async (event) => {

@@ -120,9 +120,9 @@ public class BoardController {
       boardService.updateArticle(articleId,modifiedArticle,memberId,imageList);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
     }catch (UnauthorizedException e){
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 수정 실패 : 잘못된 접근입니다."));
     }catch (NotFoundException e) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 존재하지 않은 게시글에 대한 요청입니다."));
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 수정 실패 : 존재하지 않은 게시글에 대한 요청입니다."));
     } catch(ModerationException me){
       return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }
