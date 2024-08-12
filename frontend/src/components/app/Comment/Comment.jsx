@@ -51,7 +51,7 @@ const Comment = ({ comment }) => {
       <div className="CommentWriter">
         <div style={{ width: '65%' }}>
         <img 
-            src={user.imageUrl || mainProfileUrl} 
+            src={user.profileUrl || mainProfileUrl} 
             alt={`${comment.member_name} 프로필`} 
             onError={(e) => {
               e.target.onerror = null; 
