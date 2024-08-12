@@ -31,10 +31,11 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
       );
       // Convert received schedule dates from UTC to local time
       const scheduleInLocalTime = response.data.data.schedule.map(time => {
-        const localTime = new Date(time);
-        const hours = String(localTime.getHours()).padStart(2, '0');
-        const minutes = String(localTime.getMinutes()).padStart(2, '0');
-        return `${hours}:${minutes}`;
+        const utcTime = new Date(time + 'Z'); // 'Z'를 추가하여 UTC임을 명시
+  const localTime = new Date(utcTime.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  const hours = String(localTime.getHours()).padStart(2, '0');
+  const minutes = String(localTime.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
       });
       setDayScheduleList(scheduleInLocalTime);
       console.log(dayScheduleList)
