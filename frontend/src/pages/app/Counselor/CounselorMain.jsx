@@ -6,7 +6,7 @@ import CounselorListCard from '../../../components/app/Counselor/CounselorListCa
 import './CounselorMain.css';
 
 const CounselorMain = () => {
-  const { userReservations, counselors, fetchUserReservations, fetchCounselors, displayGender, calculateDday } = useCounselorStore();
+  const { userReservations, counselors, fetchUserReservations, fetchCounselors, displayGender, calculateDday, calculateExactDateTime } = useCounselorStore();
   const [filteredCounselors, setFilteredCounselors] = useState([]);
 
   useEffect(() => {
@@ -14,17 +14,27 @@ const CounselorMain = () => {
     fetchCounselors();
   }, [fetchUserReservations, fetchCounselors]);
 
+  // 유효한 예약인지(시간 위주 체크)
+  const validReservations = useMemo(() => {
+    return userReservations.filter(reservation => {
+      const { hoursPassed } = calculateExactDateTime(reservation.reservationDate);
+      return hoursPassed < 1; // 1시간 이상 지나지 않은 예약만 포함
+    });
+  }, [userReservations, calculateExactDateTime]);
+
+  // 날짜대로 정렬 위한 
   const sortedReservations = useMemo(() => {
-    return [...userReservations].sort((a, b) => {
+    return [...validReservations].sort((a, b) => {
       const ddayA = calculateDday(a.reservationDate);
       const ddayB = calculateDday(b.reservationDate);
       if (ddayA === 'D-day') return -1;
       if (ddayB === 'D-day') return 1;
-      if (ddayA === '상담완료' && ddayB !== '상담완료') return 1;
-      if (ddayB === '상담완료' && ddayA !== '상담완료') return -1;
-      return parseInt(ddayA.slice(2)) - parseInt(ddayB.slice(2));
+      if (ddayA.startsWith('D-') && ddayB.startsWith('D-')) {
+        return parseInt(ddayA.slice(2)) - parseInt(ddayB.slice(2));
+      }
+      return 0;
     });
-  }, [userReservations, calculateDday]);
+  }, [validReservations, calculateDday]);
 
   const handleFilteredCounselorsChange = (newFilteredCounselors) => {
     setFilteredCounselors(newFilteredCounselors);
@@ -55,7 +65,7 @@ const CounselorMain = () => {
               </Link>
             ))
           ) : (
-            <div className="no-counselors-message p-15">검색 조건에 맞는 상담사가 없습니다.</div>
+            <div className="no-counselors-message text-center">검색 조건에 맞는 상담사가 없습니다.</div>
           )}
         </div>
       </div>

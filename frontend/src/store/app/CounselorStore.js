@@ -18,7 +18,7 @@ const GENDER_REVERSE_MAP = {
   여: 'FEMALE'
 };
 
-
+// dday 계산
 const calculateDday = (reservationDate) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -31,6 +31,23 @@ const calculateDday = (reservationDate) => {
   if (dayDiff === 0) return 'D-day';
   if (dayDiff === -1) return '상담완료';
   return null; // D-day가 지난 경우 null을 반환
+};
+
+// 시간 계산용
+const calculateExactDateTime = (reservationDate) => {
+  const now = new Date();
+  const reservDate = new Date(reservationDate);
+  const timeDiff = reservDate.getTime() - now.getTime();
+  const hoursPassed = (now.getTime() - reservDate.getTime()) / (1000 * 60 * 60);
+  
+  return {
+    exactDateTime: reservDate.toISOString(),
+    millisUntilReservation: timeDiff,
+    isBeforeReservation: timeDiff > 0,
+    isDuringReservation: timeDiff <= 0 && timeDiff > -60 * 60 * 1000, // 상담 시작부터 1시간 동안
+    isAfterReservation: timeDiff <= -60 * 60 * 1000,
+    hoursPassed: hoursPassed
+  };
 };
 
 const useCounselorStore = create((set, get) => ({
@@ -177,9 +194,8 @@ const useCounselorStore = create((set, get) => ({
       throw error;
     }
   },
-
-
-  calculateDday
+  calculateDday,
+  calculateExactDateTime
 }));
 
 export default useCounselorStore;
