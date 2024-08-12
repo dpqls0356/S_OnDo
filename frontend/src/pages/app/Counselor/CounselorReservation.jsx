@@ -9,7 +9,7 @@ import BorderImg from '../../../assets/images/구분선.png';
 import back from '../../../assets/images/back.png';
 import styled from 'styled-components';
 const FullWidthCLCard = styled(CLCard)`
-  width: 100%;
+  width: 100% !important;
 `;
 const Reservation = () => {
   const { counselorId } = useParams();
@@ -74,7 +74,7 @@ const Reservation = () => {
               <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} alt="Back" />
             </div>
             {selectedCounselor && (
-              <FullWidthCLCard style={{width:"100%"}}
+              <FullWidthCLCard
                 name={selectedCounselor.name}
                 gender={displayGender(selectedCounselor.gender)}
                 field={selectedCounselor.field}
