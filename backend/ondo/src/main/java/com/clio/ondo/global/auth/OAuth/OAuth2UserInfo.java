@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+import com.clio.ondo.domain.character.model.Character;
 import com.clio.ondo.domain.member.model.Gender;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.model.Role;
@@ -22,6 +23,8 @@ public class OAuth2UserInfo {
     private String profileUrl;
     private String email;
     private LocalDate birthDate;
+    private Character character;
+    private Role role;
 
     public static OAuth2UserInfo of(String registrationId, Map<String, Object> attributes) {
         return switch (registrationId) {
@@ -66,7 +69,7 @@ public class OAuth2UserInfo {
         return Member.builder()
                 .name(name)
                 .nickname(nickname)
-                .gender(Gender.valueOf(gender))
+                .gender(Gender.valueOf(String.valueOf(gender)))
                 .profileUrl(profileUrl)
                 .email(email)
                 .birthDate(birthDate)
