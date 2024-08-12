@@ -9,37 +9,10 @@ const Thermometer = ({ character }) => {
 
   const [config, setConfig] = useState({
     unit: "Celcius",
-    exp: null,
-    level: null,
-    maxExp: null,
+    exp: 0,
+    level: 1,
+    maxExp: 100,
   });
-
-  const handleTempChange = (e) => {
-    const { id, value } = e.target;
-    if (isNaN(value)) {
-      return;
-    } else {
-      setConfig((prevConfig) => ({
-        ...prevConfig,
-        [id]: parseInt(value, 10),
-      }));
-    }
-  };
-
-  const toggleUnit = () => {
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      unit: prevConfig.unit === "Celcius" ? "Fahrenheit" : "Celcius",
-    }));
-  };
-
-  const handleRangeChange = (e) => {
-    const value = e.target.value;
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      temperature: value,
-    }));
-  };
 
   const setConfigInfo = () => {
     const calMaxExp = ((character.level - 1) / 10 + 1) * 100;
@@ -50,20 +23,22 @@ const Thermometer = ({ character }) => {
       maxExp: calMaxExp,
     });
   };
+
   const setTemperature = () => {
     const tempElement = document.getElementById("temperature");
-    const { exp, level, maxExp, unit } = config;
-    const temp = (exp / maxExp) * 100;
-    // const temp = (50 / 200) * 100;
-    tempElement.style.height = (exp / maxExp) * 100 + "%";
-    // tempElement.style.height = (50 / 200) * 100 + "%";
+    const { exp, maxExp, unit } = config;
+    const temp = maxExp > 0 ? (exp / maxExp) * 100 : 0;
+    tempElement.style.height = temp + "%";
     tempElement.dataset.value = temp + units[unit];
   };
 
   useEffect(() => {
     setConfigInfo();
+  }, [character]);
+
+  useEffect(() => {
     setTemperature();
-  }, []);
+  }, [config.exp, config.level, config.maxExp]);
 
   return (
     <div id="wrapper">
