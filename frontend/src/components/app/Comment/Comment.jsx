@@ -63,10 +63,10 @@ const Comment = ({ comment }) => {
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
           <div>
-            <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '14px' }}>
+            <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '13px' }}>
               수정
             </p>
-            <p onClick={onClickCommentDelete} style={{ cursor: "pointer", fontSize: '14px' }}>
+            <p onClick={onClickCommentDelete} style={{ cursor: "pointer", fontSize: '13px' }}>
               삭제
             </p>
           </div>
