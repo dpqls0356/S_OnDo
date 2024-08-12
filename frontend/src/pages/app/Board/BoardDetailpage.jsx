@@ -90,9 +90,11 @@ const BoardDetailPage = () => {
       return;
     }
 
-    if (user.id.toString() === currentViewArticle.member_id) {
+    if (user.id.toString() === currentViewArticle?.member_id) {
       nav(`/member/board/${articleId}/update`);
-    } else alert("글 작성자만 수정할 수 있습니다.");
+    } else {
+      alert("글 작성자만 수정할 수 있습니다.");
+    }
   };
 
   const onClickDelete = async () => {
@@ -101,7 +103,7 @@ const BoardDetailPage = () => {
       return;
     }
 
-    if (user.id.toString() === currentViewArticle.member_id) {
+    if (user.id.toString() === currentViewArticle?.member_id) {
       try {
         if (confirm("정말 삭제하시겠습니까?")) {
           await api.delete("/board/" + articleId, {
@@ -115,7 +117,9 @@ const BoardDetailPage = () => {
       } catch {
         alert("글 삭제에 실패했습니다.");
       }
-    } else alert("글 작성자만 삭제할 수 있습니다.");
+    } else {
+      alert("글 작성자만 삭제할 수 있습니다.");
+    }
   };
 
   const formatDate = (dateString) => {
@@ -136,6 +140,10 @@ const BoardDetailPage = () => {
     return <div>게시글을 찾을 수 없습니다.</div>;
   }
 
+  // imageUrl을 안전하게 접근하기 위해 currentViewArticle이 정의된 후에만 접근
+  const imageUrl = currentViewArticle.imageUrl && 
+    (Array.isArray(currentViewArticle.imageUrl) ? currentViewArticle.imageUrl[0] : currentViewArticle.imageUrl);
+
   return (
     <div className="scroll">
       {spinnerLoading && <LoadingSpinner />}
@@ -145,12 +153,12 @@ const BoardDetailPage = () => {
           <div className="BoardDetail">
             <div className="DetailTitle">
               <p id="boardtitle">{currentViewArticle.title}</p>
-              <div>
-                <Button onClick={onClickUpdate} text={"수정"} />
-              </div>
-              <div>
-                <Button onClick={onClickDelete} text={"삭제"} />
-              </div>
+              {user && user.id.toString() === currentViewArticle.member_id && (
+                <div className="action-buttons">
+                  <Button onClick={onClickUpdate} text="수정" />
+                  <Button onClick={onClickDelete} text="삭제" />
+                </div>
+              )}
             </div>
 
             <div className="DetailDate">
@@ -161,45 +169,47 @@ const BoardDetailPage = () => {
               <div className="DetailCreate">
                 <img src={calendar} alt="달력" />
                 <div>
-                  <p>{formatDate(currentViewArticle.created_at)}</p>
+                  <p style={{ font: "16px"}}>{formatDate(currentViewArticle.created_at)}</p>
                 </div>
               </div>
             </div>
 
             <div className="DetailContent">
               <p>{currentViewArticle.content}</p>
+              {/* imageUrl이 존재할 때만 이미지 태그를 렌더링 */}
+              {imageUrl && (
+                <img src={imageUrl} alt="게시글 이미지" />
+              )}
             </div>
-            {currentViewArticle.imageUrl && (
-              <div>
-                <img src={currentViewArticle.imageUrl} alt="게시글 이미지" />
+          
+            </div>
+
+            
+            {/* 댓글 목록 */}
+            <div className="BD-center">
+              <div className="CommentList">
+                <div id="comment-line"></div>
+                <CommentList articleId={articleId} />
               </div>
-            )}
-          </div>
 
-          {/* 댓글 목록 */}
-          <div className="BD-center">
-            <div className="CommentList">
-              <div id="comment-line"></div>
-              <CommentList articleId={articleId} />
+              {/* 댓글 작성 */}
+              <form className="CommentForm" onSubmit={(e) => e.preventDefault()}>
+                <textarea
+                  ref={comment}
+                  maxLength={100}
+                  placeholder="댓글을 달아보세요."
+                  onKeyDown={handleKeyDown}
+                ></textarea>
+                <img
+                  onClick={onClickCreateComment}
+                  src={commentbtn}
+                  alt="댓글 작성"
+                  style={{ cursor: "pointer" }}
+                />
+              </form>
+              <div className="emptybox2"></div>
             </div>
-
-            {/* 댓글 작성 */}
-            <form className="CommentForm" onSubmit={(e) => e.preventDefault()}>
-              <textarea
-                ref={comment}
-                maxLength={100}
-                placeholder="댓글을 달아보세요."
-                onKeyDown={handleKeyDown}
-              ></textarea>
-              <img
-                onClick={onClickCreateComment}
-                src={commentbtn}
-                alt="댓글 작성"
-                style={{ cursor: "pointer" }}
-              />
-            </form>
-            <div className="emptybox2"></div>
-          </div>
+    
         </div>
       </div>
     </div>

@@ -48,3 +48,15 @@
   text-overflow: ellipsis;
   word-break: break-all;
 }
+
+.BoardCreate > p {
+  font-size: 14px;
+}
+
+.icon-margin {
+  margin-right: 8px;
+}
+
+.inline-text {
+  display: inline;
+}

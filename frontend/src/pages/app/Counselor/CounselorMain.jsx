@@ -55,7 +55,7 @@ const CounselorMain = () => {
               </Link>
             ))
           ) : (
-            <div className="no-counselors-message p-10">검색 조건에 맞는 상담사가 없습니다.</div>
+            <div className="no-counselors-message p-15">검색 조건에 맞는 상담사가 없습니다.</div>
           )}
         </div>
       </div>
