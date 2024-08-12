@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import useCounselorStore from "../../../store/app/CounselorStore";
 import PropTypes from "prop-types";
 import Slider from "react-slick";
+import useCounselorStore from "../../../store/app/CounselorStore";
 import CardCarousel from "./CardCarousel";
 import search from "./../../../assets/images/ic_search.png";
 import "slick-carousel/slick/slick.css";
@@ -60,49 +60,30 @@ const SearchFilter = ({
   </div>
 );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const CounselorCard = ({
-  reservations,
-  counselors,
-  onFilteredCounselorsChange,
-}) => {
+const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange }) => {
   const nav = useNavigate();
   const [selectedGender, setSelectedGender] = useState("전체");
   const [searchField, setSearchField] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { displayGender, calculateDday } = useCounselorStore();
-=======
-=======
->>>>>>> 858df75cb87c03bf805480f086cc6bcfcac5ed31
-const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange }) => {
-  const nav = useNavigate()
-  const [selectedGender, setSelectedGender] = useState('전체');
-  const [searchField, setSearchField] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
   const { displayGender, calculateDday, calculateExactDateTime } = useCounselorStore();
-<<<<<<< HEAD
->>>>>>> 4d8163c90c5f284c69903c90d263e86e6524cef8
-=======
->>>>>>> 858df75cb87c03bf805480f086cc6bcfcac5ed31
 
   const sortedReservations = useMemo(() => {
     return reservations
-    .filter(reservation => {
-      const { hoursPassed } = calculateExactDateTime(reservation.reservationDate);
-      return hoursPassed < 1; // 1시간 이상 지나지 않은 예약만 포함
-    })
-    .sort((a, b) => {
-      const ddayA = calculateDday(a.reservationDate);
-      const ddayB = calculateDday(b.reservationDate);
-      if (ddayA === 'D-day') return -1;
-      if (ddayB === 'D-day') return 1;
-      if (ddayA.startsWith('D-') && ddayB.startsWith('D-')) {
-        return parseInt(ddayA.slice(2)) - parseInt(ddayB.slice(2));
-      }
-      return 0;
-    });
-}, [reservations, calculateDday, calculateExactDateTime]);
+      .filter(reservation => {
+        const { hoursPassed } = calculateExactDateTime(reservation.reservationDate);
+        return hoursPassed < 1; // 1시간 이상 지나지 않은 예약만 포함
+      })
+      .sort((a, b) => {
+        const ddayA = calculateDday(a.reservationDate);
+        const ddayB = calculateDday(b.reservationDate);
+        if (ddayA === 'D-day') return -1;
+        if (ddayB === 'D-day') return 1;
+        if (ddayA.startsWith('D-') && ddayB.startsWith('D-')) {
+          return parseInt(ddayA.slice(2)) - parseInt(ddayB.slice(2));
+        }
+        return 0;
+      });
+  }, [reservations, calculateDday, calculateExactDateTime]);
 
   const filteredCounselors = useMemo(() => {
     return counselors.filter((counselor) => {
@@ -129,7 +110,7 @@ const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange })
     slidesToScroll: 1,
     arrows: false,
     swipe: true,
-    adaptiveHeight: true, // 내부 요소 크기 따라 자동 조절
+    adaptiveHeight: true,
   };
 
   const handleCardClick = () => {
