@@ -104,6 +104,7 @@ const BoardList = forwardRef((props, ref) => {
   const sortedBoards = useMemo(() => {
     if (!Array.isArray(boards)) return [];
     const sorted = [...boards].sort((a, b) => {
+      // created_at, createdAt 모두 처리
       const dateA = new Date(a.created_at || a.createdAt || 0);
       const dateB = new Date(b.created_at || b.createdAt || 0);
       return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
