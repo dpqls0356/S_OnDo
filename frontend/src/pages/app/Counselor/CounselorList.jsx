@@ -8,7 +8,8 @@ import "./CounselorList.css";
 
 const CounselorList = () => {
   const nav = useNavigate();
-  const { userReservations, fetchUserReservations, isLoading, displayGender } = useCounselorStore();
+  const { userReservations, fetchUserReservations, isLoading, displayGender } =
+    useCounselorStore();
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
 
   useEffect(() => {
@@ -16,7 +17,7 @@ const CounselorList = () => {
   }, [fetchUserReservations]);
 
   const sortedReservations = useMemo(() => {
-    console.log(userReservations)
+    console.log(userReservations);
     return [...userReservations].sort((a, b) => {
       const dateA = new Date(a.reservationDate);
       const dateB = new Date(b.reservationDate);
@@ -39,10 +40,18 @@ const CounselorList = () => {
   return (
     <div className="scroll">
       <div className="CL-header">
-        <img onClick={onClickBack} style={{ cursor: "pointer" }} src={back} alt="Back" />
-        <p>상담예약내역</p>
+        <div>
+          <img
+            onClick={onClickBack}
+            style={{ cursor: "pointer" }}
+            src={back}
+            alt="Back"
+          />
+        </div>
+        <div>상담예약내역</div>
         <div onClick={onClickSort} style={{ cursor: "pointer" }}>
-          <img src={sort} alt="Sort" />
+          {/* <img src={sort} alt="Sort" /> */}
+          <span>{sortOrder === "asc" ? "오름차순" : "내림차순"}</span>
           <span>{sortOrder === "asc" ? "오름차순" : "내림차순"}</span>
         </div>
       </div>
@@ -62,7 +71,7 @@ const CounselorList = () => {
                 is_complete={reservation.is_complete}
                 reservationDate={reservation.reservationDate}
                 reservId={reservation.id}
-                counselingUrl ={reservation.counselingUrl}
+                counselingUrl={reservation.counselingUrl}
               />
             ))}
           </div>
