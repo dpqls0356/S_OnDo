@@ -3,30 +3,42 @@ import "./Homepage.css";
 // import Balloon from "./../../../components/app/Ballon"
 import Thermometer from "../../../components/app/Thermometer";
 import Balloon from "../../../components/app/Balloon";
-import characterImg from "./../../../assets/images/공통_캐릭터.png";
+import tail from "../../../assets/images/characterMove/tail.png";
+import acorn from "../../../assets/images/characterMove/acorn.png"
+import defaultEmogi from "../../../assets/images/characterMove/1.png";
+import smileEmogi from "../../../assets/images/characterMove/2.png"
+import surprisedEmogi from "../../../assets/images/characterMove/3.png"
 import chat from "./../../../assets/images/chat.png";
-
 import back_img from "./../../../assets/images/home_back2.jpg";
 
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import styled from "styled-components"
 
+const Tail = styled.div`
+`
+const CharacterBody = styled.div`
+`
+const Acorn = styled.div`
+  
+`
 const Homepage = () => {
   const renderCount = useRef(0);
   const [character, setCharacter] = useState({});
   const [characterState, setCharacterState] = useState({
     text: "안녕",
-    img: characterImg,
+    img: defaultEmogi,
   });
   const [previousNum, setPreviousNum] = useState(null);
 
   const CharacterStateList = [
-    { text: "안녕", imgNum: 1 },
-    { text: "행복한 하루 보내길 바라!", imgNum: 1 },
+    { text: "안녕", imgNum: 1,move:0 },
+    { text: "행복한 하루 보내길 바라!", imgNum: 2,move:1 },
     {
       text: "나를 위해 도토리를 모아줘서 고마워 ~ 너 덕분에 따뜻해",
-      imgNum: 1,
+      imgNum: 3,
+      move:1
     },
   ];
 
@@ -86,7 +98,7 @@ const Homepage = () => {
           <Balloon text={characterState.text} />
         </div>
         <div onClick={changeCharacterStatus} className="Char-daram">
-          <img style={{ height: 170 }} src={characterState.img} />
+          
         </div>
         <div className="chatBtn">
           <img onClick={onClickChat} src={chat} style={{ cursor: "pointer" }} />
