@@ -205,7 +205,7 @@ const CounselorMypage = () => {
     const userData = new Blob(
       [
         JSON.stringify({
-          password: MyInfo.password,
+          password: "",
           selfIntroduction: formData.selfIntroduction,
         }),
       ],

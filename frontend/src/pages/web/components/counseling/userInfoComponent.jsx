@@ -9,7 +9,7 @@ const View = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex:1;
+  flex: 1;
   flex-direction: column;
 `;
 
@@ -97,6 +97,7 @@ const UserInfoComponent = ({ memberInfo }) => {
   const observer = useRef();
   const memberId = memberInfo.memberId;
   const size = 10;
+
   useEffect(() => {
     console.log("========================유저정보컴포넌트===========================");
     console.log(memberInfo);
@@ -108,7 +109,9 @@ const UserInfoComponent = ({ memberInfo }) => {
   };
 
   const getReservationHistory = async () => {
-    console.log("=========================getReservationHistory=========================="+memberId);
+    console.log(
+      "=========================getReservationHistory==========================" + memberId
+    );
     try {
       const response = await axios.get(
         `${baseUrl}/counselor/memberReservation?memberId=${memberId}&page=${page}&size=${size}`,
@@ -120,7 +123,7 @@ const UserInfoComponent = ({ memberInfo }) => {
         }
       );
       const newHistories = response.data.data.reservations;
-      setHistoryList((prev) => [...prev, ...newHistories]);
+      setHistoryList([...newHistories]); //초기화 후 newHistory
       if (newHistories.length < size) {
         setHasMore(false);
       }
@@ -158,10 +161,7 @@ const UserInfoComponent = ({ memberInfo }) => {
                 backgroundColor: "white",
               }}
             >
-              <FontAwesomeIcon
-                style={{ width: "100%", height: "100%" }}
-                icon={faUser}
-              />
+              <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faUser} />
             </div>
           )}
         </Col>
@@ -176,13 +176,14 @@ const UserInfoComponent = ({ memberInfo }) => {
       <History>
         {historyList.map((history, index) => {
           if (historyList.length === index + 1) {
+            `  `;
             return (
               <CounselingMemo key={index} ref={lastHistoryElementRef}>
                 <p>{formatDate(history.reservationDate)}</p>
                 <p>{history.counselingReservationDetail}</p>
                 <div className="memo">
                   <div>
-                    <textarea>{history.counsellingDetail}</textarea>
+                    <p>{history.counsellingDetail}</p>
                   </div>
                   <div>
                     <button>수정</button>
