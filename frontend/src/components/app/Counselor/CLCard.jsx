@@ -1,7 +1,8 @@
 import "./CLCard.css";
-import profile from "./../../../assets/images/ic_user.png";
 import { useNavigate, Link } from "react-router-dom";
 import useCounselorStore from "../../../store/app/CounselorStore";
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const CLCard = ({
   name,
@@ -12,6 +13,7 @@ const CLCard = ({
   is_complete,
   reservId,
   counselingUrl,
+  profileUrl,
   showCancelButton = true,
 }) => {
   const nav = useNavigate();
@@ -61,7 +63,14 @@ const CLCard = ({
         <p id="CL-Date">{new Date(reservationDate).toLocaleDateString()}</p>
       )}
       <div className="CLCardIn">
-        <img src={profile} alt="Profile" />
+      <img 
+            src={profileUrl || mainProfileUrl} 
+            alt={`${name} 상담사 프로필`} 
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = mainProfileUrl;
+            }}
+          />
         <div className="CSInfo">
           <p id="CS-CounselorName">
             {name} 상담자({displayGender(gender)})

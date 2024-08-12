@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useCounselorStore from '../../../store/app/CounselorStore';
-import profile from './../../../assets/images/ic_user.png';
 import back from './../../../assets/images/back.png';
 import './CounselorDetail.css';
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const CounselorDetail = () => {
   const nav = useNavigate();
@@ -29,7 +30,14 @@ const CounselorDetail = () => {
       <div className='CD-Card'>
         <div>
           <p id='CD-name'>{selectedCounselor.name} 상담사({displayGender(selectedCounselor.gender)})</p>
-          <img src={profile} alt="상담사 프로필" />
+          <img 
+            src={selectedCounselor.profileUrl || mainProfileUrl} 
+            alt={`${selectedCounselor.name} 상담사 프로필`} 
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = mainProfileUrl;
+            }}
+          />
           <p>분야</p>
           <p>{selectedCounselor.field}</p>
           <p>경력</p>
