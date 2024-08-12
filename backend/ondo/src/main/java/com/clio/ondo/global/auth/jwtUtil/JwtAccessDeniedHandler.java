@@ -18,6 +18,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 		throws IOException, ServletException {
 		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		response.setContentType("application/json");
-		response.getWriter().write("{\"message\": 허용되지 않은 요청입니다.\"\"}");
+		response.getWriter().write("{\"message\": not allowed\"\"}");
 	}
 }

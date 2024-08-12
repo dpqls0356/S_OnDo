@@ -62,7 +62,7 @@ public class SecurityConfig {
 		private static final String[] AUTH_WHITELIST = {
 				"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue",
 				"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue", "/error",
-				"/api/v1/member/oauth-success", "/favicon,ico", "oauth2/**", "login**"
+				"/api/v1/member/oauth-success", "/favicon.ico", "/auth/**", "/oauth2/**", "/error**"
 		};
 
 		@Bean
@@ -103,13 +103,15 @@ public class SecurityConfig {
 	@Order(2)
 	public static class CounselorSecurityConfig {
 		private final CounselorDetailsServiceImpl counselorDetailsService;
+		private final CustomOAuth2UserService customOAuth2UserService;
+		private final OAuth2SuccessHandler oAuth2SuccessHandler;
 		private final JwtTokenProvider jwtTokenProvider;
 		private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 		private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 		private static final String[] WHITELIST = {
-				"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue",
-				"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue", "/error",
-				"/api/v1/member/oauth-success", "/favicon,ico", "oauth2/**", "login**"
+			"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue",
+			"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue", "/error",
+			"/api/v1/member/oauth-success", "/favicon.ico", "/auth/**", "/oauth2/**", "/error**"
 		};
 
 		@Bean
@@ -134,6 +136,10 @@ public class SecurityConfig {
 							.requestMatchers(WHITELIST).permitAll()
 							.requestMatchers("/api/v1/counselor/**").hasRole("COUNSELOR")
 							.anyRequest().authenticated())
+				.oauth2Login(oauth ->
+					oauth.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+						.successHandler(oAuth2SuccessHandler)
+				)
 					.exceptionHandling((exceptionHandling) -> exceptionHandling
 							.authenticationEntryPoint(jwtAuthenticationEntryPoint)
 							.accessDeniedHandler(jwtAccessDeniedHandler))
