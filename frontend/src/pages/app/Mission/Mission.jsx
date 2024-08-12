@@ -174,6 +174,8 @@ function MissionPage() {
 
 export default MissionPage;
 
+
+// 테스트 데이터로 돌아가는 거 확인용 코드
 // function MissionPage() {
 //   const { missions, setMissions, completeMission } = useMissionStore();
 //   const [error, setError] = useState(null);
