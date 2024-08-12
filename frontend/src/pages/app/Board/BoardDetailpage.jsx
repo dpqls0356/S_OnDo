@@ -12,6 +12,12 @@ import profile from "./../../../assets/images/test.png";
 import commentbtn from "./../../../assets/images/send.png";
 import LoadingSpinner from "../../../components/app/Spinner";
 import back from "./../../../assets/images/back.png";
+import styled from "styled-components"
+
+const Header = styled.div`
+  width:100%;
+  padding:30px 0px 0px 20px;
+`
 
 const BoardDetailPage = () => {
   const { articleId } = useParams();
@@ -158,9 +164,15 @@ const BoardDetailPage = () => {
     <div className="scroll">
       {spinnerLoading && <LoadingSpinner />}
       <div>
+        <Header>
+          <div  >
+            <svg onClick={() => nav(-1)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            </div>
+          </Header>
         <div>
           {/* 게시글 */}
-          <img onClick={() => nav(-1)} src={back} alt="Back" />
           <div className="BoardDetail">
             <div className="DetailTitle">
               <p id="boardtitle">{currentViewArticle.title}</p>
@@ -178,7 +190,11 @@ const BoardDetailPage = () => {
                 <p>{currentViewArticle.member_name}</p>
               </div>
               <div className="DetailCreate">
-                <img src={calendar} alt="달력" />
+                          {/* <div style={{width:"25px",height:"2px",marginRight:"5px"}}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+            </svg>
+          </div> */}
                 <div>
                   <p style={{ font: "16px" }}>
                     {formatDate(currentViewArticle.created_at)}
