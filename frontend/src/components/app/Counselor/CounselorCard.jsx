@@ -85,6 +85,7 @@ const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange })
     slidesToScroll: 1,
     arrows: false,
     swipe: true,
+    adaptiveHeight: true, // 내부 요소 크기 따라 자동 조절
   };
 
   const handleCardClick = () => {

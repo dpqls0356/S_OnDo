@@ -75,6 +75,7 @@ const Reservation = () => {
                 field={selectedCounselor.field}
                 intro={selectedCounselor.intro}
                 reservId={counselorId}
+                showCancelButton={false}  // 취소 버튼을 숨기기
               />
             )}
             <br />
