@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import useCounselorStore from "../../../store/app/CounselorStore";
 import PropTypes from "prop-types";
 import Slider from "react-slick";
+import useCounselorStore from "../../../store/app/CounselorStore";
 import CardCarousel from "./CardCarousel";
 import search from "./../../../assets/images/ic_search.png";
 import "slick-carousel/slick/slick.css";
@@ -110,7 +110,7 @@ const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange })
     slidesToScroll: 1,
     arrows: false,
     swipe: true,
-    adaptiveHeight: true, // 내부 요소 크기 따라 자동 조절
+    adaptiveHeight: true,
   };
 
   const handleCardClick = () => {
