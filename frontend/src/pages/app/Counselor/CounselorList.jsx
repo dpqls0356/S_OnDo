@@ -8,21 +8,28 @@ import "./CounselorList.css";
 
 const CounselorList = () => {
   const nav = useNavigate();
-  const { userReservations, fetchUserReservations, isLoading, displayGender } = useCounselorStore();
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const { userReservations, fetchUserReservations, isLoading, displayGender, calculateExactDateTime } = useCounselorStore();
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     fetchUserReservations();
   }, [fetchUserReservations]);
 
   const sortedReservations = useMemo(() => {
-    console.log(userReservations)
-    return [...userReservations].sort((a, b) => {
-      const dateA = new Date(a.reservationDate);
-      const dateB = new Date(b.reservationDate);
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-    });
-  }, [userReservations, sortOrder]);
+    return [...userReservations]
+      .map(reservation => {
+        const dateTimeInfo = calculateExactDateTime(reservation.reservationDate);
+        return {
+          ...reservation,
+          isExpired: dateTimeInfo.isAfterReservation
+        };
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.reservationDate);
+        const dateB = new Date(b.reservationDate);
+        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      });
+  }, [userReservations, sortOrder, calculateExactDateTime]);
 
   const onClickBack = () => {
     nav("/member/counseling/main");
@@ -62,7 +69,8 @@ const CounselorList = () => {
                 is_complete={reservation.is_complete}
                 reservationDate={reservation.reservationDate}
                 reservId={reservation.id}
-                counselingUrl ={reservation.counselingUrl}
+                counselingUrl={reservation.counselingUrl}
+                isExpired={reservation.isExpired}
               />
             ))}
           </div>
