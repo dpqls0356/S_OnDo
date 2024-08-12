@@ -27,7 +27,6 @@ const Homepage = () => {
   const getCharacter = async () => {
     const characterResponse = await api.get("/character/getCharacter");
     setCharacter(characterResponse.data.data.character);
-
     console.log(characterResponse.data.data.character);
   };
 
@@ -38,7 +37,7 @@ const Homepage = () => {
   useEffect(() => {
     renderCount.current += 1;
   });
- 
+
   const nav = useNavigate();
 
   const onClickChat = () => {
@@ -57,7 +56,7 @@ const Homepage = () => {
         <p>안녕</p>
         </div> */}
         <div id="thermometer">
-          <Thermometer />
+          <Thermometer character={character} />
         </div>
         <div className="Char-ballon">
           <Balloon

@@ -15,7 +15,6 @@ import SideBar from "./components/counseling/sidebarComponent";
 import useAuthStore from "../../store/app/authStore";
 
 const View = styled.div`
-  overflow: hidden;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -191,7 +190,7 @@ const CounselingRoom = () => {
           },
         }
       );
-      console.log("================유저정보 받아오기===================")
+      console.log("================유저정보 받아오기===================");
       setMemberInfo(response.data.data.member);
     } catch (e) {
       console.log(e);
@@ -213,7 +212,7 @@ const CounselingRoom = () => {
       .catch((error) => {
         console.error("Error notifying server about leaving session:", error);
       });
-      localStorage.removeItem("sessionId");
+    localStorage.removeItem("sessionId");
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
@@ -257,7 +256,6 @@ const CounselingRoom = () => {
     setFilterEnabled((prev) => !prev);
   };
 
-
   useEffect(() => {
     if (publisher) {
       publisher.publishVideo(cameraStatus);
@@ -284,11 +282,11 @@ const CounselingRoom = () => {
 
   useEffect(() => {
     const rootElement = document.getElementById("root");
-      rootElement.style.overflow = "hidden";
+    rootElement.style.overflow = "hidden";
   }, [location.pathname]);
 
   return (
-    <div style={{overflowY:"hidden"}}>
+    <div style={{ overflowY: "hidden" }}>
       {preJoin ? (
         <PreJoinComponent onJoin={handleJoin} />
       ) : session !== undefined ? (

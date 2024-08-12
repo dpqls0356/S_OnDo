@@ -56,7 +56,7 @@ public class CommentController {
     try{
       commentServiceImpl.saveComment(comment);
     }catch(ModerationException me){
-      return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.failure(me.getMessage()));
+      return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
   }
