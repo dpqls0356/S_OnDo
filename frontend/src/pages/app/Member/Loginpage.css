@@ -1,4 +1,4 @@
-.Loginpage{
+.Loginpage {
   /* margin: 0 auto; */
   padding: 17%;
   display: flex;
@@ -18,8 +18,7 @@ input[type="password"] {
   font-family: "";
 }
 
-
-.Loginpage * {
+.Loginpage *:not(.cross-line > *) {
   padding: 3%;
 }
 
@@ -37,6 +36,24 @@ input[type="password"] {
   font-style: italic;
 }
 
-.Loginpage input{
+.Loginpage input {
   width: 100%;
+}
+
+.cross-line {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+.cross-line div:nth-child(1),
+.cross-line div:nth-child(3) {
+  flex: 1;
+  /* border: 0.1px solid rgb(207, 207, 207); */
+  height: 0.1px;
+  background-color: gray;
+}
+.cross-line div:nth-child(2) {
+  margin: 0px 10px;
 }
