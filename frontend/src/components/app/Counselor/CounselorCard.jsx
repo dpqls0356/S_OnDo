@@ -61,6 +61,7 @@ const SearchFilter = ({
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const CounselorCard = ({
   reservations,
   counselors,
@@ -72,13 +73,18 @@ const CounselorCard = ({
   const [searchKeyword, setSearchKeyword] = useState("");
   const { displayGender, calculateDday } = useCounselorStore();
 =======
+=======
+>>>>>>> 858df75cb87c03bf805480f086cc6bcfcac5ed31
 const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange }) => {
   const nav = useNavigate()
   const [selectedGender, setSelectedGender] = useState('전체');
   const [searchField, setSearchField] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const { displayGender, calculateDday, calculateExactDateTime } = useCounselorStore();
+<<<<<<< HEAD
 >>>>>>> 4d8163c90c5f284c69903c90d263e86e6524cef8
+=======
+>>>>>>> 858df75cb87c03bf805480f086cc6bcfcac5ed31
 
   const sortedReservations = useMemo(() => {
     return reservations
