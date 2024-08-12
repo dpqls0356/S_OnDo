@@ -68,8 +68,8 @@ const Homepage = () => {
     setCharacterState({ text: CharacterStateList[num].text, img: img });
     setPreviousNum(num); // 이전에 선택한 숫자를 저장
 
-    console.log("========character click=========");
-    console.log(characterState.img + " " + characterState.text);
+    // console.log("========character click=========");
+    // console.log(characterState.img + " " + characterState.text);
   };
 
   return (
