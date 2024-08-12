@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../../components/app/Spinner';
 import chat_send from './../../../assets/images/chat_send.png';
 import back from './../../../assets/images/back.png';
-import chrface from './../../../assets/images/test_chara.png'
+import chrface from './../../../assets/images/test_chara.png';
 import './Chatpage.css';
 
 // API 인스턴스 생성
@@ -37,21 +37,15 @@ const Chatpage = () => {
     setCharacterLoading(true);
     setCharacterError(null);
     try {
-      console.log("Fetching character data...");
       const characterResponse = await api.get('/character/getCharacter', { timeout: 5000 });
-      console.log("Character API response:", characterResponse);
-      
       const fetchedCharacter = characterResponse.data.data.character;
       if (fetchedCharacter && fetchedCharacter.name) {
-        console.log("Setting character:", fetchedCharacter);
         setCharacter(fetchedCharacter);
       } else {
-        console.error("Invalid character data:", fetchedCharacter);
         setCharacterError("Invalid character data received");
         setCharacter({ name: "Unknown" });
       }
     } catch (error) {
-      console.error("Error fetching character:", error);
       setCharacterError(error.message || "Failed to fetch character");
       setCharacter({ name: "Unknown" });
     } finally {
@@ -82,7 +76,6 @@ const Chatpage = () => {
         const newMessages = response.data.data.responseChatting;
         setMessages(prevMessages => [...prevMessages, ...newMessages]);
       } catch (error) {
-        console.error("Error sending message:", error);
         setUserInput(currentInput);
       } finally {
         setIsLoading(false);
@@ -143,6 +136,7 @@ const Chatpage = () => {
     }
   }, [isInitialized, getChatbotMessage, scrollToBottom]);
 
+
   // 입력 처리
   const handleInputChange = useCallback((event) => {
     setUserInput(event.target.value);
@@ -171,9 +165,9 @@ const Chatpage = () => {
       {/* 캐릭터 정보 표시 */}
       <div className="CharacterName">
         <img onClick={() => nav('/member/home')} src={back} alt="Back" />
-        <img 
-          src={chrface} 
-          alt="다람이 얼굴" 
+        <img
+          src={chrface}
+          alt="다람이 얼굴"
           style={{
             borderRadius: '50%',
             border: '2px solid black',
@@ -192,33 +186,31 @@ const Chatpage = () => {
           <div>Unknown Character</div>
         )}
       </div>
-      
-      {/* 채팅 내용 */}
+
+      {/* 채팅 내용 및 버튼 */}
       <div className="ChatContentWrapper">
-        {isInitialized && (
-          <div className="ChatContent" ref={chatContainerRef}>
-            {/* '이전 메시지 더 보기' 버튼 */}
-            {messages.length > 0 && hasMore && (
-              <button onClick={loadMoreMessages} disabled={isLoading} className="load-more-button">
-                {isLoading ? '로딩 중...' : '이전 메시지 더 보기'}
-              </button>
-            )}
-            
-            {/* 메시지 목록 */}
-            <div className="ChatScreen">
-              {messages.map((message, index) => (
-                <div key={index} className={`message-container ${message.sender === 'user' ? 'user' : 'bot'}`}>
-                  <div className={message.sender === 'user' ? 'user-message' : 'bot-message'}>
-                    {message.content}
-                  </div>
-                  <div className="message-time">
-                    {formatMessageTime(message.createdAt)}
-                  </div>
+        {/* 채팅 내용 */}
+        <div className="ChatContent" ref={chatContainerRef}>
+          <div className="ChatScreen">
+            {messages.map((message, index) => (
+              <div key={index} className={`message-container ${message.sender === 'user' ? 'user' : 'bot'}`}>
+                <div className={message.sender === 'user' ? 'user-message' : 'bot-message'}>
+                  {message.content}
                 </div>
-              ))}
-            </div>
+                <div className="message-time">
+                  {formatMessageTime(message.createdAt)}
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+
+        {/* '이전 메시지 더 보기' 버튼 --> 자꾸 에러나ㅠㅠ
+        {messages.length > 0 && hasMore && (
+          <button onClick={loadMoreMessages} disabled={isLoading} className="load-more-button">
+            {isLoading ? '로딩 중...' : '이전 메시지 더 보기'}
+          </button>
+        )} */}
       </div>
       
       {/* 메시지 입력 */}

@@ -10,12 +10,23 @@
   box-shadow: -4px 6px 0px 0px #001429;
 }
 
+.DetailTitle .action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.DetailTitle .action-buttons button {
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
 #boardtitle {
   width: 180%;
 }
 
 .DetailTitle {
-  font-size: 25px;
+  font-size: 23px;
+  font-weight: bold;
   padding: 10px 17px;
   display: flex;
   align-items: center;

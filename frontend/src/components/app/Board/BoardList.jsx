@@ -54,8 +54,8 @@ const BoardList = forwardRef((props, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    trigerUpdateBoard: updateBoard,
-    trigerToggleSortBy: toggleSortBy,
+    triggerUpdateBoard: updateBoard,
+    triggerToggleSortBy: toggleSortBy,
   }));
 
   useEffect(() => {

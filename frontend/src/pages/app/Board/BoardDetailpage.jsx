@@ -153,12 +153,12 @@ const BoardDetailPage = () => {
           <div className="BoardDetail">
             <div className="DetailTitle">
               <p id="boardtitle">{currentViewArticle.title}</p>
-              <div>
-                <Button onClick={onClickUpdate} text={"수정"} />
-              </div>
-              <div>
-                <Button onClick={onClickDelete} text={"삭제"} />
-              </div>
+              {user && user.id.toString() === currentViewArticle.member_id && (
+                <div className="action-buttons">
+                  <Button onClick={onClickUpdate} text="수정" />
+                  <Button onClick={onClickDelete} text="삭제" />
+                </div>
+              )}
             </div>
 
             <div className="DetailDate">
