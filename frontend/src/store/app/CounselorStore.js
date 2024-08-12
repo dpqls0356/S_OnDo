@@ -159,16 +159,26 @@ const useCounselorStore = create((set, get) => ({
   cancelReservation: async (reservationId) => {
     set({ isLoading: true });
     try {
-      const response = await api.post(`/member/reservation/cancel/${reservationId}`);
+      const response = await api.delete(`/member/reservation/cancel/${reservationId}`);
+  
       if (response.data.success) {
         const updatedReservations = get().userReservations.filter(r => r.id !== reservationId);
         set({ userReservations: updatedReservations, isLoading: false });
+        return response.data;
+      } else {
+        throw new Error(response.data.message || "취소 요청이 실패했습니다.");
       }
-      return response.data;
     } catch (error) {
-      set({ error: error.message, isLoading: false });
+      console.error("예약 취소 중 오류 발생:", error.response || error);
+      set({ 
+        isLoading: false, 
+        error: error.response?.data?.message || error.message || "상담 예약 취소 중 오류가 발생했습니다." 
+      });
+      throw error;
     }
   },
+
+
   calculateDday
 }));
 

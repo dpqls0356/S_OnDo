@@ -64,7 +64,7 @@ export const useAuthStore = create(
         }
       },
       checkAuth: async () => {
-        console.log("hello?")
+        // console.log("hello?")
         try {
           const response = await api.get("/member/me", {
             withCredentials: true,
@@ -89,11 +89,13 @@ export const useAuthStore = create(
             { id, password },
             { withCredentials: true }
           );
-          console.log(response.data);
           if (response.data.success) {
-            console.log("==================")
+            const info = await api.get("/counselor/mypage",{
+              withCredentials:true
+            });
+            console.log(info);
             set({
-              user:id,
+              user:info.data.data.counselor,
               role: "COUNSELOR",
               accessToken: response.data.data.token.accessToken,
               refreshToken: response.data.data.token.refreshToken,
