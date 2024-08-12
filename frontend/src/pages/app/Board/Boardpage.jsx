@@ -7,27 +7,26 @@ import create from "./../../../assets/images/new.png";
 import filter from "./../../../assets/images/filter.png";
 import search from "./../../../assets/images/search.png";
 
-
 const Boardpage = () => {
   const nav = useNavigate();
   const boardListRef = useRef();
-  const boardToggleSortBy = useRef();
-  
+  const text = useRef(null);
+
   const onClickCreate = () => {
-    // 게시글 생성으로 이동w
+    // 게시글 생성으로 이동
     nav("/member/board/create");
   };
 
-  const text = useRef(null);
-  const onClickSearch = async (e) => {
-    if(boardListRef.current){
-      boardListRef.current.trigerUpdateBoard(text.current.value);
+  const onClickSearch = (e) => {
+    e.preventDefault(); // 폼 제출 방지
+    if (boardListRef.current) {
+      boardListRef.current.triggerUpdateBoard(text.current.value); // 메서드명 확인
     }
   };
 
   const onClickSort = () => {
-    if(boardListRef.current){
-      boardListRef.current.trigerToggleSortBy();
+    if (boardListRef.current) {
+      boardListRef.current.triggerToggleSortBy(); // 메서드명 확인
     }
   };
 
@@ -45,7 +44,7 @@ const Boardpage = () => {
 
         <div className="BoardSearch">
           <div>
-            <form>
+            <form onSubmit={onClickSearch}>
               <img
                 onClick={onClickSearch}
                 src={search}
@@ -64,7 +63,7 @@ const Boardpage = () => {
 
         <div className="BoardContentContainer">
           <div className="BoardContentList">
-            <BoardList ref={boardListRef}/>
+            <BoardList ref={boardListRef} />
           </div>
         </div>
 

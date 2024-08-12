@@ -37,6 +37,7 @@
     "require": "^2.4.20",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.12",
+    "sweetalert2": "^11.12.4",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

@@ -1,10 +1,10 @@
-.CounselorPageTop{
+.CounselorPageTop {
   display: flex;
   flex-direction: column;
   gap: 4vh;
 }
 
-.slick-active{
+.slick-active {
   /* position: absolute; */
   /* bottom: 40px; */
   /* position: absolute; */
@@ -18,7 +18,6 @@
 .CSCardFooter{
   float: left;
 } */
-
 
 .CounselorCard {
   position: relative;
@@ -41,10 +40,15 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
+  height: 100%;
 }
 
 .CounselorInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: left;
+  height: 100%;
 }
 
 #MP-CounselorName {
@@ -67,7 +71,7 @@
   background-color: white;
 }
 
-.OptionSelect{
+.OptionSelect {
   background-color: #fff9e9;
   height: 40px;
   width: 80%;
@@ -79,29 +83,30 @@
   justify-content: center;
   gap: 12%;
 }
-.OptionSelect > div > input{
+.OptionSelect > div > input {
   accent-color: black;
 }
 
-.FilterSearch{
+.FilterSearch {
   display: flex;
   width: 80%;
   margin: 0 auto;
   justify-content: space-between;
   align-items: center;
 }
-.FS-Filter{
-  background-color: #E4E8E8;
+.FS-Filter {
+  background-color: #e4e8e8;
   border: 3px rgb(139, 139, 139) solid;
   padding: 5px 10px;
   font-size: 90%;
   border-radius: 30px;
+  margin-right: 10px;
 }
 .FS-Filter * {
   text-align: center;
 }
 
-.FS-Search{
+.FS-Search {
   display: flex;
   background-color: white;
   padding: 5px 10px;
@@ -109,17 +114,16 @@
   border-radius: 30px;
   width: 75%;
 }
-.FS-Search> input{
+.FS-Search > input {
   width: 100%;
 }
-.FS-Search > input:focus{
+.FS-Search > input:focus {
   outline: none;
 }
-.FS-Search > input::placeholder{
+.FS-Search > input::placeholder {
   padding-left: 2px;
   font-size: 80%;
 }
-
 
 /* 캐러셀 중앙 버튼 */
 .carousel_pagination {

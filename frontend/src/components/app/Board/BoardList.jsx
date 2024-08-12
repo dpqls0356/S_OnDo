@@ -1,8 +1,14 @@
-import React, { useEffect, useState, useMemo, useImperativeHandle, forwardRef } from 'react';
-import axios from 'axios';
-import './BoardList.css';
-import useBoardStore from '../../../store/app/useBoardStore';
-import Board from './Board';
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
+import axios from "axios";
+import "./BoardList.css";
+import useBoardStore from "../../../store/app/useBoardStore";
+import Board from "./Board";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -12,16 +18,25 @@ const api = axios.create({
 });
 
 const BoardList = forwardRef((props, ref) => {
-  const { boards, setSearchBoards, setBoards, pagination, updatePagination, toggleBoards } = useBoardStore();
+  const {
+    boards,
+    setSearchBoards,
+    setBoards,
+    pagination,
+    updatePagination,
+    toggleBoards,
+  } = useBoardStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const updateBoard = async (text) => {
     try {
       if (text === "") {
         setIsLoading(true);
         try {
-          const res = await api.get(`/board/list?page=${pagination.currentPage}&size=10`);
+          const res = await api.get(
+            `/board/list?page=${pagination.currentPage}&size=10`
+          );
           if (res.data && res.data.data) {
             setBoards(res.data.data);
           } else {
@@ -49,20 +64,22 @@ const BoardList = forwardRef((props, ref) => {
   };
 
   const toggleSortBy = async () => {
-    setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
     await toggleBoards();
   };
 
   useImperativeHandle(ref, () => ({
-    trigerUpdateBoard: updateBoard,
-    trigerToggleSortBy: toggleSortBy,
+    triggerUpdateBoard: updateBoard,
+    triggerToggleSortBy: toggleSortBy,
   }));
 
   useEffect(() => {
     const fetchBoards = async () => {
       try {
         setIsLoading(true);
-        const res = await api.get(`/board/list?page=${pagination.currentPage}&size=10`);
+        const res = await api.get(
+          `/board/list?page=${pagination.currentPage}&size=10`
+        );
         if (res.data && res.data.data && res.data.data.boardList) {
           setBoards(res.data.data);
           updatePagination({
@@ -89,7 +106,7 @@ const BoardList = forwardRef((props, ref) => {
     const sorted = [...boards].sort((a, b) => {
       const dateA = new Date(a.created_at || a.createdAt || 0);
       const dateB = new Date(b.created_at || b.createdAt || 0);
-      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
     });
     return sorted;
   }, [boards, sortOrder]);
@@ -138,13 +155,14 @@ const BoardList = forwardRef((props, ref) => {
           </div>
         </>
       ) : (
-        <p>게시글이 없습니다. (boards: {JSON.stringify(boards)})</p>
+        <p>게시글이 없습니다.</p>
+        // <p>게시글이 없습니다. (boards: {JSON.stringify(boards)})</p>
       )}
     </div>
   );
 });
 
 // 컴포넌트에 displayName 설정
-BoardList.displayName = 'BoardList';
+BoardList.displayName = "BoardList";
 
 export default BoardList;
