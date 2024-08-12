@@ -60,6 +60,7 @@ const SearchFilter = ({
   </div>
 );
 
+<<<<<<< HEAD
 const CounselorCard = ({
   reservations,
   counselors,
@@ -70,18 +71,32 @@ const CounselorCard = ({
   const [searchField, setSearchField] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const { displayGender, calculateDday } = useCounselorStore();
+=======
+const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange }) => {
+  const nav = useNavigate()
+  const [selectedGender, setSelectedGender] = useState('전체');
+  const [searchField, setSearchField] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const { displayGender, calculateDday, calculateExactDateTime } = useCounselorStore();
+>>>>>>> 4d8163c90c5f284c69903c90d263e86e6524cef8
 
   const sortedReservations = useMemo(() => {
-    return [...reservations].sort((a, b) => {
+    return reservations
+    .filter(reservation => {
+      const { hoursPassed } = calculateExactDateTime(reservation.reservationDate);
+      return hoursPassed < 1; // 1시간 이상 지나지 않은 예약만 포함
+    })
+    .sort((a, b) => {
       const ddayA = calculateDday(a.reservationDate);
       const ddayB = calculateDday(b.reservationDate);
-      if (ddayA === "D-day") return -1;
-      if (ddayB === "D-day") return 1;
-      if (ddayA === "상담완료" && ddayB !== "상담완료") return 1;
-      if (ddayB === "상담완료" && ddayA !== "상담완료") return -1;
-      return parseInt(ddayA.slice(2)) - parseInt(ddayB.slice(2));
+      if (ddayA === 'D-day') return -1;
+      if (ddayB === 'D-day') return 1;
+      if (ddayA.startsWith('D-') && ddayB.startsWith('D-')) {
+        return parseInt(ddayA.slice(2)) - parseInt(ddayB.slice(2));
+      }
+      return 0;
     });
-  }, [reservations, calculateDday]);
+}, [reservations, calculateDday, calculateExactDateTime]);
 
   const filteredCounselors = useMemo(() => {
     return counselors.filter((counselor) => {
