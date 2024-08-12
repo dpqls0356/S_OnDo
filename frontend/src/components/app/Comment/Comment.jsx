@@ -55,20 +55,6 @@ const Comment = ({ comment }) => {
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
           <div>
-<<<<<<< HEAD
-            <p
-              onClick={onClickCommentEdit}
-              style={{ cursor: "pointer", fontSize: "13px" }}
-            >
-              수정
-            </p>
-            <p
-              onClick={onClickCommentDelete}
-              style={{ cursor: "pointer", fontSize: "13px" }}
-            >
-              삭제
-            </p>
-=======
             <div>
               <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '12px' }}>
                 수정
@@ -77,7 +63,6 @@ const Comment = ({ comment }) => {
                 삭제
               </p>
             </div>
->>>>>>> 4d8163c90c5f284c69903c90d263e86e6524cef8
           </div>
         )}
       </div>
@@ -120,15 +105,6 @@ const Comment = ({ comment }) => {
           <div id="CommentContent">{comment.content}</div>
         )}
         <p id="CommentCreateDate">
-<<<<<<< HEAD
-          {new Date(comment.createdAt).toLocaleString("ko-KR", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            // seconds: '2-digit' 이거 빼면 초는 안 나옴
-=======
           {/* UTC 세팅 - toLocaleString() 단지 표시 목적으로만 시간대를 변환할 뿐, 실제 저장된 시간 값은 변경X */}
           {new Date(comment.createdAt).toLocaleString('ko-KR', {
             year: 'numeric',
@@ -138,7 +114,6 @@ const Comment = ({ comment }) => {
             minute: '2-digit',
             // seconds: '2-digit', 이거 빼면 초는 안 나옴
             timeZone: 'Asia/Seoul' // 이 옵션을 추가하여 확실하게 한국 시간으로 표시
->>>>>>> 4d8163c90c5f284c69903c90d263e86e6524cef8
           })}
         </p>
       </div>
