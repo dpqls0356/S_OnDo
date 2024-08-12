@@ -6,6 +6,25 @@ import BoardList from "../../../components/app/Board/BoardList";
 import create from "./../../../assets/images/new.png";
 import filter from "./../../../assets/images/filter.png";
 import search from "./../../../assets/images/search.png";
+import styled from "styled-components"
+
+const CreateBtn = styled.div`
+  width: 40px;
+  height: 40px;
+  background-color:#6AC0B4 ;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+`
+const SortBtn = styled.div`
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 const Boardpage = () => {
   const nav = useNavigate();
@@ -31,34 +50,46 @@ const Boardpage = () => {
   };
 
   return (
-    <div className="scroll">
+    <div className="scroll board-padding">
       <div className="BoardScroll">
         <div className="BoardHeader">
           <p>온도의 소통공간</p>
-          <img
+          <CreateBtn
             onClick={onClickCreate}
             src={create}
             style={{ cursor: "pointer" }}
-          />
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+</svg>
+
+          </CreateBtn>
         </div>
 
         <div className="BoardSearch">
           <div>
             <form onSubmit={onClickSearch}>
-              <img
-                onClick={onClickSearch}
-                src={search}
-                style={{ cursor: "pointer" }}
-              />
               <input type="text" ref={text} placeholder="검색" />
             </form>
+                          <div
+                onClick={onClickSearch}
+                style={{ cursor: "pointer" }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            </div>
           </div>
 
-          <img
+          <SortBtn
             onClick={onClickSort}
-            src={filter}
             style={{ cursor: "pointer" }}
-          />
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+</svg>
+
+          </SortBtn>
         </div>
 
         <div className="BoardContentContainer">
