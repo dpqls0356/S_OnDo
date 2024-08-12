@@ -102,9 +102,16 @@ const UserInfoComponent = ({ memberInfo }) => {
     console.log(memberInfo);
     getReservationHistory();
   }, [page, memberId]);
+  
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
+    // UTC 날짜를 한국 시간대로 변환
+    const date = new Date(dateString + 'Z'); // 'Z'를 추가하여 UTC임을 명시
+    const koreaDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    
+    // YYYY-MM-DD 형식으로 포맷팅
+    return koreaDate.getFullYear() + '-' + 
+           String(koreaDate.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(koreaDate.getDate()).padStart(2, '0');
   };
 
   const getReservationHistory = async () => {

@@ -46,10 +46,18 @@ const CounselorList = () => {
   return (
     <div className="scroll">
       <div className="CL-header">
-        <img onClick={onClickBack} style={{ cursor: "pointer" }} src={back} alt="Back" />
-        <p>상담예약내역</p>
+        <div>
+          <img
+            onClick={onClickBack}
+            style={{ cursor: "pointer" }}
+            src={back}
+            alt="Back"
+          />
+        </div>
+        <div>상담예약내역</div>
         <div onClick={onClickSort} style={{ cursor: "pointer" }}>
-          <img src={sort} alt="Sort" />
+          {/* <img src={sort} alt="Sort" /> */}
+          <span>{sortOrder === "asc" ? "오름차순" : "내림차순"}</span>
           <span>{sortOrder === "asc" ? "오름차순" : "내림차순"}</span>
         </div>
       </div>

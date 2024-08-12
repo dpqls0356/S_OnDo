@@ -8,7 +8,6 @@ import DisabledInput from "../../../components/app/DisabledInput.jsx";
 import DeleteAccountModal from "../../../components/app/DeleteAccountModal.jsx";
 
 import camera from "./../../../assets/images/camera.png";
-import profile from "./../../../assets/images/ic_user.png";
 
 import "./MyUpdatepage.css";
 
