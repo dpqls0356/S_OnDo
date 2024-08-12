@@ -22,11 +22,11 @@
 }
 
 .MypageCenter {
-  padding: 60px;
-  padding-top: 10vh;
+  padding: 40px 60px 0px 60px;
+  /* padding-top: 10vh; */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   gap: 20px;
   /* justify-content: space-around; */
   flex-grow: 1; /* 중심 콘텐츠가 남은 공간을 채우도록 설정 */

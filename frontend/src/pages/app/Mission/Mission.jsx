@@ -146,7 +146,7 @@ function MissionPage() {
 
   return (
     <div className='scroll'>
-      <div className="container mx-auto p-4" id='MissionPage'>
+      <div className="container  p-4" id='MissionPage'>
         {error && <div className="text-center text-red-500 mb-4">{error}</div>}
         <div className='charCard'  onClick={handleCharCardClick} style={{ cursor: 'pointer' }}>
           <img src={char} alt="Character"/>
@@ -161,12 +161,14 @@ function MissionPage() {
             </div>
           </div>
         </div>
-        
-        <h2 className="text-2xl font-bold my-4">특별 미션</h2>
-        {renderMissions('typical')}
-
-        <h2 className="text-2xl font-bold my-4">데일리 미션</h2>
-        {renderMissions('daily')}
+        <div style={{width:"100%" ,padding:"0px 10px"}}>
+          <h2 className="text-2xl font-bold my-4">특별 미션</h2>
+          {renderMissions('typical')}
+        </div>
+        <div  style={{width:"100%" ,padding:"0px 10px"}}>
+          <h2 className="text-2xl font-bold my-4">데일리 미션</h2>
+          {renderMissions('daily')}
+        </div>
       </div>
     </div>
   );
