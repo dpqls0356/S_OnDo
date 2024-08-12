@@ -15,6 +15,20 @@ import axios from "axios";
 const Homepage = () => {
   const renderCount = useRef(0);
   const [character, setCharacter] = useState({});
+  const [characterState, setCharacterState] = useState({
+    text: "안녕",
+    img: characterImg,
+  });
+  const [previousNum, setPreviousNum] = useState(null);
+
+  const CharacterStateList = [
+    { text: "안녕", imgNum: 1 },
+    { text: "행복한 하루 보내길 바라!", imgNum: 1 },
+    {
+      text: "나를 위해 도토리를 모아줘서 고마워 ~ 너 덕분에 따뜻해",
+      imgNum: 1,
+    },
+  ];
 
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -44,29 +58,35 @@ const Homepage = () => {
     return nav("/member/chat");
   };
 
+  const changeCharacterStatus = () => {
+    let num;
+    do {
+      num = Math.floor(Math.random() * CharacterStateList.length);
+    } while (num === previousNum);
+
+    let img = characterImg; // 현재 imgNum에 상관없이 동일한 이미지 사용
+    setCharacterState({ text: CharacterStateList[num].text, img: img });
+    setPreviousNum(num); // 이전에 선택한 숫자를 저장
+
+    console.log("========character click=========");
+    console.log(characterState.img + " " + characterState.text);
+  };
+
   return (
     <div className="homepage">
-      {/* <img src={back_img} /> */}
       <div className="home-content">
         <div className="charaInfo">
           <p id="char-name">{character.name}</p>
           <p id="char-level">Lv.{character.level}</p>
         </div>
-        {/* <div className="ballon">
-        <p>안녕</p>
-        </div> */}
         <div id="thermometer">
           <Thermometer character={character} />
         </div>
         <div className="Char-ballon">
-          <Balloon
-            text={
-              "혹시 내 도토리 봤어?? 분명 아까까지만 해도 옆에 있었던 것 같은데..."
-            }
-          />
+          <Balloon text={characterState.text} />
         </div>
-        <div className="Char-daram">
-          <img style={{ height: 170 }} src={characterImg} />
+        <div onClick={changeCharacterStatus} className="Char-daram">
+          <img style={{ height: 170 }} src={characterState.img} />
         </div>
         <div className="chatBtn">
           <img onClick={onClickChat} src={chat} style={{ cursor: "pointer" }} />
