@@ -48,6 +48,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* 상담사 */}
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
         <Route path="/counselor/join" element={<CounselorJoin/>}></Route>
         <Route path="/counselor" element={<CounselorLayout />}>
@@ -61,8 +62,11 @@ function App() {
           <Route path="info/member" element={<HomeUserInfoComponent />}></Route>
           <Route path="*" element={<CounselorNotFoundPage />} />
         </Route>
+        {/* 상담방 */}
         {/* counseling으로 이동할 때 sessionId값을 가지고 이동해야함 -> sessionId로 token발급을 하고 그걸 바탕으로 session에 참가 가능 */}
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
+        {/* 유저 */}
+        <Route path="/" element={<MobileLayout/>}/>
         <Route path="/member" element={<MobileLayout />}>
           <Route path="main" element={<Logopage />} />
           <Route path="login" element={<Loginpage />} />

@@ -74,6 +74,9 @@ export default function MobileLayout() {
 
   useEffect(() => {
     const checkAuthentication = () => {
+      if(location.pathname.startsWith("/")&&!role){
+      navigate("/member/main");
+      }
       // 유저가 아닌데 유저만 입장 가능한 URI에 접근하는 경우
       if (
         !location.pathname.startsWith("/member/main") &&
