@@ -63,7 +63,7 @@ const Thermometer = ({ character }) => {
   useEffect(() => {
     setConfigInfo();
     setTemperature();
-  }, [config]);
+  }, []);
 
   return (
     <div id="wrapper">
