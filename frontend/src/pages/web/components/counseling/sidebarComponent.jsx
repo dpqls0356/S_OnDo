@@ -8,8 +8,8 @@ import styled, { css } from "styled-components";
 import UserInfoComponent from "./userInfoComponent";
 import Chat from "./chat";
 import useAuthStore from "../../../../store/app/authStore";
-import axios from 'axios';
-import { Client } from '@stomp/stompjs';
+import axios from "axios";
+import { Client } from "@stomp/stompjs";
 
 const Tag = styled.div`
   position: absolute;
@@ -29,7 +29,7 @@ const Tag = styled.div`
 
 const View = styled.div`
   width: ${({ hidden }) => (hidden ? "0" : "35%")};
-  height:100%;
+  height: 100vh;
   background-color: #fae6e6;
   display: flex;
   flex-direction: column;
@@ -52,8 +52,8 @@ const Header = styled.div`
 
 const Col = styled.div`
   background-color: inherit;
-  font-size: 20px;
-  padding: 5px 20px;
+  font-size: 15px;
+  padding: 5px 10px;
   cursor: pointer;
   ${({ active }) =>
     active &&
@@ -64,6 +64,10 @@ const Col = styled.div`
     `}
 `;
 
+const Row = styled.div`
+  flex: 1;
+  overflow-y: hidden;
+`;
 let stompClient = null;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const SideBar = ({ memberInfo }) => {
@@ -78,7 +82,8 @@ const SideBar = ({ memberInfo }) => {
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const sessionId = localStorage.getItem("sessionId");
   const { user } = useAuthStore((state) => ({
-    user: state.user}));
+    user: state.user,
+  }));
   const chatRef = useRef(null);
   const userInfoRef = useRef(null);
 
@@ -114,27 +119,27 @@ const SideBar = ({ memberInfo }) => {
 
   const connect = () => {
     if (!sessionId) {
-      alert('Please enter a Session ID.');
+      alert("Please enter a Session ID.");
       return;
     }
 
     //서버로 올릴 때 wss로 변경해야함
     stompClient = new Client({
-      brokerURL: 'ws://localhost:8080/gs-guide-websocket',
+      brokerURL: "ws://localhost:8080/gs-guide-websocket",
     });
 
     stompClient.onConnect = (frame) => {
       setIsConnected(true);
-      console.log('Connected: ' + frame);
+      console.log("Connected: " + frame);
     };
 
     stompClient.onWebSocketError = (error) => {
-      console.error('Error with websocket', error);
+      console.error("Error with websocket", error);
     };
 
     stompClient.onStompError = (frame) => {
-      console.error('Broker reported error: ' + frame.headers['message']);
-      console.error('Additional details: ' + frame.body);
+      console.error("Broker reported error: " + frame.headers["message"]);
+      console.error("Additional details: " + frame.body);
     };
 
     stompClient.activate();
@@ -148,7 +153,7 @@ const SideBar = ({ memberInfo }) => {
       showHistory(fetchedMessages);
       setIsHistoryLoading(false);
     } catch (error) {
-      console.error('Error fetching history:', error);
+      console.error("Error fetching history:", error);
       setIsHistoryLoading(false);
     }
   };
@@ -158,13 +163,13 @@ const SideBar = ({ memberInfo }) => {
       stompClient.deactivate();
     }
     setIsConnected(false);
-    console.log('Disconnected');
+    console.log("Disconnected");
   };
 
   const sendMessage = (messageContent) => {
-    if (stompClient !== null && messageContent.trim() !== '') {
+    if (stompClient !== null && messageContent.trim() !== "") {
       stompClient.publish({
-        destination: '/app/chat',
+        destination: "/app/chat",
         body: JSON.stringify({
           sessionId: sessionId,
           from: user.name,
@@ -209,7 +214,7 @@ const SideBar = ({ memberInfo }) => {
         </Header>
         {role === "COUNSELOR" ? (
           <>
-            <div style={{ display: isChat ? "block" : "none" ,flex:1}}>
+            <Row style={{ display: isChat ? "block" : "none" }}>
               <Chat
                 ref={chatRef}
                 isConnected={isConnected}
@@ -218,20 +223,22 @@ const SideBar = ({ memberInfo }) => {
                 connect={connect}
                 disconnect={disconnect}
               />
-            </div>
-            <div style={{ display: !isChat ? "block" : "none" ,flex:1}}>
+            </Row>
+            <Row style={{ display: !isChat ? "block" : "none" }}>
               <UserInfoComponent ref={userInfoRef} memberInfo={memberInfo} />
-            </div>
+            </Row>
           </>
         ) : (
-          <Chat
-            ref={chatRef}
-            isConnected={isConnected}
-            messages={messages}
-            sendMessage={sendMessage}
-            connect={connect}
-            disconnect={disconnect}
-          />
+          <Row>
+            <Chat
+              ref={chatRef}
+              isConnected={isConnected}
+              messages={messages}
+              sendMessage={sendMessage}
+              connect={connect}
+              disconnect={disconnect}
+            />
+          </Row>
         )}
       </View>
       <Tag hidden={hidden} onClick={showSideBar}>

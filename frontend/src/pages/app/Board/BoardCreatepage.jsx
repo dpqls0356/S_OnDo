@@ -7,6 +7,7 @@ import Footer from "../../../components/app/Footer";
 import useBoardStore from "../../../store/app/BoardStore";
 import useAuthStore from "../../../store/app/authStore";
 import LoadingSpinner from "../../../components/app/Spinner";
+import Swal from "sweetalert2";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -14,6 +15,39 @@ const api = axios.create({
   baseURL: baseUrl,
   withCredentials: true,
 });
+
+const alertModeration = async (text) => {
+  const alertMessage = await extractType(text);
+
+  Swal.fire({
+    icon: "warning",
+    title: "부적절한 표현이 감지되었습니다.",
+    text: `${alertMessage}`,
+    width: "70%",
+  });
+};
+
+const extractType = async (text) => {
+  const type = text.split(" ")[0].slice(0, -1);
+  const score = text.split(" ")[1].slice(2, 4);
+
+  switch (type) {
+    case "TOXICITY":
+      return `유해성(${type}) ${score}점`;
+    case "SEVERE_TOXICITY":
+      return `심각한 유해성(${type}) ${score}점`;
+    case "INSULT":
+      return `모욕(${type}) ${score}점`;
+    case "PROFANITY":
+      return `욕설(${type}) ${score}점`;
+    case "IDENTITY_ATTACK":
+      return `인신공격(${type}) ${score}점`;
+    case "THREAT":
+      return `위협(${type}) ${score}점`;
+    default:
+      return "오류";
+  }
+};
 
 const BoardCreatepage = () => {
   const nav = useNavigate();
@@ -80,9 +114,7 @@ const BoardCreatepage = () => {
         resetCurrentBoard();
         nav("/member/board/" + response.data.data.id);
       } else if (response.status === 200) {
-        console.log(response.data.message);
-
-        alert("부적절한 표현이 감지되었습니다. " + response.data.message);
+        await alertModeration(response.data.message);
       } else {
         console.error("예상치 못한 응답:", response.status);
       }
