@@ -146,6 +146,10 @@ public class ChatbotServiceImpl implements ChatbotService{
 	@Override
 	public List<ChattingReadDto> getChatbotChattings(Long memberId, int page, int size) {
 		List<ChatbotChatting> chatbotChattings = chatbotRepository.getChattingsByPage(memberId, page, size);
+		if(chatbotChattings == null || chatbotChattings.isEmpty()){
+			return new ArrayList<>();
+		}
+
 		return chatbotChattings.stream()
 			.map(a -> ChattingReadDto.builder()
 					.sender(a.getSender())
