@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -116,11 +117,9 @@ class AlarmBatchConfig extends DefaultBatchConfiguration {
 			CompleteMission cm =  completeMissionRepository.findByMemberId(memberId);
 			List<Mission> missions;
 			try{
-				missions = cm.getMissions();
-				if (missions.size() > 6) {
-					missions.subList(3, missions.size()).clear();
-				}
-				System.out.println(missions);
+				missions = cm.getMissions().stream()
+					.skip(Math.max(0, cm.getMissions().size() - 9))
+					.collect(Collectors.toList());
 			}
 			catch(Exception e){
 				missions = new ArrayList<>();
