@@ -48,13 +48,13 @@ const Comment = ({ comment }) => {
   return (
     <div className="CommentCard">
       <div className="CommentWriter">
-        <div style={{ width: '65%' }}>
+        <div style={{ width: '50%' }}>
           <img src={profile} alt="프로필" />
           <p>{comment.member_name}</p>
         </div>
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
-          <div>
+          <div style={{width:"50%", display:"flex",justifyContent:"flex-end"}}>
             <div>
               <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '12px' }}>
                 수정
