@@ -8,10 +8,11 @@ import CommentList from "../../../components/app/Comment/CommentList";
 import Button from "../../../components/app/Button";
 import axios from "axios";
 import calendar from "./../../../assets/images/calendar.png";
-import profile from "./../../../assets/images/test.png";
 import commentbtn from "./../../../assets/images/send.png";
 import LoadingSpinner from "../../../components/app/Spinner";
 import back from "./../../../assets/images/back.png";
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const BoardDetailPage = () => {
   const { articleId } = useParams();
@@ -174,7 +175,14 @@ const BoardDetailPage = () => {
 
             <div className="DetailDate">
               <div className="DetailUserInfo">
-                <img src={profile} alt="프로필" />
+              <img 
+                  src={user.profileUrl || mainProfileUrl} 
+                  alt={`${user.name} 프로필`} 
+                  onError={(e) => {
+                    e.target.onerror = null; 
+                    e.target.src = mainProfileUrl;
+                  }}
+                />
                 <p>{currentViewArticle.member_name}</p>
               </div>
               <div className="DetailCreate">

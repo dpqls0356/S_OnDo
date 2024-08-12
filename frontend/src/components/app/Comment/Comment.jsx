@@ -1,8 +1,9 @@
 import "./Comment.css";
 import { useState } from "react";
-import profile from "./../../../assets/images/test.png";
 import useCommentStore from "../../../store/app/CommentStore";
 import useAuthStore from "../../../store/app/authStore";
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const Comment = ({ comment }) => {
   const { deleteComment, updateComment } = useCommentStore();
@@ -49,7 +50,14 @@ const Comment = ({ comment }) => {
     <div className="CommentCard">
       <div className="CommentWriter">
         <div style={{ width: '65%' }}>
-          <img src={profile} alt="프로필" />
+        <img 
+            src={user.profileUrl || mainProfileUrl} 
+            alt={`${comment.member_name} 프로필`} 
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = mainProfileUrl;
+            }}
+          />
           <p>{comment.member_name}</p>
         </div>
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
