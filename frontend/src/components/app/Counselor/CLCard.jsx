@@ -52,14 +52,13 @@ const CLCard = ({
       className="CLCard"
       style={is_complete ? { backgroundColor: "rgb(238, 237, 237)" } : null}
     >
-      {showCancelButton && (
-        <div className="cancel-button" onClick={handleCancelClick}>
-          취소
-        </div>
-      )}
-      {reservationDate && (
-        <p id="CL-Date">{new Date(reservationDate).toLocaleDateString()}</p>
-      )}
+        {reservationDate && (
+          <div style={{display:"flex", alignItems:"center"}}>
+            <p className="CS-Date">{new Date(reservationDate).toLocaleDateString().slice(0, -1)}</p>
+            <p style={{margin:"0px 10px"}}>|</p>
+            <p className="CS-Date">{reservationDate.split('T')[1].slice(0, 5)}</p>
+          </div>
+        )}
       <div className="CLCardIn">
         <img src={profile} alt="Profile" />
         <div className="CSInfo">
@@ -68,29 +67,33 @@ const CLCard = ({
           </p>
           <p id="CS-Counselorfield">{field}</p>
           <p id="CS-Counselorintro">{intro}</p>
-        </div>
-      </div>
-
-      {reservId && (
-        <Link to={`/member/counseling/${reservId}/detail`}>
-          <div
-            style={{
-              textAlign: "right",
-              fontSize: "80%",
-              color: "black",
-              textDecoration: "underline",
-            }}
-          >
-            더보기
-          </div>
+          {reservId && (
+            <Link to={`/member/counseling/${reservId}/detail`}>
+              <div
+                style={{
+                  textAlign: "right",
+                  fontSize: "80%",
+                  color: "black",
+                  textDecoration: "underline",
+                }}
+              >
+                더보기
+              </div>
         </Link>
       )}
 
+        </div>
+      </div>
       <div className="CS-CardFooter">
+        {showCancelButton && (
+          <div className="cancel-button" onClick={handleCancelClick}>
+            취소
+          </div>
+        )}
         <div>
           {dday && (
             <button onClick={handleCounselingClick} id="DdayBtn">
-              <div>{dday}</div>
+              {counselingUrl?<div>입장</div>:<div>{dday}</div>}
             </button>
           )}
         </div>

@@ -44,7 +44,11 @@ const CardCarousel = ({
     <>
       <div style={{ padding: "3% 5%" }}>
         {reservationDate && (
-          <p id="CS-Date">{new Date(reservationDate).toLocaleDateString()}</p>
+          <div style={{display:"flex", alignItems:"center"}}>
+            <p className="CS-Date">{new Date(reservationDate).toLocaleDateString().slice(0, -1)}</p>
+            <p style={{margin:"0px 10px"}}>|</p>
+            <p className="CS-Date">{reservationDate.split('T')[1].slice(0, 5)}</p>
+          </div>
         )}
         <div className="ConSelorCardIn">
           <div>

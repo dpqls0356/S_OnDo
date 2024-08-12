@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route,useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route,useLocation,Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
 
@@ -48,6 +48,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="/member/main" />} />
         {/* 상담사 */}
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
         <Route path="/counselor/join" element={<CounselorJoin/>}></Route>
@@ -66,7 +67,6 @@ function App() {
         {/* counseling으로 이동할 때 sessionId값을 가지고 이동해야함 -> sessionId로 token발급을 하고 그걸 바탕으로 session에 참가 가능 */}
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
         {/* 유저 */}
-        <Route path="/" element={<MobileLayout/>}/>
         <Route path="/member" element={<MobileLayout />}>
           <Route path="main" element={<Logopage />} />
           <Route path="login" element={<Loginpage />} />
