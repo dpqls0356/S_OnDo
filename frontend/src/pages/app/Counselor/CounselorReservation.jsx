@@ -7,7 +7,10 @@ import Calendar from '../../../components/app/Calendar';
 import TimeSlots from '../../../components/app/TimeSlots';
 import BorderImg from '../../../assets/images/구분선.png';
 import back from '../../../assets/images/back.png';
-
+import styled from 'styled-components';
+const FullWidthCLCard = styled(CLCard)`
+  width: 100%;
+`;
 const Reservation = () => {
   const { counselorId } = useParams();
   const nav = useNavigate();
@@ -66,10 +69,12 @@ const Reservation = () => {
     <div className="flex flex-col h-screen overflow-hidden">
       <div className='scroll'>
         <div className="flex-grow">
-          <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-4" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
-            <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} alt="Back" />
+          <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-5" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
+            <div style={{marginBottom:"10px"}}>
+              <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} alt="Back" />
+            </div>
             {selectedCounselor && (
-              <CLCard
+              <FullWidthCLCard style={{width:"100%"}}
                 name={selectedCounselor.name}
                 gender={displayGender(selectedCounselor.gender)}
                 field={selectedCounselor.field}
@@ -78,8 +83,7 @@ const Reservation = () => {
                 showCancelButton={false}  // 취소 버튼을 숨기기
               />
             )}
-            <br />
-            <h1 className="text-2xl font-bold mb-4">예약일지</h1>
+            <h1 className="text-2xl font-bold mb-4 mt-7">예약일지</h1>
             <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
             <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
           </div>

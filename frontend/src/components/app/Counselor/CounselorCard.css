@@ -31,15 +31,15 @@
   border-radius: 20px;
 }
 
-#CS-Date {
-  font-size: 130%;
+.CS-Date {
+  font-size: 120%;
 }
 
 .ConSelorCardIn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  /* gap: 20px; */
   height: 100%;
 }
 
