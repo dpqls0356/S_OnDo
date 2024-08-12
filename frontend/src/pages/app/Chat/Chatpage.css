@@ -133,3 +133,17 @@
   height: 24px;
   cursor: pointer;
 }
+
+
+.loading-indicator {
+  text-align: center;
+  padding: 10px;
+  color: #888;
+}
+
+.date-separator {
+  text-align: center;
+  padding: 10px 0;
+  color: #888;
+  font-size: 12px;
+}
