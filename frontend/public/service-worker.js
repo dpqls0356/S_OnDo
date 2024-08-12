@@ -10,7 +10,7 @@ self.addEventListener('install', pEvent => {
 
 // 3. Activation - 업데이트
 self.addEventListener('activate', pEvent => {
-console.log('서비스워커 동작(activation) 시작됨!');
+    console.log('서비스워커 동작(activation) 시작됨!');
 });
 
 // 4. fetch - 데이터 요청
