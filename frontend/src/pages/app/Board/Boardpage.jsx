@@ -1,41 +1,38 @@
 import "./Boardpage.css";
 
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-// 뿌린 BoadList 컴포넌트 밑에 return 해서 표시
 import BoardList from "../../../components/app/Board/BoardList";
 import create from "./../../../assets/images/new.png";
 import filter from "./../../../assets/images/filter.png";
 import search from "./../../../assets/images/search.png";
 
-
 const Boardpage = () => {
   const nav = useNavigate();
   const boardListRef = useRef();
-  const boardToggleSortBy = useRef();
-  
+  const text = useRef(null);
+
   const onClickCreate = () => {
-    // 게시글 생성으로 이동w
+    // 게시글 생성으로 이동
     nav("/member/board/create");
   };
 
-  const text = useRef(null);
-  const onClickSearch = async (e) => {
-    if(boardListRef.current){
-      boardListRef.current.trigerUpdateBoard(text.current.value);
+  const onClickSearch = (e) => {
+    e.preventDefault(); // 폼 제출 방지
+    if (boardListRef.current) {
+      boardListRef.current.triggerUpdateBoard(text.current.value); // 메서드명 확인
     }
   };
 
   const onClickSort = () => {
-    if(boardListRef.current){
-      boardListRef.current.trigerToggleSortBy();
+    if (boardListRef.current) {
+      boardListRef.current.triggerToggleSortBy(); // 메서드명 확인
     }
   };
 
   return (
     <div className="scroll">
       <div className="BoardScroll">
-        {/* 헤더 */}
         <div className="BoardHeader">
           <p>온도의 소통공간</p>
           <img
@@ -45,10 +42,9 @@ const Boardpage = () => {
           />
         </div>
 
-        {/* 검색바 */}
         <div className="BoardSearch">
           <div>
-            <form>
+            <form onSubmit={onClickSearch}>
               <img
                 onClick={onClickSearch}
                 src={search}
@@ -65,10 +61,9 @@ const Boardpage = () => {
           />
         </div>
 
-        {/* 게시글 목록 컨테이너 */}
         <div className="BoardContentContainer">
           <div className="BoardContentList">
-            <BoardList ref={boardListRef}/>
+            <BoardList ref={boardListRef} />
           </div>
         </div>
 

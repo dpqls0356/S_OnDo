@@ -24,7 +24,7 @@ const useBoardStore = create((set, get) => ({
     title: "",
     content: "",
     member_name: "",
-    image: null,
+    imageUrl: null,
   },
 
   // 상태 추가
@@ -34,16 +34,12 @@ const useBoardStore = create((set, get) => ({
 
   // 게시글 목록 설정 (API 응답 구조에 맞게 수정)
   setBoards: (response) => {
-    // console.log('setBoards 호출됨:', response); // 이 부분을 추가
+    // console.log('setBoards 호출됨:', response); // 디버깅용 로그
     set((state) => {
-      if (
-        response &&
-        response.boardList &&
-        Array.isArray(response.boardList.content)
-      ) {
+      if (response && response.boardList && Array.isArray(response.boardList.content)) {
         // console.log('새로운 boards 상태:', response.boardList.content);
         return {
-          boards: [...response.boardList.content],
+          boards: response.boardList.content,
           pagination: {
             currentPage: response.boardList.number || 0,
             totalPages: response.boardList.totalPages || 0,
@@ -51,7 +47,7 @@ const useBoardStore = create((set, get) => ({
           },
         };
       }
-      console.log("유효하지 않은 응답, 빈 배열 반환"); // 이 부분을 추가
+      console.log("유효하지 않은 응답, 빈 배열 반환");
       return { boards: [] };
     });
   },
@@ -77,7 +73,7 @@ const useBoardStore = create((set, get) => ({
         title: "",
         content: "",
         member_name: "",
-        image: null,
+        imageUrl: null,
       },
     });
   },
@@ -96,7 +92,7 @@ const useBoardStore = create((set, get) => ({
         title: "",
         content: "",
         member_name: "",
-        image: null,
+        imageUrl: null,
       },
     });
   },
@@ -124,7 +120,7 @@ const useBoardStore = create((set, get) => ({
         title: "",
         content: "",
         member_name: "",
-        image: null,
+        imageUrl: null,
       },
     }),
 
