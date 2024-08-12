@@ -5,10 +5,11 @@ import styled from "styled-components";
 import axios from "axios";
 
 const View = styled.div`
-  padding: 0px 20px 10px 20px;
+  padding: 0px 20px 20px 20px;
   width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
+  flex:1;
   flex-direction: column;
 `;
 
