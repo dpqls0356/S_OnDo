@@ -45,14 +45,15 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  width: 100%;
+  width: 50%;
   padding: 10px;
   margin-bottom: 15px;
-  background-color: #f0f0f0;
+  background-color: transparent;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  align-self: center;
 }
 
 .ChatScreen {
@@ -75,7 +76,8 @@
   align-self: flex-start;
 }
 
-.user-message, .bot-message {
+.user-message,
+.bot-message {
   padding: 10px 15px;
   border-radius: 20px;
   font-size: 14px;
@@ -83,12 +85,12 @@
 }
 
 .user-message {
-  background-color: #BDECEB;
+  background-color: #bdeceb;
   color: #000000;
 }
 
 .bot-message {
-  background-color: #FAE6E6;
+  background-color: #fae6e6;
   color: #000000;
 }
 
@@ -104,7 +106,6 @@
 
 .ChatboxWrapper {
   padding: 10px;
-
 }
 
 .Chatbox {
