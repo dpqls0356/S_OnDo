@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useImperativeHandle,
-  forwardRef,
-} from "react";
+import { useEffect, useState, useMemo, useImperativeHandle, forwardRef} from "react";
 import axios from "axios";
 import "./BoardList.css";
 import useBoardStore from "../../../store/app/useBoardStore";

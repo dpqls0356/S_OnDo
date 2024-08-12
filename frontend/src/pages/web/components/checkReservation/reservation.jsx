@@ -122,16 +122,20 @@ function Reservation({ reservation }) {
   };
 
   const changeDateFormat = () => {
-    let date = new Date(reservation.reservationDate);
-
-    let year = date.getFullYear();
-    let month = String(date.getMonth() + 1).padStart(2, "0");
-    let day = String(date.getDate()).padStart(2, "0");
-    let hours = String(date.getHours()).padStart(2, "0");
-    let minutes = String(date.getMinutes()).padStart(2, "0");
-
+    // UTC 시간을 파싱
+    let utcDate = new Date(reservation.reservationDate + 'Z');
+    
+    // UTC 시간을 한국 시간으로 변환
+    let krDate = new Date(utcDate.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    
+    let year = krDate.getFullYear();
+    let month = String(krDate.getMonth() + 1).padStart(2, "0");
+    let day = String(krDate.getDate()).padStart(2, "0");
+    let hours = String(krDate.getHours()).padStart(2, "0");
+    let minutes = String(krDate.getMinutes()).padStart(2, "0");
+  
     let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
-
+  
     setReservationFormattedDate(formattedDate);
   };
 
@@ -172,9 +176,10 @@ function Reservation({ reservation }) {
     calculateAge(reservation.memberBirthday);
   }, []);
 
+  // 시간 차이 계산
   const calculateTimeRemaining = () => {
     let today = new Date();
-    let reservationDate = new Date(reservation.reservationDate);
+    let reservationDate = new Date(reservation.reservationDate+ 'Z'); // 'Z'를 추가하여 UTC임을 명시
     let timeDifference = reservationDate - today;
     let hoursDifference = timeDifference / (1000 * 60 * 60);
     let minutesDifference = timeDifference / (1000 * 60);

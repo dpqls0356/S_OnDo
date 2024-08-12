@@ -6,7 +6,6 @@ import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
 
 import camera from "./../../../assets/images/camera.png";
-import profile from "./../../../assets/images/ic_user.png";
 import useAuthStore from "../../../store/app/authStore.js";
 import "./Join.css";
 
