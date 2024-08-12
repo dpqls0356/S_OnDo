@@ -1,14 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/CounselorStore';
-import CounselorCard from '../../../components/app/Counselor/CounselorCard';
-import CounselorListCard from '../../../components/app/Counselor/CounselorListCard';
-import './CounselorMain.css';
+import { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
+import useCounselorStore from "../../../store/app/CounselorStore";
+import CounselorCard from "../../../components/app/Counselor/CounselorCard";
+import CounselorListCard from "../../../components/app/Counselor/CounselorListCard";
+import "./CounselorMain.css";
 
 const CounselorMain = () => {
   const { userReservations, counselors, fetchUserReservations, fetchCounselors, displayGender, calculateDday, calculateExactDateTime } = useCounselorStore();
   const [filteredCounselors, setFilteredCounselors] = useState([]);
 
+  const center = {
+    display: filteredCounselors == 0 ? "flex" : "none",
+    justifyContent: filteredCounselors == 0 ? "center" : "none",
+    alignItems: filteredCounselors == 0 ? "center" : "none",
+    height: filteredCounselors == 0 ? "40vh" : "none",
+  };
   useEffect(() => {
     fetchUserReservations();
     fetchCounselors();
@@ -42,9 +48,9 @@ const CounselorMain = () => {
 
   return (
     <div className="scroll">
-      <div className='CounselorMain'>
+      <div className="CounselorMain">
         <div className="CounselorCardBack">
-          <div className='MP-RCard'>
+          <div className="MP-RCard">
             <CounselorCard
               reservations={sortedReservations}
               counselors={counselors}
@@ -52,10 +58,19 @@ const CounselorMain = () => {
             />
           </div>
         </div>
-        <div className='MP-CounselorList'>
+        <div className="MP-CounselorList">
           {filteredCounselors.length > 0 ? (
-            filteredCounselors.map(counselor => (
-              <Link key={counselor.id} to={`/member/counseling/reserve/${counselor.id}`} style={{textDecoration: "none", color: 'black'}}>
+            filteredCounselors.map((counselor) => (
+              <Link
+                key={counselor.id}
+                to={`/member/counseling/reserve/${counselor.id}`}
+                style={{
+                  textDecoration: "none",
+                  color: "black",
+                  marginBottom: "20px",
+                  display: "block",
+                }}
+              >
                 <CounselorListCard
                   name={counselor.name}
                   gender={displayGender(counselor.gender)}
