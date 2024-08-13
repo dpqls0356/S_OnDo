@@ -96,7 +96,7 @@ export const useAuthStore = create(
           });
           if (response.data.success) {
             console.log("checkAuth" + response);
-            set({ user: response.data.data.user });
+            set({ user: response.data.data.user, role: "USER" });
             return true;
           }
           set({ user: null });
