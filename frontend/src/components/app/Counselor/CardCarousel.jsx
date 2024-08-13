@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import profile from "./../../../assets/images/ic_user.png";
 import vector from "./../../../assets/images/Vector.png";
 import "./CardCarousel.css";
 import useCounselorStore from "../../../store/app/CounselorStore";
 import { useEffect } from "react";
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const CardCarousel = ({
   name,
@@ -13,7 +14,9 @@ const CardCarousel = ({
   intro,
   is_completed,
   reservId,
+  profileUrl,
   counselingUrl,
+
 }) => {
   const nav = useNavigate();
   const { calculateDday, displayGender } = useCounselorStore();
@@ -52,7 +55,14 @@ const CardCarousel = ({
         )}
         <div className="ConSelorCardIn">
           <div>
-            <img src={profile} alt="Profile" />
+          <img 
+            src={profileUrl || mainProfileUrl} 
+            alt={`${name} 상담사 프로필`} 
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = mainProfileUrl;
+            }}
+          />
           </div>
           <div className="CounselorInfo">
             <p id="MP-CounselorName">

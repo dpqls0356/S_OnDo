@@ -9,6 +9,7 @@ import useAuthStore from "../../store/app/authStore";
 import IncorrectAccessModal from "./components/incorrectAccessModal";
 import Centerpage from "./centerpage";
 
+
 const View = styled.div`
   width: 100vw;
   height: 100vh;
@@ -28,26 +29,55 @@ const HomeRight = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+// const Profile = styled.div`
+//   padding: 50px 0px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   & > .profile-img {
+//     width: 120px;
+//     height: 120px;
+//     & > svg {
+//       color: black;
+//       width: 100%;
+//       height: 100%;
+//     }
+//   }
+//   & > .username {
+//     color: black;
+//     margin-top: 10px;
+//     font-size: 25px;
+//   }
+// `;
+
 const Profile = styled.div`
   padding: 50px 0px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  & > .profile-img {
-    width: 120px;
-    height: 120px;
-    & > svg {
-      color: black;
-      width: 100%;
-      height: 100%;
-    }
+  
+  .profile-img-container {
+    width: 200px;
+    height: 200px;
+    border: 3px black solid;
+    background-color: #fff7f7;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-bottom: 20px; // 이미지와 이름 사이의 간격
   }
-  & > .username {
+  
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // 이미지가 컨테이너를 꽉 채우도록 함
+  }
+  
+  .username {
     color: black;
-    margin-top: 10px;
     font-size: 25px;
   }
 `;
+
 const StyledLink = styled(Link)`
   color: white;
   padding: 10px 20px;
@@ -68,12 +98,17 @@ const ChangeSpot = styled.div`
   width: 50%;
 `;
 
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
+
+
 function CounselorLayout() {
   const { role, user, counselorLogout, checkAuth } = useAuthStore((state) => ({
     role: state.role,
+    user: state.user,
     counselorLogout: state.counselorLogout,
     checkAuth: state.checkAuth,
   }));
+
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -118,31 +153,16 @@ function CounselorLayout() {
         </ChangeSpot>
       </HomeLeft>
       <HomeRight>
-        <Profile>
-          {false ? (
-            <div className="profile-img">
-              <img src="" alt="Profile" />
-            </div>
+      <Profile>
+        <div className="profile-img-container">
+          {user?.profileUrl ? (
+            <img className="profile-img" src={user.profileUrl} alt="프로필" />
           ) : (
-            <div className="profile-img">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="size-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                />
-              </svg>
-            </div>
+            <img className="profile-img" src={mainProfileUrl} alt="기본 프로필" />
           )}
-          <div className="username">김싸피 상담사님</div>
-        </Profile>
+        </div>
+        <div className="username">{user?.name} 상담사님</div>
+      </Profile>
         <Nav>
           <StyledLink to="">일정관리</StyledLink>
           <StyledLink to="daylist/상담사아이디">상담내역</StyledLink>
@@ -156,7 +176,7 @@ function CounselorLayout() {
       <IncorrectAccessModal
         isOpen={isModalOpen}
         closeModal={counselorCloseModal}
-      />
+      /> 
     </View>
   );
 }

@@ -4,9 +4,10 @@ import useAuthStore from "../../../store/app/authStore";
 import axios from "axios";
 import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
-import profile from "./../../../assets/images/test.png";
 import notice from "./../../../assets/images/notice.png";
 import "./Mypage.css";
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -72,7 +73,7 @@ const MyPage = () => {
         </div>
         <div className="UserCard">
           <img
-            src={user.profileUrl || profile}
+            src={user.profileUrl || mainProfileUrl}
             alt="Profile"
             style={{
               width: "100px",

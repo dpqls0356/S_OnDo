@@ -122,7 +122,7 @@ const UpdatePassword = () => {
       [
         JSON.stringify({
           password: PW.newPassword,
-          selfIntroduction: MyInfo.selfIntroduction,
+          selfIntroduction: "",
         }),
       ],
       { type: "application/json" }
