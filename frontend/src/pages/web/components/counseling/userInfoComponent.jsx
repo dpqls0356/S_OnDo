@@ -98,67 +98,54 @@ const UserInfoComponent = ({ memberInfo }) => {
   const memberId = memberInfo.memberId;
   const size = 10;
 
-  const [updateData, setUpdateData] = useState([]);
+  const [formData, setFormData] = useState([]);
 
-  useEffect(() => {
-    if (memberInfo && historyList.reservationId) {
-      const newUpdateData = historyList.reservationId.map((_, index) => ({
-        reservationId: historyList.reservationId[index] || "",
-        reservationDate: historyList.reservationDate[index] || "",
-        counselingReservationDetail: historyList.counselingReservationDetail[index] || "",
-        counsellingDetail: historyList.counsellingDetail[index] || "",
-      }));
+  const updateDetail = (reservId) => async () => {
+    const itemToUpdate = formData.find(
+      (item) => item.reservationId === reservId
+    );
 
-      setUpdateData(newUpdateData);
+    if (itemToUpdate) {
+      try {
+        const response = await axios.put(
+          `${baseUrl}/counselor/memberReservation`,
+          itemToUpdate,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        if (response.data.success) {
+          console.log("수정이 완료되었습니다. ");
+          alert("상담 내역 저장 완료");
+        }
+      } catch (error) {
+        console.log("상담내역 수정 시 오류가 발생했습니다.");
+      }
+    } else {
+      console.log("정보가 존재하지 않습니다.");
     }
-  }, [memberInfo, historyList]);
-
-  const handleInputChange = (field, index) => (e) => {
-    const newValue = e.target.value;
-
-    setUpdateData((prevUpdateData) => {
-      const updatedData = [...prevUpdateData];
-      updatedData[index] = {
-        ...updatedData[index],
-        [field]: newValue,
-      };
-      return updatedData;
-    });
   };
 
-  const handleSaveClick = (index) => () => {
-    // 예를 들어, formData가 배열일 때
-    setUpdateData((prevFormData) => {
-      const updatedFormData = [...prevFormData];
-      updatedFormData[index] = { ...updateData[index] }; // 특정 인덱스의 데이터를 업데이트
-      return updatedFormData;
-    });
-
-    // 디버깅을 위한 로그
-    console.log("Updated Data:", updateData[index]);
-  };
-
-  useEffect(() => {
-    console.log("========================유저정보컴포넌트===========================");
-    console.log(memberInfo);
-    getReservationHistory();
-  }, [page, memberId]);
-  
   const formatDate = (dateString) => {
-    // UTC 날짜를 한국 시간대로 변환
-    const date = new Date(dateString + 'Z'); // 'Z'를 추가하여 UTC임을 명시
-    const koreaDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-    
-    // YYYY-MM-DD 형식으로 포맷팅
-    return koreaDate.getFullYear() + '-' + 
-           String(koreaDate.getMonth() + 1).padStart(2, '0') + '-' + 
-           String(koreaDate.getDate()).padStart(2, '0');
+    const date = new Date(dateString + "Z");
+    const koreaDate = new Date(
+      date.toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    );
+
+    return (
+      koreaDate.getFullYear() +
+      "-" +
+      String(koreaDate.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(koreaDate.getDate()).padStart(2, "0")
+    );
   };
 
   const getReservationHistory = async () => {
-    console.log(
-      "=========================getReservationHistory==========================" + memberId
-    );
     try {
       const response = await axios.get(
         `${baseUrl}/counselor/memberReservation?memberId=${memberId}&page=${page}&size=${size}`,
@@ -170,13 +157,49 @@ const UserInfoComponent = ({ memberInfo }) => {
         }
       );
       const newHistories = response.data.data.reservations;
-      setHistoryList([...newHistories]); //초기화 후 newHistory
+      setHistoryList((prevHistories) => [...prevHistories, ...newHistories]); // 기존 데이터에 추가
+
       if (newHistories.length < size) {
         setHasMore(false);
       }
     } catch (e) {
       console.log(e);
     }
+  };
+
+  useEffect(() => {
+    if (page > 0) {
+      getReservationHistory();
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (memberId) {
+      setPage(0);
+      setHistoryList([]);
+      setHasMore(true);
+      getReservationHistory();
+    }
+  }, [memberId]);
+
+  useEffect(() => {
+    const updatedFormData = historyList.map((item) => ({
+      reservationId: item.reservationId || "",
+      reservationDate: item.reservationDate || "",
+      counselingReservationDetail: item.counselingReservationDetail || "",
+      counsellingDetail: item.counsellingDetail || "",
+    }));
+
+    setFormData(updatedFormData);
+  }, [historyList]);
+
+  const handleInputChange = (field, reservId) => (event) => {
+    const newValue = event.target.value;
+    setFormData((prevFormData) =>
+      prevFormData.map((item) =>
+        item.reservationId === reservId ? { ...item, [field]: newValue } : item
+      )
+    );
   };
 
   const lastHistoryElementRef = useCallback(
@@ -208,7 +231,10 @@ const UserInfoComponent = ({ memberInfo }) => {
                 backgroundColor: "white",
               }}
             >
-              <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faUser} />
+              <FontAwesomeIcon
+                style={{ width: "100%", height: "100%" }}
+                icon={faUser}
+              />
             </div>
           )}
         </Col>
@@ -222,41 +248,32 @@ const UserInfoComponent = ({ memberInfo }) => {
       </UserProfile>
       <History>
         {historyList.map((history, index) => {
-          if (historyList.length === index + 1) {
-            `  `;
-            return (
-              <CounselingMemo key={index} ref={lastHistoryElementRef}>
-                <p>{formatDate(history.reservationDate)}</p>
-                <p>{history.counselingReservationDetail}</p>
-                <div className="memo">
-                  <div>
-                    <p>{history.counsellingDetail}</p>
-                  </div>
-                  <div>
-                    <button>수정</button>
-                  </div>
+          const lastElement = historyList.length === index + 1;
+          return (
+            <CounselingMemo
+              key={index}
+              ref={lastElement ? lastHistoryElementRef : null}
+            >
+              <p>{formatDate(history.reservationDate)}</p>
+              <p>{history.counselingReservationDetail}</p>
+              <div className="memo">
+                <div>
+                  <textarea
+                    onChange={handleInputChange(
+                      "counsellingDetail",
+                      history.reservationId
+                    )}
+                    value={formData[index]?.counsellingDetail}
+                  />
                 </div>
-              </CounselingMemo>
-            );
-          } else {
-            return (
-              <CounselingMemo key={index}>
-                <p>{formatDate(history.reservationDate)}</p>
-                <p>{history.counselingReservationDetail}</p>
-                <div className="memo">
-                  <div>
-                    <textarea
-                      value={updateData[index].counsellingDetail}
-                      onChange={handleInputChange("counsellingDetail", index)}
-                    />
-                  </div>
-                  <div>
-                    <button onClick={handleSaveClick(index)}>수정</button>
-                  </div>
+                <div>
+                  <button onClick={updateDetail(history.reservationId)}>
+                    수정
+                  </button>
                 </div>
-              </CounselingMemo>
-            );
-          }
+              </div>
+            </CounselingMemo>
+          );
         })}
       </History>
     </View>
