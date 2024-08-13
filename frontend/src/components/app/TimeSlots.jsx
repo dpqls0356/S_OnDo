@@ -1,18 +1,27 @@
 import React from 'react';
+import styled from "styled-components"
 
+const Button = styled.div`
+  text-align: center;
+   padding: 0.5rem; /* py-2와 동일한 패딩 */
+  border-radius: 0.375rem; /* rounded 클래스에 해당하는 border-radius */
+   background-color: ${({ selected }) => (selected ? '#4c8478' : '#FFFFFF')}; /* bg-blue-500 : bg-white */
+  color: ${({ selected }) => (selected ? '#ffffff' : 'inherit')}; /* text-white : 기본 텍스트 색상 */
+
+`
 const TimeSlots = ({ selectedTime, setSelectedTime }) => {
   const handleTimeClick = (time) => {
     setSelectedTime(time);
   };
 
   const renderTimeButton = (time) => (
-    <button 
+    <Button 
       key={time} 
-      className={`py-2 ${selectedTime === time ? 'bg-blue-500 text-white' : 'bg-white'} rounded`}
+         selected={selectedTime === time}
       onClick={() => handleTimeClick(time)}
     >
       {time}
-    </button>
+    </Button>
   );
 
   return (
