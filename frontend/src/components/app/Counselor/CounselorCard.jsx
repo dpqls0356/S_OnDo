@@ -60,6 +60,7 @@ const SearchFilter = ({
   </div>
 );
 
+
 const CounselorCard = ({ reservations, counselors, onFilteredCounselorsChange }) => {
   const nav = useNavigate();
   const [selectedGender, setSelectedGender] = useState('전체');
