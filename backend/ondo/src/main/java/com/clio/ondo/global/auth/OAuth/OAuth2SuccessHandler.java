@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtTokenProvider tokenProvider;
-	private static final String URI = "http://localhost:5173/member/oauth-callback";
+	private static final String URI = "https://i11c110.p.ssafy.io/member/oauth-callback";
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
