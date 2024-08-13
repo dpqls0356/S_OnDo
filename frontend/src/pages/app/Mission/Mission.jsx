@@ -5,7 +5,6 @@ import useMissionStore from "../../../store/app/MissionStore";
 import MissionButton from "../../../components/app/MissionButton";
 import char from "./../../../assets/images/test_chara.png";
 import "./Mission.css";
-import ButtonComponent from "./Button";
 // 테스트 데이터 -> 완료 잘 체크되는거 확인 완료
 // const dummyMissions = {
 //   typical: [
