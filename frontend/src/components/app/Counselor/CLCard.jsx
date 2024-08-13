@@ -42,19 +42,22 @@ const CLCard = ({
       try {
         await cancelReservation(reservId);
         alert("상담 예약이 취소되었습니다.");
-        window.location.reload(); // 페이지 새로고침
+        window.location.reload();
       } catch (error) {
         alert(error.message || "상담 예약 취소 중 오류가 발생했습니다.");
       }
     }
   };
-
+  
   return (
-    <div
-      className="CLCard"
-      style={is_complete ? { backgroundColor: "rgb(238, 237, 237)" } : null}
-    >
-      {showCancelButton && (
+    <div className="CLCard"  style={
+      isExpired 
+        ? { backgroundColor: "rgba(199, 199, 199, 0.31)" } 
+        : is_complete 
+          ? { backgroundColor: "rgb(238, 237, 237)" } 
+          : null
+    }>
+      {!isExpired && (
         <div className="cancel-button" onClick={handleCancelClick}>
           취소
         </div>
@@ -97,9 +100,11 @@ const CLCard = ({
 
       <div className="CS-CardFooter">
         <div>
-          {dday && (
-            <button onClick={handleCounselingClick} id="DdayBtn">
-              <div>{dday}</div>
+          {!isExpired && dday && (
+            <button onClick={handleCounselingClick} id='DdayBtn'>
+              <div>
+                {dday}
+              </div>
             </button>
           )}
         </div>
