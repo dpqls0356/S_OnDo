@@ -77,7 +77,7 @@ const EditTimeTableComponent = ({ handleEditState, SaveDataState }) => {
      <td
       key={colIndex}
       onClick={() => handleCellClick(rowIndex, colIndex)}
-      style={{ backgroundColor: isSelected(rowIndex, colIndex) ? '#FFF5DA' : 'transparent' }}
+      style={{ backgroundColor: isSelected(rowIndex, colIndex) ? '#D6D6D6' : 'transparent' }}
     >
       {content}
     </td>
