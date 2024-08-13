@@ -62,11 +62,12 @@ public class CounselorServiceImpl implements CounselorService {
 
     @Override
     public TokenDto login(CounselorLoginRequestDto loginRequestDto) throws AuthenticationException {
+
+        System.out.println(loginRequestDto.getPassword());
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getId(), loginRequestDto.getPassword());
-
+        System.out.println(authToken);
         Authentication authentication = counselorAuthenticationProvider.authenticate(authToken);
-
         String accessToken = jwtTokenProvider.generateCounselorAccessToken(authentication);
         String refreshToken = jwtTokenProvider.generateCounselorRefreshToken(authentication);
 

@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import axios from "axios";
+import { faAppStoreIos } from "@fortawesome/free-brands-svg-icons";
 
 const View = styled.div`
   padding: 0px 20px 0px 20px;
@@ -105,6 +106,38 @@ const HomeUserInfoComponent = () => {
   const memberId = location.state.memberId;
   const size = 10;
 
+  const [formData, setFormData] = useState([
+    {
+      reservationId: "",
+      reservationDate: "",
+      counselingReservationDetail: "",
+      counsellingDetail: "",
+    },
+  ]);
+
+  const updateDetail = (reservId) => async (event) => {
+    const itemToUpdate = formData.find((item) => item.reservationId === reservId);
+
+    if (itemToUpdate) {
+      try {
+        const response = await axios.put(`${baseUrl}/counselor/memberReservation`, itemToUpdate, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+
+        if (response.data.success) {
+          console.log("수정이 완료되었습니다. ");
+        }
+      } catch (error) {
+        console.log("상담내역 수정 시 오류가 발생했습니다.");
+      }
+    } else {
+      console.log("정보가 존재하지 않습니다.");
+    }
+  };
+
   useEffect(() => {
     getMemberInfo();
     getReservationHistory();
@@ -117,15 +150,12 @@ const HomeUserInfoComponent = () => {
 
   const getMemberInfo = async () => {
     try {
-      const response = await axios.get(
-        `${baseUrl}/counselor/getMember?memberId=${memberId}`,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.get(`${baseUrl}/counselor/getMember?memberId=${memberId}`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = response.data.data.member;
       setMemberInfo({
         birthDate: data.birthDate,
@@ -150,13 +180,45 @@ const HomeUserInfoComponent = () => {
         }
       );
       const newHistories = response.data.data.reservations;
-      setHistoryList((prev) => [...prev, ...newHistories]);
+      console.log("새히스토리", newHistories);
+      setHistoryList([...newHistories]); //초기화 먼저 한 후 넣기
       if (newHistories.length < size) {
         setHasMore(false); // 더 이상 로드할 데이터가 없을 때
       }
     } catch (e) {
       console.log(e);
     }
+  };
+
+  useEffect(() => {
+    console.log("히스토리 리스트:", historyList);
+
+    // historyList의 길이에 맞게 formData 업데이트
+    const updatedFormData = historyList.map((item) => ({
+      reservationId: item.reservationId || "",
+      reservationDate: item.reservationDate || "",
+      counselingReservationDetail: item.counselingReservationDetail || "",
+      counsellingDetail: item.counsellingDetail || "",
+    }));
+
+    setFormData(updatedFormData);
+  }, [historyList]); // historyList가 변경될 때마다 실행됩니다.
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
+  const handleInputChange = (field, index) => (event) => {
+    const newValue = event.target.value;
+    setFormData((prevFormData) => {
+      // 해당 인덱스의 formData를 복사하고 field 값을 업데이트
+      const updatedFormData = [...prevFormData];
+      updatedFormData[index] = {
+        ...updatedFormData[index],
+        [field]: newValue,
+      };
+      return updatedFormData;
+    });
   };
 
   const lastHistoryElementRef = useCallback(
@@ -194,10 +256,7 @@ const HomeUserInfoComponent = () => {
                 backgroundColor: "white",
               }}
             >
-              <FontAwesomeIcon
-                style={{ width: "100%", height: "100%" }}
-                icon={faUser}
-              />
+              <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faUser} />
             </div>
           )}
         </Col>
@@ -212,6 +271,7 @@ const HomeUserInfoComponent = () => {
       <History>
         {historyList.map((history, index) => {
           if (historyList.length === index + 1) {
+            //마지막 component
             return (
               <CounselingMemo key={index} ref={lastHistoryElementRef}>
                 <p>{formatDate(history.reservationDate)}</p>
@@ -233,10 +293,13 @@ const HomeUserInfoComponent = () => {
                 <p>{history.counselingReservationDetail}</p>
                 <div className="memo">
                   <div>
-                    <textarea>{history.counsellingDetail}</textarea>
+                    <textarea
+                      onChange={handleInputChange("counsellingDetail", index)}
+                      value={formData[index]?.counsellingDetail}
+                    />
                   </div>
                   <div>
-                    <button>수정</button>
+                    <button onClick={updateDetail(history.reservationId)}>수정</button>
                   </div>
                 </div>
               </CounselingMemo>
