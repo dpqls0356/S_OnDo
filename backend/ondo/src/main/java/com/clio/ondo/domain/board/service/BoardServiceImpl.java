@@ -19,7 +19,6 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,25 +52,28 @@ public class BoardServiceImpl implements BoardService {
   }
 
   @Override
-  public Board saveArticle(Board board,List<MultipartFile> images) throws IOException {
+  public Board saveArticle(Board board) throws IOException {
     List<FilteringResponse> titleResponse = moderationService.inspectBadWord(board.getTitle());
-    if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
+    if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.6){
       throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
     }
 
     List<FilteringResponse> contentResponse = moderationService.inspectBadWord(board.getContent());
-    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.6){
       throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
     }
 
-    if( !images.isEmpty()){
+    return boardRepository.save(board);
+  }
+
+  @Override
+  public Board saveArticleImage(ObjectId boardId, MultipartFile file, Long memberId) throws IOException {
+    Optional<Board> boardOptional = boardRepository.findById(boardId);
+    Board board = boardOptional.get();
+    if(file.isEmpty()){
       List<String> imageList=new ArrayList<>();
-      for(MultipartFile image:images){
-        if (!image.isEmpty()) {
-          String imageUrl = imageService.upload(image, "board");
-          imageList.add(imageUrl);
-        }
-      }
+      String imageUrl = imageService.upload(file, "board");
+      imageList.add(imageUrl);
       board.settingImageUrl(imageList);
     }
 
