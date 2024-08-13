@@ -13,7 +13,7 @@ const View = styled.div`
   display: flex;
   align-items: center;
   background-color: white;
-  border: 3px solid #f7867a;
+  border: 3px solid #506c64;
   border-radius: 10px;
   margin-bottom: 30px;
   position: relative;
@@ -45,7 +45,7 @@ const Col = styled.div`
 `;
 
 const CreateCounselingRoomBtn = styled.button`
-  background-color: #f7867a;
+  background-color: #506c64;
   height: 50%;
   width: 90%;
   display: flex;
@@ -65,7 +65,7 @@ const MemberImg = styled.div`
 `;
 
 const CancelReservationBtn = styled.button`
-  background-color: #f7867a;
+  background-color: #506c64;
   position: absolute;
   color: white;
   width: 20px;
@@ -80,7 +80,8 @@ const CancelReservationBtn = styled.button`
 `;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === "production" ? "" : baseUrl;
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -97,45 +98,47 @@ function Reservation({ reservation }) {
   const createCounselingRoom = async (event) => {
     event.stopPropagation();
     // if (timeRemaining === 0) {
-      try {
-        if(!localStorage.getItem("sessionId")){
-            const sessionResponse = await axios.post(
-            `${baseUrl}/counseling/sessions`,
-            { reservationId: reservation.reservationId },
-            {
-              headers: { "Content-Type": "application/json" },
-              withCredentials: true, // default를 true로 설정
-            }
-            );
-              localStorage.setItem("sessionId",sessionResponse.data.data.session_id);
-        } 
-        navigate("/counselingroom", {
-          state: {
-            reservationId: reservation.reservationId,
-            memberId: reservation.memberId,
-          },
-        });
-      } catch (error) {
-        console.error("Error creating counseling room:", error);
+    try {
+      if (!localStorage.getItem("sessionId")) {
+        const sessionResponse = await axios.post(
+          `${baseUrl}/counseling/sessions`,
+          { reservationId: reservation.reservationId },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true, // default를 true로 설정
+          }
+        );
+        localStorage.setItem("sessionId", sessionResponse.data.data.session_id);
       }
+      navigate("/counselingroom", {
+        state: {
+          reservationId: reservation.reservationId,
+          memberId: reservation.memberId,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating counseling room:", error);
+    }
     // } else return;
   };
 
   const changeDateFormat = () => {
     // UTC 시간을 파싱
-    let utcDate = new Date(reservation.reservationDate + 'Z');
-    
+    let utcDate = new Date(reservation.reservationDate + "Z");
+
     // UTC 시간을 한국 시간으로 변환
-    let krDate = new Date(utcDate.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-    
+    let krDate = new Date(
+      utcDate.toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    );
+
     let year = krDate.getFullYear();
     let month = String(krDate.getMonth() + 1).padStart(2, "0");
     let day = String(krDate.getDate()).padStart(2, "0");
     let hours = String(krDate.getHours()).padStart(2, "0");
     let minutes = String(krDate.getMinutes()).padStart(2, "0");
-  
+
     let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
-  
+
     setReservationFormattedDate(formattedDate);
   };
 
@@ -166,7 +169,10 @@ function Reservation({ reservation }) {
         alert("예약 취소에 실패했습니다.");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "상담 예약 취소 중 오류가 발생했습니다.");
+      alert(
+        error.response?.data?.message ||
+          "상담 예약 취소 중 오류가 발생했습니다."
+      );
     }
   };
 
@@ -179,7 +185,7 @@ function Reservation({ reservation }) {
   // 시간 차이 계산
   const calculateTimeRemaining = () => {
     let today = new Date();
-    let reservationDate = new Date(reservation.reservationDate+ 'Z'); // 'Z'를 추가하여 UTC임을 명시
+    let reservationDate = new Date(reservation.reservationDate + "Z"); // 'Z'를 추가하여 UTC임을 명시
     let timeDifference = reservationDate - today;
     let hoursDifference = timeDifference / (1000 * 60 * 60);
     let minutesDifference = timeDifference / (1000 * 60);
@@ -199,7 +205,10 @@ function Reservation({ reservation }) {
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     setAge(age);
@@ -243,8 +252,10 @@ function Reservation({ reservation }) {
         <div>상담일: {reservationFormattedDate}</div>
       </Col>
       <Col>
-        <CreateCounselingRoomBtn onClick={createCounselingRoom}>입장</CreateCounselingRoomBtn>
-        {/* {timeRemaining >= 0 ? (
+        {/* <CreateCounselingRoomBtn onClick={createCounselingRoom}>
+          입장
+        </CreateCounselingRoomBtn> */}
+        {timeRemaining >= 0 ? (
           <CreateCounselingRoomBtn onClick={createCounselingRoom}>
             {timeRemaining > 1
               ? `D-${Math.floor(timeRemaining)}`
@@ -252,7 +263,7 @@ function Reservation({ reservation }) {
                 ? `입장`
                 : `D-day`}
           </CreateCounselingRoomBtn>
-        ) : null} */}
+        ) : null}
       </Col>
       {timeRemaining > 0 ? (
         <CancelReservationBtn onClick={handleCancelClick}>
