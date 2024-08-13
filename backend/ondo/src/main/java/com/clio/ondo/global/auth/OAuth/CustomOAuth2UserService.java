@@ -2,7 +2,6 @@ package com.clio.ondo.global.auth.OAuth;
 
 import java.util.Map;
 
-import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -10,8 +9,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.repository.CharacterRepository;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
+import com.clio.ondo.domain.mission.service.MissionService;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
+    private final CharacterRepository characterRepository;
+    private final MissionService missionService;
 
     @Override
     @Transactional
@@ -39,9 +44,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new MemberPrincipalDetails(member, oAuth2UserAttributes, userNameAttributeName);
     }
 
-    private Member getOrSave(OAuth2UserInfo userInfo) {
+    @Transactional
+    public Member getOrSave(OAuth2UserInfo userInfo) {
         Member member = memberRepository.findByEmail(userInfo.getEmail()).orElseGet(userInfo::toEntity);
         member.setDefaultPasswordIfNotSet();
+        Character character = member.getCharacter();
+        characterRepository.save(character);
+        missionService.createTodayMission(member.getId());
         return memberRepository.save(member);
     }
+
 }
