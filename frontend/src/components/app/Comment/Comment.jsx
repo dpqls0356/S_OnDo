@@ -49,12 +49,12 @@ const Comment = ({ comment }) => {
   return (
     <div className="CommentCard">
       <div className="CommentWriter">
-        <div style={{ width: '65%' }}>
-        <img 
-            src={user.profileUrl || mainProfileUrl} 
-            alt={`${comment.member_name} 프로필`} 
+        <div style={{ width: '50%' }}>
+        <img
+            src={user.profileUrl || mainProfileUrl}
+            alt={`${comment.member_name} 프로필`}
             onError={(e) => {
-              e.target.onerror = null; 
+              e.target.onerror = null;
               e.target.src = mainProfileUrl;
             }}
           />
@@ -62,7 +62,7 @@ const Comment = ({ comment }) => {
         </div>
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
-          <div>
+          <div style={{width:"50%", display:"flex",justifyContent:"flex-end"}}>
             <div>
               <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '12px' }}>
                 수정

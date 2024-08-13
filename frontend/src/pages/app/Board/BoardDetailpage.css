@@ -4,7 +4,7 @@
   border: 1px black solid;
   width: 85%;
   margin: 0 auto;
-  margin-top: 10%;
+  margin-top: 5%;
   border-radius: 20px;
   background-color: white;
   box-shadow: -4px 6px 0px 0px #001429;
@@ -80,7 +80,7 @@
 }
 
 #comment-line {
-  border-left: 6px dashed #6abfb4;
+  border-left: 4px dashed #6abfb4;
   height: auto;
   /* height: 500px; */
   /* left: 50%; */
