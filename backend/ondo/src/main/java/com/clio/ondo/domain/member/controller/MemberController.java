@@ -3,7 +3,6 @@ package com.clio.ondo.domain.member.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.service.CounselorService;
 import com.clio.ondo.domain.member.model.Gender;
@@ -145,7 +145,7 @@ public class MemberController {
 
 	@PostMapping("/join")
 	public ResponseEntity<ResponseVO<Void>> join(
-		@RequestPart("joinRequestDto") JoinRequestDto joinRequestDto,
+		@RequestPart(value = "joinRequestDto") @RequestBody JoinRequestDto joinRequestDto,
 		@RequestPart("profileImage") MultipartFile profileImage){
 		try {
 			joinRequestDto.setPassword(passwordEncoder.encode(joinRequestDto.getPassword()));
