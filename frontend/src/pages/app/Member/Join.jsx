@@ -8,15 +8,16 @@ import Input from "../../../components/app/Input";
 import camera from "./../../../assets/images/camera.png";
 import useAuthStore from "../../../store/app/authStore.js";
 import "./Join.css";
+import { faTrophy } from "@fortawesome/free-solid-svg-icons";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const JoinForm = () => {
   const nav = useNavigate();
-  
+
   const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   const { error, success } = useJoinStore();
-  
+
   const login = useAuthStore((state) => state.login);
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
@@ -102,12 +103,8 @@ const JoinForm = () => {
     const userFormData = new FormData();
     userFormData.append("joinRequestDto", userData);
 
-    if (selectedFile) {
-      userFormData.append("profileImage", selectedFile);
-    } else {
-      const emptyFile = new Blob([""], { type: "image/jpeg" });
-      userFormData.append("profileImage", emptyFile, "empty.jpg");
-    }
+    const emptyFile = new Blob([""], { type: "image/jpeg" });
+    userFormData.append("profileImage", emptyFile, "empty.jpg");
 
     try {
       const response = await axios.post(
@@ -122,14 +119,35 @@ const JoinForm = () => {
 
       if (response.data.success) {
         alert("회원가입이 완료되었습니다.");
-        // 회원가입 후에 캐릭터 생성 페이지로 넘어가야 해서
-        console.log("login")
+
+        try {
+          if (selectedFile) {
+            const imgFormData = new FormData();
+            imgFormData.append("data", selectedFile);
+
+            const imageRespose = await axios.post(
+              `${baseUrl}/image/upload/MemberProfile/${response.data.data.id}`,
+              imgFormData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+
+            if (imageRespose.data.success) {
+            } else {
+              alert(response.data.message || "이미지 등록에 실패했습니다.");
+            }
+          } else {
+            alert(response.data.message || "회원가입에 실패했습니다.");
+          }
+        } catch {}
+        console.log("login");
         await login(formData.email, formData.password);
-        console.log("정보 가져오기")
+        console.log("정보 가져오기");
         await checkAuth();
         nav("/member/story");
-      } else {
-        alert(response.data.message || "회원가입에 실패했습니다.");
       }
     } catch (error) {
       alert(
