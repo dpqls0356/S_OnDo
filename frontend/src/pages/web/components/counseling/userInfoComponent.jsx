@@ -9,7 +9,7 @@ const View = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex:1;
+  flex: 1;
   flex-direction: column;
 `;
 
@@ -97,18 +97,68 @@ const UserInfoComponent = ({ memberInfo }) => {
   const observer = useRef();
   const memberId = memberInfo.memberId;
   const size = 10;
+
+  const [updateData, setUpdateData] = useState([]);
+
+  useEffect(() => {
+    if (memberInfo && historyList.reservationId) {
+      const newUpdateData = historyList.reservationId.map((_, index) => ({
+        reservationId: historyList.reservationId[index] || "",
+        reservationDate: historyList.reservationDate[index] || "",
+        counselingReservationDetail: historyList.counselingReservationDetail[index] || "",
+        counsellingDetail: historyList.counsellingDetail[index] || "",
+      }));
+
+      setUpdateData(newUpdateData);
+    }
+  }, [memberInfo, historyList]);
+
+  const handleInputChange = (field, index) => (e) => {
+    const newValue = e.target.value;
+
+    setUpdateData((prevUpdateData) => {
+      const updatedData = [...prevUpdateData];
+      updatedData[index] = {
+        ...updatedData[index],
+        [field]: newValue,
+      };
+      return updatedData;
+    });
+  };
+
+  const handleSaveClick = (index) => () => {
+    // 예를 들어, formData가 배열일 때
+    setUpdateData((prevFormData) => {
+      const updatedFormData = [...prevFormData];
+      updatedFormData[index] = { ...updateData[index] }; // 특정 인덱스의 데이터를 업데이트
+      return updatedFormData;
+    });
+
+    // 디버깅을 위한 로그
+    console.log("Updated Data:", updateData[index]);
+  };
+
   useEffect(() => {
     console.log("========================유저정보컴포넌트===========================");
     console.log(memberInfo);
     getReservationHistory();
   }, [page, memberId]);
+  
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
+    // UTC 날짜를 한국 시간대로 변환
+    const date = new Date(dateString + 'Z'); // 'Z'를 추가하여 UTC임을 명시
+    const koreaDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    
+    // YYYY-MM-DD 형식으로 포맷팅
+    return koreaDate.getFullYear() + '-' + 
+           String(koreaDate.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(koreaDate.getDate()).padStart(2, '0');
   };
 
   const getReservationHistory = async () => {
-    console.log("=========================getReservationHistory=========================="+memberId);
+    console.log(
+      "=========================getReservationHistory==========================" + memberId
+    );
     try {
       const response = await axios.get(
         `${baseUrl}/counselor/memberReservation?memberId=${memberId}&page=${page}&size=${size}`,
@@ -120,7 +170,7 @@ const UserInfoComponent = ({ memberInfo }) => {
         }
       );
       const newHistories = response.data.data.reservations;
-      setHistoryList((prev) => [...prev, ...newHistories]);
+      setHistoryList([...newHistories]); //초기화 후 newHistory
       if (newHistories.length < size) {
         setHasMore(false);
       }
@@ -158,10 +208,7 @@ const UserInfoComponent = ({ memberInfo }) => {
                 backgroundColor: "white",
               }}
             >
-              <FontAwesomeIcon
-                style={{ width: "100%", height: "100%" }}
-                icon={faUser}
-              />
+              <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faUser} />
             </div>
           )}
         </Col>
@@ -176,13 +223,14 @@ const UserInfoComponent = ({ memberInfo }) => {
       <History>
         {historyList.map((history, index) => {
           if (historyList.length === index + 1) {
+            `  `;
             return (
               <CounselingMemo key={index} ref={lastHistoryElementRef}>
                 <p>{formatDate(history.reservationDate)}</p>
                 <p>{history.counselingReservationDetail}</p>
                 <div className="memo">
                   <div>
-                    <textarea>{history.counsellingDetail}</textarea>
+                    <p>{history.counsellingDetail}</p>
                   </div>
                   <div>
                     <button>수정</button>
@@ -197,10 +245,13 @@ const UserInfoComponent = ({ memberInfo }) => {
                 <p>{history.counselingReservationDetail}</p>
                 <div className="memo">
                   <div>
-                    <textarea>{history.counsellingDetail}</textarea>
+                    <textarea
+                      value={updateData[index].counsellingDetail}
+                      onChange={handleInputChange("counsellingDetail", index)}
+                    />
                   </div>
                   <div>
-                    <button>수정</button>
+                    <button onClick={handleSaveClick(index)}>수정</button>
                   </div>
                 </div>
               </CounselingMemo>

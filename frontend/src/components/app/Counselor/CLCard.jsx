@@ -1,7 +1,8 @@
 import "./CLCard.css";
-import profile from "./../../../assets/images/ic_user.png";
 import { useNavigate, Link } from "react-router-dom";
 import useCounselorStore from "../../../store/app/CounselorStore";
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const CLCard = ({
   name,
@@ -12,6 +13,8 @@ const CLCard = ({
   is_complete,
   reservId,
   counselingUrl,
+  profileUrl,
+  isExpired,
   showCancelButton = true,
   counselorId,
 }) => {
@@ -41,7 +44,7 @@ const CLCard = ({
       try {
         await cancelReservation(reservId);
         alert("상담 예약이 취소되었습니다.");
-        window.location.reload(); // 페이지 새로고침
+        window.location.reload();
       } catch (error) {
         alert(error.message || "상담 예약 취소 중 오류가 발생했습니다.");
       }
@@ -62,8 +65,18 @@ const CLCard = ({
           <p className="CS-Date">{reservationDate.split("T")[1].slice(0, 5)}</p>
         </div>
       )}
+      {reservationDate && (
+        <p id="CL-Date">{new Date(reservationDate).toLocaleDateString()}</p>
+      )}
       <div className="CLCardIn">
-        <img src={profile} alt="Profile" />
+      <img
+            src={profileUrl || mainProfileUrl}
+            alt={`${name} 상담사 프로필`}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = mainProfileUrl;
+            }}
+          />
         <div className="CSInfo">
           <p id="CS-CounselorName">
             {name} 상담자({displayGender(gender)})

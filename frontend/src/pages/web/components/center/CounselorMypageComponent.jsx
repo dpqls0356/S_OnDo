@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import mypageuser from "./../../../../assets/images/mypageuser.png";
 import useAuthStore from "../../../../store/app/authStore";
-
 import camera from "../../../../assets/images/camera.png";
 // import { useNavigate } from "react-router-dom";
 // import { useRef } from "react";
@@ -14,7 +12,7 @@ const View = styled.div`
   width: 90%;
   height: 100%;
   display: flex;
-  align-item: center;
+  align-items: center;
   flex-direction: column;
   gap: 20px;
   font-size: 17px;
@@ -80,8 +78,8 @@ const ProfileImg = styled.div`
   border: 3px black solid;
   background-color: #fff7f7;
   margin: 0 auto;
-  overflow: "hidden";
-  borderradius: "50%";
+  overflow: hidden; // 변경된 부분: " " 제거
+  border-radius: 50%; // 변경된 부분: " " 제거
 `;
 
 const Tab = styled.div`
@@ -110,9 +108,6 @@ const CounselorMypage = () => {
   const [edit, EditState] = useState(false);
   console.log(info);
 
-  // const [ info, InfoState ] = useState('')
-  // console.log(info)
-
   const { checkAuth, user } = useAuthStore();
 
   const [selectedFile, setSelectedFile] = useState(null); // 선택한 이미지 state
@@ -140,23 +135,6 @@ const CounselorMypage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     const
-  //   }
-  // })
-
-  // const [ formData, setFormData ] = useState({
-  //   id: "test",
-  //   password: "password",
-  //   gender: "MALE",
-  //   name: "상담사",
-  //   field: "사회복지",
-  //   selfIntroduction: "자기소개",
-  //   schedule_id:1001
-
-  // })
-
   const getMyInfo = async () => {
     try {
       const response = await axios.get(`${baseUrl}/counselor/mypage`, {
@@ -173,7 +151,7 @@ const CounselorMypage = () => {
         console.log("상담사 정보 확인용", MyInfo); // 맨 처음 로딩 시 바로 채워지지 않음... 채워지는 데 시간이 좀 필요한 듯 함
         setLoading(false); // 데이터 로딩이 끝나면 로딩 상태를 false로 설정
         setFormData({
-          selfIntroduction: MyInfo.selfIntroduction,
+          selfIntroduction: response.data.data.counselor.selfIntroduction, // 변경된 부분: MyInfo가 아닌 response.data를 사용
         });
         console.log("폼데이터 자기소개", formData.selfIntroduction);
       }
@@ -182,6 +160,7 @@ const CounselorMypage = () => {
       setLoading(false); // 에러가 발생해도 로딩 상태를 false로 설정
     }
   };
+
   const handleInputChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
@@ -205,7 +184,7 @@ const CounselorMypage = () => {
     const userData = new Blob(
       [
         JSON.stringify({
-          password: MyInfo.password,
+          password: "",
           selfIntroduction: formData.selfIntroduction,
         }),
       ],
@@ -274,7 +253,7 @@ const CounselorMypage = () => {
       {edit ? (
         <div>
           <img
-            src={previewUrl || MyInfo.profileUrl} //마이페이지 이미지가 안 보임....
+            src={previewUrl || MyInfo.profileUrl || mainProfileUrl} // 기본 프로필 이미지 추가
             style={{
               width: "200px",
               height: "200px",
@@ -293,7 +272,7 @@ const CounselorMypage = () => {
             style={{ cursor: "pointer" }}
             src={camera}
             alt="카메라 아이콘"
-            onClick={handleImageClick}
+            onClick={handleImageClick} // 카메라 아이콘 클릭 시 input 클릭 이벤트 핸들러 호출
           />
           <input
             type="file"
@@ -304,7 +283,7 @@ const CounselorMypage = () => {
         </div>
       ) : (
         <img
-          src={MyInfo.profileUrl}
+          src={MyInfo.profileUrl || mainProfileUrl} // 기본 프로필 이미지 추가
           style={{
             width: "200px",
             height: "200px",
@@ -315,6 +294,7 @@ const CounselorMypage = () => {
             border: "3px black solid",
             margin: "0 auto",
           }}
+          alt="프로필 이미지"
         />
       )}
       <Name>
@@ -347,7 +327,6 @@ const CounselorMypage = () => {
               저장
             </p>
           ) : (
-            // <p style={{cursor: "pointer", textDecoration: "underline", color: 'gray'}}>저장</p>
             <p
               onClick={onClickEdit}
               style={{ cursor: "pointer", textDecoration: "underline", color: "gray" }}

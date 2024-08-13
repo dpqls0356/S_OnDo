@@ -7,13 +7,11 @@ import back from "./../../../assets/images/back.png";
 import chrface from "./../../../assets/images/test_chara.png";
 import "./Chatpage.css";
 
-// API 인스턴스 생성
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({ baseURL: baseUrl, withCredentials: true });
 
 const Chatpage = () => {
-  // 상태 변수들
-  const size = 2;
+  const size = 20;
   const nav = useNavigate();
   const [character, setCharacter] = useState(null);
   const [characterLoading, setCharacterLoading] = useState(true);
@@ -25,26 +23,21 @@ const Chatpage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const chatContainerRef = useRef(null);
+  const loadingRef = useRef(null);
 
-  // 채팅 메시지 가져오기
   const getChatbotMessage = useCallback(async () => {
-    const response = await api.get(
-      `/chatbot/list?page=${pageNum}&size=${size}`
-    );
-    if (response.status == 200) {
+    const response = await api.get(`/chatbot/list?page=${pageNum}&size=${size}`);
+    if (response.status === 200) {
       setPageNum((prevPageNum) => prevPageNum + 1);
     }
     return response.data.data.chattingList;
   }, [pageNum, size]);
 
-  // 캐릭터 정보 가져오기
   const getCharacter = useCallback(async () => {
     setCharacterLoading(true);
     setCharacterError(null);
     try {
-      const characterResponse = await api.get("/character/getCharacter", {
-        timeout: 5000,
-      });
+      const characterResponse = await api.get("/character/getCharacter", { timeout: 5000 });
       const fetchedCharacter = characterResponse.data.data.character;
       if (fetchedCharacter && fetchedCharacter.name) {
         setCharacter(fetchedCharacter);
@@ -60,15 +53,12 @@ const Chatpage = () => {
     }
   }, []);
 
-  // 채팅창 스크롤을 맨 아래로 이동
   const scrollToBottom = useCallback(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, []);
 
-  // 메시지 전송
   const sendMessage = useCallback(async () => {
     if (userInput.trim() !== "" && !isLoading) {
       setIsLoading(true);
@@ -93,7 +83,6 @@ const Chatpage = () => {
     }
   }, [userInput, isLoading, scrollToBottom]);
 
-  // 이전 메시지 더 불러오기
   const loadMoreMessages = useCallback(async () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
@@ -102,33 +91,18 @@ const Chatpage = () => {
       if (oldMessages.length < size) {
         setHasMore(false);
       }
-      setMessages((prevMessages) => [
-        ...oldMessages.reverse(),
-        ...prevMessages,
-      ]);
+      setMessages((prevMessages) => [...oldMessages.reverse(), ...prevMessages]);
     } catch (error) {
       console.error("Error loading more messages:", error);
     } finally {
       setIsLoading(false);
     }
-
-    // 스크롤 위치 조정
-    if (chatContainerRef.current) {
-      const scrollHeight = chatContainerRef.current.scrollHeight;
-      const oldScrollTop = chatContainerRef.current.scrollTop;
-      const oldHeight = chatContainerRef.current.offsetHeight;
-
-      chatContainerRef.current.scrollTop =
-        scrollHeight - oldHeight - oldScrollTop;
-    }
   }, [isLoading, hasMore, getChatbotMessage, size]);
 
-  // 컴포넌트 마운트 시 캐릭터 정보 가져오기
   useEffect(() => {
     getCharacter();
   }, [getCharacter]);
 
-  // 채팅 초기화
   useEffect(() => {
     if (!isInitialized) {
       const initializeChat = async () => {
@@ -148,12 +122,31 @@ const Chatpage = () => {
     }
   }, [isInitialized, getChatbotMessage, scrollToBottom]);
 
-  // 입력 처리
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoading) {
+          loadMoreMessages();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [hasMore, isLoading, loadMoreMessages]);
+
   const handleInputChange = useCallback((event) => {
     setUserInput(event.target.value);
   }, []);
 
-  // 엔터 키 처리
   const handleKeyPress = useCallback(
     (event) => {
       if (event.key === "Enter" && !event.shiftKey) {
@@ -164,7 +157,6 @@ const Chatpage = () => {
     [sendMessage]
   );
 
-  // 메시지 시간 포맷팅
   const formatMessageTime = (dateString) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
@@ -173,10 +165,17 @@ const Chatpage = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
+  const formatMessageDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "";
+    }
+    return date.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
   return (
     <div className="Chat">
       {isLoading && <LoadingSpinner />}
-      {/* 캐릭터 정보 표시 */}
       <div className="CharacterName">
         <img onClick={() => nav("/member/home")} src={back} alt="Back" />
         <img
@@ -201,43 +200,29 @@ const Chatpage = () => {
         )}
       </div>
 
-      {/* '이전 메시지 더 보기' 버튼 --> 자꾸 에러나ㅠㅠ */}
-      {messages.length > 0 && hasMore && (
-        <button
-          onClick={loadMoreMessages}
-          disabled={isLoading}
-          className="load-more-button"
-        >
-          {isLoading ? "로딩 중..." : "이전 메시지 더 보기"}
-        </button>
-      )}
-      {/* 채팅 내용 및 버튼 */}
       <div className="ChatContentWrapper">
-        {/* 채팅 내용 */}
         <div className="ChatContent" ref={chatContainerRef}>
+          <div ref={loadingRef} style={{ height: "1px" }} />
           <div className="ChatScreen">
             {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`message-container ${message.sender === "user" ? "user" : "bot"}`}
-              >
-                <div
-                  className={
-                    message.sender === "user" ? "user-message" : "bot-message"
-                  }
-                >
-                  {message.content}
+              <React.Fragment key={index}>
+                {index === 0 || formatMessageDate(message.createdAt) !== formatMessageDate(messages[index - 1].createdAt) ? (
+                  <div className="date-separator">{formatMessageDate(message.createdAt)}</div>
+                ) : null}
+                <div className={`message-container ${message.sender === "user" ? "user" : "bot"}`}>
+                  <div className={message.sender === "user" ? "user-message" : "bot-message"}>
+                    {message.content}
+                  </div>
+                  <div className="message-time">
+                    {formatMessageTime(message.createdAt)}
+                  </div>
                 </div>
-                <div className="message-time">
-                  {formatMessageTime(message.createdAt)}
-                </div>
-              </div>
+              </React.Fragment>
             ))}
           </div>
         </div>
       </div>
 
-      {/* 메시지 입력 */}
       <div className="ChatboxWrapper">
         <div className="Chatbox">
           <input
