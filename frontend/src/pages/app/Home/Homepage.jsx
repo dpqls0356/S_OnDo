@@ -23,13 +23,13 @@ const moveUpDown = keyframes`
   }
 `;
 
-const heartAnimation = keyframes`
+const heartAnimation1 = keyframes`
   0% {
     transform: scale(0.5) translateY(0);
     opacity: 0;
   }
   50% {
-    transform: scale(1.2) translateY(-30px);
+    transform: scale(1.2) translateY(-40px);
     opacity: 1;
   }
   100% {
@@ -38,17 +38,74 @@ const heartAnimation = keyframes`
   }
 `;
 
-const Heart = styled.div`
+const heartAnimation2 = keyframes`
+  0% {
+    transform: scale(0.5) translateY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) translateY(-30px) rotate(15deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(-40px) rotate(-15deg);
+    opacity: 0;
+  }
+`;
+
+const Heart1 = styled.div`
+  & > svg {
+    color: #ff0000;
+  }
   position: absolute;
-  top: -50px;
+  top: -30px;
+  left: 20%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  z-index: 3;
+  animation: ${heartAnimation1} 1s ease-out forwards;
+`;
+
+const Heart2 = styled.div`
+  & > svg {
+    color: #ff1900;
+  }
+  position: absolute;
+  top: -20px;
+  left: 30%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  z-index: 3;
+  animation: ${heartAnimation2} 1.2s ease-out forwards;
+`;
+const Heart3 = styled.div`
+  & > svg {
+    color: orange;
+  }
+  position: absolute;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   width: 50px;
   height: 50px;
-  z-index: 3; /* 다른 요소들보다 위에 오도록 설정 */
-  animation: ${heartAnimation} 1s ease-out forwards;
+  z-index: 3;
+  animation: ${heartAnimation1} 1.2s ease-out forwards;
 `;
-
+const Heart4 = styled.div`
+  & > svg {
+    color: #ff237b;
+  }
+  position: absolute;
+  top: -10px;
+  left: 60%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  z-index: 3;
+  animation: ${heartAnimation2} 1.2s ease-out forwards;
+`;
 const CharacterBody = styled.div`
   img:nth-child(1) {
     position: relative;
@@ -153,7 +210,7 @@ const Homepage = () => {
 
   const handleMouseEnter = () => {
     setShowHeart(true);
-    console.log("이벤트 발생");
+    // console.log("이벤트 발생");
     setTimeout(() => setShowHeart(false), 1000);
   };
 
@@ -173,22 +230,48 @@ const Homepage = () => {
         <div onClick={changeCharacterStatus} className="Char-daram">
           <CharacterBox onMouseEnter={handleMouseEnter}>
             {showHeart && (
-              <Heart>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  style={{ width: "100%", height: "100%" }} // SVG 크기를 100%로 설정
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                  />
-                </svg>
-              </Heart>
+              <div>
+                <Heart1>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6"
+                  >
+                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                  </svg>
+                </Heart1>
+                <Heart2>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6"
+                  >
+                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                  </svg>
+                </Heart2>
+                <Heart3>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6"
+                  >
+                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                  </svg>
+                </Heart3>
+                <Heart4>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-6"
+                  >
+                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                  </svg>
+                </Heart4>
+              </div>
             )}
             <Acorn>
               <img src={acorn} />
