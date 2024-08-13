@@ -16,7 +16,7 @@ import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 public interface MemberService {
 
-	void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException;
+	Long join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException;
 
 	Member findOne(Long memberId);
 
