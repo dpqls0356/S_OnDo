@@ -9,7 +9,6 @@ import useAuthStore from "../../store/app/authStore";
 import IncorrectAccessModal from "./components/incorrectAccessModal";
 import Centerpage from "./centerpage";
 
-
 const View = styled.div`
   width: 100vw;
   height: 100vh;
@@ -23,8 +22,8 @@ const HomeLeft = styled.div`
 `;
 const HomeRight = styled.div`
   height: 100%;
-  width: 250px;
-  background-color: #6769ba;
+  width: 270px;
+  background-color: #f1af84;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,23 +54,23 @@ const Profile = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   .profile-img-container {
     width: 200px;
     height: 200px;
-    border: 3px black solid;
-    background-color: #fff7f7;
+    border: 3px #ffffff solid;
+    background-color: #ffc5a1;
     overflow: hidden;
     border-radius: 50%;
     margin-bottom: 20px; // 이미지와 이름 사이의 간격
   }
-  
+
   .profile-img {
     width: 100%;
     height: 100%;
     object-fit: cover; // 이미지가 컨테이너를 꽉 채우도록 함
   }
-  
+
   .username {
     color: black;
     font-size: 25px;
@@ -99,7 +98,6 @@ const ChangeSpot = styled.div`
 `;
 
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
-
 
 function CounselorLayout() {
   const { role, user, counselorLogout, checkAuth } = useAuthStore((state) => ({
@@ -153,16 +151,20 @@ function CounselorLayout() {
         </ChangeSpot>
       </HomeLeft>
       <HomeRight>
-      <Profile>
-        <div className="profile-img-container">
-          {user?.profileUrl ? (
-            <img className="profile-img" src={user.profileUrl} alt="프로필" />
-          ) : (
-            <img className="profile-img" src={mainProfileUrl} alt="기본 프로필" />
-          )}
-        </div>
-        <div className="username">{user?.name} 상담사님</div>
-      </Profile>
+        <Profile>
+          <div className="profile-img-container">
+            {user?.profileUrl ? (
+              <img className="profile-img" src={user.profileUrl} alt="프로필" />
+            ) : (
+              <img
+                className="profile-img"
+                src={mainProfileUrl}
+                alt="기본 프로필"
+              />
+            )}
+          </div>
+          <div className="username">{user?.name} 상담사님</div>
+        </Profile>
         <Nav>
           <StyledLink to="">일정관리</StyledLink>
           <StyledLink to="daylist/상담사아이디">상담내역</StyledLink>
@@ -176,7 +178,7 @@ function CounselorLayout() {
       <IncorrectAccessModal
         isOpen={isModalOpen}
         closeModal={counselorCloseModal}
-      /> 
+      />
     </View>
   );
 }
