@@ -37,8 +37,19 @@ public class ImageController {
 			imageService.uploadAndMember(file,type,memberId);
 			return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
 		}catch(Exception e){
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("이미지 등록 실패"));
 		}
 	}
+
+	@PostMapping("/update/{type}/{memberId}")
+	public ResponseEntity<?> updateMember(@PathVariable String type, @PathVariable Long memberId, @RequestParam("data") MultipartFile file) throws IOException{
+		try{
+			imageService.updateAndMember(file,type,memberId);
+			return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
+		}catch(Exception e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("이미지 수정 실패"));
+		}
+	}
+
+
 }

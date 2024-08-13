@@ -68,8 +68,7 @@ public class BoardController {
    */
   @PostMapping("/article")
   public ResponseEntity<ResponseVO<?>> createArticle(HttpServletRequest request,
-      @RequestPart("board") Board board,
-      @RequestPart("image") List<MultipartFile> imageList) throws IOException {
+      @RequestBody Board board) throws IOException {
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
     // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
     Long memberId = jwtTokenProvider.getIdFromToken(token);
@@ -78,7 +77,22 @@ public class BoardController {
     board.settingViews();
     Board newBoard;
     try{
-      newBoard = boardService.saveArticle(board,imageList);
+      newBoard = boardService.saveArticle(board);
+    }catch(ModerationException me){
+      return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
+    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("id", newBoard.get_id()));
+  }
+
+  @PostMapping("/articleImage/{boardId}")
+  public ResponseEntity<ResponseVO<?>> uploadArticleImage(HttpServletRequest request, @PathVariable ObjectId boardId,
+      @RequestParam("data") MultipartFile imageList) throws IOException {
+    String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+    // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+    Long memberId = jwtTokenProvider.getIdFromToken(token);
+    Board newBoard;
+    try{
+      newBoard = boardService.saveArticleImage(boardId, imageList, memberId);
     }catch(ModerationException me){
       return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }

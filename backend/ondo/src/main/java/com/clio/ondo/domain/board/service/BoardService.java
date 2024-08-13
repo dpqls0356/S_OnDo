@@ -18,7 +18,9 @@ public interface BoardService {
   Page<Board> getArticles(Pageable pageble);
 
   //Board saveArticle(Board board);
-  Board saveArticle(Board board,List<MultipartFile> images) throws IOException;
+  Board saveArticle(Board board) throws IOException;
+
+  Board saveArticleImage(ObjectId boardId, MultipartFile file, Long memberId) throws IOException;
 
   void deleteArticle(ObjectId articleId,Long   memberId);
 

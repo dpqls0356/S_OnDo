@@ -64,16 +64,8 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public Long join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
-
-		//s3이미지 url 생성 및 저장
-
-		if(!profileImage.isEmpty()){
-			profileUrl=imageService.upload(profileImage,"MemberProfile");
-		}else{
-			profileUrl=defaultProfileUrl;
-		}
-		Member member = joinRequestDto.toEntity(profileUrl);
+	public Long join(JoinRequestDto joinRequestDto) throws IOException {
+		Member member = joinRequestDto.toEntity(defaultProfileUrl);
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
@@ -163,8 +155,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public void updateMember(UpdateRequestDto updateRequestDto, String accessToken, MultipartFile profileImage) throws
-		IOException {
+	public Long updateMember(UpdateRequestDto updateRequestDto, String accessToken) throws IOException {
 		Claims claims = jwtTokenProvider.decodeJwt(accessToken);
 		String user = claims.getSubject();
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
@@ -175,28 +166,8 @@ public class MemberServiceImpl implements MemberService {
 		if (StringUtils.hasText(updateRequestDto.getNickname())) {
 			findMember.updateNickName(updateRequestDto.getNickname());
 		}
-
-
-		//무조건 update 되어야함.
-		if(!Objects.equals(findMember.getProfileUrl(), defaultProfileUrl)){ //기본 이미지가 아니라면
-			imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
-		}
-
-		if(!profileImage.isEmpty()){
-			profileUrl=imageService.upload(profileImage,"MemberProfile");
-		}else{
-			String fileName = profileImage.getOriginalFilename();
-			if ("default.jpg".equals(fileName)) {
-				profileUrl = defaultProfileUrl;
-			} else if ("empty.jpg".equals(fileName)) {
-				profileUrl = findMember.getProfileUrl();
-			}
-		}
-
-		findMember.updateProfileUrl(profileUrl);
-
 		memberRepository.save(findMember);
-
+		return findMember.getId();
 	}
 
 	@Override
