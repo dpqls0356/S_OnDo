@@ -43,6 +43,12 @@ const VideoView = styled.div`
     padding: 10px;
     border-radius: 50px;
     border: 5px solid yellow;
+          @media (min-width: 381px) {
+        margin-right: 20px;
+      }
+      @media (max-width: 380px) {
+        margin-bottom: 20px;
+      }
   }
   video,
   canvas {
@@ -82,6 +88,13 @@ const Nav = styled.div`
     &:nth-child(3) {
       background-color: #f83d39;
     }
+  }
+`;
+const SmallViewChatBtn = styled.button`
+  display: none; /* 기본적으로 버튼을 숨깁니다 */
+
+  @media (max-width: 380px) {
+    display: block; /* 화면 폭이 360px 이하일 때 버튼을 표시합니다 */
   }
 `;
 
@@ -249,7 +262,12 @@ const CounselingRoom = () => {
 
   const leaveCounseling = () => {
     //상담사인지 아닌지에 따라 이동해야할 url이 달라짐
-    navigate("/counselor");
+    if(role==="COUNSELOR"){
+      navigate("/counselor");
+    }
+    else {
+      navigate("/member/counseling/main");
+    }
   };
 
   const toggleFilter = () => {
@@ -390,6 +408,7 @@ const CounselingRoom = () => {
               <button onClick={toggleFilter}>
                 <div>필터</div>
               </button>
+              <SmallViewChatBtn>채팅</SmallViewChatBtn>
             </Nav>
           </WebCamView>
           <SideBar memberInfo={memberInfo} />
