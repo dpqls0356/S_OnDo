@@ -16,6 +16,7 @@ const CardCarousel = ({
   reservId,
   profileUrl,
   counselingUrl,
+
 }) => {
   const nav = useNavigate();
   const { calculateDday, displayGender } = useCounselorStore();
