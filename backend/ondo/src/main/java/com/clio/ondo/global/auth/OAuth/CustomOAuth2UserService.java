@@ -53,6 +53,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Character character = member.getCharacter();
             characterRepository.save(character);
             missionService.createTodayMission(member.getId());
+            member.setDefaultPasswordIfNotSet();
             return memberRepository.save(member);
         } else {
             Member member = optionalMember.get();
