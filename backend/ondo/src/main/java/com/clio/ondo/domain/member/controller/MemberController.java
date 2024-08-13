@@ -145,7 +145,7 @@ public class MemberController {
 
 	@PostMapping("/join")
 	public ResponseEntity<ResponseVO<Void>> join(
-		@RequestPart(value = "joinRequestDto") @RequestBody JoinRequestDto joinRequestDto,
+		@RequestPart(value = "joinRequestDto") JoinRequestDto joinRequestDto,
 		@RequestPart("profileImage") MultipartFile profileImage){
 		try {
 			joinRequestDto.setPassword(passwordEncoder.encode(joinRequestDto.getPassword()));
