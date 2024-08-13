@@ -2,10 +2,6 @@ package com.clio.ondo.global.auth.OAuth;
 
 import java.util.Map;
 
-import com.clio.ondo.domain.character.model.Character;
-import com.clio.ondo.domain.character.repository.CharacterRepository;
-import com.clio.ondo.domain.mission.service.MissionService;
-import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -13,8 +9,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.repository.CharacterRepository;
 import com.clio.ondo.domain.member.model.Member;
 import com.clio.ondo.domain.member.repository.MemberRepository;
+import com.clio.ondo.domain.mission.service.MissionService;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> oAuth2UserAttributes = super.loadUser(userRequest).getAttributes();
         log.info("userRequest: {}", userRequest);
         log.info("oAuth2UserAttributes: {}", oAuth2UserAttributes);
-
+        log.error("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2");
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
