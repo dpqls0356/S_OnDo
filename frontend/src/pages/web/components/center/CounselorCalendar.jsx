@@ -3,17 +3,19 @@ import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, setSelectedTime }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, selectedTime, setSelectedTime, setSaveTimeState }) => {
+  const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜(초기값은 오늘로)
   const [dayScheduleList, setDayScheduleList] = useState([]);
 
   useEffect(() => {
     setSelectedDate(currentDate.getDate());
   }, []);
 
+  // 날짜별 일정 조회(불러오기)
   const handleDateClick = async (date) => {
-    setSelectedDate(date);
-    setSelectedTime([]);
+    setSaveTimeState([])
+    setSelectedDate(date); // 선택한 날짜 selectDate에 저장
+    setSelectedTime([]); // 선택한 날짜에 대한 선택한 시간 리스트 초기화
     const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
     // Local time to UTC
     const formattedDate = new Date(Date.UTC(fullDate.getFullYear(), fullDate.getMonth(), fullDate.getDate()));
@@ -37,11 +39,15 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
   const minutes = String(localTime.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
       });
-      setDayScheduleList(scheduleInLocalTime);
-      console.log(dayScheduleList)
+      // setDayScheduleList(scheduleInLocalTime);
+      // console.log('dayScheduleList', dayScheduleList)
       if (response.status === 200) {
         console.log('상세 일정 조회 성공')
-        console.log('서버 응답:', response.data)
+        console.log(scheduleInLocalTime)
+        // setSaveTimeState(scheduleInLocalTime) // response.data.data.schedule에 있는 시간대(UTC 기준)를 Asia/Seoul기준으로 바꾼 후 saveTime state에 저장
+        setSelectedTime(scheduleInLocalTime)
+        console.log('selectedDate 채워졌는지 확인용(자식):', selectedTime)
+        // console.log('서버 응답:', response.data)
       }
 
     } catch (err) {
