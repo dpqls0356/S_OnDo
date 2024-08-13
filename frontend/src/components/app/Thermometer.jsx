@@ -27,8 +27,8 @@ const Thermometer = ({ character }) => {
   const setTemperature = () => {
     const tempElement = document.getElementById("temperature");
     const { exp, maxExp, unit } = config;
-    // const temp = maxExp > 0 ? (exp / maxExp) * 100 : 0;
-    const temp = 80;
+    const temp = maxExp > 0 ? (exp / maxExp) * 100 : 0;
+    // const temp = 80;
     tempElement.style.height = temp + "%";
     tempElement.dataset.value = temp + units[unit];
   };

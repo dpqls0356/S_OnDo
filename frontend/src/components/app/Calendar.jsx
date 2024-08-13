@@ -60,7 +60,7 @@ const Calendar = ({ selectedDate, setSelectedDate }) => {
           <div 
             key={date} 
             className={`cursor-pointer ${
-              selectedDate && date === selectedDate.getDate() && currentDate.getMonth() === selectedDate.getMonth() ? 'bg-blue-100 rounded-full' : ''
+              selectedDate && date === selectedDate.getDate() && currentDate.getMonth() === selectedDate.getMonth() ? 'bg-blue-200 rounded-full' : ''
             } ${
               [0, 6].includes(new Date(currentDate.getFullYear(), currentDate.getMonth(), date).getDay()) ? 'text-red-500' : ''
             }`}

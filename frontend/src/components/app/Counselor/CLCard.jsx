@@ -14,7 +14,9 @@ const CLCard = ({
   reservId,
   counselingUrl,
   profileUrl,
+  isExpired,
   showCancelButton = true,
+  counselorId,
 }) => {
   const nav = useNavigate();
   const { calculateDday, displayGender, cancelReservation } =
@@ -42,7 +44,7 @@ const CLCard = ({
       try {
         await cancelReservation(reservId);
         alert("상담 예약이 취소되었습니다.");
-        window.location.reload(); // 페이지 새로고침
+        window.location.reload();
       } catch (error) {
         alert(error.message || "상담 예약 취소 중 오류가 발생했습니다.");
       }
@@ -54,20 +56,24 @@ const CLCard = ({
       className="CLCard"
       style={is_complete ? { backgroundColor: "rgb(238, 237, 237)" } : null}
     >
-      {showCancelButton && (
-        <div className="cancel-button" onClick={handleCancelClick}>
-          취소
+      {reservationDate && (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <p className="CS-Date">
+            {new Date(reservationDate).toLocaleDateString().slice(0, -1)}
+          </p>
+          <p style={{ margin: "0px 10px" }}>|</p>
+          <p className="CS-Date">{reservationDate.split("T")[1].slice(0, 5)}</p>
         </div>
       )}
       {reservationDate && (
         <p id="CL-Date">{new Date(reservationDate).toLocaleDateString()}</p>
       )}
       <div className="CLCardIn">
-      <img 
-            src={profileUrl || mainProfileUrl} 
-            alt={`${name} 상담사 프로필`} 
+      <img
+            src={profileUrl || mainProfileUrl}
+            alt={`${name} 상담사 프로필`}
             onError={(e) => {
-              e.target.onerror = null; 
+              e.target.onerror = null;
               e.target.src = mainProfileUrl;
             }}
           />
@@ -77,29 +83,32 @@ const CLCard = ({
           </p>
           <p id="CS-Counselorfield">{field}</p>
           <p id="CS-Counselorintro">{intro}</p>
+          {reservId && (
+            <Link to={`/member/counseling/${counselorId}/detail`}>
+              <div
+                style={{
+                  textAlign: "right",
+                  fontSize: "80%",
+                  color: "black",
+                  textDecoration: "underline",
+                }}
+              >
+                더보기
+              </div>
+            </Link>
+          )}
         </div>
       </div>
-
-      {reservId && (
-        <Link to={`/member/counseling/${reservId}/detail`}>
-          <div
-            style={{
-              textAlign: "right",
-              fontSize: "80%",
-              color: "black",
-              textDecoration: "underline",
-            }}
-          >
-            더보기
-          </div>
-        </Link>
-      )}
-
       <div className="CS-CardFooter">
+        {dday && showCancelButton && (
+          <div className="cancel-button" onClick={handleCancelClick}>
+            취소
+          </div>
+        )}
         <div>
           {dday && (
             <button onClick={handleCounselingClick} id="DdayBtn">
-              <div>{dday}</div>
+              {counselingUrl ? <div>입장</div> : <div>{dday}</div>}
             </button>
           )}
         </div>

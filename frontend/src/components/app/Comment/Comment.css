@@ -1,9 +1,10 @@
 .CommentCard{
   margin: 0 auto;
   margin-bottom: 15px;
-  width: 250px;
+  margin-left: 20px;
+  /* width: 250px; */
   background-color: white;
-  border: 2px #6ABFB4 solid;
+  border: 1px #6ABFB4 solid;
   border-radius: 10px;
 }
 
@@ -25,7 +26,7 @@
 }
 
 .CommentContent{
-  border-top: 2px #6ABFB4 solid;
+  border-top: 1px #6ABFB4 solid;
   padding: 10px 17px;
 }
 
