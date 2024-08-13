@@ -180,7 +180,7 @@ function ReservationSpot() {
         {(isSearching ? searchResults : reservationList).length > 0 ? (
           (isSearching ? searchResults : reservationList).map(
             (reservation, index) => (
-              <Reservation key={index} reservation={reservation} />
+              <Reservation on key={index} reservation={reservation} />
             )
           )
         ) : (
