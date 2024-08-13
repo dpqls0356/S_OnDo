@@ -14,18 +14,19 @@ const FullWidthCLCard = styled(CLCard)`
 const Reservation = () => {
   const { counselorId } = useParams();
   const nav = useNavigate();
-  const {
-    selectedCounselor,
-    fetchCounselorDetails,
-    fetchCounselorSchedule,
-    makeReservation,
+  const { 
+    selectedCounselor, 
+    fetchCounselorDetails, 
+    fetchCounselorSchedule, 
+    makeReservation, 
     counselorSchedule,
-    displayGender,
+    displayGender
   } = useCounselorStore();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [note, setNote] = useState("");
+  const [note, setNote] = useState('');
+  const [unavailableTimes, setUnavailableTimes] = useState({});
 
   useEffect(() => {
     if (counselorId) {
@@ -34,23 +35,37 @@ const Reservation = () => {
     }
   }, [counselorId, fetchCounselorDetails, fetchCounselorSchedule]);
 
+  useEffect(() => {
+    if (counselorSchedule) {
+      const times = {};
+      counselorSchedule.forEach(dateTimeStr => {
+        const date = dateTimeStr.split('T')[0];
+        const time = dateTimeStr.split('T')[1].substring(0, 5);
+        if (!times[date]) {
+          times[date] = [];
+        }
+        times[date].push(time);
+      });
+      setUnavailableTimes(times);
+    }
+  }, [counselorSchedule]);
+
   const handleReservation = async () => {
     if (!counselorId) {
       alert("상담사 ID가 유효하지 않습니다.");
       return;
     }
-
+  
     if (selectedDate && selectedTime) {
+      const [hours, minutes] = selectedTime.split(':');
       const reservationDate = new Date(selectedDate);
-      const [hours, minutes] = selectedTime.split(":");
       reservationDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
+      
+      // 한국 시간을 UTC로 변환
+      const utcReservationDate = new Date(reservationDate.getTime() - 9 * 60 * 60 * 1000);
+      
       try {
-        const result = await makeReservation(
-          parseInt(counselorId),
-          reservationDate,
-          note
-        );
+        const result = await makeReservation(parseInt(counselorId), utcReservationDate, note);
         if (result.success) {
           alert("예약이 확정되었습니다.");
           nav("/member/counseling/main");
@@ -67,6 +82,7 @@ const Reservation = () => {
       alert("날짜와 시간을 선택해주세요.");
     }
   };
+
 
   const onClickBack = () => {
     nav("/member/counseling/main");
@@ -99,17 +115,23 @@ const Reservation = () => {
                 field={selectedCounselor.field}
                 intro={selectedCounselor.intro}
                 reservId={counselorId}
-                showCancelButton={false} // 취소 버튼을 숨기기
+                showCancelButton={false}
               />
             )}
-            <h1 className="text-2xl font-bold mb-4 mt-7">예약일지</h1>
-            <Calendar
-              selectedDate={selectedDate}
+            <br />
+            <h1 className="text-2xl font-bold mb-4">예약일지</h1>
+            <Calendar 
+              selectedDate={selectedDate} 
               setSelectedDate={setSelectedDate}
+              unavailableTimes={unavailableTimes}
             />
-            <TimeSlots
-              selectedTime={selectedTime}
+            <TimeSlots 
+              selectedDate={selectedDate}
+              selectedTime={selectedTime} 
               setSelectedTime={setSelectedTime}
+              unavailableTimes={selectedDate ? counselorSchedule.filter(dateStr => 
+                dateStr.startsWith(selectedDate.toISOString().split('T')[0])
+              ) : []}
             />
           </div>
           <img src={BorderImg} alt="" className="w-full" />
