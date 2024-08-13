@@ -58,25 +58,35 @@ const CLCard = ({
     >
       {reservationDate && (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <p className="CS-Date">
-            {new Date(reservationDate).toLocaleDateString().slice(0, -1)}
-          </p>
-          <p style={{ margin: "0px 10px" }}>|</p>
-          <p className="CS-Date">{reservationDate.split("T")[1].slice(0, 5)}</p>
+          {reservationDate && (
+            <div
+              style={{
+                display: "flex",
+                padding: "5px 0px",
+                alignItems: "center",
+              }}
+            >
+              <p id="CL-Date">
+                {new Date(reservationDate).toLocaleDateString()}
+              </p>
+              <p style={{ margin: "0px 10px" }}>|</p>
+              <p className="CS-Date">
+                {reservationDate.split("T")[1].slice(0, 5)}
+              </p>
+            </div>
+          )}
         </div>
       )}
-      {reservationDate && (
-        <p id="CL-Date">{new Date(reservationDate).toLocaleDateString()}</p>
-      )}
       <div className="CLCardIn">
-      <img
-            src={profileUrl || mainProfileUrl}
-            alt={`${name} 상담사 프로필`}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = mainProfileUrl;
-            }}
-          />
+        <img
+          style={{ marginRight: "20px" }}
+          src={profileUrl || mainProfileUrl}
+          alt={`${name} 상담사 프로필`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = mainProfileUrl;
+          }}
+        />
         <div className="CSInfo">
           <p id="CS-CounselorName">
             {name} 상담자({displayGender(gender)})
