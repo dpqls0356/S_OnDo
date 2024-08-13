@@ -109,7 +109,7 @@ const useCounselorStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const dateString = reservationDate.toISOString();
-      const response = await api.post('/api/v1/member/reservation/make', {
+      const response = await api.post('/member/reservation/make', {
         counselorId,
         reservationDate: dateString,
         detail
