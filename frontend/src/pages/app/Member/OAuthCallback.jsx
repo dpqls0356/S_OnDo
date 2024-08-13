@@ -11,6 +11,7 @@ const OAuthCallback = () => {
     const handleAuth = async () => {
       try {
         await checkAuth();
+        console.log("hi");
         nav("/member/home");
       } catch (error) {
         console.error("Authentication failed:", error);
