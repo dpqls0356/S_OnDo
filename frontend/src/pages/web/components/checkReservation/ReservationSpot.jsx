@@ -31,7 +31,7 @@ const Search = styled.div`
   & > button {
     width: 80px;
     color: white;
-    background-color: #506c64;
+    background-color: #ffa79d;
   }
 `;
 
