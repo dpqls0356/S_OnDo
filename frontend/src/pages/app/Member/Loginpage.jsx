@@ -33,12 +33,14 @@ const Loginpage = () => {
   };
   const onClickKakao = () => {
     nav("/member/kakaologin");
-    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+    window.location.href =
+      "https://i11c110.p.ssafy.io/oauth2/authorization/kakao";
   };
 
   const onClickNaver = () => {
     nav("/member/naverlogin");
-    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+    window.location.href =
+      "https://i11c110.p.ssafy.io/oauth2/authorization/naver";
   };
   const onClickJoin = () => {
     nav("/member/join");
