@@ -37,19 +37,21 @@
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  transition: background 0.1s ease, transform 0.3s ease
-  }
-  
-  .cancel-button:hover {
-    outline: none;
-    background: #e0be7a;
-  }
-  
-  .cancel-button:active {
-    outline: none;
-    background:#e0be7a;
-    transform: translateY(2px);
-  }
+  transition:
+    background 0.1s ease,
+    transform 0.3s ease;
+}
+
+.cancel-button:hover {
+  outline: none;
+  background: #e0be7a;
+}
+
+.cancel-button:active {
+  outline: none;
+  background: #e0be7a;
+  transform: translateY(2px);
+}
 
 #CL-Date {
   font-size: 130%;
@@ -62,13 +64,18 @@
   /* gap: 20px; */
   text-align: left;
 }
-.CLCardIn>div{
-  flex:1;
+.CLCardIn > img {
+  width: 40%;
+  height: 30%;
+  border-radius: 20px;
+}
+.CLCardIn > div {
+  flex: 1;
 }
 
 #CS-CounselorName {
   font-size: 110%;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 #CS-Counselorfield {
@@ -107,19 +114,21 @@
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  transition: background 0.1s ease, transform 0.3s ease
-  }
-  
-  #DdayBtn:hover {
-    outline: none;
-    background: #d88d91;
-  }
-  
-  #DdayBtn:active {
-    outline: none;
-    background: #d88d91;
-    transform: translateY(2px);
-  }
+  transition:
+    background 0.1s ease,
+    transform 0.3s ease;
+}
+
+#DdayBtn:hover {
+  outline: none;
+  background: #d88d91;
+}
+
+#DdayBtn:active {
+  outline: none;
+  background: #d88d91;
+  transform: translateY(2px);
+}
 #DdayBtn * {
   font-size: 80%;
 }
