@@ -129,6 +129,7 @@ const HomeUserInfoComponent = () => {
 
         if (response.data.success) {
           console.log("수정이 완료되었습니다. ");
+          alert("상담 내역 저장 완료");
         }
       } catch (error) {
         console.log("상담내역 수정 시 오류가 발생했습니다.");
@@ -180,7 +181,7 @@ const HomeUserInfoComponent = () => {
         }
       );
       const newHistories = response.data.data.reservations;
-      console.log("새히스토리", newHistories);
+
       setHistoryList([...newHistories]); //초기화 먼저 한 후 넣기
       if (newHistories.length < size) {
         setHasMore(false); // 더 이상 로드할 데이터가 없을 때
@@ -191,8 +192,6 @@ const HomeUserInfoComponent = () => {
   };
 
   useEffect(() => {
-    console.log("히스토리 리스트:", historyList);
-
     // historyList의 길이에 맞게 formData 업데이트
     const updatedFormData = historyList.map((item) => ({
       reservationId: item.reservationId || "",
@@ -204,19 +203,14 @@ const HomeUserInfoComponent = () => {
     setFormData(updatedFormData);
   }, [historyList]); // historyList가 변경될 때마다 실행됩니다.
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-
-  const handleInputChange = (field, index) => (event) => {
+  const handleInputChange = (field, reservId) => (event) => {
     const newValue = event.target.value;
     setFormData((prevFormData) => {
-      // 해당 인덱스의 formData를 복사하고 field 값을 업데이트
-      const updatedFormData = [...prevFormData];
-      updatedFormData[index] = {
-        ...updatedFormData[index],
-        [field]: newValue,
-      };
+      // 새 formData 배열을 만듭니다.
+      const updatedFormData = prevFormData.map((item) =>
+        // 항목의 reservationId가 reservId와 같으면 업데이트
+        item.reservationId === reservId ? { ...item, [field]: newValue } : item
+      );
       return updatedFormData;
     });
   };
@@ -278,10 +272,13 @@ const HomeUserInfoComponent = () => {
                 <p>{history.counselingReservationDetail}</p>
                 <div className="memo">
                   <div>
-                    <textarea>{history.counsellingDetail}</textarea>
+                    <textarea
+                      onChange={handleInputChange("counsellingDetail", history.reservationId)}
+                      value={formData[index]?.counsellingDetail}
+                    />
                   </div>
                   <div>
-                    <button>수정</button>
+                    <button onClick={updateDetail(history.reservationId)}>수정</button>
                   </div>
                 </div>
               </CounselingMemo>
@@ -294,7 +291,7 @@ const HomeUserInfoComponent = () => {
                 <div className="memo">
                   <div>
                     <textarea
-                      onChange={handleInputChange("counsellingDetail", index)}
+                      onChange={handleInputChange("counsellingDetail", history.reservationId)}
                       value={formData[index]?.counsellingDetail}
                     />
                   </div>
