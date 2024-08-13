@@ -1,6 +1,7 @@
 package com.clio.ondo.global.auth.OAuth;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -46,12 +47,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Transactional
     public Member getOrSave(OAuth2UserInfo userInfo) {
-        Member member = memberRepository.findByEmail(userInfo.getEmail()).orElseGet(userInfo::toEntity);
-        member.setDefaultPasswordIfNotSet();
-        Character character = member.getCharacter();
-        characterRepository.save(character);
-        missionService.createTodayMission(member.getId());
-        return memberRepository.save(member);
+        Optional<Member> optionalMember = memberRepository.findByEmail(userInfo.getEmail());
+        if (optionalMember.isEmpty()) {
+            Member member = userInfo.toEntity();
+            Character character = member.getCharacter();
+            characterRepository.save(character);
+            missionService.createTodayMission(member.getId());
+            return memberRepository.save(member);
+        } else {
+            Member member = optionalMember.get();
+            member.setDefaultPasswordIfNotSet();
+            return memberRepository.save(member);
+        }
     }
 
 }
