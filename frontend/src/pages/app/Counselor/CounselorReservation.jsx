@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import useCounselorStore from '../../../store/app/CounselorStore';
-import CLCard from '../../../components/app/Counselor/CLCard';
-import Button2 from '../../../components/app/Button2';
-import Calendar from '../../../components/app/Calendar';
-import TimeSlots from '../../../components/app/TimeSlots';
-import BorderImg from '../../../assets/images/구분선.png';
-import back from '../../../assets/images/back.png';
-import styled from 'styled-components';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import useCounselorStore from "../../../store/app/CounselorStore";
+import CLCard from "../../../components/app/Counselor/CLCard";
+import Button2 from "../../../components/app/Button2";
+import Calendar from "../../../components/app/Calendar";
+import TimeSlots from "../../../components/app/TimeSlots";
+import BorderImg from "../../../assets/images/구분선.png";
+import back from "../../../assets/images/back.png";
+import styled from "styled-components";
 const FullWidthCLCard = styled(CLCard)`
   width: 100% !important;
 `;
@@ -19,13 +19,14 @@ const Reservation = () => {
     fetchCounselorDetails, 
     fetchCounselorSchedule, 
     makeReservation, 
-    counselorSchedule ,
+    counselorSchedule,
     displayGender
   } = useCounselorStore();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [note, setNote] = useState('');
+  const [unavailableTimes, setUnavailableTimes] = useState({});
 
   useEffect(() => {
     if (counselorId) {
@@ -34,44 +35,78 @@ const Reservation = () => {
     }
   }, [counselorId, fetchCounselorDetails, fetchCounselorSchedule]);
 
+  useEffect(() => {
+    if (counselorSchedule) {
+      const times = {};
+      counselorSchedule.forEach(dateTimeStr => {
+        const date = dateTimeStr.split('T')[0];
+        const time = dateTimeStr.split('T')[1].substring(0, 5);
+        if (!times[date]) {
+          times[date] = [];
+        }
+        times[date].push(time);
+      });
+      setUnavailableTimes(times);
+    }
+  }, [counselorSchedule]);
+
   const handleReservation = async () => {
     if (!counselorId) {
-      alert('상담사 ID가 유효하지 않습니다.');
+      alert("상담사 ID가 유효하지 않습니다.");
       return;
     }
-
+  
     if (selectedDate && selectedTime) {
-      const reservationDate = new Date(selectedDate);
       const [hours, minutes] = selectedTime.split(':');
+      const reservationDate = new Date(selectedDate);
       reservationDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
       
+      // 한국 시간을 UTC로 변환
+      const utcReservationDate = new Date(reservationDate.getTime() - 9 * 60 * 60 * 1000);
+      
       try {
-        const result = await makeReservation(parseInt(counselorId), reservationDate, note);
+        const result = await makeReservation(parseInt(counselorId), utcReservationDate, note);
         if (result.success) {
-          alert('예약이 확정되었습니다.');
-          nav('/member/counseling/main');
+          alert("예약이 확정되었습니다.");
+          nav("/member/counseling/main");
         } else {
-          alert('예약 실패: ' + result.message);
+          alert("예약 실패: " + result.message);
         }
       } catch (error) {
-        alert('예약 중 오류가 발생했습니다: ' + (error.response?.data?.message || error.message));
+        alert(
+          "예약 중 오류가 발생했습니다: " +
+            (error.response?.data?.message || error.message)
+        );
       }
     } else {
-      alert('날짜와 시간을 선택해주세요.');
+      alert("날짜와 시간을 선택해주세요.");
     }
   };
 
+
   const onClickBack = () => {
-    nav('/member/counseling/main');
+    nav("/member/counseling/main");
   };
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <div className='scroll'>
+      <div className="scroll">
         <div className="flex-grow">
-          <div className="bg-[#6ABFB4] rounded-2xl p-4 mb-5" style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)'}}>
-            <div style={{marginBottom:"10px"}}>
-              <img onClick={onClickBack} style={{cursor: 'pointer', padding: '10px 0px'}} src={back} alt="Back" />
+          <div
+            className="bg-[#6ABFB4] rounded-2xl p-4 mb-5"
+            style={{
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0,
+              boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+            }}
+          >
+            <div style={{ marginBottom: "10px" }}>
+              <img
+                onClick={onClickBack}
+                style={{ cursor: "pointer", padding: "10px 0px" }}
+                src={back}
+                alt="Back"
+              />
             </div>
             {selectedCounselor && (
               <FullWidthCLCard
@@ -80,28 +115,40 @@ const Reservation = () => {
                 field={selectedCounselor.field}
                 intro={selectedCounselor.intro}
                 reservId={counselorId}
-                showCancelButton={false}  // 취소 버튼을 숨기기
+                showCancelButton={false}
               />
             )}
-            <h1 className="text-2xl font-bold mb-4 mt-7">예약일지</h1>
-            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-            <TimeSlots selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+            <br />
+            <h1 className="text-2xl font-bold mb-4">예약일지</h1>
+            <Calendar 
+              selectedDate={selectedDate} 
+              setSelectedDate={setSelectedDate}
+              unavailableTimes={unavailableTimes}
+            />
+            <TimeSlots 
+              selectedDate={selectedDate}
+              selectedTime={selectedTime} 
+              setSelectedTime={setSelectedTime}
+              unavailableTimes={selectedDate ? counselorSchedule.filter(dateStr => 
+                dateStr.startsWith(selectedDate.toISOString().split('T')[0])
+              ) : []}
+            />
           </div>
           <img src={BorderImg} alt="" className="w-full" />
           <div className="p-4">
-            <textarea 
-              onChange={(e) => setNote(e.target.value)} 
+            <textarea
+              onChange={(e) => setNote(e.target.value)}
               style={{
-                width: '100%', 
-                border: '1px black solid', 
-                borderRadius: '10px', 
-                height: '80px', 
-                padding: '5px 10px', 
-                resize: 'none'
-              }} 
-              placeholder='힘든 점이나 고민점 혹은 하고싶은 말을 자유롭게 적어보세요.
+                width: "100%",
+                border: "1px black solid",
+                borderRadius: "10px",
+                height: "80px",
+                padding: "5px 10px",
+                resize: "none",
+              }}
+              placeholder="힘든 점이나 고민점 혹은 하고싶은 말을 자유롭게 적어보세요.
 (ex. 은둔기간: 2024.05~
-      요즘 잠이 안 와요...'
+      요즘 잠이 안 와요..."
             ></textarea>
             <br />
             <br />

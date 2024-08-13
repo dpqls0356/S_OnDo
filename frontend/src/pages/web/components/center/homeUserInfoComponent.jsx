@@ -72,7 +72,7 @@ const CounselingMemo = styled.div`
     margin-bottom: 10px;
   }
   .memo {
-    background-color: #fae6e6;
+    background-color: #cdd3d5;
     padding: 10px 20px;
     border-radius: 10px;
     width: 100%;
@@ -116,16 +116,22 @@ const HomeUserInfoComponent = () => {
   ]);
 
   const updateDetail = (reservId) => async (event) => {
-    const itemToUpdate = formData.find((item) => item.reservationId === reservId);
+    const itemToUpdate = formData.find(
+      (item) => item.reservationId === reservId
+    );
 
     if (itemToUpdate) {
       try {
-        const response = await axios.put(`${baseUrl}/counselor/memberReservation`, itemToUpdate, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        });
+        const response = await axios.put(
+          `${baseUrl}/counselor/memberReservation`,
+          itemToUpdate,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
 
         if (response.data.success) {
           console.log("수정이 완료되었습니다. ");
@@ -151,12 +157,15 @@ const HomeUserInfoComponent = () => {
 
   const getMemberInfo = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/counselor/getMember?memberId=${memberId}`, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `${baseUrl}/counselor/getMember?memberId=${memberId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = response.data.data.member;
       setMemberInfo({
         birthDate: data.birthDate,
@@ -250,7 +259,10 @@ const HomeUserInfoComponent = () => {
                 backgroundColor: "white",
               }}
             >
-              <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faUser} />
+              <FontAwesomeIcon
+                style={{ width: "100%", height: "100%" }}
+                icon={faUser}
+              />
             </div>
           )}
         </Col>
@@ -273,12 +285,17 @@ const HomeUserInfoComponent = () => {
                 <div className="memo">
                   <div>
                     <textarea
-                      onChange={handleInputChange("counsellingDetail", history.reservationId)}
+                      onChange={handleInputChange(
+                        "counsellingDetail",
+                        history.reservationId
+                      )}
                       value={formData[index]?.counsellingDetail}
                     />
                   </div>
                   <div>
-                    <button onClick={updateDetail(history.reservationId)}>수정</button>
+                    <button onClick={updateDetail(history.reservationId)}>
+                      수정
+                    </button>
                   </div>
                 </div>
               </CounselingMemo>
@@ -291,12 +308,17 @@ const HomeUserInfoComponent = () => {
                 <div className="memo">
                   <div>
                     <textarea
-                      onChange={handleInputChange("counsellingDetail", history.reservationId)}
+                      onChange={handleInputChange(
+                        "counsellingDetail",
+                        history.reservationId
+                      )}
                       value={formData[index]?.counsellingDetail}
                     />
                   </div>
                   <div>
-                    <button onClick={updateDetail(history.reservationId)}>수정</button>
+                    <button onClick={updateDetail(history.reservationId)}>
+                      수정
+                    </button>
                   </div>
                 </div>
               </CounselingMemo>

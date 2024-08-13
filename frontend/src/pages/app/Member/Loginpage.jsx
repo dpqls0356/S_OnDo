@@ -34,13 +34,13 @@ const Loginpage = () => {
   const onClickKakao = () => {
     nav("/member/kakaologin");
     window.location.href =
-      "https://i11c110.p.ssafy.io/oauth2/authorization/kakao";
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/kakao";
   };
 
   const onClickNaver = () => {
     nav("/member/naverlogin");
     window.location.href =
-      "https://i11c110.p.ssafy.io/oauth2/authorization/naver";
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/naver";
   };
   const onClickJoin = () => {
     nav("/member/join");
