@@ -87,12 +87,17 @@ const useCounselorStore = create((set, get) => ({
     }
   },
 
-  // 상담사의 가능한 일정 가져오기
-  fetchCounselorSchedule: async (counselorId, date) => {
+  // 상담사의 가능한 일정이 아니라 거르는 일정
+  fetchCounselorSchedule: async (counselorId) => {
     set({ isLoading: true });
     try {
       const response = await api.get(`/member/reservation/counselor/${counselorId}`);
-      const schedule = response.data.data.counselorSchedule.map(dateStr => new Date(dateStr));
+      const schedule = response.data.data.counselorSchedule.map(dateStr => {
+        const date = new Date(dateStr);
+        // UTC 시간을 한국 시간(UTC+9)으로 변환
+        const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+        return koreaDate.toISOString();
+      });
       set({ counselorSchedule: schedule, isLoading: false });
     } catch (error) {
       set({ error: error.message, isLoading: false });
@@ -104,7 +109,7 @@ const useCounselorStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const dateString = reservationDate.toISOString();
-      const response = await api.post('/member/reservation/make', {
+      const response = await api.post('/api/v1/member/reservation/make', {
         counselorId,
         reservationDate: dateString,
         detail
@@ -112,7 +117,6 @@ const useCounselorStore = create((set, get) => ({
       
       if (response.data.success) {
         const newReservation = {
-          // id: response.data.data.id,
           counselorId: counselorId,
           reservationDate: dateString,
           detail: detail,
