@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import axios from 'axios';
+import { create } from "zustand";
+import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
@@ -9,13 +9,13 @@ const api = axios.create({
 
 // 성별 매핑 추가
 const GENDER_MAP = {
-  MALE: '남',
-  FEMALE: '여'
+  MALE: "남",
+  FEMALE: "여",
 };
 
 const GENDER_REVERSE_MAP = {
-  남: 'MALE',
-  여: 'FEMALE'
+  남: "MALE",
+  여: "FEMALE",
 };
 
 // dday 계산
@@ -26,10 +26,10 @@ const calculateDday = (reservationDate) => {
   reservDate.setHours(0, 0, 0, 0);
   const timeDiff = reservDate.getTime() - today.getTime();
   const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-  
+
   if (dayDiff > 0) return `D-${dayDiff}`;
-  if (dayDiff === 0) return 'D-day';
-  if (dayDiff === -1) return '상담완료';
+  if (dayDiff === 0) return "D-day";
+  if (dayDiff === -1) return "상담완료";
   return null; // D-day가 지난 경우 null을 반환
 };
 
@@ -39,48 +39,50 @@ const calculateExactDateTime = (reservationDate) => {
   const reservDate = new Date(reservationDate);
   const timeDiff = reservDate.getTime() - now.getTime();
   const hoursPassed = (now.getTime() - reservDate.getTime()) / (1000 * 60 * 60);
-  
+
   return {
     exactDateTime: reservDate.toISOString(),
     millisUntilReservation: timeDiff,
     isBeforeReservation: timeDiff > 0,
     isDuringReservation: timeDiff <= 0 && timeDiff > -60 * 60 * 1000, // 상담 시작부터 1시간 동안
     isAfterReservation: timeDiff <= -60 * 60 * 1000,
-    hoursPassed: hoursPassed
+    hoursPassed: hoursPassed,
   };
 };
 
 const useCounselorStore = create((set, get) => ({
-  counselors: [],  // 모든 상담사 목록
-  selectedCounselor: null,  // 특정 상담사의 상세 정보
+  counselors: [], // 모든 상담사 목록
+  selectedCounselor: null, // 특정 상담사의 상세 정보
   counselorSchedule: [], // 상담사의 가능한 일정
   userReservations: [], // 사용자의 예약 목록
   isLoading: false, // 비동기 작업 위한 로딩 상태
   error: null,
 
-   // 성별 매핑 함수 추가
-   displayGender: (gender) => GENDER_MAP[gender] || gender,
-   searchGender: (gender) => GENDER_REVERSE_MAP[gender] || gender,
-
+  // 성별 매핑 함수 추가
+  displayGender: (gender) => GENDER_MAP[gender] || gender,
+  searchGender: (gender) => GENDER_REVERSE_MAP[gender] || gender,
 
   // 모든 상담사 목록 가져오기
   fetchCounselors: async () => {
     set({ isLoading: true });
     try {
-      const response = await api.get('/member/counselor/list');
+      const response = await api.get("/member/counselor/list");
       set({ counselors: response.data.data.counselorList, isLoading: false });
     } catch (error) {
       console.error("Error fetching counselors:", error);
       set({ error: error.message, isLoading: false });
     }
   },
-  
+
   // 특정 상담사의 상세 정보 가져오기
   fetchCounselorDetails: async (counselorId) => {
     set({ isLoading: true });
     try {
       const response = await api.get(`/member/counselor/list/${counselorId}`);
-      set({ selectedCounselor: response.data.data.counselor, isLoading: false });
+      set({
+        selectedCounselor: response.data.data.counselor,
+        isLoading: false,
+      });
     } catch (error) {
       console.error("Error fetching counselor details:", error);
       set({ error: error.message, isLoading: false });
@@ -91,8 +93,10 @@ const useCounselorStore = create((set, get) => ({
   fetchCounselorSchedule: async (counselorId) => {
     set({ isLoading: true });
     try {
-      const response = await api.get(`/member/reservation/counselor/${counselorId}`);
-      const schedule = response.data.data.counselorSchedule.map(dateStr => {
+      const response = await api.get(
+        `/member/reservation/counselor/${counselorId}`
+      );
+      const schedule = response.data.data.counselorSchedule.map((dateStr) => {
         const date = new Date(dateStr);
         // UTC 시간을 한국 시간(UTC+9)으로 변환
         const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
@@ -109,65 +113,74 @@ const useCounselorStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const dateString = reservationDate.toISOString();
-      const response = await api.post('/api/v1/member/reservation/make', {
+      const response = await api.post("/member/reservation/make", {
         counselorId,
         reservationDate: dateString,
-        detail
+        detail,
       });
-      
+
       if (response.data.success) {
         const newReservation = {
           counselorId: counselorId,
           reservationDate: dateString,
           detail: detail,
           counselor: get().selectedCounselor,
-          dday: calculateDday(dateString)
+          dday: calculateDday(dateString),
         };
-        
-        set(state => ({
+
+        set((state) => ({
           userReservations: [...state.userReservations, newReservation],
-          isLoading: false
+          isLoading: false,
         }));
       }
-      
+
       return response.data;
     } catch (error) {
-      console.error("Error making reservation:", error.response?.data || error.message);
-      set({ error: error.response?.data?.message || error.message, isLoading: false });
+      console.error(
+        "Error making reservation:",
+        error.response?.data || error.message
+      );
+      set({
+        error: error.response?.data?.message || error.message,
+        isLoading: false,
+      });
       throw error;
     }
   },
-
 
   // 사용자의 예약 목록 가져오기
   fetchUserReservations: async () => {
     set({ isLoading: true });
     try {
-      const response = await api.get('/member/reservation/getReservation');
+      const response = await api.get("/member/reservation/getReservation");
       // console.log("Raw reservation data:", JSON.stringify(response.data, null, 2));
-  
-      const reservations = await Promise.all(response.data.data.reservationList.map(async (reservation) => {
-        // console.log("Processing reservation:", JSON.stringify(reservation, null, 2));
-        
-        try {
-          const counselorResponse = await api.get(`/member/counselor/list/${reservation.counselorId}`);
-          // console.log("Counselor data for reservation:", JSON.stringify(counselorResponse.data, null, 2));
-  
-          return {
-            ...reservation,
-            dday: calculateDday(reservation.reservationDate),
-            counselor: counselorResponse.data.data.counselor
-          };
-        } catch (counselorError) {
-          console.error("Error fetching counselor data:", counselorError);
-          return {
-            ...reservation,
-            dday: calculateDday(reservation.reservationDate),
-            counselor: null
-          };
-        }
-      }));
-  
+
+      const reservations = await Promise.all(
+        response.data.data.reservationList.map(async (reservation) => {
+          // console.log("Processing reservation:", JSON.stringify(reservation, null, 2));
+
+          try {
+            const counselorResponse = await api.get(
+              `/member/counselor/list/${reservation.counselorId}`
+            );
+            // console.log("Counselor data for reservation:", JSON.stringify(counselorResponse.data, null, 2));
+
+            return {
+              ...reservation,
+              dday: calculateDday(reservation.reservationDate),
+              counselor: counselorResponse.data.data.counselor,
+            };
+          } catch (counselorError) {
+            console.error("Error fetching counselor data:", counselorError);
+            return {
+              ...reservation,
+              dday: calculateDday(reservation.reservationDate),
+              counselor: null,
+            };
+          }
+        })
+      );
+
       // console.log("Processed reservations:", JSON.stringify(reservations, null, 2));
       set({ userReservations: reservations, isLoading: false });
     } catch (error) {
@@ -180,10 +193,14 @@ const useCounselorStore = create((set, get) => ({
   cancelReservation: async (reservationId) => {
     set({ isLoading: true });
     try {
-      const response = await api.delete(`/member/reservation/cancel/${reservationId}`);
-  
+      const response = await api.delete(
+        `/member/reservation/cancel/${reservationId}`
+      );
+
       if (response.data.success) {
-        const updatedReservations = get().userReservations.filter(r => r.id !== reservationId);
+        const updatedReservations = get().userReservations.filter(
+          (r) => r.id !== reservationId
+        );
         set({ userReservations: updatedReservations, isLoading: false });
         return response.data;
       } else {
@@ -191,15 +208,18 @@ const useCounselorStore = create((set, get) => ({
       }
     } catch (error) {
       console.error("예약 취소 중 오류 발생:", error.response || error);
-      set({ 
-        isLoading: false, 
-        error: error.response?.data?.message || error.message || "상담 예약 취소 중 오류가 발생했습니다." 
+      set({
+        isLoading: false,
+        error:
+          error.response?.data?.message ||
+          error.message ||
+          "상담 예약 취소 중 오류가 발생했습니다.",
       });
       throw error;
     }
   },
   calculateDday,
-  calculateExactDateTime
+  calculateExactDateTime,
 }));
 
 export default useCounselorStore;
