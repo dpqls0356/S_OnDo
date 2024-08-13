@@ -98,6 +98,46 @@ const UserInfoComponent = ({ memberInfo }) => {
   const memberId = memberInfo.memberId;
   const size = 10;
 
+  const [updateData, setUpdateData] = useState([]);
+
+  useEffect(() => {
+    if (memberInfo && historyList.reservationId) {
+      const newUpdateData = historyList.reservationId.map((_, index) => ({
+        reservationId: historyList.reservationId[index] || "",
+        reservationDate: historyList.reservationDate[index] || "",
+        counselingReservationDetail: historyList.counselingReservationDetail[index] || "",
+        counsellingDetail: historyList.counsellingDetail[index] || "",
+      }));
+
+      setUpdateData(newUpdateData);
+    }
+  }, [memberInfo, historyList]);
+
+  const handleInputChange = (field, index) => (e) => {
+    const newValue = e.target.value;
+
+    setUpdateData((prevUpdateData) => {
+      const updatedData = [...prevUpdateData];
+      updatedData[index] = {
+        ...updatedData[index],
+        [field]: newValue,
+      };
+      return updatedData;
+    });
+  };
+
+  const handleSaveClick = (index) => () => {
+    // 예를 들어, formData가 배열일 때
+    setUpdateData((prevFormData) => {
+      const updatedFormData = [...prevFormData];
+      updatedFormData[index] = { ...updateData[index] }; // 특정 인덱스의 데이터를 업데이트
+      return updatedFormData;
+    });
+
+    // 디버깅을 위한 로그
+    console.log("Updated Data:", updateData[index]);
+  };
+
   useEffect(() => {
     console.log("========================유저정보컴포넌트===========================");
     console.log(memberInfo);
@@ -198,10 +238,13 @@ const UserInfoComponent = ({ memberInfo }) => {
                 <p>{history.counselingReservationDetail}</p>
                 <div className="memo">
                   <div>
-                    <textarea>{history.counsellingDetail}</textarea>
+                    <textarea
+                      value={updateData[index].counsellingDetail}
+                      onChange={handleInputChange("counsellingDetail", index)}
+                    />
                   </div>
                   <div>
-                    <button>수정</button>
+                    <button onClick={handleSaveClick(index)}>수정</button>
                   </div>
                 </div>
               </CounselingMemo>
