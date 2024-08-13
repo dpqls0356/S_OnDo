@@ -68,6 +68,7 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
   return (
     <>
       <div className="bg-white rounded-lg p-4">
+        {/* 캘린더 상단 버튼 및 년/월 */}
         <div className="flex justify-between items-center text-gray-600 mb-2">
           <button 
             onClick={() => handleMonthChange(-1)} 
@@ -85,6 +86,8 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
             &gt;
           </button>
         </div>
+
+
         <div className="grid grid-cols-7 gap-2 text-center">
           {['일', '월', '화', '수', '목', '금', '토'].map(day => (
             <div key={day} className="text-gray-700 font-semibold">{day}</div>
