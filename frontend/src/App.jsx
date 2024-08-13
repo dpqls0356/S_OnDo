@@ -1,11 +1,17 @@
-import { BrowserRouter as Router, Routes, Route,useLocation,Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
 
 import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
 import CounselorLogin from "./pages/web/counselorLogin";
 import CounselingRoom from "./pages/web/counselingRoom";
-import CounselorJoin from "./pages/web/counselorJoin"
+import CounselorJoin from "./pages/web/counselorJoin";
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
 
@@ -33,9 +39,10 @@ import BoardUpdatepage from "./pages/app/Board/BoardUpdatepage";
 import MyUpdateForm from "./pages/app/Member/MyUpdatepage";
 
 import Join from "../src/pages/app/Member/Join";
+import OAuthCallback from "./pages/app/Member/OAuthCallback";
 import MyPage from "../src/pages/app/Member/MyPage";
 import Mission from "./pages/app/Mission/Mission";
-import CompletedMission from './pages/app/Mission/CompletedMissions'
+import CompletedMission from "./pages/app/Mission/CompletedMissions";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
@@ -44,14 +51,13 @@ import HomeUserInfoComponent from "./pages/web/components/center/homeUserInfoCom
 // import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
 function App() {
-
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/member/main" />} />
         {/* 상담사 */}
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
-        <Route path="/counselor/join" element={<CounselorJoin/>}></Route>
+        <Route path="/counselor/join" element={<CounselorJoin />}></Route>
         <Route path="/counselor" element={<CounselorLayout />}>
           <Route path="" element={<Schedul />} />
           {/* <Route path="" element={<TimeTableComponent/> }/> */}
@@ -68,6 +74,7 @@ function App() {
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
         {/* 유저 */}
         <Route path="/member" element={<MobileLayout />}>
+          <Route path="oauth-callback" element={<OAuthCallback />} />
           <Route path="main" element={<Logopage />} />
           <Route path="login" element={<Loginpage />} />
           <Route path="story" element={<Story />} />
