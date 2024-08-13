@@ -46,7 +46,7 @@ const IncorrectAccessModal = ({ isOpen, closeModal }) => {
           zIndex: 1001,
         },
         overlay: {
-          backgroundColor: "#ffd8a1",
+          backgroundColor: "#fff4e4",
           zIndex: 1000,
         },
       }}
