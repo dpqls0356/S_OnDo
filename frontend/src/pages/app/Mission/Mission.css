@@ -5,6 +5,9 @@
   }
   #MissionPage{
     padding-top: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .charCard{
@@ -36,7 +39,7 @@
   #EXP-bar{
     position: relative;
     border: 2px #FFB1B1 solid;
-    height: 15px;
+    height: 20px;
     width: 90%;
     border-radius: 30px;
   }

@@ -8,6 +8,22 @@ import useBoardStore from "../../../store/app/BoardStore";
 import useAuthStore from "../../../store/app/authStore";
 import LoadingSpinner from "../../../components/app/Spinner";
 import Swal from "sweetalert2";
+import styled from "styled-components"
+const RemovePic = styled.div`
+  position: absolute;
+  top:0;
+  color:white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+`
+const Pic = styled.div`
+  position: relative;
+`
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -55,6 +71,7 @@ const BoardCreatepage = () => {
     useBoardStore();
   const { user } = useAuthStore();
   const [spinnerLoading, setSpinnerLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null); // 이미지 미리보기 상태
 
   // 새로고침 시, 문제 해결 위해서 checkAuth
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -72,6 +89,24 @@ const BoardCreatepage = () => {
 
     checkAuthAndSetBoard();
   }, []);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); // 이미지 미리보기 설정
+        setCurrentBoard("image", file); // 상태에 파일 설정
+      };
+      reader.readAsDataURL(file); // 파일을 읽어 DataURL로 변환
+    }
+  };
+
+  const handleImageRemove = () => {
+    setImagePreview(null); // 이미지 미리보기 초기화
+    setCurrentBoard("image", null); // 상태에서 파일 제거
+    document.getElementById('AddImage').value = null; // input 파일 값 초기화
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,6 +171,9 @@ const BoardCreatepage = () => {
     <>
       {spinnerLoading && <LoadingSpinner />}
       <form className="CreateForm" onSubmit={handleSubmit}>
+        <div onClick={onClickCancel} style={{ cursor: "pointer" }}>
+          X
+        </div>
         <div>
           <input
             maxLength={20}
@@ -145,27 +183,75 @@ const BoardCreatepage = () => {
             value={currentBoard.title}
             onChange={(e) => setCurrentBoard("title", e.target.value)}
           />
-          <div onClick={onClickCancel} style={{ cursor: "pointer" }}>
-            X
-          </div>
         </div>
         <textarea
+          style={{ marginBottom: "20px" }}
           maxLength={300}
           placeholder="나누고 싶은 이야기를 적어보세요!"
           value={currentBoard.content}
           onChange={(e) => setCurrentBoard("content", e.target.value)}
         ></textarea>
+        <div style={{ marginBottom: "20px", display: "flex" }}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"
+            />
+          </svg>
+          <label style={{ marginLeft: "5px" }} htmlFor="AddImage">
+            사진추가하기
+          </label>
+        </div>
+        <div className="imgBox">
+          {imagePreview && (
+            <div>
+              <Pic>
+                <img
+                  src={imagePreview}
+                  alt="미리보기"
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+                  }}
+                />
+                              <RemovePic
+                type="button"
+                onClick={handleImageRemove}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg>
 
+              </RemovePic>
+              </Pic>
+            </div>
+          )}
+        </div>
         <input
+          style={{ display: "none" }}
           id="AddImage"
           type="file"
           accept="image/*"
-          onChange={(e) => setCurrentBoard("image", e.target.files[0])}
+          onChange={handleImageChange}
         />
         <Button text="게시" type="submit" />
       </form>
       <div className="emptybox"></div>
-      <Footer />
     </>
   );
 };

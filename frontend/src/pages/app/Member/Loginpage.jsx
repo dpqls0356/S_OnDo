@@ -72,7 +72,11 @@ const Loginpage = () => {
           <br />
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <Button text={"로그인"} type="submit" />
+        <Button
+          style={{ marginBottom: "10px" }}
+          text={"로그인"}
+          type="submit"
+        />
       </form>
       <div className="cross-line">
         <div></div>
@@ -82,13 +86,13 @@ const Loginpage = () => {
       <img
         onClick={onClickKakao}
         src={kakaologin}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", marginBottom: "10px" }}
         alt="Kakao Login"
       />
       <img
         onClick={onClickNaver}
         src={naverlogin}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", marginBottom: "10px" }}
         alt="Naver Login"
       />
       <p
