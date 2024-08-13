@@ -14,6 +14,7 @@ const CLCard = ({
   reservId,
   counselingUrl,
   profileUrl,
+  isExpired,
   showCancelButton = true,
 }) => {
   const nav = useNavigate();
