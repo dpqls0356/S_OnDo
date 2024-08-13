@@ -64,7 +64,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
+	public Long join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
 
 		//s3이미지 url 생성 및 저장
 
@@ -83,6 +83,9 @@ public class MemberServiceImpl implements MemberService {
 		characterRepository.save(character);
 		memberRepository.save(member);
 		missionService.createTodayMission(member.getId());
+
+		Optional<Member> findMemberOptinal = memberRepository.findByEmail(member.getEmail());
+		return findMemberOptinal.get().getId();
 	}
 
 

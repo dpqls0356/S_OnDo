@@ -3,9 +3,10 @@
 }
 
 .CreateForm{
-  padding: 10px 17px;
+  padding: 10px 17px 20px 17px;
   display: flex;
   height: 80vh;
+  max-height: max-content;
   justify-content: center;
   flex-direction: column;
   border: 1px black solid;
@@ -15,7 +16,7 @@
   border-radius: 20px;
   background-color: white;
   box-shadow: -4px 6px 0px 0px #001429;
-  gap: 3%;
+  /* gap: 3%; */
 }
 
 .emptybox{
