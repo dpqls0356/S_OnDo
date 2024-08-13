@@ -12,10 +12,14 @@ import org.springframework.stereotype.Service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.clio.ondo.domain.member.model.Member;
+import com.clio.ondo.domain.member.repository.MemberRepository;
+import com.clio.ondo.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -24,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageServiceImpl implements ImageService {
 
 	private final AmazonS3 amazonS3;
+	private final MemberRepository memberRepository;
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
@@ -48,6 +53,20 @@ public class ImageServiceImpl implements ImageService {
 		
 		removeNewFile(uploadFile);
 		return UploadImageUrl;
+	}
+
+	//S3에 업로드하고 url 반환
+	@Override
+	@Transactional
+	public String uploadAndMember(MultipartFile multipartFile, String dirName, Long memberId) throws IOException{
+		File uploadFile = convert(multipartFile)
+			.orElseThrow(() -> new IllegalArgumentException("file 변환 오류"));
+		String url = uploadUrl(uploadFile, dirName);
+		Optional<Member> member = memberRepository.findById(memberId);
+		if(member.isPresent()){
+			member.get().updateProfileUrl(url);
+		}
+		return url;
 	}
 
 	//로컬 서버에서 임시 파일 삭제

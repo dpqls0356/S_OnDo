@@ -1,25 +1,35 @@
 .Loginpage {
-  /* margin: 0 auto; */
-  padding: 17%;
+  height: 100vh;
+  padding: 30% 17%;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   flex-direction: column;
+}
+.Loginpage > * {
+  width: 100%;
 }
 
 #Title {
   font-size: 175%;
   text-align: left;
-  padding-left: 10%;
-  /* padding-top: 15% */
+  margin-bottom: 20px;
 }
-
+#login-id,
+#password {
+  padding: 8px;
+  margin-top: 3px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #dedede;
+  /* font-size: 15px; */
+}
+#login-id::placeholder,
+#password::placeholder {
+  font-size: 15px;
+}
 input[type="password"] {
   font-family: "";
-}
-
-.Loginpage *:not(.cross-line > *) {
-  padding: 3%;
 }
 
 .Loginpage form {
@@ -44,6 +54,7 @@ input[type="password"] {
   display: flex;
   align-items: center;
   width: 100%;
+  margin: 15px 0px;
   justify-content: center;
 }
 
