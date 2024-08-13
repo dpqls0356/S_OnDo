@@ -13,7 +13,7 @@ const View = styled.div`
   display: flex;
   align-items: center;
   background-color: white;
-  border: 3px solid #506c64;
+  border: 3px solid #ffa79d;
   border-radius: 10px;
   margin-bottom: 30px;
   position: relative;
@@ -45,7 +45,7 @@ const Col = styled.div`
 `;
 
 const CreateCounselingRoomBtn = styled.button`
-  background-color: #506c64;
+  background-color: #ffa79d;
   height: 50%;
   width: 90%;
   display: flex;
@@ -65,7 +65,7 @@ const MemberImg = styled.div`
 `;
 
 const CancelReservationBtn = styled.button`
-  background-color: #506c64;
+  background-color: #ffa79d;
   position: absolute;
   color: white;
   width: 20px;
