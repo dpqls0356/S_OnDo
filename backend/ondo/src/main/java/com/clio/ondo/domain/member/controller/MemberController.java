@@ -60,7 +60,6 @@ public class MemberController {
 	private final CounselorService counselorService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final ScheduledAlarmService scheduledAlarmService;
 
     @PostMapping("/login")
 	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto, HttpServletResponse response) {
@@ -88,7 +87,7 @@ public class MemberController {
 //			}
 
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
-		} catch (AuthenticationException e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
 		}
 	}

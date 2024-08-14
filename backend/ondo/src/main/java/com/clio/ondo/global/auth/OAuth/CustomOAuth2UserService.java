@@ -3,6 +3,12 @@ package com.clio.ondo.global.auth.OAuth;
 import java.util.Map;
 import java.util.Optional;
 
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.repository.CharacterRepository;
+import com.clio.ondo.domain.character.service.CharacterService;
+import com.clio.ondo.domain.mission.repository.MissionRepository;
+import com.clio.ondo.domain.mission.service.MissionService;
+import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
