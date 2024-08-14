@@ -46,15 +46,19 @@ const extractType = async (text) => {
 
 const useCommentStore = create((set) => ({
   comments: [],
+  currentPage: 1, // 현재 페이지를 상태로 관리
+  hasMoreComments: true, // 더 가져올 댓글이 있는지 여부
   addComment: async (comment) => {
     try {
-      // const token = document.cookie.replace(/(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
       const response = await api.post("/board/comment", comment);
       if (response.status === 201) {
-        // 댓글 추가 후 즉시 댓글 목록을 다시 가져오기
         const articleId = comment.article_id;
         const commentsResponse = await api.get(`/board/comment/${articleId}`);
-        set({ comments: commentsResponse.data });
+        set({
+          comments: commentsResponse.data,
+          currentPage: 1,
+          hasMoreComments: true,
+        });
         return true;
       } else if (response.status == 200) {
         await alertModeration(response.data.message);
@@ -67,10 +71,30 @@ const useCommentStore = create((set) => ({
   },
   getComments: async (articleId) => {
     try {
-      const response = await api.get(`/board/comment/${articleId}`);
-      set({ comments: response.data.data.comments.content });
+      const response = await api.get(`/board/comment/${articleId}?page=1`);
+      set({
+        comments: response.data.data.comments.content,
+        currentPage: 1,
+        hasMoreComments: response.data.data.comments.totalPages > 1,
+      });
     } catch (error) {
       console.error("댓글 목록 불러오기 실패:", error);
+    }
+  },
+  loadMoreComments: async (articleId) => {
+    try {
+      set((state) => ({ currentPage: state.currentPage + 1 }));
+      const { currentPage, comments } = useCommentStore.getState();
+      const response = await api.get(
+        `/board/comment/${articleId}?page=${currentPage}`
+      );
+      const newComments = response.data.data.comments.content;
+      set({
+        comments: [...comments, ...newComments],
+        hasMoreComments: newComments.length > 0,
+      });
+    } catch (error) {
+      console.error("추가 댓글 불러오기 실패:", error);
     }
   },
   deleteComment: async (commentId) => {
@@ -90,7 +114,6 @@ const useCommentStore = create((set) => ({
       const response = await api.patch(`/board/comment/${commentId}`, {
         content: modifiedContent,
       });
-      console.log(response);
       if (response.status === 204) {
         set((state) => ({
           comments: state.comments.map((comment) =>
