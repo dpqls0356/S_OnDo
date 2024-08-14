@@ -62,7 +62,7 @@ public class SecurityConfig {
 		private static final String[] AUTH_WHITELIST = {
 				"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue",
 				"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue", "/error",
-				"/api/v1/member/oauth-success", "/favicon,ico", "oauth2/**", "login**", "/api/v1/image/**"
+				"/api/v1/member/oauth-success", "/favicon,ico", "oauth2/**", "login**", "/api/v1/image/upload/**"
 		};
 
 		@Bean
@@ -109,7 +109,7 @@ public class SecurityConfig {
 		private static final String[] WHITELIST = {
 				"/api/v1/counselor/login", "/api/v1/counselor/join", "/api/v1/counselor/reissue",
 				"/api/v1/member/login", "/api/v1/member/join", "/api/v1/member/reissue", "/error",
-				"/api/v1/member/oauth-success", "/favicon,ico", "oauth2/**", "login**", "/api/v1/image/**"
+				"/api/v1/member/oauth-success", "/favicon,ico", "oauth2/**", "login**", "/api/v1/image/upload/**"
 		};
 
 		@Bean

@@ -1,5 +1,6 @@
 package com.clio.ondo.domain.board.repository;
 import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.BoardUpdateDto;
 import com.clio.ondo.domain.board.model.Comment;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
   바뀐 데이터 파악해서 저장
    */
   @Override
-  public void updateArticle(ObjectId articleId, Board modifiedArticle) {
+  public void updateArticle(ObjectId articleId, BoardUpdateDto modifiedArticle) {
     Query query = new Query(Criteria.where("_id").is(articleId));
     Update update = new Update();
 
@@ -34,8 +35,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
     if (modifiedArticle.getContent() != null) {
       update.set("content", modifiedArticle.getContent());
     }
-
-    update.set("imageUrl",modifiedArticle.getImageUrl());
 
     mongoTemplate.updateFirst(query, update, Board.class);
   }
