@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -144,24 +145,30 @@ public class CounselorController {
     
     //상담사 수정하기
     @PutMapping("/updateMypage")
-    public ResponseEntity<ResponseVO<Void>> updateMypage(HttpServletRequest request,
-        @RequestPart("requestDto") CounselorMypageRequestDto requestDto,
-        @RequestPart("profileImage") MultipartFile profileImage
-    ) throws IOException {
+    public ResponseEntity<ResponseVO<Void>> updateMypage(HttpServletRequest request, @RequestBody CounselorMypageRequestDto requestDto) throws IOException {
         String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
         Long counselorId = jwtTokenProvider.getIdFromToken(token);
         counselorService.updateMypage(
             counselorId,
             requestDto.getPassword(),
-            requestDto.getSelfIntroduction(),
-            profileImage
+            requestDto.getSelfIntroduction()
         );
-
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("상담사 마이페이지 업데이트"));
     }
 
-
+    @PostMapping("/updateImage/{type}")
+    public ResponseEntity<?> updateMember(@PathVariable String type, @RequestParam("data") MultipartFile file, HttpServletRequest request) throws IOException{
+        String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+        Long counselorId = jwtTokenProvider.getIdFromToken(token);
+        try{
+            imageService.updateAndCounselor(file,type,counselorId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("이미지 수정 실패"));
+        }
+    }
 
 
 

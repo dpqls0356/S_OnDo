@@ -4,13 +4,17 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
-
 import camera from "./../../../assets/images/camera.png";
 import useAuthStore from "../../../store/app/authStore.js";
 import "./Join.css";
 import { faTrophy } from "@fortawesome/free-solid-svg-icons";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+
+const api = axios.create({
+  baseURL: baseUrl,
+  withCredentials: true,
+});
 
 const JoinForm = () => {
   const nav = useNavigate();
@@ -85,37 +89,12 @@ const JoinForm = () => {
       return;
     }
 
-    // 이미지 포함한 form-Dat 보내기
-    const userData = new Blob(
-      [
-        JSON.stringify({
-          email: formData.email,
-          name: formData.name,
-          nickname: formData.nickname,
-          password: formData.password,
-          birthDate: formData.birthDate,
-          gender: formData.gender,
-        }),
-      ],
-      { type: "application/json" }
-    );
-
-    const userFormData = new FormData();
-    userFormData.append("joinRequestDto", userData);
-
-    const emptyFile = new Blob([""], { type: "image/jpeg" });
-    userFormData.append("profileImage", emptyFile, "empty.jpg");
-
     try {
-      const response = await axios.post(
-        `${baseUrl}/member/join`,
-        userFormData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await api.post(`/member/join`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.data.success) {
         alert("회원가입이 완료되었습니다.");
@@ -125,8 +104,8 @@ const JoinForm = () => {
             const imgFormData = new FormData();
             imgFormData.append("data", selectedFile);
 
-            const imageRespose = await axios.post(
-              `${baseUrl}/image/upload/MemberProfile/${response.data.data.id}`,
+            const imageRespose = await api.post(
+              `/image/upload/MemberProfile/${response.data.data.id}`,
               imgFormData,
               {
                 headers: {
