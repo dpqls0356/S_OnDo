@@ -7,6 +7,9 @@ import com.clio.ondo.domain.alarm.missionAlarm.model.FCMMessage;
 import com.clio.ondo.domain.alarm.missionAlarm.model.FCMNotification;
 import com.clio.ondo.domain.alarm.missionAlarm.model.FCMResultDto;
 import com.clio.ondo.domain.alarm.missionAlarm.model.FCMSendDto;
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.service.CharacterService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ public class MissionAlarmService {
 	private RedisTemplate redisTemplate;
 	@Autowired
 	private FCMService fcmService;
+	@Autowired
+	private CharacterService characterService;
 
 	public List<FCMResultDto> sendFcmAlarm(Long memberId, String message) throws Exception {
 		WebClient webClient = WebClient.builder().build();
@@ -29,10 +34,11 @@ public class MissionAlarmService {
 
 		List<String> tokens = redisTemplate.opsForList().range(key, 0, -1);
 		List<FCMResultDto> results = new ArrayList<>();
+		Character character = characterService.getCharacters(memberId);
 		for(String token : tokens) {
 			FCMSendDto fcmSendDto = new FCMSendDto(
 				new FCMMessage(token,
-					new FCMNotification(message, "특별미션이 갱신 되었습니다.")
+					new FCMNotification(message, character.getName())
 				));
 
 			ResponseEntity<FCMResultDto> responseBody = webClient.post()

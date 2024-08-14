@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.clio.ondo.domain.alarm.missionAlarm.model.FCMToken;
+import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.domain.mission.service.MissionService;
 import com.clio.ondo.global.auth.MemberPrincipalDetails;
@@ -57,6 +59,7 @@ public class MemberServiceImpl implements MemberService {
 	private final DaoAuthenticationProvider memberAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
 	private final MissionService missionService;
+	private final ScheduledAlarmService scheduledAlarmService;
 
 	@Value("${profile.url}")
 	String defaultProfileUrl; //기본 프로필 이미지
@@ -98,12 +101,15 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException {
+	public TokenDto login(LoginRequestDto loginRequestDto) throws Exception {
 		UsernamePasswordAuthenticationToken authToken =
 				new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 		Authentication authentication = memberAuthenticationProvider.authenticate(authToken);
 		String accessToken = jwtTokenProvider.generateAccessToken(authentication);
 		String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+
+		Optional<Member> memberOptional = memberRepository.findByEmail(loginRequestDto.getEmail());
+		scheduledAlarmService.saveToken(memberOptional.get().getId(), new FCMToken(loginRequestDto.getFcmtoken()));
 
 		return new TokenDto(accessToken, refreshToken);
 	}

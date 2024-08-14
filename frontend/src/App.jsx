@@ -50,7 +50,57 @@ import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
 import HomeUserInfoComponent from "./pages/web/components/center/homeUserInfoComponent";
 // import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import useFcmStore from "../src/store/app/FcmStore.js";
+// import { onBackgroundMessage } from "firebase/messaging/sw";
+
 function App() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyAk9W2eCQ5qrmgZv4WvC--1_WuflqeXZ0Y",
+    authDomain: "ondo-ffd48.firebaseapp.com",
+    projectId: "ondo-ffd48",
+    storageBucket: "ondo-ffd48.appspot.com",
+    messagingSenderId: "11671201090",
+    appId: "1:11671201090:web:8883a7703bea1735ac14db",
+    measurementId: "G-E488XVDL6J",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+  const { setFcmToken } = useFcmStore();
+
+  useEffect(() => {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js")
+      .then((registration) => {
+        console.log(
+          "Service Worker registered with scope:",
+          registration.scope
+        );
+
+        getToken(messaging, {
+          vapidKey: import.meta.env.REACT_APP_VAPID,
+        })
+          .then((currentToken) => {
+            if (currentToken) {
+              console.log("FCM Token:", currentToken);
+              setFcmToken(currentToken);
+            } else {
+              console.log(
+                "No registration token available. Request permission to generate one."
+              );
+            }
+          })
+          .catch((err) => {
+            console.error("An error occurred while retrieving token. ", err);
+          });
+      })
+      .catch((err) => {
+        console.error("Service Worker registration failed: ", err);
+      });
+  }, [setFcmToken]);
+
   return (
     <Router>
       <Routes>
