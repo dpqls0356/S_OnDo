@@ -54,7 +54,7 @@ const MyUpdateForm = () => {
     }
   };
 
-  const handleImageDelete = () => {
+  const handleImageDelete = async () => {
     if (confirm("이미지를 삭제하시겠습니까?")) {
       setPreviewUrl(mainProfileUrl);
       setSelectedFile(null);
@@ -124,8 +124,8 @@ const MyUpdateForm = () => {
 
       if (response.data.success) {
         try {
+          const imgFormData = new FormData();
           if (selectedFile) {
-            const imgFormData = new FormData();
             imgFormData.append("data", selectedFile);
 
             if (selectedFile) {
@@ -153,10 +153,25 @@ const MyUpdateForm = () => {
               alert(response.data.message || "이미지 수정에 실패했습니다.");
             }
           } else {
-            alert(response.data.message || "회원가입에 실패했습니다.");
+            const emptyFile = new Blob([""], { type: "image/jpeg" });
+            imgFormData.append("data", emptyFile, "empty.jpg");
+          }
+
+          const imageRespose = await api.post(
+            `/image/update/MemberProfile/${response.data.data.id}`,
+            imgFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          if (imageRespose.data.success) {
+          } else {
+            alert(response.data.message || "이미지 수정에 실패했습니다.");
           }
         } catch {}
-
         alert("회원 정보 수정이 완료되었습니다.");
         nav("/member/profile");
       }
