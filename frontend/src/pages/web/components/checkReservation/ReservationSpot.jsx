@@ -14,7 +14,7 @@ const View = styled.div`
 
 const Header = styled.div`
   font-weight: 700;
-  font-size: 20px;
+  font-size: 25px;
   margin-bottom: 15px;
 `;
 
