@@ -9,8 +9,6 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -47,7 +45,7 @@ public class ScheduledAlarmService {
 		redisTemplate.expire(key, 3600, TimeUnit.SECONDS);
 	}
 
-	@Scheduled(cron = "0 0 23 * * *")
+	@Scheduled(cron = "0 32 12 * * *")
 	//@Scheduled(fixedDelay = 60000)
 	public void createSpecialMission(){
 		try{
