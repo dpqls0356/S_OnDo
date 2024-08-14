@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageServiceImpl implements ImageService {
 	@Value("${profile.url}")
 	String defaultProfileUrl; //기본 프로필 이미지
+	
 	private final AmazonS3 amazonS3;
 	private final MemberRepository memberRepository;
 	private final CounselorRepository counselorRepository;
@@ -61,7 +62,7 @@ public class ImageServiceImpl implements ImageService {
 		return UploadImageUrl;
 	}
 
-	//S3에 업로드하고 url 반환
+	//멤버 회원가입
 	@Override
 	@Transactional
 	public String uploadAndMember(MultipartFile multipartFile, String dirName, Long counselorId) throws IOException{
@@ -75,7 +76,7 @@ public class ImageServiceImpl implements ImageService {
 		return url;
 	}
 
-	//S3에 업로드하고 url 반환
+	//멤버 수정
 	@Override
 	@Transactional
 	public String updateAndMember(MultipartFile multipartFile, String dirName, Long memberId) throws IOException{
@@ -95,7 +96,7 @@ public class ImageServiceImpl implements ImageService {
 			if ("default.jpg".equals(fileName)) {
 				profileUrl = defaultProfileUrl;
 			} else if ("empty.jpg".equals(fileName)) {
-				profileUrl = multipartFile.getOriginalFilename();
+				profileUrl = member.getProfileUrl();
 			}
 		}
 
@@ -107,8 +108,8 @@ public class ImageServiceImpl implements ImageService {
 	@Override
 	@Transactional
 	public String updateAndCounselor(MultipartFile multipartFile, String dirName, Long counselorId) throws IOException{
-		Optional<Counselor> memberOptional = counselorRepository.findById(counselorId);
-		Counselor counselor = memberOptional.get();
+		Optional<Counselor> counselorOptional = counselorRepository.findById(counselorId);
+		Counselor counselor = counselorOptional.get();
 		String profileUrl = counselor.getProfileUrl();
 
 		//무조건 update 되어야함.
@@ -123,7 +124,7 @@ public class ImageServiceImpl implements ImageService {
 			if ("default.jpg".equals(fileName)) {
 				profileUrl = defaultProfileUrl;
 			} else if ("empty.jpg".equals(fileName)) {
-				profileUrl = multipartFile.getOriginalFilename();
+				profileUrl = counselor.getProfileUrl();
 			}
 		}
 
