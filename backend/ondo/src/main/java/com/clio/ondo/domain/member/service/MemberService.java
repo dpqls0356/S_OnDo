@@ -22,7 +22,7 @@ public interface MemberService {
 
 	Long findIdByEmail(String email);
 
-	TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException;
+	TokenDto login(LoginRequestDto loginRequestDto) throws Exception;
 
 	void logout(String accessToken) throws AuthenticationException;
 
