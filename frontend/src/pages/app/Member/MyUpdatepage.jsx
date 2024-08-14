@@ -146,6 +146,7 @@ const MyUpdateForm = () => {
           );
 
           if (imageRespose.data.success) {
+            console.log("이미지수정");
           } else {
             alert(response.data.message || "이미지 수정에 실패했습니다.");
           }
