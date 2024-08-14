@@ -6,9 +6,31 @@ import chat_send from "./../../../assets/images/chat_send.png";
 import back from "./../../../assets/images/back.png";
 import chrface from "./../../../assets/images/test_chara.png";
 import "./Chatpage.css";
+import styled, { keyframes } from "styled-components";
 
+const Back = styled.div`
+  margin-right: 10px;
+`;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({ baseURL: baseUrl, withCredentials: true });
+const typing = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
+const Letter = styled.span`
+  opacity: 0;
+  animation: ${typing} 1s infinite;
+  animation-delay: ${({ delay }) => delay}s;
+`;
+
+const Loading = styled.div`
+  display: inline-block;
+`;
 
 const Chatpage = () => {
   const size = 20;
@@ -26,7 +48,9 @@ const Chatpage = () => {
   const loadingRef = useRef(null);
 
   const getChatbotMessage = useCallback(async () => {
-    const response = await api.get(`/chatbot/list?page=${pageNum}&size=${size}`);
+    const response = await api.get(
+      `/chatbot/list?page=${pageNum}&size=${size}`
+    );
     if (response.status === 200) {
       setPageNum((prevPageNum) => prevPageNum + 1);
     }
@@ -37,7 +61,9 @@ const Chatpage = () => {
     setCharacterLoading(true);
     setCharacterError(null);
     try {
-      const characterResponse = await api.get("/character/getCharacter", { timeout: 5000 });
+      const characterResponse = await api.get("/character/getCharacter", {
+        timeout: 5000,
+      });
       const fetchedCharacter = characterResponse.data.data.character;
       if (fetchedCharacter && fetchedCharacter.name) {
         setCharacter(fetchedCharacter);
@@ -55,7 +81,8 @@ const Chatpage = () => {
 
   const scrollToBottom = useCallback(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, []);
 
@@ -71,7 +98,6 @@ const Chatpage = () => {
           { message: currentInput },
           { headers: { "Content-Type": "application/json" } }
         );
-
         const newMessages = response.data.data.responseChatting;
         setMessages((prevMessages) => [...prevMessages, ...newMessages]);
       } catch (error) {
@@ -91,7 +117,10 @@ const Chatpage = () => {
       if (oldMessages.length < size) {
         setHasMore(false);
       }
-      setMessages((prevMessages) => [...oldMessages.reverse(), ...prevMessages]);
+      setMessages((prevMessages) => [
+        ...oldMessages.reverse(),
+        ...prevMessages,
+      ]);
     } catch (error) {
       console.error("Error loading more messages:", error);
     } finally {
@@ -170,14 +199,32 @@ const Chatpage = () => {
     if (isNaN(date.getTime())) {
       return "";
     }
-    return date.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
+    return date.toLocaleDateString([], {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
     <div className="Chat">
-      {isLoading && <LoadingSpinner />}
       <div className="CharacterName">
-        <img onClick={() => nav("/member/home")} src={back} alt="Back" />
+        <Back onClick={() => nav("/member/home")}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+            />
+          </svg>
+        </Back>
         <img
           src={chrface}
           alt="다람이 얼굴"
@@ -206,11 +253,21 @@ const Chatpage = () => {
           <div className="ChatScreen">
             {messages.map((message, index) => (
               <React.Fragment key={index}>
-                {index === 0 || formatMessageDate(message.createdAt) !== formatMessageDate(messages[index - 1].createdAt) ? (
-                  <div className="date-separator">{formatMessageDate(message.createdAt)}</div>
+                {index === 0 ||
+                formatMessageDate(message.createdAt) !==
+                  formatMessageDate(messages[index - 1].createdAt) ? (
+                  <div className="date-separator">
+                    {formatMessageDate(message.createdAt)}
+                  </div>
                 ) : null}
-                <div className={`message-container ${message.sender === "user" ? "user" : "bot"}`}>
-                  <div className={message.sender === "user" ? "user-message" : "bot-message"}>
+                <div
+                  className={`message-container ${message.sender === "user" ? "user" : "bot"}`}
+                >
+                  <div
+                    className={
+                      message.sender === "user" ? "user-message" : "bot-message"
+                    }
+                  >
                     {message.content}
                   </div>
                   <div className="message-time">
@@ -219,6 +276,15 @@ const Chatpage = () => {
                 </div>
               </React.Fragment>
             ))}
+            {isLoading && (
+              <Loading>
+                {"입력 중...".split("").map((char, index) => (
+                  <Letter key={index} delay={index * 0.1}>
+                    {char}
+                  </Letter>
+                ))}
+              </Loading>
+            )}
           </div>
         </div>
       </div>
