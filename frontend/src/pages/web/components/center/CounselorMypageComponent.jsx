@@ -227,16 +227,12 @@ const CounselorMypage = () => {
     }
 
     try {
-      const response = await axios.put(
-        `${baseUrl}/counselor/updateMypage`,
-        userData,
-        {
-          header: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true, // 쿠키를 포함하여 요청
-        }
-      );
+      const response = await axios.put(`${baseUrl}/counselor/updateMypage`, userData, {
+        header: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true, // 쿠키를 포함하여 요청
+      });
       if (response.data.success) {
         try {
           const imageResponse = await api.post(
@@ -339,13 +335,7 @@ const CounselorMypage = () => {
         />
       )}
       <Name>
-        {MyInfo.name} (
-        {MyInfo.gender === "FEMALE"
-          ? "여"
-          : MyInfo.gender === "MALE"
-            ? "남"
-            : ""}
-        )
+        {MyInfo.name} ({MyInfo.gender === "FEMALE" ? "여" : MyInfo.gender === "MALE" ? "남" : ""})
       </Name>
       <Content>
       <p>

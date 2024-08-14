@@ -1,27 +1,27 @@
 package com.clio.ondo.domain.board.service;
 
-import com.clio.ondo.domain.board.model.Board;
-import com.clio.ondo.domain.board.model.BoardUpdateDto;
-import com.clio.ondo.domain.board.repository.BoardRepository;
-import com.clio.ondo.domain.board.repository.CustomBoardRepository;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.clio.ondo.domain.image.service.ImageService;
-import com.clio.ondo.domain.moderation.model.FilteringResponse;
-import com.clio.ondo.domain.moderation.service.ModerationService;
-import com.clio.ondo.global.exception.board.ModerationException;
-import com.clio.ondo.global.exception.member.NotFoundException;
-import com.clio.ondo.global.exception.member.UnauthorizedException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.BoardUpdateDto;
+import com.clio.ondo.domain.board.repository.BoardRepository;
+import com.clio.ondo.domain.board.repository.CustomBoardRepository;
+import com.clio.ondo.domain.image.service.ImageService;
+import com.clio.ondo.domain.moderation.model.FilteringResponse;
+import com.clio.ondo.domain.moderation.service.ModerationService;
+import com.clio.ondo.global.exception.board.ModerationException;
+import com.clio.ondo.global.exception.member.NotFoundException;
+import com.clio.ondo.global.exception.member.UnauthorizedException;
 
 @Service
 public class BoardServiceImpl implements BoardService {

@@ -103,9 +103,6 @@ const UpdatePassword = () => {
         setMyInfo(response.data.data.counselor);
         console.log("상담사 정보 확인용", MyInfo); // 맨 처음 로딩 시 바로 채워지지 않음... 채워지는 데 시간이 좀 필요한 듯 함
         setLoading(false); // 데이터 로딩이 끝나면 로딩 상태를 false로 설정
-        setPW({
-          password: MyInfo.password,
-        });
       }
     } catch (err) {
       console.error("Error fetching reservations:", err);
@@ -127,28 +124,23 @@ const UpdatePassword = () => {
       return;
     }
 
-    const userData = new Blob(
-      [
-        JSON.stringify({
-          password: PW.newPassword,
-          selfIntroduction: "",
-        }),
-      ],
-      { type: "application/json" }
-    );
+    const userData = {
+      password: PW.newPassword,
+      selfIntroduction: "",
+    };
 
-    const userFormData = new FormData();
-    userFormData.append("requestDto", userData);
+    const imageData = new FormData();
+
+    const emptyFile = new Blob([""], { type: "image/jpeg" });
+    imageData.append("data", emptyFile, "empty.jpg");
 
     // userFormData에 이미지 담기
     // 프로필 이미지 변경 X 이므로 무조건 기존 프로필 유지
-    const emptyFile = new Blob([""], { type: "image/jpeg" });
-    userFormData.append("profileImage", emptyFile, "empty.jpg");
 
     try {
-      const response = await axios.put(`${baseUrl}/counselor/updateMypage`, userFormData, {
+      const response = await axios.put(`${baseUrl}/counselor/updateMypage`, userData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
         withCredentials: true,
       });
