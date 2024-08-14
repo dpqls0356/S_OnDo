@@ -168,7 +168,7 @@ const BoardDetailPage = () => {
         <Header>
           <div>
             <svg
-              onClick={() => nav(-1)}
+              onClick={() => nav("/member/board")}
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -204,11 +204,11 @@ const BoardDetailPage = () => {
 
             <div className="DetailDate">
               <div className="DetailUserInfo">
-              <img 
-                  src={user.profileUrl || mainProfileUrl} 
-                  alt={`${user.name} 프로필`} 
+                <img
+                  src={user.profileUrl || mainProfileUrl}
+                  alt={`${user.name} 프로필`}
                   onError={(e) => {
-                    e.target.onerror = null; 
+                    e.target.onerror = null;
                     e.target.src = mainProfileUrl;
                   }}
                 />

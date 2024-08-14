@@ -168,6 +168,7 @@ const MyUpdateForm = () => {
           );
 
           if (imageRespose.data.success) {
+            console.log("이미지수정");
           } else {
             alert(response.data.message || "이미지 수정에 실패했습니다.");
           }
@@ -176,7 +177,10 @@ const MyUpdateForm = () => {
         nav("/member/profile");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "마이페이지 수정 중 오류가 발생했습니다.");
+      alert(
+        error.response?.data?.message ||
+          "마이페이지 수정 중 오류가 발생했습니다."
+      );
     }
   };
 
@@ -224,7 +228,11 @@ const MyUpdateForm = () => {
         </div>
 
         {/* 폼 섹션 */}
-        <form id="JoinForm" className="flex flex-col space-y-4" onSubmit={updateMypage}>
+        <form
+          id="JoinForm"
+          className="flex flex-col space-y-4"
+          onSubmit={updateMypage}
+        >
           <DisabledInput
             label="이름"
             placeholder=" 이름을 입력해주세요"
@@ -274,15 +282,26 @@ const MyUpdateForm = () => {
               여
             </button>
           </div>
-          <Button text="수정하기" type="submit Button_PINK" onClick={updateMypage} />
+          <Button
+            text="수정하기"
+            type="submit Button_PINK"
+            onClick={updateMypage}
+          />
         </form>
 
         {/* 회원 탈퇴 섹션 */}
         <div style={{ textAlign: "center", padding: "10px" }}>
-          <p style={{ cursor: "pointer", color: "gray" }} onClick={handleOpenModal}>
+          <p
+            style={{ cursor: "pointer", color: "gray" }}
+            onClick={handleOpenModal}
+          >
             탈퇴하기
           </p>
-          <DeleteAccountModal isOpen={isModalOpen} onClose={handleCloseModal} baseUrl={baseUrl} />
+          <DeleteAccountModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            baseUrl={baseUrl}
+          />
         </div>
       </div>
     </div>

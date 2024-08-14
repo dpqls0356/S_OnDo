@@ -48,7 +48,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
   public List<Board> searchArticles(String searchWord) {
     Query query = new Query();
     query.addCriteria(new Criteria().orOperator(
-            Criteria.where("member_id").regex(searchWord, "i"),
+            Criteria.where("member_name").regex(searchWord, "i"),
             Criteria.where("title").regex(searchWord, "i")
     ));
     return mongoTemplate.find(query, Board.class);
