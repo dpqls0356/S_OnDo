@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-
+import useAuthStore from "../../../store/app/authStore";
 Modal.setAppElement("#root"); // 모달이 애플리케이션의 루트 엘리먼트에 렌더링되도록 설정
 
 const ModalContent = styled.div`
@@ -30,6 +30,10 @@ const ModalButton = styled.button`
 `;
 
 const IncorrectAccessModal = ({ isOpen, closeModal }) => {
+  const { role, user } = useAuthStore((state) => ({
+    role: state.role,
+    user: state.user,
+  }));
   return (
     <Modal
       isOpen={isOpen}

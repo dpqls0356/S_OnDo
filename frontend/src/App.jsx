@@ -134,7 +134,6 @@ function App() {
           <Route path="board/create" element={<BoardCreatepage />} />
           <Route path="board/:articleId/update" element={<BoardUpdatepage />} />
           <Route path="board/:articleId" element={<BoardDetailpage />} />
-          <Route path="*" element={<Notfoundpage />} />
           <Route path="join" element={<Join />} />
           <Route path="profile" element={<MyPage />} />
           <Route path="mission/list" element={<Mission />} />
@@ -151,8 +150,10 @@ function App() {
             element={<CounselorDetail />}
           />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
+          <Route path="*" element={<CounselorNotFoundPage />} />
         </Route>
         {/* )} */}
+        <Route path="/*" element={<CounselorNotFoundPage />} />
       </Routes>
     </Router>
   );
