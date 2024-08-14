@@ -1,17 +1,22 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 
 const Tab = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center; // 오타 수정
+  & > h3 {
+    color: #121481;
+    font-size: 20px;
+  }
   & > p {
-    font-size: 14px;
+    font-size: 12x;
+    color: #8F8F96;
     text-decoration: underline;
     cursor: pointer;
   }
 `;
 
-const Test = styled.div``;
 
 const CustomBtn = styled.div`
   background-color: ${(props) => (props.selected ? 'pink' : 'white')};
@@ -28,13 +33,17 @@ const Btn = styled.div`
   // }
 `;
 
-const times = ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
-const morningTimes = ['9:00', '10:00', '11:00'];
+const morningTimes = ['09:00', '10:00', '11:00'];
 const afternoonTimes = ['12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
-const CounselorTimeSlots = ({ selectedDate, selectedTime, setSelectedTime }) => {
-  // selectedDate이용하여 조회하는 기능 만들어야 함
+const CounselorTimeSlots = ({ selectedDate, selectedTime, setSelectedTime}) => {
+
+  // useEffect(() => {
+  //   console.log('saveTime 채워졌는지 확인용:', saveTime)
+  //   // setSelectedTime(saveTime)
+  // }, [])
 
   const handleTimeClick = (time) => {
     if (selectedTime.includes(time)) {
@@ -65,7 +74,7 @@ const CounselorTimeSlots = ({ selectedDate, selectedTime, setSelectedTime }) => 
   const renderTimeButton = (time) => (
     <button 
       key={time} 
-      className={`py-2 ${selectedTime.includes(time) ? 'bg-white' : 'bg-blue-500 text-white' } rounded`}
+      className={`py-2 ${selectedTime.includes(time) ? 'bg-gray-300 text-white' : 'bg-white' } rounded`}
       onClick={() => handleTimeClick(time)}
     >
       {time}
@@ -81,14 +90,15 @@ const CounselorTimeSlots = ({ selectedDate, selectedTime, setSelectedTime }) => 
       <div className="grid grid-cols-3 gap-2 mb-4">
         {morningTimes.map(renderTimeButton)}
       </div>
+      <div style={{height: '5px'}}></div>
       <Tab>
         <h3 className="font-bold mb-2">오후</h3>
         <p onClick={selectAllAfternoon}>전체선택</p>
       </Tab>
       <Btn>
-        <Test className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {afternoonTimes.map(renderTimeButton)}
-        </Test>
+        </div>
       </Btn>
     </div>
   );

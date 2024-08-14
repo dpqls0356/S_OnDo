@@ -8,24 +8,39 @@ import "./CounselorList.css";
 
 const CounselorList = () => {
   const nav = useNavigate();
-  const { userReservations, fetchUserReservations, isLoading, displayGender } = useCounselorStore();
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const {
+    userReservations,
+    fetchUserReservations,
+    isLoading,
+    displayGender,
+    calculateExactDateTime,
+  } = useCounselorStore();
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     fetchUserReservations();
   }, [fetchUserReservations]);
 
   const sortedReservations = useMemo(() => {
-    console.log(userReservations)
-    return [...userReservations].sort((a, b) => {
-      const dateA = new Date(a.reservationDate);
-      const dateB = new Date(b.reservationDate);
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-    });
-  }, [userReservations, sortOrder]);
+    return [...userReservations]
+      .map((reservation) => {
+        const dateTimeInfo = calculateExactDateTime(
+          reservation.reservationDate
+        );
+        return {
+          ...reservation,
+          isExpired: dateTimeInfo.isAfterReservation,
+        };
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.reservationDate);
+        const dateB = new Date(b.reservationDate);
+        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      });
+  }, [userReservations, sortOrder, calculateExactDateTime]);
 
   const onClickBack = () => {
-    nav("/member/counseling/main");
+    nav(-1);
   };
 
   const onClickSort = () => {
@@ -39,11 +54,51 @@ const CounselorList = () => {
   return (
     <div className="scroll">
       <div className="CL-header">
-        <img onClick={onClickBack} style={{ cursor: "pointer" }} src={back} alt="Back" />
-        <p>상담예약내역</p>
+        <div>
+          <img
+            onClick={onClickBack}
+            style={{ cursor: "pointer" }}
+            src={back}
+            alt="Back"
+          />
+        </div>
+        <div>상담예약내역</div>
         <div onClick={onClickSort} style={{ cursor: "pointer" }}>
-          <img src={sort} alt="Sort" />
-          <span>{sortOrder === "asc" ? "오름차순" : "내림차순"}</span>
+          {/* <img src={sort} alt="Sort" /> */}
+          {/* <span>{sortOrder === "asc" ? "오름차순" : "내림차순"}</span> */}
+          <span>
+            {sortOrder === "asc" ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            )}
+          </span>
         </div>
       </div>
       <div className="CL-main">
@@ -62,7 +117,9 @@ const CounselorList = () => {
                 is_complete={reservation.is_complete}
                 reservationDate={reservation.reservationDate}
                 reservId={reservation.id}
-                counselingUrl ={reservation.counselingUrl}
+                counselingUrl={reservation.counselingUrl}
+                isExpired={reservation.isExpired}
+                counselorId={reservation.counselorId}
               />
             ))}
           </div>

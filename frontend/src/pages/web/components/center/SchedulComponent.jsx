@@ -4,6 +4,7 @@ import TimeTableComponent from "./TimeTableComponent";
 import DetailSchedulComponent from "./DetailSchedulComponent";
 
 const View = styled.div`
+  padding-top: 10px;
   display: flex;
   flex-direction: column;
   // padding: 0px 0px;
@@ -16,7 +17,7 @@ const Tab = styled.div`
   display: flex;
   gap: 10px;
   margin: 0 auto;
-  font-size: 20px;
+  font-size: 25px;
   padding: 15px 0px;
   & > p:active{
     color: #F7867A;

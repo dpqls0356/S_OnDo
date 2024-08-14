@@ -1,10 +1,11 @@
 import './CounselorListCard.css';
-import profile from './../../../assets/images/ic_user.png';
 import vector from './../../../assets/images/Vector.png';
 import { Link } from 'react-router-dom';
 import useCounselorStore from '../../../store/app/CounselorStore';
 
-const CounselorListCard = ({name, gender, field, intro, reservationDate, reservId}) => {
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
+
+const CounselorListCard = ({name, gender, field, intro, reservationDate, reservId, profileUrl}) => {
   const { calculateDday, displayGender } = useCounselorStore();
   
   const dday = reservationDate ? calculateDday(reservationDate) : null;
@@ -15,7 +16,14 @@ const CounselorListCard = ({name, gender, field, intro, reservationDate, reservI
       
       <div className='ConSelorCardIn'>
         <div>
-          <img src={profile} alt="Profile" />
+          <img 
+            src={profileUrl || mainProfileUrl} 
+            alt={`${name} 상담사 프로필`} 
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = mainProfileUrl;
+            }}
+          />
         </div>
         <div className='CounselorInfo'>
           <p id='MP-CounselorName'>{name} 상담사({displayGender(gender)})</p>

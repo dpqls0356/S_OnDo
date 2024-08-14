@@ -4,25 +4,40 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
-
 import camera from "./../../../assets/images/camera.png";
-import profile from "./../../../assets/images/ic_user.png";
 import useAuthStore from "../../../store/app/authStore.js";
 import "./Join.css";
+// import { faTrophy } from "@fortawesome/free-solid-svg-icons";
+import Error from "./inputError.jsx";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
+const api = axios.create({
+  baseURL: baseUrl,
+  withCredentials: true,
+});
+
 const JoinForm = () => {
   const nav = useNavigate();
-  
   const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   const { error, success } = useJoinStore();
-  
+
   const login = useAuthStore((state) => state.login);
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  const [errors, setErrors] = useState({
+    name: "",
+    nickname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    birthDate: "",
+    gender: "",
+  });
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -46,7 +61,6 @@ const JoinForm = () => {
     }
   };
 
-  // 컴포넌트 언마운트 시 URL 객체 해제
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -72,65 +86,112 @@ const JoinForm = () => {
 
   const handleInputChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
+    setErrors({ ...errors, [field]: "" }); // 입력 시 해당 필드의 에러 초기화
   };
 
   const handleGenderSelect = (gender) => {
     setFormData({ ...formData, gender: gender === "여" ? "FEMALE" : "MALE" });
+    setErrors({ ...errors, gender: "" }); // 선택 시 에러 초기화
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (formData.name.length > 18) {
+      newErrors.name = "이름은 최대 18글자까지 입력 가능합니다.";
+    }
+    if (formData.name.length == 0) {
+      newErrors.name = "이름을 입력하세요";
+    }
+
+    if (formData.nickname.length > 18) {
+      newErrors.nickname = "별명은 최대 18글자까지 입력 가능합니다.";
+    }
+    if (formData.nickname.length == 0) {
+      newErrors.nickname = "별명을 입력하세요";
+    }
+
+    if (formData.email.length < 5 || formData.email.length > 20) {
+      newErrors.email = "아이디는 5글자 이상 20글자 이하로 입력해주세요.";
+    }
+
+    if (formData.password.length < 8) {
+      newErrors.password = "비밀번호는 최소 8글자 이상이어야 합니다.";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
+    }
+
+    if (!formData.gender) {
+      newErrors.gender = "성별을 선택해주세요.";
+    }
+
+    const today = new Date();
+    const birthDate = new Date(formData.birthDate);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    if (birthDate > today || age > 120) {
+      newErrors.birthDate = "잘못된 생년월일입니다. 다시 입력해주세요.";
+    }
+
+    if (age < 8) {
+      newErrors.birthDate = "8세 미만은 가입 불가합니다.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const join = async (event) => {
     event.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+
+    if (!validateForm()) {
       return;
     }
 
-    // 이미지 포함한 form-Dat 보내기
-    const userData = new Blob(
-      [
-        JSON.stringify({
-          email: formData.email,
-          name: formData.name,
-          nickname: formData.nickname,
-          password: formData.password,
-          birthDate: formData.birthDate,
-          gender: formData.gender,
-        }),
-      ],
-      { type: "application/json" }
-    );
-
-    const userFormData = new FormData();
-    userFormData.append("joinRequestDto", userData);
-
-    if (selectedFile) {
-      userFormData.append("profileImage", selectedFile);
-    } else {
-      const emptyFile = new Blob([""], { type: "image/jpeg" });
-      userFormData.append("profileImage", emptyFile, "empty.jpg");
-    }
-
     try {
-      const response = await axios.post(
-        `${baseUrl}/member/join`,
-        userFormData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await api.post(`/member/join`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.data.success) {
+        try {
+          if (selectedFile) {
+            const imgFormData = new FormData();
+            imgFormData.append("data", selectedFile);
+
+            const imageRespose = await api.post(
+              `/image/upload/MemberProfile/${response.data.data.id}`,
+              imgFormData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+
+            if (!imageRespose.data.success) {
+              alert("이미지 업로드를 실패하였습니다.");
+            }
+          }
+        } catch (error) {
+          alert("오류가 발생했습니다.");
+        }
         alert("회원가입이 완료되었습니다.");
-        // 회원가입 후에 캐릭터 생성 페이지로 넘어가야 해서
-        console.log("login")
         await login(formData.email, formData.password);
-        console.log("정보 가져오기")
         await checkAuth();
         nav("/member/story");
-      } else {
-        alert(response.data.message || "회원가입에 실패했습니다.");
       }
     } catch (error) {
       alert(
@@ -158,11 +219,11 @@ const JoinForm = () => {
             alt="프로필 이미지"
             onClick={handleImageDelete}
             style={{
-              width: "150px", // 부모 요소 크기에 맞춤
-              height: "150px", // 부모 요소 크기에 맞춤
-              borderRadius: "50%", // 원형으로 만듦
-              objectFit: "cover", // 이미지를 고정된 크기에 맞추고 비율을 유지하며 잘라냄
-              objectPosition: "center", // 이미지의 중심을 기준으로 자름
+              width: "150px",
+              height: "150px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              objectPosition: "center",
               cursor: "pointer",
             }}
           />
@@ -175,11 +236,9 @@ const JoinForm = () => {
           />
           <input
             type="file"
-            ref={fileInputRef} // input에 대한 참조 설정
+            ref={fileInputRef}
             onChange={handleFileChange}
-            style={{
-              display: "none",
-            }} // input 요소를 숨김
+            style={{ display: "none" }}
           />
         </div>
         <form id="JoinForm" onSubmit={join} className="flex flex-col space-y-4">
@@ -190,6 +249,8 @@ const JoinForm = () => {
             onChange={handleInputChange("name")}
             labelClassName="text-left"
           />
+          {errors.name && <Error message={errors.name} />}
+
           <Input
             label="별명"
             placeholder=" 별명을 입력해주세요"
@@ -197,14 +258,18 @@ const JoinForm = () => {
             onChange={handleInputChange("nickname")}
             labelClassName="text-left"
           />
+          {errors.nickname && <Error message={errors.nickname} />}
+
           <Input
-            label="이메일"
-            placeholder=" 이메일을 입력해주세요"
+            label="아이디"
+            placeholder="아이디를 입력해주세요"
             type="email"
             value={formData.email}
             onChange={handleInputChange("email")}
             labelClassName="text-left"
           />
+          {errors.email && <Error message={errors.email} />}
+
           <Input
             label="비밀번호"
             placeholder=" 비밀번호를 입력해주세요"
@@ -213,6 +278,8 @@ const JoinForm = () => {
             onChange={handleInputChange("password")}
             labelClassName="text-left"
           />
+          {errors.password && <Error message={errors.password} />}
+
           <Input
             label="비밀번호 확인"
             placeholder=" 비밀번호를 다시 입력해주세요"
@@ -221,6 +288,8 @@ const JoinForm = () => {
             onChange={handleInputChange("confirmPassword")}
             labelClassName="text-left"
           />
+          {errors.confirmPassword && <Error message={errors.confirmPassword} />}
+
           <Input
             label="생년월일"
             placeholder=" 생년월일을 입력해주세요"
@@ -229,6 +298,8 @@ const JoinForm = () => {
             onChange={handleInputChange("birthDate")}
             labelClassName="text-left"
           />
+          {errors.birthDate && <Error message={errors.birthDate} />}
+
           <div className="flex justify-center space-x-4">
             <button
               type="button"
@@ -245,6 +316,8 @@ const JoinForm = () => {
               여
             </button>
           </div>
+          {errors.gender && <Error message={errors.gender} />}
+
           <Button
             text="회원가입하기"
             type="submit Button_PINK"

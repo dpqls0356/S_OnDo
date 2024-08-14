@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.clio.ondo.domain.alarm.missionAlarm.model.FCMToken;
+import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.domain.mission.service.MissionService;
 import com.clio.ondo.global.auth.MemberPrincipalDetails;
@@ -57,6 +59,7 @@ public class MemberServiceImpl implements MemberService {
 	private final DaoAuthenticationProvider memberAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
 	private final MissionService missionService;
+	private final ScheduledAlarmService scheduledAlarmService;
 
 	@Value("${profile.url}")
 	String defaultProfileUrl; //기본 프로필 이미지
@@ -64,16 +67,8 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException {
-
-		//s3이미지 url 생성 및 저장
-
-		if(!profileImage.isEmpty()){
-			profileUrl=imageService.upload(profileImage,"MemberProfile");
-		}else{
-			profileUrl=defaultProfileUrl;
-		}
-		Member member = joinRequestDto.toEntity(profileUrl);
+	public Long join(JoinRequestDto joinRequestDto) throws IOException {
+		Member member = joinRequestDto.toEntity(defaultProfileUrl);
 		Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
 		if (memberOptional.isPresent()) {
 			throw new MemberAlreadyExistsException("회원가입에 실패했습니다.");
@@ -83,6 +78,9 @@ public class MemberServiceImpl implements MemberService {
 		characterRepository.save(character);
 		memberRepository.save(member);
 		missionService.createTodayMission(member.getId());
+
+		Optional<Member> findMemberOptinal = memberRepository.findByEmail(member.getEmail());
+		return findMemberOptinal.get().getId();
 	}
 
 
@@ -103,12 +101,15 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException {
+	public TokenDto login(LoginRequestDto loginRequestDto) throws Exception {
 		UsernamePasswordAuthenticationToken authToken =
 				new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 		Authentication authentication = memberAuthenticationProvider.authenticate(authToken);
 		String accessToken = jwtTokenProvider.generateAccessToken(authentication);
 		String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+
+		Optional<Member> memberOptional = memberRepository.findByEmail(loginRequestDto.getEmail());
+		scheduledAlarmService.saveToken(memberOptional.get().getId(), new FCMToken(loginRequestDto.getFcmtoken()));
 
 		return new TokenDto(accessToken, refreshToken);
 	}
@@ -160,8 +161,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	@Transactional
-	public void updateMember(UpdateRequestDto updateRequestDto, String accessToken, MultipartFile profileImage) throws
-		IOException {
+	public Long updateMember(UpdateRequestDto updateRequestDto, String accessToken) throws IOException {
 		Claims claims = jwtTokenProvider.decodeJwt(accessToken);
 		String user = claims.getSubject();
 		Member findMember = memberRepository.findByEmail(user).orElseThrow(MemberNotFoundException::new);
@@ -172,28 +172,8 @@ public class MemberServiceImpl implements MemberService {
 		if (StringUtils.hasText(updateRequestDto.getNickname())) {
 			findMember.updateNickName(updateRequestDto.getNickname());
 		}
-
-
-		//무조건 update 되어야함.
-		if(!Objects.equals(findMember.getProfileUrl(), defaultProfileUrl)){ //기본 이미지가 아니라면
-			imageService.delete(findMember.getProfileUrl(),"MemberProfile"); //원래 profileImage 삭제
-		}
-
-		if(!profileImage.isEmpty()){
-			profileUrl=imageService.upload(profileImage,"MemberProfile");
-		}else{
-			String fileName = profileImage.getOriginalFilename();
-			if ("default.jpg".equals(fileName)) {
-				profileUrl = defaultProfileUrl;
-			} else if ("empty.jpg".equals(fileName)) {
-				profileUrl = findMember.getProfileUrl();
-			}
-		}
-
-		findMember.updateProfileUrl(profileUrl);
-
 		memberRepository.save(findMember);
-
+		return findMember.getId();
 	}
 
 	@Override

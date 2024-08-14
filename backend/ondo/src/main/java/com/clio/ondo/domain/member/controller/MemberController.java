@@ -3,7 +3,6 @@ package com.clio.ondo.domain.member.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.service.CounselorService;
 import com.clio.ondo.domain.member.model.Gender;
@@ -59,7 +60,6 @@ public class MemberController {
 	private final CounselorService counselorService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final ScheduledAlarmService scheduledAlarmService;
 
     @PostMapping("/login")
 	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto, HttpServletResponse response) {
@@ -87,35 +87,11 @@ public class MemberController {
 //			}
 
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
-		} catch (AuthenticationException e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("로그인 실패"));
 		}
 	}
 
-//	@PostMapping("/logout")
-//	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request,HttpServletResponse response) {
-//		try {
-//			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
-//			memberService.logout(token);
-//
-//			Cookie accessTokenCookie = new Cookie("accessToken", null);
-//			accessTokenCookie.setHttpOnly(true);
-//			accessTokenCookie.setPath("/");
-//			accessTokenCookie.setMaxAge(0);
-//
-//			Cookie refreshTokenCookie = new Cookie("refreshToken", null);
-//			refreshTokenCookie.setHttpOnly(true);
-//			refreshTokenCookie.setPath("/");
-//			refreshTokenCookie.setMaxAge(0);
-//
-//			HttpServletResponse response = (HttpServletResponse) request;
-//			response.addCookie(accessTokenCookie);
-////			response.addCookie(refreshTokenCookie);
-//			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("logout"));
-//		} catch (AuthenticationException e) {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("로그아웃 실패"));
-//		}
-//	}
 	@PostMapping("/logout")
 	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request,HttpServletResponse response) {
 		try {
@@ -144,13 +120,11 @@ public class MemberController {
 	}
 
 	@PostMapping("/join")
-	public ResponseEntity<ResponseVO<Void>> join(
-		@RequestPart("joinRequestDto") JoinRequestDto joinRequestDto,
-		@RequestPart("profileImage") MultipartFile profileImage){
+	public ResponseEntity<ResponseVO<?>> join(@RequestBody JoinRequestDto joinRequestDto){
 		try {
 			joinRequestDto.setPassword(passwordEncoder.encode(joinRequestDto.getPassword()));
-			memberService.join(joinRequestDto,profileImage);
-			return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success"));
+			Long memberId = memberService.join(joinRequestDto);
+			return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("Success", "id", memberId));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("회원 가입 실패: 올바른 값을 입력해주세요."));
 		} catch (MemberAlreadyExistsException e) {
@@ -194,19 +168,19 @@ public class MemberController {
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<ResponseVO<String>> update(
-		@RequestPart("updateRequestDto") UpdateRequestDto updateRequestDto,
-		@RequestPart("profileImage") MultipartFile profileImage,
+	public ResponseEntity<ResponseVO<?>> update(
+		@RequestBody UpdateRequestDto updateRequestDto,
 		HttpServletRequest request) {
+		Long memberId;
 		try {
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
-			memberService.updateMember(updateRequestDto, token,profileImage);
+			memberId = memberService.updateMember(updateRequestDto, token);
 		} catch (MemberNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseVO.failure("회원 정보 수정 실패"));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("회원 정보 수정 성공"));
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("회원 정보 수정 성공", "id", memberId));
 	}
 
 	@DeleteMapping("/delete")
@@ -233,7 +207,19 @@ public class MemberController {
 	}
 
 	@GetMapping("/oauth-success")
-	public ResponseEntity<ResponseVO<TokenDto>> oauthSuccess(TokenDto token) {
+	public ResponseEntity<ResponseVO<TokenDto>> oauthSuccess(TokenDto token, HttpServletResponse response) {
+		Cookie accessTokenCookie = new Cookie("accessToken", token.getAccessToken());
+		accessTokenCookie.setHttpOnly(true);
+		accessTokenCookie.setPath("/");
+		accessTokenCookie.setMaxAge(3600*24*30); // 30 일
+
+		Cookie refreshTokenCookie = new Cookie("refreshToken", token.getRefreshToken());
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setMaxAge(7 * 24 * 3600 * 5); // 5 week
+
+		response.addCookie(accessTokenCookie);
+		response.addCookie(refreshTokenCookie);
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("token", token));
 		} catch (AuthenticationException e) {

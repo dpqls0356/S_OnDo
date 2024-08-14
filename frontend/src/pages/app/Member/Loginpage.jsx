@@ -4,6 +4,7 @@ import Button from "../../../components/app/Button";
 import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
 import useAuthStore from "../../../store/app/authStore";
+import useFcmStore from "../../../store/app/FcmStore";
 
 import { useNavigate } from "react-router-dom";
 
@@ -14,14 +15,15 @@ const Loginpage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { fcmtoken, setFcmToken } = useFcmStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('')    // 에러 메시지 초기화
+    setError(""); // 에러 메시지 초기화
     try {
-      const success = await login(email, password);
+      const success = await login(email, password, fcmtoken);
       if (success) {
-        await checkAuth()
+        await checkAuth();
         nav("/member/home");
         alert("로그인 성공!");
       } else {
@@ -31,26 +33,33 @@ const Loginpage = () => {
       setError("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
       console.error("Login error:", error);
     }
-  }
+  };
   const onClickKakao = () => {
     nav("/member/kakaologin");
+    window.location.href =
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/kakao";
   };
 
   const onClickNaver = () => {
     nav("/member/naverlogin");
+    window.location.href =
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/naver";
+  };
+  const onClickJoin = () => {
+    nav("/member/join");
   };
 
   return (
     <main className="Loginpage">
-      <p id="Title">로그인</p>      
+      <p id="Title">로그인</p>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="login-id">아이디</label>
+          <label htmlFor="login-id">로그인</label>
           <br />
-          <input 
-            id="login-id" 
-            type="text" 
-            placeholder="아이디" 
+          <input
+            id="login-id"
+            type="text"
+            placeholder="로그인"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -59,32 +68,46 @@ const Loginpage = () => {
         <div>
           <label htmlFor="password">비밀번호</label>
           <br />
-          <input 
-            id="password" 
-            type="password" 
-            placeholder="비밀번호" 
+          <input
+            id="password"
+            type="password"
+            placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <br />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <Button text={"로그인"} type="submit" />
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <Button
+          style={{ marginBottom: "10px" }}
+          text={"로그인"}
+          type="submit"
+        />
       </form>
-      <br />
-      <hr />
+      <div className="cross-line">
+        <div></div>
+        <div>or</div>
+        <div></div>
+      </div>
       <img
         onClick={onClickKakao}
         src={kakaologin}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", marginBottom: "10px" }}
         alt="Kakao Login"
       />
       <img
         onClick={onClickNaver}
         src={naverlogin}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", marginBottom: "10px" }}
         alt="Naver Login"
       />
+      <p
+        className="cursor-pointer text-center text-sm text-gray-500"
+        onClick={onClickJoin}
+        style={{ cursor: "pointer", color: "gray" }}
+      >
+        회원가입하기
+      </p>
     </main>
   );
 };

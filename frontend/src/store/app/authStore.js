@@ -15,11 +15,11 @@ export const useAuthStore = create(
       role: null,
       accessToken: null,
       refreshToken: null,
-      login: async (email, password) => {
+      login: async (email, password, fcmtoken) => {
         try {
           const response = await api.post(
             "/member/login",
-            { email, password },
+            { email, password, fcmtoken },
             { withCredentials: true }
           );
           console.log(response);
@@ -34,6 +34,31 @@ export const useAuthStore = create(
           return false;
         } catch (error) {
           console.error("Login failed:", error);
+          return false;
+        }
+      },
+      userDelete: async (password) => {
+        try {
+          const response = await api.delete(`/member/delete`, {
+            data: { password: password },
+            withCredentials: true,
+          });
+          if (response.data.success) {
+            set({
+              role: null,
+              user: null,
+              accessToken: null,
+              refreshToken: null,
+            });
+            return true;
+          }
+          console.error("Logout failed:", response.data.message);
+          return false;
+        } catch (error) {
+          console.error(
+            "Logout failed:",
+            error.response ? error.response.data : error.message
+          );
           return false;
         }
       },
@@ -64,17 +89,17 @@ export const useAuthStore = create(
         }
       },
       checkAuth: async () => {
-        console.log("hello?")
+        // console.log("hello?")
         try {
           const response = await api.get("/member/me", {
             withCredentials: true,
           });
           if (response.data.success) {
-            console.log("checkAuth"+response);
-            set({  user: response.data.data.user });
+            console.log("checkAuth" + response);
+            set({ user: response.data.data.user, role: "USER" });
             return true;
           }
-          set({  user: null });
+          set({ user: null });
           return false;
         } catch (error) {
           console.error("Auth check failed:", error);
@@ -89,11 +114,13 @@ export const useAuthStore = create(
             { id, password },
             { withCredentials: true }
           );
-          console.log(response.data);
           if (response.data.success) {
-            console.log("==================")
+            const info = await api.get("/counselor/mypage", {
+              withCredentials: true,
+            });
+            console.log(info);
             set({
-              user:id,
+              user: info.data.data.counselor,
               role: "COUNSELOR",
               accessToken: response.data.data.token.accessToken,
               refreshToken: response.data.data.token.refreshToken,
@@ -120,6 +147,7 @@ export const useAuthStore = create(
         }
       },
     }),
+
     {
       name: "auth-storage", // 로컬 스토리지에 저장될 키 이름
       getStorage: () => localStorage, // 기본 로컬 스토리지를 사용

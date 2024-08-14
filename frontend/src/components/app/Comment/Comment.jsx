@@ -1,8 +1,9 @@
 import "./Comment.css";
 import { useState } from "react";
-import profile from "./../../../assets/images/test.png";
 import useCommentStore from "../../../store/app/CommentStore";
 import useAuthStore from "../../../store/app/authStore";
+
+const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const Comment = ({ comment }) => {
   const { deleteComment, updateComment } = useCommentStore();
@@ -14,7 +15,7 @@ const Comment = ({ comment }) => {
 
   const onClickCommentDelete = async () => {
     if (isAuthor) {
-      if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+      if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
         const success = await deleteComment(comment.id, user.id);
         if (success) {
           console.log("댓글 삭제 완료");
@@ -35,12 +36,10 @@ const Comment = ({ comment }) => {
 
   const onSaveEdit = async () => {
     if (isAuthor) {
-      const success = await updateComment(comment.id, editedContent, user.id);
-      if (success) {
+      const result = await updateComment(comment.id, editedContent, user.id);
+      if (result.success) {
         setIsEditing(false);
         console.log("댓글 수정 완료");
-      } else {
-        alert("댓글 수정에 실패했습니다.");
       }
     } else {
       alert("댓글 작성자만 수정할 수 있습니다.");
@@ -50,19 +49,40 @@ const Comment = ({ comment }) => {
   return (
     <div className="CommentCard">
       <div className="CommentWriter">
-        <div>
-          <img src={profile} alt="프로필" />
+        <div style={{ width: "50%" }}>
+          <img
+            src={user.profileUrl || mainProfileUrl}
+            alt={`${comment.member_name} 프로필`}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = mainProfileUrl;
+            }}
+          />
           <p>{comment.member_name}</p>
         </div>
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
-          <div>
-            <p onClick={onClickCommentEdit} style={{ cursor: "pointer" }}>
-              수정
-            </p>
-            <p onClick={onClickCommentDelete} style={{ cursor: "pointer" }}>
-              삭제
-            </p>
+          <div
+            style={{
+              width: "50%",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <div>
+              <p
+                onClick={onClickCommentEdit}
+                style={{ cursor: "pointer", fontSize: "12px" }}
+              >
+                수정
+              </p>
+              <p
+                onClick={onClickCommentDelete}
+                style={{ cursor: "pointer", fontSize: "12px" }}
+              >
+                삭제
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -70,6 +90,7 @@ const Comment = ({ comment }) => {
         {isEditing ? (
           <div>
             <textarea
+              maxLength={100}
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
               style={{
@@ -105,7 +126,16 @@ const Comment = ({ comment }) => {
           <div id="CommentContent">{comment.content}</div>
         )}
         <p id="CommentCreateDate">
-          {new Date(comment.createdAt).toLocaleString()}
+          {/* UTC 세팅 - toLocaleString() 단지 표시 목적으로만 시간대를 변환할 뿐, 실제 저장된 시간 값은 변경X */}
+          {new Date(comment.createdAt).toLocaleString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            // seconds: '2-digit', 이거 빼면 초는 안 나옴
+            timeZone: "Asia/Seoul", // 이 옵션을 추가하여 확실하게 한국 시간으로 표시
+          })}
         </p>
       </div>
     </div>

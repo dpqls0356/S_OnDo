@@ -11,6 +11,6 @@ import com.clio.ondo.domain.mission.model.MissionDetail;
 
 public interface MissionDetailRepository extends MongoRepository<MissionDetail, ObjectId> {
 	List<MissionDetail> findByType(String type);
-	// @Query(value = "{}")
-	// List<MissionDetail> findAll();
+	@Query("{ 'level': { $lte: ?0 } }")
+	List<MissionDetail> findByLevel(int level);
 }
