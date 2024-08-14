@@ -1,6 +1,7 @@
 package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.BoardUpdateDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +26,9 @@ public interface BoardService {
   void deleteArticle(ObjectId articleId,Long   memberId);
 
   //void updateArticle(String articleId, Board modifiedArticle, Long memberId);
-  void updateArticle(String articleId, Board modifiedArticle,Long memberId,List<MultipartFile> images) throws IOException;
+  void updateArticle(String articleId, BoardUpdateDto modifiedArticle,Long memberId) throws IOException;
+
+  Board updateArticleImage(ObjectId boardId, MultipartFile file, Long memberId) throws IOException;
 
   Optional<Board> getArticle(ObjectId articleId);
 
