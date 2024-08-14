@@ -7,16 +7,28 @@ import camera from "../../../../assets/images/camera.png";
 // import { useRef } from "react";
 
 const View = styled.div`
+  position: relative;
   margin: 0 auto;
   padding: 10px 80px;
   width: 90%;
-  height: 100%;
+  // height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 20px;
+  gap: 35px;
   font-size: 17px;
 `;
+
+const CameraIcon = styled.div`
+ position: absolute;
+ z-index: 100;
+ left: 60%;
+ top: 27%;
+ & > img {
+  width: 47px;
+  height: 47px;
+ }
+`
 
 // const InfoTag = styled.div`
 //   display: flex;
@@ -25,7 +37,7 @@ const View = styled.div`
 
 const Bold = styled.div`
   font-weight: 600;
-  font-size: 18px;
+  font-size: 22px;
   display: inline-block;
   color: #121481;
 `;
@@ -33,12 +45,12 @@ const Bold = styled.div`
 const IntroTitle = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-bottom: 10px;
+  // padding-bottom: 10px;
 `;
 
 const LiTag = styled.div`
   padding: 5px 0px;
-  padding-left: 7%;
+  // padding-left: 7%;
 `;
 
 // const Content = styled.div`
@@ -49,15 +61,26 @@ const LiTag = styled.div`
 // `
 
 const Name = styled.div`
-  font-size: 30px;
+  font-size: 35px;
   font-weight: 800;
   text-align: center;
 `;
 
+const Content = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 30px;
+  font-size: 20px;
+  // align-items: center;
+`
+
 const IntroductionInput = styled.div`
-  border: 1px black solid;
+  border: 2px black solid;
+  border-radius: 10px;
   // background-color: gray;
   & textarea {
+    border-radius: 10px;
     width: 100%;
     min-height: 10vh;
     height: 30px;
@@ -89,7 +112,7 @@ const Tab = styled.div`
   display: flex;
   gap: 10px;
   margin: 0 auto;
-  font-size: 20px;
+  font-size: 25px;
   padding: 15px 0px;
   & > p:active {
     color: #f7867a;
@@ -279,13 +302,15 @@ const CounselorMypage = () => {
             alt="프로필 이미지"
             onClick={handleImageDelete}
           />
-          <img
-            id="updateCamera"
-            style={{ cursor: "pointer" }}
-            src={camera}
-            alt="카메라 아이콘"
-            onClick={handleImageClick} // 카메라 아이콘 클릭 시 input 클릭 이벤트 핸들러 호출
-          />
+          <CameraIcon>
+            <img
+              // id="updateCamera"
+              style={{ cursor: "pointer" }}
+              src={camera}
+              alt="카메라 아이콘"
+              onClick={handleImageClick} // 카메라 아이콘 클릭 시 input 클릭 이벤트 핸들러 호출
+            />
+          </CameraIcon>
           <input
             type="file"
             ref={fileInputRef}
@@ -312,6 +337,7 @@ const CounselorMypage = () => {
       <Name>
         {MyInfo.name} ({MyInfo.gender === "FEMALE" ? "여" : MyInfo.gender === "MALE" ? "남" : ""})
       </Name>
+      <Content>
       <p>
         <Bold>분야:</Bold> {MyInfo.field}
       </p>
@@ -370,6 +396,7 @@ const CounselorMypage = () => {
         )}
       </div>
       <br />
+      </Content>
     </View>
   );
 };

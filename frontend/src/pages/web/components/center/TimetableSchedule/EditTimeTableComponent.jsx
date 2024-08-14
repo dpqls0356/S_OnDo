@@ -186,7 +186,7 @@ const EditTimeTableComponent = ({ handleEditState, SaveDataState }) => {
 
   return (
     <View>
-      <p>수정 모드</p>
+      {/* <p>수정 모드</p> */}
       <Table>
         <table>
           <thead>

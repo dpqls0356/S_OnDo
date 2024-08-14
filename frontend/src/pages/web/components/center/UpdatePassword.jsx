@@ -12,18 +12,18 @@ const View = styled.div`
   align-item: center;
   text-align: center;
   flex-direction: column;
-  gap: 20px;
+  gap: 35px;
   font-size: 17px;
 `;
 
 const Tab = styled.div`
   color: #6769ba;
+  font-size: 25px;
   font-weight: 600;
   // font-size: 36px;
   display: flex;
   gap: 10px;
   margin: 0 auto;
-  font-size: 20px;
   padding: 15px 0px;
   & > p:active {
     color: #f7867a;
@@ -34,14 +34,23 @@ const Form = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+  margin: 10% 0 0 0;
   & > p {
-    font-size: 17px;
+    font-size: 20px;
   }
   & > input {
-    height: 35px;
-    border: 1px black solid;
+    height: 45px;
+    // border: 1px black solid;
+    background-color: #E3E6EC;
     border-radius: 7px;
     padding: 0px 10px;
+  } :: placeholder{
+    font-family: "Jua", sans-serif;
+    font-weight: 400;
+    font-style: normal; 
+    color: #A8AAB2;
+    font-size: 16px;
+    padding: 5px
   }
 `;
 
@@ -170,28 +179,6 @@ const UpdatePassword = () => {
           <button onClick={handleSaveClick}>변경</button>
         </Save>
       </Form>
-      {/* <Form>
-      <p>기존 비밀번호</p>
-      <input type="password" onChange={handleInputChange("password")} placeholder="기존 비밀번호를 입력하세요."/>
-      {!Authenticated ? 
-        <>
-          <hr />
-          <Form>
-            <p>비밀번호</p>
-            <input type="password" onChange={handleInputChange("NewPassword")} placeholder="새로운 비밀번호를 입력하세요."/>
-            <p>비밀번호 확인</p>
-            <input type="password" onChange={handleInputChange("CheckNewPassword")} placeholder="비밀번호를 다시 한 번 입력해주세요."/>
-            <Save>
-              <button onClick={handleSaveClick}>변경</button>
-            </Save>
-          </Form>
-        </>
-      : 
-        <Save>
-          <button onClick={handleAuthenticatedClick}>확인</button>
-        </Save>}
-      
-      </Form> */}
     </View>
   );
 };
