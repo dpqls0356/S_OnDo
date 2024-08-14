@@ -1,6 +1,7 @@
 package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.BoardUpdateDto;
 import com.clio.ondo.domain.board.repository.BoardRepository;
 import com.clio.ondo.domain.board.repository.CustomBoardRepository;
 
@@ -70,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
   public Board saveArticleImage(ObjectId boardId, MultipartFile file, Long memberId) throws IOException {
     Optional<Board> boardOptional = boardRepository.findById(boardId);
     Board board = boardOptional.get();
-    if(file.isEmpty()){
+    if(!file.isEmpty()){
       List<String> imageList=new ArrayList<>();
       String imageUrl = imageService.upload(file, "board");
       imageList.add(imageUrl);
@@ -125,7 +126,7 @@ public class BoardServiceImpl implements BoardService {
   예외처리
    */
   @Override
-  public void updateArticle(String articleId, Board modifiedArticle,Long memberId,List<MultipartFile> images) throws IOException{
+  public void updateArticle(String articleId, BoardUpdateDto modifiedArticle,Long memberId) throws IOException{
     ObjectId objectArtilceId = new ObjectId(articleId);
     Optional<Board> existingArticleOpt = boardRepository.findById(objectArtilceId);
     if (existingArticleOpt.isPresent()) {
@@ -133,39 +134,14 @@ public class BoardServiceImpl implements BoardService {
       Board existingArticle = existingArticleOpt.get();
       if(existingArticle.getMember_id().equals(memberId.toString())){
         List<FilteringResponse> titleResponse = moderationService.inspectBadWord(modifiedArticle.getTitle());
-        if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
+        if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.6){
           throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
         }
 
         List<FilteringResponse> contentResponse = moderationService.inspectBadWord(modifiedArticle.getContent());
-        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.6){
           throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
         }
-
-        //S3에 있는 원래 이미지 삭제
-        List<String> imageUrlList=existingArticle.getImageUrl();
-        if(!imageUrlList.isEmpty()){
-          for(String imageUrl:imageUrlList){
-            System.out.println("원래 이미지삭제: "+imageUrl);
-            imageService.delete(imageUrl,"board");
-          }
-        }
-
-        //수정 시 들어온 이미지 재업로드
-        if( images !=null && !images.isEmpty() ){
-          System.out.println("새 이미지 넣기");
-              
-          List<String> newImageList=new ArrayList<>();
-          for(MultipartFile image:images){
-            if (!image.isEmpty()) {
-              String imageUrl = imageService.upload(image, "board");
-              System.out.println("새이미지url: "+imageUrl);
-              newImageList.add(imageUrl);
-            }
-          }
-          modifiedArticle.settingImageUrl(newImageList);
-        }
-
         customBoardRepositoryImpl.updateArticle(objectArtilceId,modifiedArticle);
       }
       else{
@@ -176,6 +152,28 @@ public class BoardServiceImpl implements BoardService {
       // 게시글이 존재하지 않을 경우 예외 처리
       throw new NotFoundException("존재하지 않은 게시글입니다.");
     }
+  }
+
+  @Override
+  public Board updateArticleImage(ObjectId boardId, MultipartFile file, Long memberId) throws IOException {
+    Optional<Board> boardOptional = boardRepository.findById(boardId);
+    Board board = boardOptional.get();
+    //S3에 있는 원래 이미지 삭제
+    List<String> imageUrlList=board.getImageUrl();
+    if(!imageUrlList.isEmpty()){
+      for(String imageUrl:imageUrlList){
+        imageService.delete(imageUrl,"board");
+      }
+    }
+    //수정 시 들어온 이미지 재업로드
+    if( file !=null && !file.isEmpty() ){
+      List<String> imageList=new ArrayList<>();
+      String imageUrl = imageService.upload(file, "board");
+      imageList.add(imageUrl);
+      board.settingImageUrl(imageList);
+    }
+
+    return boardRepository.save(board);
   }
 
   /*
