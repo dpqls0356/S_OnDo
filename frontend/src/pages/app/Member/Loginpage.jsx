@@ -4,6 +4,8 @@ import Button from "../../../components/app/Button";
 import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
 import useAuthStore from "../../../store/app/authStore";
+import useFcmStore from "../../../store/app/FcmStore";
+
 import { useNavigate } from "react-router-dom";
 
 const Loginpage = () => {
@@ -13,12 +15,13 @@ const Loginpage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { fcmtoken, setFcmToken } = useFcmStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // 에러 메시지 초기화
     try {
-      const success = await login(email, password);
+      const success = await login(email, password, fcmtoken);
       if (success) {
         await checkAuth();
         nav("/member/home");
