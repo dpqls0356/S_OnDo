@@ -8,12 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const View = styled.div`
   padding: 20px 20px;
-  width: 90%;
+  width: 100%;
   height: 25%;
   display: flex;
+  position: relative;
   align-items: center;
   background-color: white;
-  border: 3px solid #506c64;
+  border: 3px solid #ffa79d;
   border-radius: 10px;
   margin-bottom: 30px;
   position: relative;
@@ -39,15 +40,18 @@ const Col = styled.div`
   &:nth-child(3) {
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: flex-end;
+    align-items: flex-end;
     height: 100%;
   }
 `;
 
 const CreateCounselingRoomBtn = styled.button`
-  background-color: #506c64;
+  background-color: #ffa79d;
   height: 50%;
-  width: 90%;
+  /* width: 80%; */
+  width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,18 +69,19 @@ const MemberImg = styled.div`
 `;
 
 const CancelReservationBtn = styled.button`
-  background-color: #506c64;
+  /* background-color: #ffa79d; */
   position: absolute;
   color: white;
   width: 20px;
   height: 30px;
-  left: 100%;
-  bottom: 5%;
+  top: 5px;
+  right: 0;
+  /* left: 100%; */
+  /* bottom: 5%; */
+  color: #ffa79d;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
 `;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -252,24 +257,24 @@ function Reservation({ reservation }) {
         <div>상담일: {reservationFormattedDate}</div>
       </Col>
       <Col>
-        {/* <CreateCounselingRoomBtn onClick={createCounselingRoom}>
+        {timeRemaining > 0 ? (
+          <CancelReservationBtn onClick={handleCancelClick}>
+            <FontAwesomeIcon icon={faX} />
+          </CancelReservationBtn>
+        ) : null}
+        <CreateCounselingRoomBtn onClick={createCounselingRoom}>
           입장
-        </CreateCounselingRoomBtn> */}
-        {timeRemaining >= 0 ? (
+        </CreateCounselingRoomBtn>
+        {/* {timeRemaining >= 0 ? (
           <CreateCounselingRoomBtn onClick={createCounselingRoom}>
             {timeRemaining > 1
               ? `D-${Math.floor(timeRemaining)}`
               : timeRemaining === 0
                 ? `입장`
                 : `D-day`}
-          </CreateCounselingRoomBtn>
-        ) : null}
+          </CreateCounselingRoomBtn> */}
+        {/* ) : null} */}
       </Col>
-      {timeRemaining > 0 ? (
-        <CancelReservationBtn onClick={handleCancelClick}>
-          <FontAwesomeIcon icon={faX} />
-        </CancelReservationBtn>
-      ) : null}
     </View>
   );
 }

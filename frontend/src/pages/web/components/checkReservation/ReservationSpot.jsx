@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import styled, { ServerStyleSheet } from "styled-components";
 import Reservation from "./reservation";
+import useAuthStore from "../../../../store/app/authStore";
 
 const View = styled.div`
   padding: 50px 50px;
@@ -14,24 +15,25 @@ const View = styled.div`
 const Header = styled.div`
   font-weight: 700;
   font-size: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 `;
 
 const Search = styled.div`
   display: flex;
   width: 100%;
-  padding-bottom: 30px;
-  margin-bottom: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 10px;
   border-bottom: 3px solid black;
   & > input {
     flex: 1;
+    border-radius: 15px;
     margin-right: 30px;
     padding: 0px 20px;
   }
   & > button {
     width: 80px;
     color: white;
-    background-color: #506c64;
+    background-color: #ffa79d;
   }
 `;
 
@@ -60,8 +62,14 @@ function ReservationSpot() {
   const [hasMoreSearchResults, setHasMoreSearchResults] = useState(true); // 검색 결과
   const [isSearching, setIsSearching] = useState(false); // 검색 중인지 여부
   const observerTarget = useRef(null);
-
+ const { role } = useAuthStore((state) => ({
+    role: state.role,
+  }));
   const getReservationList = async (reset = false) => {
+    if (role !== "COUNSELOR") {
+      console.warn("You do not have permission to view this content.");
+      return;
+    }
     if (!hasMore) return;
 
     setIsLoading(true);
@@ -91,6 +99,10 @@ function ReservationSpot() {
   };
 
   const getSearchResults = async (reset = false) => {
+    if (role !== "COUNSELOR") {
+      console.warn("You do not have permission to view this content.");
+      return;
+    }
     if (!hasMoreSearchResults) return;
     //
     if (searchWord == "") {
@@ -180,7 +192,7 @@ function ReservationSpot() {
         {(isSearching ? searchResults : reservationList).length > 0 ? (
           (isSearching ? searchResults : reservationList).map(
             (reservation, index) => (
-              <Reservation key={index} reservation={reservation} />
+              <Reservation on key={index} reservation={reservation} />
             )
           )
         ) : (

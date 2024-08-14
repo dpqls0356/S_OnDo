@@ -18,14 +18,14 @@ const ModalContent = styled.div`
 const ModalButton = styled.button`
   padding: 10px 20px;
   margin-top: 20px;
-  background-color: #6769ba;
+  background-color: #f7867a;
   border: none;
   border-radius: 5px;
   color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: #121481;
+    background-color: #bc675e;
   }
 `;
 
@@ -46,7 +46,7 @@ const IncorrectAccessModal = ({ isOpen, closeModal }) => {
           zIndex: 1001,
         },
         overlay: {
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#fff4e4",
           zIndex: 1000,
         },
       }}

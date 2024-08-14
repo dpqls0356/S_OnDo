@@ -167,6 +167,7 @@ const Homepage = () => {
 
   const getCharacter = async () => {
     const characterResponse = await api.get("/character/getCharacter");
+    console.log(characterResponse);
     setCharacter(characterResponse.data.data.character);
     console.log(characterResponse.data.data.character);
   };
