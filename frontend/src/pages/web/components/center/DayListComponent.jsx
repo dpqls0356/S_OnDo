@@ -9,6 +9,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const View = styled.div`
   margin: 0 auto;
+  padding-top: 10px;
   width: 95%;
   height: 100%;
   display: flex;
@@ -23,7 +24,7 @@ const Tab = styled.div`
   display: flex;
   gap: 10px;
   margin: 0 auto;
-  font-size: 20px;
+  font-size: 25px;
   padding: 15px 0px;
   & > p:active{
     color: #F7867A;
