@@ -1,17 +1,20 @@
+import { formatLocalDateToISO } from "../../utils/dateUtils";
+
 const TimeSlots = ({
   selectedDate,
   selectedTime,
   setSelectedTime,
   unavailableTimes,
 }) => {
-  console.log("==============selectedDate==========");
-  console.log(selectedDate);
-  console.log("==============selectedTime==========");
-  console.log(selectedTime);
-  console.log("==============setSelectedTime==========");
-  console.log(setSelectedTime);
-  console.log("==============unavailableTimes==========");
-  console.log(unavailableTimes);
+  // console.log("==============selectedDate==========");
+  // console.log(selectedDate);
+  // console.log("==============selectedTime==========");
+  // console.log(selectedTime);
+  // console.log("==============setSelectedTime==========");
+  // console.log(setSelectedTime);
+  // console.log("==============unavailableTimes==========");
+  // console.log(unavailableTimes);
+
   const handleTimeClick = (time) => {
     if (selectedDate) {
       setSelectedTime(time);
@@ -19,15 +22,10 @@ const TimeSlots = ({
   };
 
   const renderTimeButton = (time) => {
-    const isUnavailable =
-      selectedDate &&
-      unavailableTimes.some((unavailableTime) => {
-        const unavailableDate = new Date(unavailableTime);
-        return (
-          unavailableDate.getHours() === parseInt(time.split(":")[0]) &&
-          unavailableDate.getMinutes() === parseInt(time.split(":")[1])
-        );
-      });
+    if (!selectedDate) return null;
+
+    const formattedDate = formatLocalDateToISO(selectedDate).split('T')[0];
+    const isUnavailable = unavailableTimes[formattedDate]?.includes(time);
 
     return (
       <button
@@ -72,4 +70,5 @@ const TimeSlots = ({
     </div>
   );
 };
+
 export default TimeSlots;

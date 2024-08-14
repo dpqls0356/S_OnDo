@@ -8,9 +8,12 @@ import TimeSlots from "../../../components/app/TimeSlots";
 import BorderImg from "../../../assets/images/구분선.png";
 import back from "../../../assets/images/back.png";
 import styled from "styled-components";
+import { formatLocalDateToISO } from "../../../utils/dateUtils";
+
 const FullWidthCLCard = styled(CLCard)`
   width: 100% !important;
 `;
+
 const Reservation = () => {
   const { counselorId } = useParams();
   const nav = useNavigate();
@@ -39,53 +42,45 @@ const Reservation = () => {
     if (counselorSchedule) {
       const times = {};
       counselorSchedule.forEach((dateTimeStr) => {
-        const date = dateTimeStr.split("T")[0];
-        const time = dateTimeStr.split("T")[1].substring(0, 5);
+        const [date, time] = dateTimeStr.split("T");
         if (!times[date]) {
           times[date] = [];
         }
-        times[date].push(time);
+        times[date].push(time.substring(0, 5));
       });
       setUnavailableTimes(times);
     }
   }, [counselorSchedule]);
 
   const handleReservation = async () => {
-    if (!counselorId) {
-      alert("상담사 ID가 유효하지 않습니다.");
+    if (!counselorId || !selectedDate || !selectedTime) {
+      alert("상담사 ID, 날짜, 시간을 모두 선택해주세요.");
       return;
     }
 
-    if (selectedDate && selectedTime) {
-      const [hours, minutes] = selectedTime.split(":");
-      const reservationDate = new Date(selectedDate);
-      reservationDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+    const [hours, minutes] = selectedTime.split(":");
+    const reservationDate = new Date(selectedDate);
+    reservationDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
-      // 한국 시간을 UTC로 변환
-      const utcReservationDate = new Date(
-        reservationDate.getTime() - 9 * 60 * 60 * 1000
+    const reservDate = formatLocalDateToISO(reservationDate);
+
+    try {
+      const result = await makeReservation(
+        parseInt(counselorId),
+        reservDate,
+        note
       );
-
-      try {
-        const result = await makeReservation(
-          parseInt(counselorId),
-          utcReservationDate,
-          note
-        );
-        if (result.success) {
-          alert("예약이 확정되었습니다.");
-          nav("/member/counseling/main");
-        } else {
-          alert("예약 실패: " + result.message);
-        }
-      } catch (error) {
-        alert(
-          "예약 중 오류가 발생했습니다: " +
-            (error.response?.data?.message || error.message)
-        );
+      if (result.success) {
+        alert("예약이 확정되었습니다.");
+        nav("/member/counseling/main");
+      } else {
+        alert("예약 실패: " + result.message);
       }
-    } else {
-      alert("날짜와 시간을 선택해주세요.");
+    } catch (error) {
+      alert(
+        "예약 중 오류가 발생했습니다: " +
+          (error.response?.data?.message || error.message)
+      );
     }
   };
 
@@ -135,12 +130,8 @@ const Reservation = () => {
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
               unavailableTimes={
-                selectedDate
-                  ? counselorSchedule.filter((dateStr) => {
-                      dateStr.startsWith(
-                        selectedDate.toISOString().split("T")[0]
-                      );
-                    })
+                selectedDate && unavailableTimes[selectedDate]
+                  ? unavailableTimes[selectedDate]
                   : []
               }
             />

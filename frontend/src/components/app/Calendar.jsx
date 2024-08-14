@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { formatLocalDateToISO } from "../../utils/dateUtils";
+
 const Calendar = ({ selectedDate, setSelectedDate, unavailableTimes }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -34,10 +35,10 @@ const Calendar = ({ selectedDate, setSelectedDate, unavailableTimes }) => {
     return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
   };
 
+
   const isDateFullyBooked = (date) => {
-    const formattedDate = formatLocalDateToISO(date);
-    const dateString = formattedDate.split("T")[0];
-    const unavailable = unavailableTimes[dateString] || [];
+    const formattedDate = formatLocalDateToISO(date).split('T')[0];
+    const unavailable = unavailableTimes[formattedDate] || [];
     const allTimes = [
       "09:00",
       "10:00",
