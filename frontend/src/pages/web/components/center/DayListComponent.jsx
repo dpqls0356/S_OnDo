@@ -9,11 +9,12 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const View = styled.div`
   margin: 0 auto;
-  width: 90%;
+  padding-top: 10px;
+  width: 95%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  // gap: 20px;
 `;
 
 const Tab = styled.div`
@@ -23,7 +24,7 @@ const Tab = styled.div`
   display: flex;
   gap: 10px;
   margin: 0 auto;
-  font-size: 20px;
+  font-size: 25px;
   padding: 15px 0px;
   & > p:active{
     color: #F7867A;
@@ -31,9 +32,9 @@ const Tab = styled.div`
 `
 
 const Calen = styled.div`
-  border: 1px black solid;
-  padding: 10px;
-  border-radius: 20px;
+  // border: 1px black solid;
+  // padding: 10px;
+  // border-radius: 20px;
 `;
 const Content = styled.div`
   // display: flex;
