@@ -117,8 +117,8 @@ const StyledLink = styled(Link)`
   }
   color: ${({ isActive }) => (isActive ? "#3b3a83" : "#f5f5fa")};
   background-color: ${({ isActive }) => (isActive ? "#f5f5fa" : "#3b3a83")};
-  &:hover{
-    color:${({ isActive }) => (isActive ? "#3b3a83" : "#f5f5fa")};
+  &:hover {
+    color: ${({ isActive }) => (isActive ? "#3b3a83" : "#f5f5fa")};
   }
 `;
 
@@ -177,8 +177,11 @@ function CounselorLayout() {
       console.log("counselorLayout - role:", role, "user:", user);
       // await checkAuth(); // 인증 상태를 먼저 확인합니다.
 
+      if (!role) {
+        navigate("/counselor/login");
+      }
       //로그인이 안된 경우 또는 로그인이 되어있긴한데 유저가 해당 페이지로 와버린 경우
-      if (!role || role !== "COUNSELOR") {
+      else if (role !== "COUNSELOR") {
         setIsModalOpen(true);
       }
     };

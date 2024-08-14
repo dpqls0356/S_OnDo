@@ -1,4 +1,10 @@
-import { useEffect, useState, useMemo, useImperativeHandle, forwardRef} from "react";
+import {
+  useEffect,
+  useState,
+  useMemo,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import axios from "axios";
 import "./BoardList.css";
 import useBoardStore from "../../../store/app/useBoardStore";
@@ -131,7 +137,8 @@ const BoardList = forwardRef((props, ref) => {
               &lt;
             </button>
             <span>
-              페이지 {pagination.currentPage + 1} / {pagination.totalPages}
+              페이지 {pagination.currentPage + 1} /{" "}
+              {pagination.totalPages === 0 ? 1 : pagination.totalPages}
             </span>
             <button
               className="pagination-button"

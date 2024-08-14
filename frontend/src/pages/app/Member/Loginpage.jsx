@@ -4,6 +4,7 @@ import Button from "../../../components/app/Button";
 import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
 import useAuthStore from "../../../store/app/authStore";
+import useFcmStore from "../../../store/app/FcmStore";
 
 import { useNavigate } from "react-router-dom";
 
@@ -14,12 +15,13 @@ const Loginpage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { fcmtoken, setFcmToken } = useFcmStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // 에러 메시지 초기화
     try {
-      const success = await login(email, password);
+      const success = await login(email, password, fcmtoken);
       if (success) {
         await checkAuth();
         nav("/member/home");
@@ -34,10 +36,14 @@ const Loginpage = () => {
   };
   const onClickKakao = () => {
     nav("/member/kakaologin");
+    window.location.href =
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/kakao";
   };
 
   const onClickNaver = () => {
     nav("/member/naverlogin");
+    window.location.href =
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/naver";
   };
   const onClickJoin = () => {
     nav("/member/join");
@@ -48,12 +54,12 @@ const Loginpage = () => {
       <p id="Title">로그인</p>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="login-id">아이디</label>
+          <label htmlFor="login-id">이메일</label>
           <br />
           <input
             id="login-id"
             type="text"
-            placeholder="아이디"
+            placeholder="이메일"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

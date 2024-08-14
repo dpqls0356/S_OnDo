@@ -1,11 +1,17 @@
-import { BrowserRouter as Router, Routes, Route,useLocation,Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
 
 import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
 import CounselorLogin from "./pages/web/counselorLogin";
 import CounselingRoom from "./pages/web/counselingRoom";
-import CounselorJoin from "./pages/web/counselorJoin"
+import CounselorJoin from "./pages/web/counselorJoin";
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
 
@@ -33,9 +39,10 @@ import BoardUpdatepage from "./pages/app/Board/BoardUpdatepage";
 import MyUpdateForm from "./pages/app/Member/MyUpdatepage";
 
 import Join from "../src/pages/app/Member/Join";
+import OAuthCallback from "./pages/app/Member/OAuthCallback";
 import MyPage from "../src/pages/app/Member/MyPage";
 import Mission from "./pages/app/Mission/Mission";
-import CompletedMission from './pages/app/Mission/CompletedMissions'
+import CompletedMission from "./pages/app/Mission/CompletedMissions";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
@@ -43,7 +50,56 @@ import CounselorDetail from "../src/pages/app/Counselor/CounselorDetail";
 import HomeUserInfoComponent from "./pages/web/components/center/homeUserInfoComponent";
 // import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import useFcmStore from "../src/store/app/FcmStore.js";
+// import { onBackgroundMessage } from "firebase/messaging/sw";
+
 function App() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyAk9W2eCQ5qrmgZv4WvC--1_WuflqeXZ0Y",
+    authDomain: "ondo-ffd48.firebaseapp.com",
+    projectId: "ondo-ffd48",
+    storageBucket: "ondo-ffd48.appspot.com",
+    messagingSenderId: "11671201090",
+    appId: "1:11671201090:web:8883a7703bea1735ac14db",
+    measurementId: "G-E488XVDL6J",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+  const { setFcmToken } = useFcmStore();
+
+  useEffect(() => {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js")
+      .then((registration) => {
+        console.log(
+          "Service Worker registered with scope:",
+          registration.scope
+        );
+
+        getToken(messaging, {
+          vapidKey: import.meta.env.REACT_APP_VAPID,
+        })
+          .then((currentToken) => {
+            if (currentToken) {
+              console.log("FCM Token:", currentToken);
+              setFcmToken(currentToken);
+            } else {
+              console.log(
+                "No registration token available. Request permission to generate one."
+              );
+            }
+          })
+          .catch((err) => {
+            console.error("An error occurred while retrieving token. ", err);
+          });
+      })
+      .catch((err) => {
+        console.error("Service Worker registration failed: ", err);
+      });
+  }, [setFcmToken]);
 
   return (
     <Router>
@@ -51,7 +107,7 @@ function App() {
         <Route path="/" element={<Navigate to="/member/main" />} />
         {/* 상담사 */}
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
-        <Route path="/counselor/join" element={<CounselorJoin/>}></Route>
+        <Route path="/counselor/join" element={<CounselorJoin />}></Route>
         <Route path="/counselor" element={<CounselorLayout />}>
           <Route path="" element={<Schedul />} />
           {/* <Route path="" element={<TimeTableComponent/> }/> */}
@@ -68,6 +124,7 @@ function App() {
         <Route path="counselingroom" element={<CounselingRoom />}></Route>
         {/* 유저 */}
         <Route path="/member" element={<MobileLayout />}>
+          <Route path="oauth-callback" element={<OAuthCallback />} />
           <Route path="main" element={<Logopage />} />
           <Route path="login" element={<Loginpage />} />
           <Route path="story" element={<Story />} />
@@ -77,7 +134,6 @@ function App() {
           <Route path="board/create" element={<BoardCreatepage />} />
           <Route path="board/:articleId/update" element={<BoardUpdatepage />} />
           <Route path="board/:articleId" element={<BoardDetailpage />} />
-          <Route path="*" element={<Notfoundpage />} />
           <Route path="join" element={<Join />} />
           <Route path="profile" element={<MyPage />} />
           <Route path="mission/list" element={<Mission />} />
@@ -94,8 +150,10 @@ function App() {
             element={<CounselorDetail />}
           />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
+          <Route path="*" element={<CounselorNotFoundPage />} />
         </Route>
         {/* )} */}
+        <Route path="/*" element={<CounselorNotFoundPage />} />
       </Routes>
     </Router>
   );
