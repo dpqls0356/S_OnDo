@@ -6,6 +6,7 @@ import useAuthStore from "../../store/app/authStore";
 import IncorrectAccessModal from "../../pages/web/components/incorrectAccessModal";
 
 const View = styled.div`
+  font-family: "NIXGONM-Vb";
   position: relative;
   background-color: #fff9e9;
   width: 100%;
