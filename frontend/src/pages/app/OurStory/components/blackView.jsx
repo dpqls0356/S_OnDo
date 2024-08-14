@@ -34,7 +34,8 @@ const BlackBackGround = styled.div.attrs((props) => ({
   position: absolute;
   z-index: 20;
   opacity: 0;
-  animation: ${({ fadeOutTrigger }) => fadeOutTrigger ? fadeOut : fadeIn} 2s forwards;
+  animation: ${({ fadeOutTrigger }) => (fadeOutTrigger ? fadeOut : fadeIn)} 2s
+    forwards;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -60,7 +61,8 @@ const Btn = styled.div`
   height: fit-content;
   pointer-events: all;
   z-index: 200;
-  &:focus, &:hover {
+  &:focus,
+  &:hover {
     outline: none;
     border: none;
   }
@@ -82,9 +84,9 @@ export default function BlackView({ clickCount, handleClick }) {
 
   return (
     <>
-      <BlackBackGround >
+      <BlackBackGround>
         {clickCount === 2 && <Text>{renderWaveText("이동중 ...")}</Text>}
-        {clickCount === 3 && <Text>저기...</Text>}
+        {clickCount === 3 && <Text>저기...?</Text>}
       </BlackBackGround>
       <Btn
         onClick={() => {

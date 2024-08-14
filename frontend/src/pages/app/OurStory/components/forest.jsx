@@ -41,7 +41,6 @@ const View = styled.div`
   &.zoom-in {
     animation: ${zoomIn} 2s forwards;
   }
-
 `;
 
 const Black = styled.div`
@@ -79,7 +78,8 @@ const Btn = styled.div`
   height: fit-content;
   pointer-events: all;
   z-index: 200;
-  &:focus, &:hover {
+  &:focus,
+  &:hover {
     outline: none;
     border: none;
   }
@@ -88,11 +88,11 @@ const Btn = styled.div`
 const Text = styled.pre`
   position: fixed;
   margin-top: 20px;
-  width:90%;
+  width: 90%;
   max-width: 360px;
   width: 90%;
   min-height: 10%;
-  padding: 10px 20px;
+  padding: 20px 30px;
   background-color: #0000008d;
   color: white;
   z-index: 10;
@@ -108,8 +108,8 @@ export default function Forest({ clickCount, handleClick }) {
 
   useEffect(() => {
     if (isZoomIn) {
-      viewRef.current.classList.add('zoom-in');
-      textRef.current.classList.add('zoom-in');
+      viewRef.current.classList.add("zoom-in");
+      textRef.current.classList.add("zoom-in");
     }
   }, [isZoomIn]);
 
@@ -117,8 +117,7 @@ export default function Forest({ clickCount, handleClick }) {
     <>
       {isZoomIn && (
         <Text ref={textRef}>
-          뭐야... 다람쥐잖아?{"\n"}
-          왜 이런 곳에 있는거지?{"\n"}
+          뭐야... 다람쥐잖아?{"\n"}왜 이런 곳에 있는거지?{"\n"}
           일단 집으로 데려가야겠다...
         </Text>
       )}
