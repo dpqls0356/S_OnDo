@@ -65,6 +65,12 @@ public class ImageServiceImpl implements ImageService {
 	@Override
 	@Transactional
 	public String uploadAndMember(MultipartFile multipartFile, String dirName, Long counselorId) throws IOException{
+		System.out.println(multipartFile);
+
+		if(multipartFile.isEmpty()){
+			return "";
+		}
+
 		File uploadFile = convert(multipartFile)
 			.orElseThrow(() -> new IllegalArgumentException("file 변환 오류"));
 		String url = uploadUrl(uploadFile, dirName);
@@ -95,7 +101,7 @@ public class ImageServiceImpl implements ImageService {
 			if ("default.jpg".equals(fileName)) {
 				profileUrl = defaultProfileUrl;
 			} else if ("empty.jpg".equals(fileName)) {
-				profileUrl = multipartFile.getOriginalFilename();
+				profileUrl = member.getProfileUrl();
 			}
 		}
 
