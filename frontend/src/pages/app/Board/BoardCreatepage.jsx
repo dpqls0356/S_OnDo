@@ -8,22 +8,21 @@ import useBoardStore from "../../../store/app/BoardStore";
 import useAuthStore from "../../../store/app/authStore";
 import LoadingSpinner from "../../../components/app/Spinner";
 import Swal from "sweetalert2";
-import styled from "styled-components"
+import styled from "styled-components";
 const RemovePic = styled.div`
   position: absolute;
-  top:0;
-  color:white;
+  top: 0;
+  color: white;
   width: 30px;
   height: 30px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  
-`
+`;
 const Pic = styled.div`
   position: relative;
-`
+`;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -105,7 +104,7 @@ const BoardCreatepage = () => {
   const handleImageRemove = () => {
     setImagePreview(null); // 이미지 미리보기 초기화
     setCurrentBoard("image", null); // 상태에서 파일 제거
-    document.getElementById('AddImage').value = null; // input 파일 값 초기화
+    document.getElementById("AddImage").value = null; // input 파일 값 초기화
   };
 
   const handleSubmit = async (e) => {
@@ -113,36 +112,47 @@ const BoardCreatepage = () => {
 
     setSpinnerLoading(true);
     try {
-      const boardData = new Blob(
-        [
-          JSON.stringify({
-            title: currentBoard.title,
-            content: currentBoard.content,
-            member_name: currentBoard.member_name,
-          }),
-        ],
-        { type: "application/json" }
-      );
+      const boardData = {
+        title: currentBoard.title,
+        content: currentBoard.content,
+        member_name: currentBoard.member_name,
+      };
 
       // FormData 객체 생성
       const formData = new FormData();
-      formData.append("board", boardData);
 
       if (currentBoard.image) {
-        formData.append("image", currentBoard.image);
+        formData.append("data", currentBoard.image);
       } else {
         const emptyFile = new Blob([""], { type: "image/jpeg" });
-        formData.append("image", emptyFile, "empty.jpg");
+        formData.append("data", emptyFile, "empty.jpg");
       }
 
       // 요청 보내기
-      const response = await api.post("/board/article", formData, {
+      const response = await api.post("/board/article", boardData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
 
       if (response.status === 201) {
+        // 요청 보내기
+        try {
+          const imageResponse = await api.post(
+            "/board/articleImage/" + response.data.data.id,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          if (imageResponse.data.success) {
+          } else {
+            alert(response.data.message || "이미지 등록에 실패했습니다.");
+          }
+        } catch {}
         console.log("게시글이 성공적으로 생성되었습니다.");
         console.log("서버 응답:", response.data);
         createBoard(); // Zustand store에 게시글 추가
@@ -229,15 +239,22 @@ const BoardCreatepage = () => {
                     marginBottom: "10px",
                   }}
                 />
-                              <RemovePic
-                type="button"
-                onClick={handleImageRemove}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-</svg>
-
-              </RemovePic>
+                <RemovePic type="button" onClick={handleImageRemove}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </RemovePic>
               </Pic>
             </div>
           )}

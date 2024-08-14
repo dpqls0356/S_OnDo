@@ -27,6 +27,6 @@ public interface CounselorService {
 	Optional<Counselor> getCounselorEntity(Long id);
     void logout(String token);
     CounselorMyPageResponseDto getMypage(Long counslorId);
-    void updateMypage(Long counselorId,String password,String selfIntroduction, MultipartFile profileImage) throws IOException;
+    void updateMypage(Long counselorId,String password,String selfIntroduction) throws IOException;
 
 }

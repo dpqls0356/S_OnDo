@@ -106,41 +106,52 @@ const BoardUpdatepage = () => {
   };
 
   const updateBoard = async () => {
-    const boardData = new Blob(
-      [
-        JSON.stringify({
-          title: currentViewArticle.title,
-          content: currentViewArticle.content,
-        }),
-      ],
-      { type: "application/json" }
-    );
+    const boardData = {
+      title: currentViewArticle.title,
+      content: currentViewArticle.content,
+    };
 
     // FormData 객체 생성
     const formData = new FormData();
-    formData.append("board", boardData);
 
     if (currentViewArticle.image) {
-      formData.append("image", currentViewArticle.image);
+      formData.append("data", currentViewArticle.image);
     } else {
       const emptyFile = new Blob([""], { type: "image/jpeg" });
-      formData.append("image", emptyFile, "empty.jpg");
+      formData.append("data", emptyFile, "empty.jpg");
     }
 
     // 요청 보내기
-    const response = await api.patch("/board/" + id, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    try {
+      const response = await api.patch("/board/" + id, boardData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (response.status === 204) {
-      console.log("게시글 수정 성공.");
-    } else if (response.status === 200) {
-      await alertModeration(response.data.message);
-    } else {
-      console.error("예상치 못한 응답:", response.status);
-    }
+      if (response.status === 204) {
+        const imageResponse = await api.patch(
+          "/board/articleImage/" + id,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (imageResponse.data.success) {
+        } else {
+          alert(response.data.message || "이미지 등록에 실패했습니다.");
+        }
+
+        console.log("게시글 수정 성공.");
+      } else if (response.status === 200) {
+        await alertModeration(response.data.message);
+      } else {
+        console.error("예상치 못한 응답:", response.status);
+      }
+    } catch {}
   };
 
   const onClickUpdate = async (event) => {
