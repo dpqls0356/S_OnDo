@@ -95,6 +95,7 @@ export const useAuthStore = create(
             withCredentials: true,
           });
           if (response.data.success) {
+            console.log("checkAuth" + response);
             set({ user: response.data.data.user, role: "USER" });
             return true;
           }

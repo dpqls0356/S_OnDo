@@ -4,7 +4,6 @@ import Button from "../../../components/app/Button";
 import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
 import useAuthStore from "../../../store/app/authStore";
-
 import { useNavigate } from "react-router-dom";
 
 const Loginpage = () => {
@@ -34,10 +33,14 @@ const Loginpage = () => {
   };
   const onClickKakao = () => {
     nav("/member/kakaologin");
+    window.location.href =
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/kakao";
   };
 
   const onClickNaver = () => {
     nav("/member/naverlogin");
+    window.location.href =
+      "http://i11c110.p.ssafy.io:8081/oauth2/authorization/naver";
   };
   const onClickJoin = () => {
     nav("/member/join");
