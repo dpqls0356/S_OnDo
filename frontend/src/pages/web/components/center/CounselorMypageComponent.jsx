@@ -96,6 +96,10 @@ const Tab = styled.div`
   }
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const api = axios.create({
+  baseURL: baseUrl,
+  withCredentials: true,
+});
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 // const nav = useNavigate()
@@ -181,39 +185,51 @@ const CounselorMypage = () => {
   const putMyInfo = async () => {
     // Blob 객체는 후에 FormData 객체에 추가 되어
     // JSON 데이터와 파일(ex: 이미지)를 한 번에 전송할 수 있게 해줌
-    const userData = new Blob(
-      [
-        JSON.stringify({
-          password: "",
-          selfIntroduction: formData.selfIntroduction,
-        }),
-      ],
-      { type: "application/json" }
-    );
+    const userData = {
+      password: "",
+      selfIntroduction: formData.selfIntroduction,
+    };
 
-    const userFormData = new FormData();
-    userFormData.append("requestDto", userData); // requestDto라는 키에 value가 userData인 key-value쌍이 userFormData에 추가됨
+    const imageData = new FormData();
 
-    // userFormData에 이미지 담기
     if (selectedFile) {
       console.log(selectedFile);
-      userFormData.append("profileImage", selectedFile);
+      imageData.append("data", selectedFile);
     } else if (previewUrl === mainProfileUrl) {
       const defaultFile = new Blob([""], { type: "image/jpeg" });
-      userFormData.append("profileImage", defaultFile, "default.jpg");
+      imageData.append("data", defaultFile, "default.jpg");
     } else {
       const emptyFile = new Blob([""], { type: "image/jpeg" });
-      userFormData.append("profileImage", emptyFile, "empty.jpg");
+      imageData.append("data", emptyFile, "empty.jpg");
     }
 
     try {
-      const response = await axios.put(`${baseUrl}/counselor/updateMypage`, userFormData, {
-        header: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true, // 쿠키를 포함하여 요청
-      });
+      const response = await axios.put(
+        `${baseUrl}/counselor/updateMypage`,
+        userData,
+        {
+          header: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // 쿠키를 포함하여 요청
+        }
+      );
       if (response.data.success) {
+        try {
+          const imageResponse = await api.post(
+            `/counselor/updateImage/CounselorProfile`,
+            imageData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (imageResponse.data.success) {
+          } else {
+            alert(response.data.message || "이미지 등록에 실패했습니다.");
+          }
+        } catch {}
         console.log("마이페이지 수정 완료");
         alert("수정이 완료되었습니다.");
         InfoState(""); // 입력창 초기화
@@ -222,7 +238,7 @@ const CounselorMypage = () => {
         // 여기서 MyInfo 상태를 직접 업데이트함으로써 수정 후 바로 수정된 정보가 보이게 함
         setMyInfo((prev) => ({
           ...prev,
-          selfIntroduction: formData.selfIntroduction,
+          selfIntroduction: userData.selfIntroduction,
           profileUrl: user.profileUrl, // 프로필 이미지도 업데이트
         }));
         await getMyInfo();
@@ -298,7 +314,13 @@ const CounselorMypage = () => {
         />
       )}
       <Name>
-        {MyInfo.name} ({MyInfo.gender === "FEMALE" ? "여" : MyInfo.gender === "MALE" ? "남" : ""})
+        {MyInfo.name} (
+        {MyInfo.gender === "FEMALE"
+          ? "여"
+          : MyInfo.gender === "MALE"
+            ? "남"
+            : ""}
+        )
       </Name>
       <p>
         <Bold>분야:</Bold> {MyInfo.field}
@@ -322,14 +344,22 @@ const CounselorMypage = () => {
           {edit ? (
             <p
               onClick={putMyInfo}
-              style={{ cursor: "pointer", textDecoration: "underline", color: "gray" }}
+              style={{
+                cursor: "pointer",
+                textDecoration: "underline",
+                color: "gray",
+              }}
             >
               저장
             </p>
           ) : (
             <p
               onClick={onClickEdit}
-              style={{ cursor: "pointer", textDecoration: "underline", color: "gray" }}
+              style={{
+                cursor: "pointer",
+                textDecoration: "underline",
+                color: "gray",
+              }}
             >
               수정
             </p>
