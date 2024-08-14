@@ -8,7 +8,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const View = styled.div`
   margin: 0 auto;
-  width: 90%;
+  width: 95%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -16,13 +16,14 @@ const View = styled.div`
 `;
 
 const Calen = styled.div`
-  border: 1px black solid;
-  padding: 10px;
-  border-radius: 20px;
+  // border: 1px black solid;
+  // padding: 10px;
+  // border-radius: 20px;
 `;
 
 const Save = styled.div`
   display: inline-block;
+  padding-bottom: 20px; 
   & > button {
     float: right;
     width: 120px;
@@ -32,7 +33,11 @@ const Save = styled.div`
   }
 `;
 
-const Option = styled.div``;
+const TimeSlots = styled.div`
+  width:  90%;
+  margin: 0 auto;
+  // padding: 5px 0px;
+`;
 
 const DetailSchedulComponent = () => {
   const todayDate = new Date();
@@ -99,7 +104,7 @@ const DetailSchedulComponent = () => {
 
   return (
     <View>
-      <Option>
+      {/* <Option> */}
         <Calen>
           <CounselorCalendar 
             selectedDate={selectedDate} 
@@ -110,6 +115,7 @@ const DetailSchedulComponent = () => {
             setSaveTimeState={setSaveTimeState}
           />
         </Calen>
+        <TimeSlots>
         {readyToRender ? (
           <CounselorTimeSlots 
             selectedDate={selectedDate} 
@@ -120,7 +126,8 @@ const DetailSchedulComponent = () => {
         ) : (
           <div>Loading...</div> // 데이터가 로딩 중일 때 표시될 로딩 메시지
         )}
-      </Option>
+        </TimeSlots>
+      {/* </Option> */}
       <Save>
         <button onClick={handleSaveClick}>저장</button>
       </Save>
