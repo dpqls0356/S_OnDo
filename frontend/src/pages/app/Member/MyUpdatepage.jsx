@@ -127,31 +127,9 @@ const MyUpdateForm = () => {
           const imgFormData = new FormData();
           if (selectedFile) {
             imgFormData.append("data", selectedFile);
-
-            if (selectedFile) {
-              formData.append("data", selectedFile);
-            } else if (previewUrl === mainProfileUrl) {
-              const emptyFile = new Blob([""], { type: "default/jpeg" });
-              formData.append("data", emptyFile, "default.jpg");
-            } else {
-              const emptyFile = new Blob([""], { type: "image/jpeg" });
-              formData.append("data", emptyFile, "empty.jpg");
-            }
-
-            const imageRespose = await api.post(
-              `/image/update/MemberProfile/${response.data.data.id}`,
-              imgFormData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-
-            if (imageRespose.data.success) {
-            } else {
-              alert(response.data.message || "이미지 수정에 실패했습니다.");
-            }
+          } else if (previewUrl === mainProfileUrl) {
+            const emptyFile = new Blob([""], { type: "image/jpeg" });
+            imgFormData.append("data", emptyFile, "default.jpg");
           } else {
             const emptyFile = new Blob([""], { type: "image/jpeg" });
             imgFormData.append("data", emptyFile, "empty.jpg");
