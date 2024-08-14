@@ -31,15 +31,26 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
 
   // 날짜별 일정 조회(불러오기)
   const handleDateClick = async (date) => {
+    console.log("날짜 조회 하는 중")
     setSaveTimeState([])
     setSelectedDate(date); // 선택한 날짜 selectDate에 저장
     setSelectedTime([]); // 선택한 날짜에 대한 선택한 시간 리스트 초기화
     const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
-    // Local time to UTC
-    const formattedDate = new Date(Date.UTC(fullDate.getFullYear(), fullDate.getMonth(), fullDate.getDate()));
-    const inputdate = formattedDate.toISOString().split('T')[0].replace(/-/g, '');
+
+    const inputdate = fullDate.getFullYear().toString() +
+    String(fullDate.getMonth() + 1).padStart(2, '0') +
+    String(fullDate.getDate()).padStart(2, '0');
+
     console.log('url 확인용:', inputdate);
-    setSelectedDate2(formattedDate.toISOString().split('T')[0]); // Update setSelectedDate2 with UTC date
+
+    console.log('fullDate 확인용', fullDate)
+
+// fullDate를 YYYY-MM-DD 형식의 문자열로 변환하여 다시 저장
+    const formattedDate = fullDate.getFullYear().toString() +
+    '-' + String(fullDate.getMonth() + 1).padStart(2, '0') +
+    '-' + String(fullDate.getDate()).padStart(2, '0');
+    setSelectedDate2(formattedDate)
+
     try {
       const response = await axios.get(`${baseUrl}/counselor/schedule/${inputdate}`,
         {
@@ -49,23 +60,23 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
           withCredentials: true,
         }
       );
-      // Convert received schedule dates from UTC to local time
-      const scheduleInLocalTime = response.data.data.schedule.map(time => {
-        const utcTime = new Date(time + 'Z'); // 'Z'를 추가하여 UTC임을 명시
-  const localTime = new Date(utcTime.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-  const hours = String(localTime.getHours()).padStart(2, '0');
-  const minutes = String(localTime.getMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
+
+      console.log("응답 데이터:", response.data.data.schedule)
+
+      // 시간 부분만 추출하여 리스트에 저장
+      const scheduleInLocalTime = response.data.data.schedule.map(dateTime => {
+        const localTime = new Date(dateTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        return localTime;
       });
-      // setDayScheduleList(scheduleInLocalTime);
-      // console.log('dayScheduleList', dayScheduleList)
+
+      console.log(scheduleInLocalTime)
+
       if (response.status === 200) {
         console.log('상세 일정 조회 성공')
-        console.log(scheduleInLocalTime)
-        // setSaveTimeState(scheduleInLocalTime) // response.data.data.schedule에 있는 시간대(UTC 기준)를 Asia/Seoul기준으로 바꾼 후 saveTime state에 저장
-        setSelectedTime(scheduleInLocalTime)
-        console.log('selectedDate 채워졌는지 확인용(자식):', selectedTime)
-        // console.log('서버 응답:', response.data)
+        setSaveTimeState(scheduleInLocalTime) // response.data.data.schedule에 있는 시간대의 시간만 뽑아 scheduleInLocalTime에
+        // 저장한 후 saveTime state에 저장
+
+        // console.log('selectedDate 채워졌는지 확인용(자식):', selectedTime)
       }
 
     } catch (err) {
