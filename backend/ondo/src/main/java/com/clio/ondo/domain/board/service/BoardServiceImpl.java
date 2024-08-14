@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.BoardUpdateDto;
 import com.clio.ondo.domain.board.repository.BoardRepository;
 import com.clio.ondo.domain.board.repository.CustomBoardRepository;
 import com.clio.ondo.domain.image.service.ImageService;
