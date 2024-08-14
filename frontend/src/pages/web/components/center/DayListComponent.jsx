@@ -9,11 +9,11 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const View = styled.div`
   margin: 0 auto;
-  width: 90%;
+  width: 95%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  // gap: 20px;
 `;
 
 const Tab = styled.div`
@@ -31,9 +31,9 @@ const Tab = styled.div`
 `
 
 const Calen = styled.div`
-  border: 1px black solid;
-  padding: 10px;
-  border-radius: 20px;
+  // border: 1px black solid;
+  // padding: 10px;
+  // border-radius: 20px;
 `;
 const Content = styled.div`
   // display: flex;
