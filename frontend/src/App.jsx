@@ -1,11 +1,17 @@
-import { BrowserRouter as Router, Routes, Route,useLocation,Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
 
 import CounselorNotFoundPage from "./pages/web/components/counselorNotFoundPage";
 import CounselorLogin from "./pages/web/counselorLogin";
 import CounselingRoom from "./pages/web/counselingRoom";
-import CounselorJoin from "./pages/web/counselorJoin"
+import CounselorJoin from "./pages/web/counselorJoin";
 import CounselorLayout from "./pages/web/counselorLayout";
 import MobileLayout from "./pages/app/mobileLayout";
 
@@ -35,7 +41,7 @@ import MyUpdateForm from "./pages/app/Member/MyUpdatepage";
 import Join from "../src/pages/app/Member/Join";
 import MyPage from "../src/pages/app/Member/MyPage";
 import Mission from "./pages/app/Mission/Mission";
-import CompletedMission from './pages/app/Mission/CompletedMissions'
+import CompletedMission from "./pages/app/Mission/CompletedMissions";
 import CounselorList from "../src/pages/app/Counselor/CounselorList";
 import CounselorMain from "../src/pages/app/Counselor/CounselorMain";
 import CounselorReservation from "../src/pages/app/Counselor/CounselorReservation";
@@ -44,14 +50,13 @@ import HomeUserInfoComponent from "./pages/web/components/center/homeUserInfoCom
 // import DetailSchedulComponent from "./pages/web/components/center/DetailSchedulComponent";
 
 function App() {
-
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/member/main" />} />
         {/* 상담사 */}
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
-        <Route path="/counselor/join" element={<CounselorJoin/>}></Route>
+        <Route path="/counselor/join" element={<CounselorJoin />}></Route>
         <Route path="/counselor" element={<CounselorLayout />}>
           <Route path="" element={<Schedul />} />
           {/* <Route path="" element={<TimeTableComponent/> }/> */}
@@ -77,7 +82,6 @@ function App() {
           <Route path="board/create" element={<BoardCreatepage />} />
           <Route path="board/:articleId/update" element={<BoardUpdatepage />} />
           <Route path="board/:articleId" element={<BoardDetailpage />} />
-          <Route path="*" element={<Notfoundpage />} />
           <Route path="join" element={<Join />} />
           <Route path="profile" element={<MyPage />} />
           <Route path="mission/list" element={<Mission />} />
@@ -94,8 +98,10 @@ function App() {
             element={<CounselorDetail />}
           />
           <Route path="info/:id/update" element={<MyUpdateForm />} />
+          <Route path="*" element={<CounselorNotFoundPage />} />
         </Route>
         {/* )} */}
+        <Route path="/*" element={<CounselorNotFoundPage />} />
       </Routes>
     </Router>
   );

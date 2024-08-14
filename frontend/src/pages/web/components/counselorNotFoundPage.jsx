@@ -7,7 +7,7 @@ import IncorrectAccessModal from "./incorrectAccessModal";
 export default function CounselorNotFoundPage() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const { role} = useAuthStore((state) => ({
+  const { role } = useAuthStore((state) => ({
     role: state.role,
   }));
   const closeModal = async () => {
@@ -15,8 +15,10 @@ export default function CounselorNotFoundPage() {
     setIsModalOpen(false);
 
     if (!role) {
-      navigate("/counselor/login");
-    } else {
+      navigate("/");
+    } else if (role && role == "USER") {
+      navigate("/member/home");
+    } else if (role && role == "COUNSELOR") {
       navigate("/counselor");
     }
   };
