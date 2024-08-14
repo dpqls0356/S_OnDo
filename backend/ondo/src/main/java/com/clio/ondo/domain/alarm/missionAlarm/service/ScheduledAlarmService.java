@@ -45,7 +45,7 @@ public class ScheduledAlarmService {
 		redisTemplate.expire(key, 3600, TimeUnit.SECONDS);
 	}
 
-	@Scheduled(cron = "0 16 7 * * *")
+	@Scheduled(cron = "0 32 12 * * *")
 	//@Scheduled(fixedDelay = 60000)
 	public void createSpecialMission(){
 		try{
