@@ -6,6 +6,7 @@ import useAuthStore from "../../store/app/authStore";
 import IncorrectAccessModal from "../../pages/web/components/incorrectAccessModal";
 
 const View = styled.div`
+  font-family: "NIXGONM-Vb";
   position: relative;
   background-color: #fff9e9;
   width: 100%;
@@ -81,7 +82,7 @@ export default function MobileLayout() {
         !location.pathname.startsWith("/member/join") &&
         role !== "USER"
       ) {
-        console.log("1")
+        console.log("1");
         setIsModalOpen(true);
       }
       // 유저가 맞는데 로그인/조인 화면에 들어가는 경우
@@ -91,7 +92,8 @@ export default function MobileLayout() {
           location.pathname.startsWith("/member/login")) &&
         role === "USER"
       ) {
-        console.log("2")
+        console.log(role);
+        console.log("2");
         setIsModalOpen(true);
       } else {
         setIsModalOpen(false);

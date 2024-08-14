@@ -16,19 +16,19 @@ import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 public interface MemberService {
 
-	void join(JoinRequestDto joinRequestDto, MultipartFile profileImage) throws IOException;
+	Long join(JoinRequestDto joinRequestDto) throws IOException;
 
 	Member findOne(Long memberId);
 
 	Long findIdByEmail(String email);
 
-	TokenDto login(LoginRequestDto loginRequestDto) throws AuthenticationException;
+	TokenDto login(LoginRequestDto loginRequestDto) throws Exception;
 
 	void logout(String accessToken) throws AuthenticationException;
 
 	void deleteMember(DeleteRequestDto deleteRequestDto, String token);
 
-	void updateMember(UpdateRequestDto updateRequestDto, String accessToken, MultipartFile profileImage) throws IOException;
+	Long updateMember(UpdateRequestDto updateRequestDto, String accessToken) throws IOException;
 
 	String reissueAccessToken(String refreshToken) throws AuthenticationException;
 

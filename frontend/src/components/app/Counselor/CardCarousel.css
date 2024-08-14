@@ -1,58 +1,63 @@
-.slick-list{
+.slick-list {
   height: 180px;
   width: 390px;
 }
 
-.slick-track{
+.slick-track {
   height: 180px;
   width: 390px;
 }
-.ConSelorCardIn{
+.ConSelorCardIn {
   /* margin-bottom: 10px; */
 }
+.CounselorInfo {
+  display: flex;
+  gap: 5px;
+}
 
-#CS-Btn{
+#CS-Btn {
   margin-top: 3px;
 }
 
-.slick-list{
+.slick-list {
   width: 100%;
   display: inline-block;
   padding-bottom: 30px;
 }
 /* .slick-dots */
-.slick-dots{
+.slick-dots {
   /* position: relative; */
   bottom: 15px !important;
   z-index: 2;
-  width: 50% !important;
-  left: 22%  !important;
+  width: 100% !important;
+  /* left: 22% !important; */
   /* margin: 0 auto; */
+  /* display: flex;
+  justify-content: center; */
 }
 
-.CSCardFooter{
+.CSCardFooter {
   margin: 0px;
 }
 
-.slick-dots > li{
+.slick-dots > li {
   /* width: 10px; */
   margin: 0 !important;
   /* bottom: 35px; */
   position: absolute;
 }
-.slick-dots > li> button{
+.slick-dots > li > button {
   /* height: 10px; */
   /* width: 10px; */
 }
-#MP-CounselorName{
+#MP-CounselorName {
   white-space: nowrap;
 }
-#MP-Counselorintro{
+#MP-Counselorintro {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 
 /* 캐러셀 원 누르면 이동하게 하고 싶어서 해보는 것
 .carousel_pagination {

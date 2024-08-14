@@ -62,11 +62,12 @@ public class CounselorServiceImpl implements CounselorService {
 
     @Override
     public TokenDto login(CounselorLoginRequestDto loginRequestDto) throws AuthenticationException {
+
+        System.out.println(loginRequestDto.getPassword());
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getId(), loginRequestDto.getPassword());
-
+        System.out.println(authToken);
         Authentication authentication = counselorAuthenticationProvider.authenticate(authToken);
-
         String accessToken = jwtTokenProvider.generateCounselorAccessToken(authentication);
         String refreshToken = jwtTokenProvider.generateCounselorRefreshToken(authentication);
 
@@ -118,7 +119,7 @@ public class CounselorServiceImpl implements CounselorService {
     //마이페이지 수정하기
     @Transactional
     @Override
-    public void updateMypage(Long counselorId,String password,String selfIntroduction, MultipartFile profileImage) throws IOException {
+    public void updateMypage(Long counselorId,String password,String selfIntroduction) throws IOException {
         Optional<Counselor> counselor=counselorRepository.findById(counselorId);
 
         if(counselor.isPresent()){
@@ -135,15 +136,6 @@ public class CounselorServiceImpl implements CounselorService {
             if(!Objects.equals(changeCounselor.getProfileUrl(), defaultProfileUrl)){
                 imageService.delete(changeCounselor.getProfileUrl(),"CounselorProfile"); //원래 프로필 이미지 삭제
             }
-
-            //수정!!!!!!!!!!!!
-            if(!profileImage.isEmpty()){
-                profileUrl=imageService.upload(profileImage,"CounselorProfile");
-            }else{
-                profileUrl=defaultProfileUrl;
-            }
-            //프로필 이미지 넣기
-            changeCounselor.updateProfileUrl(profileUrl);
 
             counselorRepository.save(changeCounselor);
         }else{

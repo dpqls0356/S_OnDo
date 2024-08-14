@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.BoardUpdateDto;
 import com.clio.ondo.domain.board.service.BoardService;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
 import com.clio.ondo.global.ResponseVO;
@@ -68,8 +70,7 @@ public class BoardController {
    */
   @PostMapping("/article")
   public ResponseEntity<ResponseVO<?>> createArticle(HttpServletRequest request,
-      @RequestPart("board") Board board,
-      @RequestPart("image") List<MultipartFile> imageList) throws IOException {
+      @RequestBody Board board) throws IOException {
     String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
     // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
     Long memberId = jwtTokenProvider.getIdFromToken(token);
@@ -78,7 +79,22 @@ public class BoardController {
     board.settingViews();
     Board newBoard;
     try{
-      newBoard = boardService.saveArticle(board,imageList);
+      newBoard = boardService.saveArticle(board);
+    }catch(ModerationException me){
+      return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
+    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("id", newBoard.get_id()));
+  }
+
+  @PostMapping("/articleImage/{boardId}")
+  public ResponseEntity<ResponseVO<?>> uploadArticleImage(HttpServletRequest request, @PathVariable ObjectId boardId,
+      @RequestParam("data") MultipartFile imageList) throws IOException {
+    String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+    // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+    Long memberId = jwtTokenProvider.getIdFromToken(token);
+    Board newBoard;
+    try{
+      newBoard = boardService.saveArticleImage(boardId, imageList, memberId);
     }catch(ModerationException me){
       return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }
@@ -110,22 +126,36 @@ public class BoardController {
 */
   @PatchMapping("/{articleId}")
   public ResponseEntity<ResponseVO<Void>>  updateArticle(@PathVariable String articleId,HttpServletRequest request,
-      @RequestPart("board") Board modifiedArticle,
-      @RequestPart("image") List<MultipartFile> imageList) throws IOException{
+      @RequestBody BoardUpdateDto modifiedArticle) throws IOException{
     try{
       String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
       // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
       Long memberId = jwtTokenProvider.getIdFromToken(token);
 
-      boardService.updateArticle(articleId,modifiedArticle,memberId,imageList);
+      boardService.updateArticle(articleId,modifiedArticle,memberId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ResponseVO.success("Success"));
     }catch (UnauthorizedException e){
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 잘못된 접근입니다."));
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 수정 실패 : 잘못된 접근입니다."));
     }catch (NotFoundException e) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 삭제 실패 : 존재하지 않은 게시글에 대한 요청입니다."));
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ResponseVO.failure("게시글 수정 실패 : 존재하지 않은 게시글에 대한 요청입니다."));
     } catch(ModerationException me){
       return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
     }
+  }
+
+  @PatchMapping("/articleImage/{boardId}")
+  public ResponseEntity<ResponseVO<?>> updateArticleImage(HttpServletRequest request, @PathVariable ObjectId boardId,
+      @RequestParam("data") MultipartFile imageList) throws IOException {
+    String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+    // String token = jwtTokenProvider.getJwtTokenFromRequestHeader(request);
+    Long memberId = jwtTokenProvider.getIdFromToken(token);
+    Board newBoard;
+    try{
+      newBoard = boardService.updateArticleImage(boardId, imageList, memberId);
+    }catch(ModerationException me){
+      return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.failure(me.getMessage()));
+    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponseVO.success("id", newBoard.get_id()));
   }
 
   /*

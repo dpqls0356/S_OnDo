@@ -5,10 +5,11 @@ import styled from "styled-components";
 import axios from "axios";
 
 const View = styled.div`
-  padding: 0px 20px 10px 20px;
+  padding: 0px 20px 20px 20px;
   width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
+  flex: 1;
   flex-direction: column;
 `;
 
@@ -96,18 +97,55 @@ const UserInfoComponent = ({ memberInfo }) => {
   const observer = useRef();
   const memberId = memberInfo.memberId;
   const size = 10;
-  useEffect(() => {
-    console.log("========================유저정보컴포넌트===========================");
-    console.log(memberInfo);
-    getReservationHistory();
-  }, [page, memberId]);
+
+  const [formData, setFormData] = useState([]);
+
+  const updateDetail = (reservId) => async () => {
+    const itemToUpdate = formData.find(
+      (item) => item.reservationId === reservId
+    );
+
+    if (itemToUpdate) {
+      try {
+        const response = await axios.put(
+          `${baseUrl}/counselor/memberReservation`,
+          itemToUpdate,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        if (response.data.success) {
+          console.log("수정이 완료되었습니다. ");
+          alert("상담 내역 저장 완료");
+        }
+      } catch (error) {
+        console.log("상담내역 수정 시 오류가 발생했습니다.");
+      }
+    } else {
+      console.log("정보가 존재하지 않습니다.");
+    }
+  };
+
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
+    const date = new Date(dateString + "Z");
+    const koreaDate = new Date(
+      date.toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    );
+
+    return (
+      koreaDate.getFullYear() +
+      "-" +
+      String(koreaDate.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(koreaDate.getDate()).padStart(2, "0")
+    );
   };
 
   const getReservationHistory = async () => {
-    console.log("=========================getReservationHistory=========================="+memberId);
     try {
       const response = await axios.get(
         `${baseUrl}/counselor/memberReservation?memberId=${memberId}&page=${page}&size=${size}`,
@@ -119,13 +157,49 @@ const UserInfoComponent = ({ memberInfo }) => {
         }
       );
       const newHistories = response.data.data.reservations;
-      setHistoryList((prev) => [...prev, ...newHistories]);
+      setHistoryList((prevHistories) => [...prevHistories, ...newHistories]); // 기존 데이터에 추가
+
       if (newHistories.length < size) {
         setHasMore(false);
       }
     } catch (e) {
       console.log(e);
     }
+  };
+
+  useEffect(() => {
+    if (page > 0) {
+      getReservationHistory();
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (memberId) {
+      setPage(0);
+      setHistoryList([]);
+      setHasMore(true);
+      getReservationHistory();
+    }
+  }, [memberId]);
+
+  useEffect(() => {
+    const updatedFormData = historyList.map((item) => ({
+      reservationId: item.reservationId || "",
+      reservationDate: item.reservationDate || "",
+      counselingReservationDetail: item.counselingReservationDetail || "",
+      counsellingDetail: item.counsellingDetail || "",
+    }));
+
+    setFormData(updatedFormData);
+  }, [historyList]);
+
+  const handleInputChange = (field, reservId) => (event) => {
+    const newValue = event.target.value;
+    setFormData((prevFormData) =>
+      prevFormData.map((item) =>
+        item.reservationId === reservId ? { ...item, [field]: newValue } : item
+      )
+    );
   };
 
   const lastHistoryElementRef = useCallback(
@@ -174,37 +248,32 @@ const UserInfoComponent = ({ memberInfo }) => {
       </UserProfile>
       <History>
         {historyList.map((history, index) => {
-          if (historyList.length === index + 1) {
-            return (
-              <CounselingMemo key={index} ref={lastHistoryElementRef}>
-                <p>{formatDate(history.reservationDate)}</p>
-                <p>{history.counselingReservationDetail}</p>
-                <div className="memo">
-                  <div>
-                    <textarea>{history.counsellingDetail}</textarea>
-                  </div>
-                  <div>
-                    <button>수정</button>
-                  </div>
+          const lastElement = historyList.length === index + 1;
+          return (
+            <CounselingMemo
+              key={index}
+              ref={lastElement ? lastHistoryElementRef : null}
+            >
+              <p>{formatDate(history.reservationDate)}</p>
+              <p>{history.counselingReservationDetail}</p>
+              <div className="memo">
+                <div>
+                  <textarea
+                    onChange={handleInputChange(
+                      "counsellingDetail",
+                      history.reservationId
+                    )}
+                    value={formData[index]?.counsellingDetail}
+                  />
                 </div>
-              </CounselingMemo>
-            );
-          } else {
-            return (
-              <CounselingMemo key={index}>
-                <p>{formatDate(history.reservationDate)}</p>
-                <p>{history.counselingReservationDetail}</p>
-                <div className="memo">
-                  <div>
-                    <textarea>{history.counsellingDetail}</textarea>
-                  </div>
-                  <div>
-                    <button>수정</button>
-                  </div>
+                <div>
+                  <button onClick={updateDetail(history.reservationId)}>
+                    수정
+                  </button>
                 </div>
-              </CounselingMemo>
-            );
-          }
+              </div>
+            </CounselingMemo>
+          );
         })}
       </History>
     </View>

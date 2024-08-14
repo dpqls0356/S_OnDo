@@ -15,7 +15,6 @@ import SideBar from "./components/counseling/sidebarComponent";
 import useAuthStore from "../../store/app/authStore";
 
 const View = styled.div`
-  overflow: hidden;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -44,6 +43,12 @@ const VideoView = styled.div`
     padding: 10px;
     border-radius: 50px;
     border: 5px solid yellow;
+          @media (min-width: 381px) {
+        margin-right: 20px;
+      }
+      @media (max-width: 380px) {
+        margin-bottom: 20px;
+      }
   }
   video,
   canvas {
@@ -83,6 +88,13 @@ const Nav = styled.div`
     &:nth-child(3) {
       background-color: #f83d39;
     }
+  }
+`;
+const SmallViewChatBtn = styled.button`
+  display: none; /* 기본적으로 버튼을 숨깁니다 */
+
+  @media (max-width: 380px) {
+    display: block; /* 화면 폭이 360px 이하일 때 버튼을 표시합니다 */
   }
 `;
 
@@ -191,7 +203,7 @@ const CounselingRoom = () => {
           },
         }
       );
-      console.log("================유저정보 받아오기===================")
+      console.log("================유저정보 받아오기===================");
       setMemberInfo(response.data.data.member);
     } catch (e) {
       console.log(e);
@@ -213,7 +225,7 @@ const CounselingRoom = () => {
       .catch((error) => {
         console.error("Error notifying server about leaving session:", error);
       });
-      localStorage.removeItem("sessionId");
+    localStorage.removeItem("sessionId");
     setSession(undefined);
     setSubscriber(undefined);
     setPublisher(undefined);
@@ -250,13 +262,17 @@ const CounselingRoom = () => {
 
   const leaveCounseling = () => {
     //상담사인지 아닌지에 따라 이동해야할 url이 달라짐
-    navigate("/counselor");
+    if(role==="COUNSELOR"){
+      navigate("/counselor");
+    }
+    else {
+      navigate("/member/counseling/main");
+    }
   };
 
   const toggleFilter = () => {
     setFilterEnabled((prev) => !prev);
   };
-
 
   useEffect(() => {
     if (publisher) {
@@ -284,11 +300,11 @@ const CounselingRoom = () => {
 
   useEffect(() => {
     const rootElement = document.getElementById("root");
-      rootElement.style.overflow = "hidden";
+    rootElement.style.overflow = "hidden";
   }, [location.pathname]);
 
   return (
-    <div style={{overflowY:"hidden"}}>
+    <div style={{ overflowY: "hidden" }}>
       {preJoin ? (
         <PreJoinComponent onJoin={handleJoin} />
       ) : session !== undefined ? (
@@ -392,6 +408,7 @@ const CounselingRoom = () => {
               <button onClick={toggleFilter}>
                 <div>필터</div>
               </button>
+              <SmallViewChatBtn>채팅</SmallViewChatBtn>
             </Nav>
           </WebCamView>
           <SideBar memberInfo={memberInfo} />

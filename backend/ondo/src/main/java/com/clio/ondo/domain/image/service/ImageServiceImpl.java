@@ -5,25 +5,37 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.clio.ondo.domain.counselor.model.Counselor;
+import com.clio.ondo.domain.counselor.repository.CounselorRepository;
+import com.clio.ondo.domain.member.model.Member;
+import com.clio.ondo.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@PropertySource("classpath:s3.properties")
 public class ImageServiceImpl implements ImageService {
-
+	@Value("${profile.url}")
+	String defaultProfileUrl; //기본 프로필 이미지
+	
 	private final AmazonS3 amazonS3;
+	private final MemberRepository memberRepository;
+	private final CounselorRepository counselorRepository;
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
@@ -48,6 +60,82 @@ public class ImageServiceImpl implements ImageService {
 		
 		removeNewFile(uploadFile);
 		return UploadImageUrl;
+	}
+
+	//멤버 회원가입
+	@Override
+	@Transactional
+	public String uploadAndMember(MultipartFile multipartFile, String dirName, Long counselorId) throws IOException{
+		System.out.println(multipartFile);
+
+		if(multipartFile.isEmpty()){
+			return "";
+		}
+
+		File uploadFile = convert(multipartFile)
+			.orElseThrow(() -> new IllegalArgumentException("file 변환 오류"));
+		String url = uploadUrl(uploadFile, dirName);
+		Optional<Counselor> counselor = counselorRepository.findById(counselorId);
+		if(counselor.isPresent()){
+			counselor.get().updateProfileUrl(url);
+		}
+		return url;
+	}
+
+	//멤버 수정
+	@Override
+	@Transactional
+	public String updateAndMember(MultipartFile multipartFile, String dirName, Long memberId) throws IOException{
+		Optional<Member> memberOptional = memberRepository.findById(memberId);
+		Member member = memberOptional.get();
+		String profileUrl = member.getProfileUrl();
+
+		//무조건 update 되어야함.
+		if(!Objects.equals(profileUrl, defaultProfileUrl)){ //기본 이미지가 아니라면
+			delete(profileUrl,"MemberProfile"); //원래 profileImage 삭제
+		}
+
+		if(!multipartFile.isEmpty()){
+			profileUrl= upload(multipartFile,"MemberProfile");
+		}else{
+			String fileName = multipartFile.getOriginalFilename();
+			if ("default.jpg".equals(fileName)) {
+				profileUrl = defaultProfileUrl;
+			} else if ("empty.jpg".equals(fileName)) {
+				profileUrl = member.getProfileUrl();
+			}
+		}
+
+		member.updateProfileUrl(profileUrl);
+		return null;
+	}
+
+	//S3에 업로드하고 url 반환
+	@Override
+	@Transactional
+	public String updateAndCounselor(MultipartFile multipartFile, String dirName, Long counselorId) throws IOException{
+		Optional<Counselor> counselorOptional = counselorRepository.findById(counselorId);
+		Counselor counselor = counselorOptional.get();
+		String profileUrl = counselor.getProfileUrl();
+
+		//무조건 update 되어야함.
+		if(!Objects.equals(profileUrl, defaultProfileUrl)){ //기본 이미지가 아니라면
+			delete(profileUrl,"CounselorProfile"); //원래 profileImage 삭제
+		}
+
+		if(!multipartFile.isEmpty()){
+			profileUrl= upload(multipartFile,"CounselorProfile");
+		}else{
+			String fileName = multipartFile.getOriginalFilename();
+			if ("default.jpg".equals(fileName)) {
+				profileUrl = defaultProfileUrl;
+			} else if ("empty.jpg".equals(fileName)) {
+				profileUrl = counselor.getProfileUrl();
+			}
+		}
+
+		counselor.updateProfileUrl(profileUrl);
+		return null;
 	}
 
 	//로컬 서버에서 임시 파일 삭제
@@ -100,6 +188,7 @@ public class ImageServiceImpl implements ImageService {
 
 	public static String extractAndDecodePath(String url, String dirName) throws UnsupportedEncodingException {
 		// ".com/" 이후의 경로 추출
+		System.out.println(url);
 		int startIndex = url.indexOf(dirName+"/");
 		String path = url.substring(startIndex);
 

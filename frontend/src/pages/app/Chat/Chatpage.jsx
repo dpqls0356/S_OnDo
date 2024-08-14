@@ -1,91 +1,136 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from '../../../components/app/Spinner';
-import chat_send from './../../../assets/images/chat_send.png';
-import back from './../../../assets/images/back.png';
-import chrface from './../../../assets/images/test_chara.png'
-import './Chatpage.css';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../../components/app/Spinner";
+import chat_send from "./../../../assets/images/chat_send.png";
+import back from "./../../../assets/images/back.png";
+import chrface from "./../../../assets/images/test_chara.png";
+import "./Chatpage.css";
+import styled, { keyframes } from "styled-components";
+
+const Back = styled.div`
+  margin-right: 10px;
+`;
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const api = axios.create({ baseURL: baseUrl, withCredentials: true });
+const typing = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
+const Letter = styled.span`
+  opacity: 0;
+  animation: ${typing} 1s infinite;
+  animation-delay: ${({ delay }) => delay}s;
+`;
+
+const Loading = styled.div`
+  display: inline-block;
+`;
 
 const Chatpage = () => {
-  const size = 10;
+  const size = 20;
   const nav = useNavigate();
   const [character, setCharacter] = useState(null);
+  const [characterLoading, setCharacterLoading] = useState(true);
+  const [characterError, setCharacterError] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [userInput, setUserInput] = useState('');
+  const [userInput, setUserInput] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [pageNum, setPageNum] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const chatContainerRef = useRef(null);
-
-  const baseUrl = import.meta.env.VITE_BASE_URL;
-  const api = axios.create({ baseURL: baseUrl, withCredentials: true });
+  const loadingRef = useRef(null);
 
   const getChatbotMessage = useCallback(async () => {
-    const response = await api.get(`/chatbot/list?page=${pageNum}&size=${size}`);
+    const response = await api.get(
+      `/chatbot/list?page=${pageNum}&size=${size}`
+    );
+    if (response.status === 200) {
+      setPageNum((prevPageNum) => prevPageNum + 1);
+    }
     return response.data.data.chattingList;
-  }, [api, pageNum, size]);
+  }, [pageNum, size]);
 
   const getCharacter = useCallback(async () => {
+    setCharacterLoading(true);
+    setCharacterError(null);
     try {
-      const characterResponse = await api.get('/character/getCharacter');
-      setCharacter(characterResponse.data.data.character);
+      const characterResponse = await api.get("/character/getCharacter", {
+        timeout: 5000,
+      });
+      const fetchedCharacter = characterResponse.data.data.character;
+      if (fetchedCharacter && fetchedCharacter.name) {
+        setCharacter(fetchedCharacter);
+      } else {
+        setCharacterError("Invalid character data received");
+        setCharacter({ name: "Unknown" });
+      }
     } catch (error) {
-      console.error("Error fetching character:", error);
+      setCharacterError(error.message || "Failed to fetch character");
       setCharacter({ name: "Unknown" });
+    } finally {
+      setCharacterLoading(false);
     }
-  }, [api]);
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, []);
 
   const sendMessage = useCallback(async () => {
-    if (userInput.trim() !== '' && !isLoading) {
+    if (userInput.trim() !== "" && !isLoading) {
       setIsLoading(true);
       const currentInput = userInput;
-      setUserInput('');
-      
-      try {
-        const response = await api.post('/chatbot/insert', 
-          { message: currentInput }, 
-          { headers: { 'Content-Type': 'application/json' } }
-        );
+      setUserInput("");
 
+      try {
+        const response = await api.post(
+          "/chatbot/insert",
+          { message: currentInput },
+          { headers: { "Content-Type": "application/json" } }
+        );
         const newMessages = response.data.data.responseChatting;
-        setMessages(prevMessages => [...prevMessages, ...newMessages]);
+        setMessages((prevMessages) => [...prevMessages, ...newMessages]);
       } catch (error) {
-        console.error("Error sending message:", error);
         setUserInput(currentInput);
       } finally {
         setIsLoading(false);
         scrollToBottom();
       }
     }
-  }, [userInput, isLoading, api, scrollToBottom]);
+  }, [userInput, isLoading, scrollToBottom]);
 
   const loadMoreMessages = useCallback(async () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
-    const oldMessages = await getChatbotMessage();
-    if (oldMessages.length < size) {
-      setHasMore(false);
-    }
-    setMessages(prevMessages => [...oldMessages.reverse(), ...prevMessages]);
-    setPageNum(prevPageNum => prevPageNum + 1);
-    setIsLoading(false);
-
-    if (chatContainerRef.current) {
-      const scrollHeight = chatContainerRef.current.scrollHeight;
-      const oldScrollTop = chatContainerRef.current.scrollTop;
-      const oldHeight = chatContainerRef.current.offsetHeight;
-      
-      chatContainerRef.current.scrollTop = scrollHeight - oldHeight - oldScrollTop;
+    try {
+      const oldMessages = await getChatbotMessage();
+      if (oldMessages.length < size) {
+        setHasMore(false);
+      }
+      setMessages((prevMessages) => [
+        ...oldMessages.reverse(),
+        ...prevMessages,
+      ]);
+    } catch (error) {
+      console.error("Error loading more messages:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [isLoading, hasMore, getChatbotMessage, size]);
+
+  useEffect(() => {
+    getCharacter();
+  }, [getCharacter]);
 
   useEffect(() => {
     if (!isInitialized) {
@@ -94,7 +139,6 @@ const Chatpage = () => {
         try {
           const initialMessages = await getChatbotMessage();
           setMessages(initialMessages.reverse());
-          await getCharacter();
           scrollToBottom();
         } catch (error) {
           console.error("Error initializing chat:", error);
@@ -105,69 +149,147 @@ const Chatpage = () => {
       };
       initializeChat();
     }
-  }, [isInitialized, getChatbotMessage, getCharacter, scrollToBottom]);
+  }, [isInitialized, getChatbotMessage, scrollToBottom]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoading) {
+          loadMoreMessages();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [hasMore, isLoading, loadMoreMessages]);
 
   const handleInputChange = useCallback((event) => {
     setUserInput(event.target.value);
   }, []);
 
-  const handleKeyPress = useCallback((event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      sendMessage();
-    }
-  }, [sendMessage]);
+  const handleKeyPress = useCallback(
+    (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    },
+    [sendMessage]
+  );
 
   const formatMessageTime = (dateString) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
-      return '';
+      return "";
     }
-    return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const formatMessageDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "";
+    }
+    return date.toLocaleDateString([], {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
     <div className="Chat">
-      {isLoading && <LoadingSpinner />}
       <div className="CharacterName">
-        <img onClick={() => nav('/member/home')} src={back} alt="Back" />
-        <img 
-          src={chrface} 
-          alt="다람이 얼굴" 
+        <Back onClick={() => nav("/member/home")}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+            />
+          </svg>
+        </Back>
+        <img
+          src={chrface}
+          alt="다람이 얼굴"
           style={{
-            borderRadius: '50%',
-            border: '2px solid black',
-            width: '50px',
-            height: '50px',
-            objectFit: 'cover'
+            borderRadius: "50%",
+            border: "2px solid black",
+            width: "50px",
+            height: "50px",
+            objectFit: "cover",
+            cursor: "default",
           }}
         />
-        {character && <div>{character.name}</div>}
+        {characterLoading ? (
+          <div>Loading character...</div>
+        ) : characterError ? (
+          <div>Error: {characterError}</div>
+        ) : character ? (
+          <div>{character.name}</div>
+        ) : (
+          <div>Unknown Character</div>
+        )}
       </div>
-      
+
       <div className="ChatContentWrapper">
-        {isInitialized && (
-          <div className="ChatContent" ref={chatContainerRef}>
-            <button onClick={loadMoreMessages} disabled={!hasMore || isLoading} className="load-more-button">
-              {isLoading ? '로딩 중...' : '이전 메시지 더 보기'}
-            </button>
-            
-            <div className="ChatScreen">
-              {messages.map((message, index) => (
-                <div key={index} className={`message-container ${message.sender === 'user' ? 'user' : 'bot'}`}>
-                  <div className={message.sender === 'user' ? 'user-message' : 'bot-message'}>
+        <div className="ChatContent" ref={chatContainerRef}>
+          <div ref={loadingRef} style={{ height: "1px" }} />
+          <div className="ChatScreen">
+            {messages.map((message, index) => (
+              <React.Fragment key={index}>
+                {index === 0 ||
+                formatMessageDate(message.createdAt) !==
+                  formatMessageDate(messages[index - 1].createdAt) ? (
+                  <div className="date-separator">
+                    {formatMessageDate(message.createdAt)}
+                  </div>
+                ) : null}
+                <div
+                  className={`message-container ${message.sender === "user" ? "user" : "bot"}`}
+                >
+                  <div
+                    className={
+                      message.sender === "user" ? "user-message" : "bot-message"
+                    }
+                  >
                     {message.content}
                   </div>
                   <div className="message-time">
                     {formatMessageTime(message.createdAt)}
                   </div>
                 </div>
-              ))}
-            </div>
+              </React.Fragment>
+            ))}
+            {isLoading && (
+              <Loading>
+                {"입력 중...".split("").map((char, index) => (
+                  <Letter key={index} delay={index * 0.1}>
+                    {char}
+                  </Letter>
+                ))}
+              </Loading>
+            )}
           </div>
-        )}
+        </div>
       </div>
-      
+
       <div className="ChatboxWrapper">
         <div className="Chatbox">
           <input
@@ -177,11 +299,7 @@ const Chatpage = () => {
             onKeyPress={handleKeyPress}
             placeholder="메시지를 입력하세요..."
           />
-          <img
-            onClick={sendMessage}
-            src={chat_send}
-            alt="Send"
-          />
+          <img onClick={sendMessage} src={chat_send} alt="Send" />
         </div>
       </div>
     </div>

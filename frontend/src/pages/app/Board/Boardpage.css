@@ -2,6 +2,10 @@
   height: 100vh;
   overflow-y: scroll;
   padding-bottom: 93px;
+  /* padding:0% 11%; */
+}
+.board-padding{
+  padding:0 11%;
 }
 /* 전체 페이지를 Flexbox로 설정 */
 .BoardScroll {
@@ -27,26 +31,24 @@
 .BoardHeader {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  padding-top: 3%;
+  padding-top:10%;
+  padding-bottom:8%;
   font-size: 130%;
 }
 
 .BoardHeader p {
   position: relative;
-  left: 5%;
+  font-size: 18px;
+  /* left: 5%; */
 }
 
-.BoardHeader img {
-  width: 13%;
-}
 
 .BoardSearch {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  padding: 3% 10%;
 }
 
 .BoardSearch > div {
@@ -54,12 +56,16 @@
   box-shadow: 0px 5px 0px 0px #bfa1ff;
   border: 1px black solid;
   display: flex;
-  height: 10%;
-  width: 70%;
   background-color: white;
   padding: 3%;
 }
-
+.BoardSearch>div>div{
+  margin-right: 10px;
+}
+.BoardSearch > div:nth-child(1){
+  flex: 1;
+  margin-right: 10px;
+}
 .BoardSearch > div > form {
   display: flex;
   justify-content: center;
@@ -67,9 +73,7 @@
   margin-bottom: 0;
 }
 
-.BoardSearch > img {
-  width: 15%;
-}
+
 
 .BoardSearch > div * {
   display: flex;
@@ -77,7 +81,7 @@
 }
 
 .BoardSearch input {
-  width: 70%;
+  /* width: 70%; */
   margin-left: 10%;
 }
 
@@ -86,7 +90,7 @@
 }
 
 .emptybox3 {
-  height: 2vh;
+  height: 120px;
   background-color: #fff9e900;
 }
 

@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,10 @@ public class ModerationServiceImpl implements ModerationService {
                     responseList.add(moderationResponse);
                 }
             }
+
+            Collections.sort(responseList, (a, b) -> {
+                return (int)(b.getScore() - a.getScore());
+            });
 
             return responseList;
         }catch(Exception e){

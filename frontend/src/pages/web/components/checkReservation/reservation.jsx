@@ -8,12 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const View = styled.div`
   padding: 20px 20px;
-  width: 90%;
+  width: 100%;
   height: 25%;
   display: flex;
+  position: relative;
   align-items: center;
   background-color: white;
-  border: 3px solid #f7867a;
+  border: 3px solid #ffa79d;
   border-radius: 10px;
   margin-bottom: 30px;
   position: relative;
@@ -39,15 +40,18 @@ const Col = styled.div`
   &:nth-child(3) {
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: flex-end;
+    align-items: flex-end;
     height: 100%;
   }
 `;
 
 const CreateCounselingRoomBtn = styled.button`
-  background-color: #f7867a;
+  background-color: #ffa79d;
   height: 50%;
-  width: 90%;
+  /* width: 80%; */
+  width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,22 +69,24 @@ const MemberImg = styled.div`
 `;
 
 const CancelReservationBtn = styled.button`
-  background-color: #f7867a;
+  /* background-color: #ffa79d; */
   position: absolute;
   color: white;
   width: 20px;
   height: 30px;
-  left: 100%;
-  bottom: 5%;
+  top: 5px;
+  right: 0;
+  /* left: 100%; */
+  /* bottom: 5%; */
+  color: #ffa79d;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
 `;
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : baseUrl;
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === "production" ? "" : baseUrl;
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -97,38 +103,44 @@ function Reservation({ reservation }) {
   const createCounselingRoom = async (event) => {
     event.stopPropagation();
     // if (timeRemaining === 0) {
-      try {
-        if(!localStorage.getItem("sessionId")){
-            const sessionResponse = await axios.post(
-            `${baseUrl}/counseling/sessions`,
-            { reservationId: reservation.reservationId },
-            {
-              headers: { "Content-Type": "application/json" },
-              withCredentials: true, // default를 true로 설정
-            }
-            );
-              localStorage.setItem("sessionId",sessionResponse.data.data.session_id);
-        } 
-        navigate("/counselingroom", {
-          state: {
-            reservationId: reservation.reservationId,
-            memberId: reservation.memberId,
-          },
-        });
-      } catch (error) {
-        console.error("Error creating counseling room:", error);
+    try {
+      if (!localStorage.getItem("sessionId")) {
+        const sessionResponse = await axios.post(
+          `${baseUrl}/counseling/sessions`,
+          { reservationId: reservation.reservationId },
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true, // default를 true로 설정
+          }
+        );
+        localStorage.setItem("sessionId", sessionResponse.data.data.session_id);
       }
+      navigate("/counselingroom", {
+        state: {
+          reservationId: reservation.reservationId,
+          memberId: reservation.memberId,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating counseling room:", error);
+    }
     // } else return;
   };
 
   const changeDateFormat = () => {
-    let date = new Date(reservation.reservationDate);
+    // UTC 시간을 파싱
+    let utcDate = new Date(reservation.reservationDate + "Z");
 
-    let year = date.getFullYear();
-    let month = String(date.getMonth() + 1).padStart(2, "0");
-    let day = String(date.getDate()).padStart(2, "0");
-    let hours = String(date.getHours()).padStart(2, "0");
-    let minutes = String(date.getMinutes()).padStart(2, "0");
+    // UTC 시간을 한국 시간으로 변환
+    let krDate = new Date(
+      utcDate.toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    );
+
+    let year = krDate.getFullYear();
+    let month = String(krDate.getMonth() + 1).padStart(2, "0");
+    let day = String(krDate.getDate()).padStart(2, "0");
+    let hours = String(krDate.getHours()).padStart(2, "0");
+    let minutes = String(krDate.getMinutes()).padStart(2, "0");
 
     let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
 
@@ -162,7 +174,10 @@ function Reservation({ reservation }) {
         alert("예약 취소에 실패했습니다.");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "상담 예약 취소 중 오류가 발생했습니다.");
+      alert(
+        error.response?.data?.message ||
+          "상담 예약 취소 중 오류가 발생했습니다."
+      );
     }
   };
 
@@ -172,9 +187,10 @@ function Reservation({ reservation }) {
     calculateAge(reservation.memberBirthday);
   }, []);
 
+  // 시간 차이 계산
   const calculateTimeRemaining = () => {
     let today = new Date();
-    let reservationDate = new Date(reservation.reservationDate);
+    let reservationDate = new Date(reservation.reservationDate + "Z"); // 'Z'를 추가하여 UTC임을 명시
     let timeDifference = reservationDate - today;
     let hoursDifference = timeDifference / (1000 * 60 * 60);
     let minutesDifference = timeDifference / (1000 * 60);
@@ -194,7 +210,10 @@ function Reservation({ reservation }) {
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     setAge(age);
@@ -238,7 +257,14 @@ function Reservation({ reservation }) {
         <div>상담일: {reservationFormattedDate}</div>
       </Col>
       <Col>
-        <CreateCounselingRoomBtn onClick={createCounselingRoom}>입장</CreateCounselingRoomBtn>
+        {timeRemaining > 0 ? (
+          <CancelReservationBtn onClick={handleCancelClick}>
+            <FontAwesomeIcon icon={faX} />
+          </CancelReservationBtn>
+        ) : null}
+        <CreateCounselingRoomBtn onClick={createCounselingRoom}>
+          입장
+        </CreateCounselingRoomBtn>
         {/* {timeRemaining >= 0 ? (
           <CreateCounselingRoomBtn onClick={createCounselingRoom}>
             {timeRemaining > 1
@@ -246,14 +272,9 @@ function Reservation({ reservation }) {
               : timeRemaining === 0
                 ? `입장`
                 : `D-day`}
-          </CreateCounselingRoomBtn>
-        ) : null} */}
+          </CreateCounselingRoomBtn> */}
+        {/* ) : null} */}
       </Col>
-      {timeRemaining > 0 ? (
-        <CancelReservationBtn onClick={handleCancelClick}>
-          <FontAwesomeIcon icon={faX} />
-        </CancelReservationBtn>
-      ) : null}
     </View>
   );
 }

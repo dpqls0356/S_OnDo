@@ -5,12 +5,12 @@ import java.io.IOException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.auth.jwtUtil.TokenDto;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 	private final JwtTokenProvider tokenProvider;
-	// 프론트로 곧바로 되는가.
-	private static final String URI = "http://localhost:8080/api/v1/member/oauth-success";
+	private static final String URI = "https://i11c110.p.ssafy.io/member/oauth-callback";
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -31,11 +30,19 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		String refreshToken = tokenProvider.generateRefreshToken(authentication);
 		TokenDto token = new TokenDto(accessToken, refreshToken);
 
-		String redirectUrl = UriComponentsBuilder.fromUriString(URI)
-			.queryParam("accessToken", accessToken)
-			.queryParam("refreshToken", refreshToken)
-			.build().toUriString();
+		Cookie accessTokenCookie = new Cookie("accessToken", token.getAccessToken());
+		accessTokenCookie.setHttpOnly(true);
+		accessTokenCookie.setPath("/");
+		accessTokenCookie.setMaxAge(3600*24*30); // 30 일
 
-		response.sendRedirect(redirectUrl);
+		Cookie refreshTokenCookie = new Cookie("refreshToken", token.getRefreshToken());
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setMaxAge(7 * 24 * 3600 * 5); // 5 week
+
+		response.addCookie(accessTokenCookie);
+		response.addCookie(refreshTokenCookie);
+
+		response.sendRedirect(URI);
 	}
 }
