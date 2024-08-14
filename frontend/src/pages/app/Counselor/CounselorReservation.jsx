@@ -14,18 +14,18 @@ const FullWidthCLCard = styled(CLCard)`
 const Reservation = () => {
   const { counselorId } = useParams();
   const nav = useNavigate();
-  const { 
-    selectedCounselor, 
-    fetchCounselorDetails, 
-    fetchCounselorSchedule, 
-    makeReservation, 
+  const {
+    selectedCounselor,
+    fetchCounselorDetails,
+    fetchCounselorSchedule,
+    makeReservation,
     counselorSchedule,
-    displayGender
+    displayGender,
   } = useCounselorStore();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState("");
   const [unavailableTimes, setUnavailableTimes] = useState({});
 
   useEffect(() => {
@@ -38,9 +38,9 @@ const Reservation = () => {
   useEffect(() => {
     if (counselorSchedule) {
       const times = {};
-      counselorSchedule.forEach(dateTimeStr => {
-        const date = dateTimeStr.split('T')[0];
-        const time = dateTimeStr.split('T')[1].substring(0, 5);
+      counselorSchedule.forEach((dateTimeStr) => {
+        const date = dateTimeStr.split("T")[0];
+        const time = dateTimeStr.split("T")[1].substring(0, 5);
         if (!times[date]) {
           times[date] = [];
         }
@@ -55,17 +55,23 @@ const Reservation = () => {
       alert("상담사 ID가 유효하지 않습니다.");
       return;
     }
-  
+
     if (selectedDate && selectedTime) {
-      const [hours, minutes] = selectedTime.split(':');
+      const [hours, minutes] = selectedTime.split(":");
       const reservationDate = new Date(selectedDate);
       reservationDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-      
+
       // 한국 시간을 UTC로 변환
-      const utcReservationDate = new Date(reservationDate.getTime() - 9 * 60 * 60 * 1000);
-      
+      const utcReservationDate = new Date(
+        reservationDate.getTime() - 9 * 60 * 60 * 1000
+      );
+
       try {
-        const result = await makeReservation(parseInt(counselorId), utcReservationDate, note);
+        const result = await makeReservation(
+          parseInt(counselorId),
+          utcReservationDate,
+          note
+        );
         if (result.success) {
           alert("예약이 확정되었습니다.");
           nav("/member/counseling/main");
@@ -82,7 +88,6 @@ const Reservation = () => {
       alert("날짜와 시간을 선택해주세요.");
     }
   };
-
 
   const onClickBack = () => {
     nav("/member/counseling/main");
@@ -120,23 +125,30 @@ const Reservation = () => {
             )}
             <br />
             <h1 className="text-2xl font-bold mb-4">예약일지</h1>
-            <Calendar 
-              selectedDate={selectedDate} 
+            <Calendar
+              selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
               unavailableTimes={unavailableTimes}
             />
-            <TimeSlots 
+            <TimeSlots
               selectedDate={selectedDate}
-              selectedTime={selectedTime} 
+              selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
-              unavailableTimes={selectedDate ? counselorSchedule.filter(dateStr => 
-                dateStr.startsWith(selectedDate.toISOString().split('T')[0])
-              ) : []}
+              unavailableTimes={
+                selectedDate
+                  ? counselorSchedule.filter((dateStr) =>
+                      dateStr.startsWith(
+                        selectedDate.toISOString().split("T")[0]
+                      )
+                    )
+                  : []
+              }
             />
           </div>
           <img src={BorderImg} alt="" className="w-full" />
           <div className="p-4">
             <textarea
+              maxLength={100}
               onChange={(e) => setNote(e.target.value)}
               style={{
                 width: "100%",

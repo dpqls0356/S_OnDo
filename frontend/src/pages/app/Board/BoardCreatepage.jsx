@@ -148,11 +148,12 @@ const BoardCreatepage = () => {
             }
           );
 
-          if (imageResponse.data.success) {
-          } else {
+          if (!imageResponse.data.success) {
             alert(response.data.message || "이미지 등록에 실패했습니다.");
           }
-        } catch {}
+        } catch {
+          alert("게시글 업로드가 실패했습니다.");
+        }
         console.log("게시글이 성공적으로 생성되었습니다.");
         console.log("서버 응답:", response.data);
         createBoard(); // Zustand store에 게시글 추가
