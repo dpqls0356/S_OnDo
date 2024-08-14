@@ -136,11 +136,11 @@ const Reservation = () => {
               setSelectedTime={setSelectedTime}
               unavailableTimes={
                 selectedDate
-                  ? counselorSchedule.filter((dateStr) =>
+                  ? counselorSchedule.filter((dateStr) => {
                       dateStr.startsWith(
                         selectedDate.toISOString().split("T")[0]
-                      )
-                    )
+                      );
+                    })
                   : []
               }
             />
