@@ -40,8 +40,10 @@ const TimeSlots = styled.div`
 `;
 
 const DetailSchedulComponent = () => {
+  // const todayDate = new Date();
+  // const customTodayDate = todayDate.toISOString().split('T')[0];
   const todayDate = new Date();
-  const customTodayDate = todayDate.toISOString().split('T')[0];
+  const customTodayDate = todayDate.toLocaleDateString('en-CA'); // 'en-CA'는 'YYYY-MM-DD' 형식을 제공
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDate2, setSelectedDate2] = useState(customTodayDate);
   const [selectedTime, setSelectedTime] = useState([]);
@@ -70,18 +72,42 @@ const DetailSchedulComponent = () => {
     console.log(selectedTime);
 
     const scheduleList = [];
+    // const selectedTime = ["09:00", "10:00"]
+    // selectedTime.forEach((time) => {
+    //   // Combine selectedDate2 and time into a Date object and convert to UTC
+    //   const [hours, minutes] = time.split(':');
+    //   const localDateTime = new Date(selectedDate2);
+    //   localDateTime.setHours(hours);
+    //   localDateTime.setMinutes(minutes);
+    //   console.log('localDateTime 확인용', localDateTime)
+    //   scheduleList.push(localDateTime.toISOString().replace('.000Z', '')); // Remove milliseconds and Z
+    //   console.log('UTC로 변환된 후의 리스트인가?', scheduleList)
+    // });
+
+    // const date = selectedDate2.replace(/-/g, '');
+    // console.log('date 확인용', date);
+    // console.log(scheduleList)
+    
     selectedTime.forEach((time) => {
-      // Combine selectedDate2 and time into a Date object and convert to UTC
+      // Combine selectedDate2 and time into a Date object
       const [hours, minutes] = time.split(':');
       const localDateTime = new Date(selectedDate2);
       localDateTime.setHours(hours);
       localDateTime.setMinutes(minutes);
-      scheduleList.push(localDateTime.toISOString().replace('.000Z', '')); // Remove milliseconds and Z
+    
+      // Format the date-time in YYYY-MM-DDTHH:mm:ss without UTC conversion
+      const formattedDateTime = localDateTime.getFullYear() +
+        '-' + String(localDateTime.getMonth() + 1).padStart(2, '0') +
+        '-' + String(localDateTime.getDate()).padStart(2, '0') +
+        'T' + String(localDateTime.getHours()).padStart(2, '0') +
+        ':' + String(localDateTime.getMinutes()).padStart(2, '0') +
+        ':00';
+    
+      scheduleList.push(formattedDateTime);
     });
-
     const date = selectedDate2.replace(/-/g, '');
-    console.log('date 확인용', date);
-    console.log(scheduleList)
+    
+    console.log(scheduleList);
 
     try {
       const response = await axios.post(`${baseUrl}/counselor/schedule/${date}`,
