@@ -84,6 +84,55 @@ const JoinForm = () => {
 
   const join = async (event) => {
     event.preventDefault();
+
+    // 필수 필드가 비어있거나 null인 경우 경고 메시지 표시
+    const requiredFields = [
+      "name",
+      "nickname",
+      "email",
+      "password",
+      "confirmPassword",
+      "birthDate",
+      "gender",
+    ];
+
+    const fieldNames = {
+      birthDate: "생년월일",
+      name: "이름",
+      nickname: "별명",
+      email: "아이디",
+      gender: "성별",
+      password: "비밀번호",
+      confirmPassword: "확인용 비밀번호",
+    };
+
+    for (let field of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        alert(`${fieldNames[field]}을(를) 입력해주세요.`);
+        return;
+      }
+    }
+    // 생년월일을 기준으로 8세 미만인지 확인
+    const today = new Date();
+    const birthDate = new Date(formData.birthDate);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    // 생일이 지났는지 여부에 따라 나이를 조정
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    if (birthDate > today || age > 120) {
+      alert("잘못된 생년월일입니다.다시 입력해주세요.");
+      return;
+    }
+    if (age < 8) {
+      alert("8세 미만은 가입 불가합니다.");
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
@@ -96,10 +145,10 @@ const JoinForm = () => {
         },
       });
 
+      //중복 계정이 없는 경우
       if (response.data.success) {
-        alert("회원가입이 완료되었습니다.");
-
         try {
+          // 파일이 있는경우
           if (selectedFile) {
             const imgFormData = new FormData();
             imgFormData.append("data", selectedFile);
@@ -113,18 +162,16 @@ const JoinForm = () => {
                 },
               }
             );
-
-            if (imageRespose.data.success) {
-            } else {
-              alert(response.data.message || "이미지 등록에 실패했습니다.");
+            //파일까지 잘 올리가나 경우
+            if (!imageRespose.data.success) {
+              alert("이미지 업로드를 실패하였습니다.");
             }
-          } else {
-            alert(response.data.message || "회원가입에 실패했습니다.");
           }
-        } catch {}
-        console.log("login");
+        } catch (error) {
+          alert("오류가 발생했습니다.");
+        }
+        alert("회원가입이 완료되었습니다.");
         await login(formData.email, formData.password);
-        console.log("정보 가져오기");
         await checkAuth();
         nav("/member/story");
       }
@@ -194,8 +241,8 @@ const JoinForm = () => {
             labelClassName="text-left"
           />
           <Input
-            label="이메일"
-            placeholder=" 이메일을 입력해주세요"
+            label="아이디"
+            placeholder="아이디을 입력해주세요"
             type="email"
             value={formData.email}
             onChange={handleInputChange("email")}
