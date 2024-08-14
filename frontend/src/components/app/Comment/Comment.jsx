@@ -49,8 +49,8 @@ const Comment = ({ comment }) => {
   return (
     <div className="CommentCard">
       <div className="CommentWriter">
-        <div style={{ width: '50%' }}>
-        <img
+        <div style={{ width: "50%" }}>
+          <img
             src={user.profileUrl || mainProfileUrl}
             alt={`${comment.member_name} 프로필`}
             onError={(e) => {
@@ -62,12 +62,24 @@ const Comment = ({ comment }) => {
         </div>
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
-          <div style={{width:"50%", display:"flex",justifyContent:"flex-end"}}>
+          <div
+            style={{
+              width: "50%",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
             <div>
-              <p onClick={onClickCommentEdit} style={{ cursor: "pointer", fontSize: '12px' }}>
+              <p
+                onClick={onClickCommentEdit}
+                style={{ cursor: "pointer", fontSize: "12px" }}
+              >
                 수정
               </p>
-              <p onClick={onClickCommentDelete} style={{ cursor: "pointer", fontSize: '12px'  }}>
+              <p
+                onClick={onClickCommentDelete}
+                style={{ cursor: "pointer", fontSize: "12px" }}
+              >
                 삭제
               </p>
             </div>
@@ -78,6 +90,7 @@ const Comment = ({ comment }) => {
         {isEditing ? (
           <div>
             <textarea
+              maxLength={100}
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
               style={{
@@ -114,14 +127,14 @@ const Comment = ({ comment }) => {
         )}
         <p id="CommentCreateDate">
           {/* UTC 세팅 - toLocaleString() 단지 표시 목적으로만 시간대를 변환할 뿐, 실제 저장된 시간 값은 변경X */}
-          {new Date(comment.createdAt).toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
+          {new Date(comment.createdAt).toLocaleString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
             // seconds: '2-digit', 이거 빼면 초는 안 나옴
-            timeZone: 'Asia/Seoul' // 이 옵션을 추가하여 확실하게 한국 시간으로 표시
+            timeZone: "Asia/Seoul", // 이 옵션을 추가하여 확실하게 한국 시간으로 표시
           })}
         </p>
       </div>

@@ -137,8 +137,7 @@ const BoardList = forwardRef((props, ref) => {
               &lt;
             </button>
             <span>
-              페이지 {pagination.currentPage + 1} /{" "}
-              {pagination.totalPages === 0 ? 1 : pagination.totalPages}
+              페이지 {pagination.currentPage + 1} / {pagination.totalPages}
             </span>
             <button
               className="pagination-button"
