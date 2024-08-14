@@ -1,7 +1,7 @@
-import React from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import useAuthStore from "../../../store/app/authStore";
+
 Modal.setAppElement("#root"); // 모달이 애플리케이션의 루트 엘리먼트에 렌더링되도록 설정
 
 const ModalContent = styled.div`
@@ -12,20 +12,23 @@ const ModalContent = styled.div`
   padding: 20px;
   h2 {
     font-size: 20px;
+    color: ${({ role }) => (role === "COUNSELOR" ? "white" : "white")};
   }
 `;
 
 const ModalButton = styled.button`
   padding: 10px 20px;
   margin-top: 20px;
-  background-color: #f7867a;
+  background-color: ${({ role }) =>
+    role === "COUNSELOR" ? "#3b3a83" : "#f7867a"};
   border: none;
   border-radius: 5px;
   color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: #bc675e;
+    background-color: ${({ role }) =>
+      role === "COUNSELOR" ? "#2a2a5e" : "#bc675e"};
   }
 `;
 
@@ -34,6 +37,7 @@ const IncorrectAccessModal = ({ isOpen, closeModal }) => {
     role: state.role,
     user: state.user,
   }));
+
   return (
     <Modal
       isOpen={isOpen}
@@ -48,6 +52,8 @@ const IncorrectAccessModal = ({ isOpen, closeModal }) => {
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
           zIndex: 1001,
+          backgroundColor: role === "COUNSELOR" ? "#3b3a83" : "#f7867a",
+          color: "white",
         },
         overlay: {
           backgroundColor: "#fff4e4",
@@ -55,9 +61,11 @@ const IncorrectAccessModal = ({ isOpen, closeModal }) => {
         },
       }}
     >
-      <ModalContent>
+      <ModalContent role={role}>
         <h2>잘못된 접근입니다.</h2>
-        <ModalButton onClick={closeModal}>확인</ModalButton>
+        <ModalButton role={role} onClick={closeModal}>
+          확인
+        </ModalButton>
       </ModalContent>
     </Modal>
   );
