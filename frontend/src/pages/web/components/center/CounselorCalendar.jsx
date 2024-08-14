@@ -1,5 +1,23 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
+import styled from 'styled-components';
+
+
+const YYYYMM = styled.div`
+  color: #121481;
+  & > span {
+    font-size: 24px;
+  }
+`
+
+const Btn = styled.div`
+  display: flex;
+  gap: 13px;
+  & > button {
+    color: white;
+    background-color: #D2D3E0;
+  }
+`
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -76,21 +94,25 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
       <div className="bg-white rounded-lg p-4">
         {/* 캘린더 상단 버튼 및 년/월 */}
         <div className="flex justify-between items-center text-gray-600 mb-2">
-          <button 
-            onClick={() => handleMonthChange(-1)} 
-            className="text-sm p-1 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
-          >
-            &lt;
-          </button>
-          <span className="text-xl font-semibold">
-            {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
-          </span>
-          <button 
-            onClick={() => handleMonthChange(1)} 
-            className="text-sm p-1 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
-          >
-            &gt;
-          </button>
+          <YYYYMM>
+            <span className="text-xl font-semibold">
+              {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
+            </span>
+          </YYYYMM>
+          <Btn>
+            <button 
+              onClick={() => handleMonthChange(-1)} 
+              className="text-sm p-1 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
+            >
+              &lt;
+            </button>
+            <button 
+              onClick={() => handleMonthChange(1)} 
+              className="text-sm p-1 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
+            >
+              &gt;
+            </button>
+          </Btn>
         </div>
 
 

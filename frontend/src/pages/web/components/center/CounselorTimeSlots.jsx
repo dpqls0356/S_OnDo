@@ -5,14 +5,18 @@ const Tab = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center; // 오타 수정
+  & > h3 {
+    color: #121481;
+    font-size: 20px;
+  }
   & > p {
-    font-size: 14px;
+    font-size: 12x;
+    color: #8F8F96;
     text-decoration: underline;
     cursor: pointer;
   }
 `;
 
-const Test = styled.div``;
 
 const CustomBtn = styled.div`
   background-color: ${(props) => (props.selected ? 'pink' : 'white')};
@@ -86,14 +90,15 @@ const CounselorTimeSlots = ({ selectedDate, selectedTime, setSelectedTime}) => {
       <div className="grid grid-cols-3 gap-2 mb-4">
         {morningTimes.map(renderTimeButton)}
       </div>
+      <div style={{height: '5px'}}></div>
       <Tab>
         <h3 className="font-bold mb-2">오후</h3>
         <p onClick={selectAllAfternoon}>전체선택</p>
       </Tab>
       <Btn>
-        <Test className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {afternoonTimes.map(renderTimeButton)}
-        </Test>
+        </div>
       </Btn>
     </div>
   );
