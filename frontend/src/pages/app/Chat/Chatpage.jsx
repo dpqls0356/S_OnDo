@@ -234,6 +234,7 @@ const Chatpage = () => {
             width: "50px",
             height: "50px",
             objectFit: "cover",
+            cursor: "default",
           }}
         />
         {characterLoading ? (
