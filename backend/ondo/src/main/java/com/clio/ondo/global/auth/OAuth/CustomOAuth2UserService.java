@@ -1,7 +1,13 @@
 package com.clio.ondo.global.auth.OAuth;
 
 import java.util.Map;
+import java.util.Optional;
 
+import com.clio.ondo.domain.character.model.Character;
+import com.clio.ondo.domain.character.repository.CharacterRepository;
+import com.clio.ondo.domain.character.service.CharacterService;
+import com.clio.ondo.domain.mission.repository.MissionRepository;
+import com.clio.ondo.domain.mission.service.MissionService;
 import com.clio.ondo.global.auth.MemberPrincipalDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -21,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
+    private final CharacterRepository characterRepository;
+    private final MissionService missionService;
 
     @Override
     @Transactional
@@ -40,8 +48,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private Member getOrSave(OAuth2UserInfo userInfo) {
-        Member member = memberRepository.findByEmail(userInfo.getEmail()).orElseGet(userInfo::toEntity);
-        member.setDefaultPasswordIfNotSet();
-        return memberRepository.save(member);
+        Optional<Member> optionalMember = memberRepository.findByEmail(userInfo.getEmail());
+        if (optionalMember.isEmpty()) {
+            Member member = userInfo.toEntity();
+            Character character = member.getCharacter();
+            characterRepository.save(character);
+            missionService.createTodayMission(member.getId());
+            member.setDefaultPasswordIfNotSet();
+            return memberRepository.save(member);
+        } else {
+            Member member = optionalMember.get();
+            member.setDefaultPasswordIfNotSet();
+            return memberRepository.save(member);
+        }
+
     }
 }
