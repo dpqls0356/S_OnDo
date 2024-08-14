@@ -74,11 +74,11 @@ const CancelReservationBtn = styled.button`
   color: white;
   width: 20px;
   height: 30px;
-  top:5px;
+  top: 5px;
   right: 0;
   /* left: 100%; */
   /* bottom: 5%; */
-  color:#ffa79d;
+  color: #ffa79d;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -257,11 +257,11 @@ function Reservation({ reservation }) {
         <div>상담일: {reservationFormattedDate}</div>
       </Col>
       <Col>
-            {timeRemaining > 0 ? (
-        <CancelReservationBtn onClick={handleCancelClick}>
-          <FontAwesomeIcon icon={faX} />
-        </CancelReservationBtn>
-      ) : null}
+        {timeRemaining > 0 ? (
+          <CancelReservationBtn onClick={handleCancelClick}>
+            <FontAwesomeIcon icon={faX} />
+          </CancelReservationBtn>
+        ) : null}
         <CreateCounselingRoomBtn onClick={createCounselingRoom}>
           입장
         </CreateCounselingRoomBtn>
@@ -273,7 +273,7 @@ function Reservation({ reservation }) {
                 ? `입장`
                 : `D-day`}
           </CreateCounselingRoomBtn> */}
-        ) : null}
+        {/* ) : null} */}
       </Col>
     </View>
   );
