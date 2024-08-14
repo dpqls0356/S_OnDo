@@ -117,8 +117,8 @@ const StyledLink = styled(Link)`
   }
   color: ${({ isActive }) => (isActive ? "#3b3a83" : "#f5f5fa")};
   background-color: ${({ isActive }) => (isActive ? "#f5f5fa" : "#3b3a83")};
-  &:hover{
-    color:${({ isActive }) => (isActive ? "#3b3a83" : "#f5f5fa")};
+  &:hover {
+    color: ${({ isActive }) => (isActive ? "#3b3a83" : "#f5f5fa")};
   }
 `;
 
