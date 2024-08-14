@@ -1,27 +1,26 @@
 package com.clio.ondo.domain.board.service;
 
-import com.clio.ondo.domain.board.model.Board;
-import com.clio.ondo.domain.board.repository.BoardRepository;
-import com.clio.ondo.domain.board.repository.CustomBoardRepository;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.repository.BoardRepository;
+import com.clio.ondo.domain.board.repository.CustomBoardRepository;
 import com.clio.ondo.domain.image.service.ImageService;
 import com.clio.ondo.domain.moderation.model.FilteringResponse;
 import com.clio.ondo.domain.moderation.service.ModerationService;
 import com.clio.ondo.global.exception.board.ModerationException;
 import com.clio.ondo.global.exception.member.NotFoundException;
 import com.clio.ondo.global.exception.member.UnauthorizedException;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -55,12 +54,12 @@ public class BoardServiceImpl implements BoardService {
   @Override
   public Board saveArticle(Board board,List<MultipartFile> images) throws IOException {
     List<FilteringResponse> titleResponse = moderationService.inspectBadWord(board.getTitle());
-    if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
+    if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.6){
       throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
     }
 
     List<FilteringResponse> contentResponse = moderationService.inspectBadWord(board.getContent());
-    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.6){
       throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
     }
 
@@ -131,12 +130,12 @@ public class BoardServiceImpl implements BoardService {
       Board existingArticle = existingArticleOpt.get();
       if(existingArticle.getMember_id().equals(memberId.toString())){
         List<FilteringResponse> titleResponse = moderationService.inspectBadWord(modifiedArticle.getTitle());
-        if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.8){
+        if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.6){
           throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
         }
 
         List<FilteringResponse> contentResponse = moderationService.inspectBadWord(modifiedArticle.getContent());
-        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.6){
           throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
         }
 
