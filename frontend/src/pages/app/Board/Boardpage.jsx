@@ -30,8 +30,7 @@ const Boardpage = () => {
   const nav = useNavigate();
   const boardListRef = useRef();
   const text = useRef(null);
-  const [isSorted, setIsSorted] = useState(false);
-
+  const [isSorted, setIsSorted] = useState("desc");
   const onClickCreate = () => {
     // 게시글 생성으로 이동
     nav("/member/board/create");
@@ -45,9 +44,13 @@ const Boardpage = () => {
   };
 
   const onClickSort = () => {
+    if (isSorted === "desc") {
+      setIsSorted("asc");
+    } else {
+      setIsSorted("desc");
+    }
     if (boardListRef.current) {
-      boardListRef.current.triggerToggleSortBy();
-      setIsSorted(!isSorted); // 메서드명 확인
+      boardListRef.current.triggerToggleSortBy(); // 메서드명 확인
     }
   };
 
@@ -102,7 +105,7 @@ const Boardpage = () => {
           </div>
 
           <SortBtn onClick={onClickSort} style={{ cursor: "pointer" }}>
-            {isSorted ? (
+            {isSorted === "desc" ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -114,7 +117,7 @@ const Boardpage = () => {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
                 />
               </svg>
             ) : (
@@ -129,7 +132,7 @@ const Boardpage = () => {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                  d="m4.5 15.75 7.5-7.5 7.5 7.5"
                 />
               </svg>
             )}
