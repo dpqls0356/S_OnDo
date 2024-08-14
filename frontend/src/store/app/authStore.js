@@ -15,11 +15,11 @@ export const useAuthStore = create(
       role: null,
       accessToken: null,
       refreshToken: null,
-      login: async (email, password) => {
+      login: async (email, password, fcmtoken) => {
         try {
           const response = await api.post(
             "/member/login",
-            { email, password },
+            { email, password, fcmtoken },
             { withCredentials: true }
           );
           console.log(response);
@@ -95,6 +95,7 @@ export const useAuthStore = create(
             withCredentials: true,
           });
           if (response.data.success) {
+            console.log("checkAuth" + response);
             set({ user: response.data.data.user, role: "USER" });
             return true;
           }
