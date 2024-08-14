@@ -29,6 +29,8 @@ const Search = styled.div`
     border-radius: 15px;
     margin-right: 30px;
     padding: 0px 20px;
+  } :: placeholder {
+    color: #C2C2C2; 
   }
   & > button {
     width: 80px;
@@ -185,7 +187,7 @@ function ReservationSpot() {
     <View>
       <Header>전체 상담 관리</Header>
       <Search>
-        <input onChange={handleInputChange} type="text" value={searchWord} />
+        <input onChange={handleInputChange} type="text" value={searchWord} placeholder="찾으시는 내담자의 이름을 입력해주세요." />
         <button onClick={searchByName}>검색</button>
       </Search>
       <ReservationList>
