@@ -52,7 +52,7 @@ public class ScheduledAlarmService {
 		Long removedCount = redisTemplate.opsForList().remove(key, 1, fcmToken.getFcmtoken());
 	}
 
-	@Scheduled(cron = "0 00 7 * * *")
+	@Scheduled(cron = "0 15 7 * * *")
 	//@Scheduled(fixedDelay = 60000)
 	public void createSpecialMission(){
 		try{
