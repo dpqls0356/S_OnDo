@@ -10,6 +10,7 @@ import Chat from "./chat";
 import useAuthStore from "../../../../store/app/authStore";
 import axios from "axios";
 import { Client } from "@stomp/stompjs";
+import Swal from "sweetalert2";
 
 const Tag = styled.div`
   position: absolute;
@@ -120,7 +121,10 @@ const SideBar = ({ memberInfo }) => {
 
   const connect = () => {
     if (!sessionId) {
-      alert("Please enter a Session ID.");
+      Swal.fire({
+        icon: "warning",
+        title: "세션 아이디를 입력해주세요",
+      });
       return;
     }
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../../store/app/authStore";
+import Swal from "sweetalert2";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({ baseURL: baseUrl, withCredentials: true });
@@ -23,11 +24,17 @@ const DeleteAccountModal = ({ isOpen, onClose, baseUrl }) => {
     try {
       const response = await userDelete(deleteFormData.password);
       if (response) {
-        alert("탈퇴가 완료되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "탈퇴가 완료되었습니다",
+        });
         nav("/member/main");
       }
     } catch (error) {
-      alert("비밀 번호가 일치하지 않습니다.");
+      Swal.fire({
+        icon: "error",
+        title: "비밀번호가 일치하지 않습니다",
+      });
       console.error(error);
     }
   };

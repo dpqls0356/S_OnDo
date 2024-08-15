@@ -18,7 +18,6 @@ const alertModeration = async (text) => {
     icon: "warning",
     title: "부적절한 표현이 감지되었습니다.",
     text: `${alertMessage}`,
-    width: "70%",
   });
 };
 
@@ -69,9 +68,11 @@ const useCommentStore = create((set) => ({
     }
     return false;
   },
-  getComments: async (articleId,page) => {
+  getComments: async (articleId, page) => {
     try {
-      const response = await api.get(`/board/comment/${articleId}?page=${page}`);
+      const response = await api.get(
+        `/board/comment/${articleId}?page=${page}`
+      );
       set({
         comments: response.data.data.comments.content,
         currentPage: 1,
