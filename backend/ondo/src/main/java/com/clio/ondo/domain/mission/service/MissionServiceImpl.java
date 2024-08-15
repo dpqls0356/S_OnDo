@@ -186,7 +186,7 @@ public class MissionServiceImpl implements MissionService{
 		for (Mission mission : missionList) {
 			if (mission.getTitle().equals(title)) {
 				mission.setCompleteFlag(true);
-				mission.setCompleteTime(now());
+				mission.setCompleteTime(now().plusHours(9));
 				newExp=mission.getExp();
 			}
 		}
@@ -196,7 +196,7 @@ public class MissionServiceImpl implements MissionService{
 
 		int currentExp=characterService.getCharacters(memberId).getExp();
 		//exp 확인 후 레벨 업데이트
-		characterService.checkLevel(memberId,currentExp);
+		//characterService.checkLevel(memberId,currentExp);
 		
 		//todayMission 업데이트
 		todayMissionRepository.save(todayMission);
