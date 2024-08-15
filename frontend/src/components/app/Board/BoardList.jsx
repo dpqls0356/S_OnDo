@@ -80,6 +80,7 @@ const BoardList = forwardRef((props, ref) => {
         const res = await api.get(
           `/board/list?page=${pagination.currentPage}&size=10`
         );
+        console.log('게시글 res',res)
         if (res.data && res.data.data && res.data.data.boardList) {
           setBoards(res.data.data);
           updatePagination({

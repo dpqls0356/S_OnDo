@@ -189,7 +189,7 @@ const useBoardStore = create((set, get) => ({
       // 잘 조회되어서 주석처리
       // console.log('Getting article:', articleId);
       const response = await api.get(`/board/${articleId}`);
-      // console.log('Article data:', response.data);
+      console.log('Article data:', response.data);
       if (
         response.data &&
         response.data.success &&

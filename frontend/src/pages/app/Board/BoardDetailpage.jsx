@@ -199,8 +199,8 @@ const BoardDetailPage = () => {
             <div className="DetailDate">
               <div className="DetailUserInfo">
                 <img
-                  src={user.profileUrl || mainProfileUrl}
-                  alt={`${user.name} 프로필`}
+                  src={currentViewArticle.member_url || mainProfileUrl}
+                  alt={`${currentViewArticle.member_name} 프로필`}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = mainProfileUrl;
