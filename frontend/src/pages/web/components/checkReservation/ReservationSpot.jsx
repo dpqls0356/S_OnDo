@@ -195,17 +195,22 @@ function ReservationSpot() {
         <button onClick={searchByName}>검색</button>
       </Search>
       <ReservationList>
-        {(isSearching ? searchResults : reservationList).length > 0 ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        (isSearching ? searchResults : reservationList).length > 0 ? (
           (isSearching ? searchResults : reservationList).map(
             (reservation, index) => (
-              <Reservation on key={index} reservation={reservation} />
+              <div key={index} >
+                <Reservation key={index} reservation={reservation} />
+                <div ref={observerTarget} style={{ height: "10px" }}></div>
+              </div>
             )
           )
         ) : (
           <div>예약된 상담 일정이 없습니다.</div>
+            )
         )}
-        {isLoading && <p>Loading...</p>}
-        <div ref={observerTarget} style={{ height: "10px" }}></div>
       </ReservationList>
     </View>
   );

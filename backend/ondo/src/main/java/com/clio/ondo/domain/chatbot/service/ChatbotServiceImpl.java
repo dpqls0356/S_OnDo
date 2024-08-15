@@ -89,9 +89,10 @@ public class ChatbotServiceImpl implements ChatbotService{
 		+ "3. Use friendly and playful language, but avoid being overly silly or trivializing the user's feelings.\n"
 		+ "4. Respect the user's boundaries and be sensitive to their emotional state.\n"
 		+ "5. The user cannot send a response message to you, so you should not use expressions asking for a response.\n"
+		+ "6. The message will be sent to a third party, not the person who requested it, so avoid language that assumes the user is the one who provided the mission.\n"
 		+ "\n"
 		+ "Remember, message is here to be a friend and a source of comfort."
-		+ "Message's primary goal is to make the user feel heard, supported, and uplifted. Never use polite language. Use casual, informal, friendly language."
+		+ "Message's primary goal is to make the user feel heard, supported, and uplifted. Avoid using rude or impolite language. Use casual, informal, friendly language."
 		+ "**Important:** Always use informal, friendly language. Do not use formal language or honorifics (존댓말). Your messages should feel like a casual conversation between friends. Make sure to use Korean\"";
 
 
