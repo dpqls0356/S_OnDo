@@ -65,7 +65,7 @@ public class ImageServiceImpl implements ImageService {
 	//멤버 회원가입
 	@Override
 	@Transactional
-	public String uploadAndMember(MultipartFile multipartFile, String dirName, Long counselorId) throws IOException{
+	public String uploadAndMember(MultipartFile multipartFile, String dirName, Long memberId) throws IOException{
 		System.out.println(multipartFile);
 
 		if(multipartFile.isEmpty()){
@@ -75,9 +75,9 @@ public class ImageServiceImpl implements ImageService {
 		File uploadFile = convert(multipartFile)
 			.orElseThrow(() -> new IllegalArgumentException("file 변환 오류"));
 		String url = uploadUrl(uploadFile, dirName);
-		Optional<Counselor> counselor = counselorRepository.findById(counselorId);
-		if(counselor.isPresent()){
-			counselor.get().updateProfileUrl(url);
+		Optional<Member> member = memberRepository.findById(memberId);
+		if(member.isPresent()){
+			member.get().updateProfileUrl(url);
 		}
 		return url;
 	}
