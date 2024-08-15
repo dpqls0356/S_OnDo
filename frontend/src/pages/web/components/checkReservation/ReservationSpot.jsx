@@ -41,6 +41,10 @@ const Search = styled.div`
   } :hover{
      outline:none; 
   }
+     
+  & > button: hover{
+    background-color: #FD8679;
+  }
 `;
 
 const ReservationList = styled.div`
