@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import Footer from "../../components/app/Footer";
 import useAuthStore from "../../store/app/authStore";
 import IncorrectAccessModal from "../../pages/web/components/incorrectAccessModal";
-
+import { formatLocalDateToISO } from "../../utils/dateUtils";
 const View = styled.div`
   font-family: "NIXGONM-Vb";
   position: relative;
