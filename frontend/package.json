@@ -20,6 +20,7 @@
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/face_mesh": "^0.4.1633559619",
+    "@mediapipe/holistic": "^0.5.1675471629",
     "@stomp/stompjs": "^7.0.0",
     "@vitejs/plugin-react": "^4.3.1",
     "axios": "^0.21.1",
@@ -40,6 +41,7 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.12",
     "sweetalert2": "^11.12.4",
+    "three": "^0.167.1",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
