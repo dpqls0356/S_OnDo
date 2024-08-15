@@ -2,7 +2,7 @@ import "./Comment.css";
 import { useState } from "react";
 import useCommentStore from "../../../store/app/CommentStore";
 import useAuthStore from "../../../store/app/authStore";
-
+import Swal from "sweetalert2";
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const Comment = ({ comment }) => {
@@ -15,14 +15,27 @@ const Comment = ({ comment }) => {
 
   const onClickCommentDelete = async () => {
     if (isAuthor) {
-      if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+      const result = await Swal.fire({
+        title: "정말로 이 댓글을 삭제하시겠습니까?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      });
+
+      if (result.isConfirmed) {
         const success = await deleteComment(comment.id, user.id);
-        if (success) {
-          console.log("댓글 삭제 완료");
-        }
+        Swal.fire({
+          title: "댓글 삭제 완료",
+          icon: "success",
+        });
       }
     } else {
-      alert("댓글 작성자만 삭제할 수 있습니다.");
+      Swal.fire({
+        icon: "error",
+        title: "작성자만 삭제할 수 있습니다.",
+      });
     }
   };
 
@@ -30,7 +43,10 @@ const Comment = ({ comment }) => {
     if (isAuthor) {
       setIsEditing(true);
     } else {
-      alert("댓글 작성자만 수정할 수 있습니다.");
+      Swal.fire({
+        icon: "error",
+        title: "댓글 작성자만 수정할 수 있습니다.",
+      });
     }
   };
 
@@ -42,7 +58,10 @@ const Comment = ({ comment }) => {
         console.log("댓글 수정 완료");
       }
     } else {
-      alert("댓글 작성자만 수정할 수 있습니다.");
+      Swal.fire({
+        icon: "error",
+        title: "댓글 작성자만 수정할 수 있습니다..",
+      });
     }
   };
 
