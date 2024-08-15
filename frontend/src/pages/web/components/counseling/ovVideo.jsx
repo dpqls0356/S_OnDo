@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaceMesh } from '@mediapipe/face_mesh';
 import { Camera } from '@mediapipe/camera_utils';
-import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import { drawConnectors } from '@mediapipe/drawing_utils';
 
 const OpenViduVideoComponent = ({ streamManager, filterEnabled }) => {
   const videoRef = useRef(null);
@@ -49,7 +49,6 @@ const OpenViduVideoComponent = ({ streamManager, filterEnabled }) => {
         if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
           const landmarks = results.multiFaceLandmarks[0];
           drawConnectors(canvasCtx, landmarks, FaceMesh.FACEMESH_TESSELATION, { color: '#C0C0C070', lineWidth: 1 });
-        //   drawLandmarks(canvasCtx, landmarks, { color: '#ffacac', lineWidth: 2 });
 
           // 여기서 이미지를 얼굴의 중앙에 오버레이합니다 (눈과 코의 중간 위치에)
           const leftEye = landmarks[133];
@@ -77,6 +76,13 @@ const OpenViduVideoComponent = ({ streamManager, filterEnabled }) => {
         height: 480,
       });
       camera.start();
+
+      // 캔버스에서 스트림을 가져와서 송출에 사용
+      const canvasStream = canvasRef.current.captureStream();
+
+      if (streamManager && canvasStream) {
+        streamManager.replaceTrack(canvasStream.getVideoTracks()[0]);
+      }
     }
   }, [filterEnabled, overlayImage]);
 
