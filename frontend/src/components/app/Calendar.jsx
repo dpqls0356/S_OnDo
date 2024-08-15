@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { formatLocalDateToISO } from "../../utils/dateUtils";
 
-const Calendar = ({ selectedDate, setSelectedDate, unavailableTimes }) => {
+const Calendar = ({ selectedDate, setSelectedDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
@@ -16,7 +16,9 @@ const Calendar = ({ selectedDate, setSelectedDate, unavailableTimes }) => {
       currentDate.getMonth(),
       date
     );
-    setSelectedDate(newDate);
+    if (newDate >= new Date(new Date().setHours(0, 0, 0, 0))) {
+      setSelectedDate(newDate);
+    }
   };
 
   const handleMonthChange = (increment) => {
@@ -35,23 +37,13 @@ const Calendar = ({ selectedDate, setSelectedDate, unavailableTimes }) => {
     return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
   };
 
-
-  const isDateFullyBooked = (date) => {
-    const formattedDate = formatLocalDateToISO(date).split('T')[0];
-    const unavailable = unavailableTimes[formattedDate] || [];
-    const allTimes = [
-      "09:00",
-      "10:00",
-      "11:00",
-      "12:00",
-      "13:00",
-      "14:00",
-      "15:00",
-      "16:00",
-      "17:00",
-    ];
-    // 모든 시간대가 예약 불가능한 경우에만 true 반환
-    return allTimes.every((time) => unavailable.includes(time));
+  const isDateDisabled = (date) => {
+    const fullDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      date
+    );
+    return fullDate < new Date(new Date().setHours(0, 0, 0, 0));
   };
 
   return (
@@ -86,19 +78,15 @@ const Calendar = ({ selectedDate, setSelectedDate, unavailableTimes }) => {
           { length: getDaysInMonth(currentDate) },
           (_, i) => i + 1
         ).map((date) => {
-          const fullDate = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            date
-          );
-          const isFullyBooked = isDateFullyBooked(fullDate);
+          const isDisabled = isDateDisabled(date);
           return (
             <div
               key={date}
               className={`cursor-pointer ${
                 selectedDate &&
                 date === selectedDate.getDate() &&
-                currentDate.getMonth() === selectedDate.getMonth()
+                currentDate.getMonth() === selectedDate.getMonth() &&
+                currentDate.getFullYear() === selectedDate.getFullYear()
                   ? "bg-blue-100 rounded-full"
                   : ""
               } ${
@@ -112,11 +100,11 @@ const Calendar = ({ selectedDate, setSelectedDate, unavailableTimes }) => {
                   ? "text-red-500"
                   : ""
               } ${
-                isFullyBooked
-                  ? "text-gray-300 bg-gray-100 cursor-not-allowed"
-                  : ""
+                isDisabled
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "hover:bg-gray-100"
               }`}
-              onClick={() => !isFullyBooked && handleDateClick(date)}
+              onClick={() => !isDisabled && handleDateClick(date)}
             >
               {date}
             </div>

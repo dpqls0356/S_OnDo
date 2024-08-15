@@ -22,11 +22,10 @@ const GENDER_REVERSE_MAP = {
   여: "FEMALE",
 };
 
-
 const useCounselorStore = create((set, get) => ({
   counselors: [], // 모든 상담사 목록
   selectedCounselor: null, // 특정 상담사의 상세 정보
-  counselorSchedule: [], // 상담사의 가능한 일정
+  counselorSchedule: {}, // 상담사의 불가능한 일정 (객체 형태로 변경)
   userReservations: [], // 사용자의 예약 목록
   isLoading: false, // 비동기 작업 위한 로딩 상태
   error: null,
@@ -69,8 +68,22 @@ const useCounselorStore = create((set, get) => ({
       const response = await api.get(
         `/member/reservation/counselor/${counselorId}`
       );
-      const schedule = response.data.data.counselorSchedule
-      set({ counselorSchedule: schedule, isLoading: false });
+      const schedule = response.data.data.counselorSchedule;
+      // console.log('schedule', schedule)
+
+      // 데이터 구조 변경
+      const formattedSchedule = schedule.reduce((acc, dateTime) => {
+        const [date, time] = dateTime.split('T');
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(time.substring(0, 5));
+        return acc;
+      }, {});
+
+      // console.log('formattedSchedule', formattedSchedule)
+
+      set({ counselorSchedule: formattedSchedule, isLoading: false });
     } catch (error) {
       set({ error: error.message, isLoading: false });
     }
