@@ -29,8 +29,8 @@ const Tag = styled.div`
 `;
 
 const View = styled.div`
-  width: ${({ hidden }) => (hidden ? "0" : "35%")};
-  height: 100vh;
+  width: ${({ hidden, isUser }) => (hidden ? "0" : isUser ? "100%" : "35%")};
+  height: ${({ isUser }) => (isUser ? "100vh" : "100vh")};
   background-color: #fae6e6;
   display: flex;
   flex-direction: column;
@@ -69,6 +69,7 @@ const Row = styled.div`
   flex: 1;
   overflow-y: hidden;
 `;
+
 let stompClient = null;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const SideBar = ({ memberInfo }) => {
@@ -129,7 +130,9 @@ const SideBar = ({ memberInfo }) => {
 
     //서버로 올릴 때 wss로 변경해야함
     stompClient = new Client({
-      brokerURL: "wss://i11c110.p.ssafy.io/gs-guide-websocket",
+      // brokerURL: "wss://i11c110.p.ssafy.io/gs-guide-websocket",
+        brokerURL: 'ws://localhost:8080/gs-guide-websocket',
+
     });
 
     stompClient.onConnect = (frame) => {
@@ -193,7 +196,7 @@ const SideBar = ({ memberInfo }) => {
 
   return (
     <>
-      <View hidden={hidden}>
+      <View hidden={hidden} isUser={role === "USER"}>
         <Header>
           <div>
             <Col onClick={() => toggleChat(true)} active={isChat}>
