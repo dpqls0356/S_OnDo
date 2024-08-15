@@ -26,8 +26,7 @@ function CompletedMissionsPage() {
         }
       } catch (error) {
         console.error('완료된 미션 가져오기 실패:', error);
-        setError(`완료된 미션을 불러오는 데 실패했습니다.
-          잠시 후 다시 시도해 주세요.`);    // 백틱으로 감싸서 줄바꿈
+        setError(`완료된 미션을 불러오는 데 실패했습니다.`); 
       }
     }
 
