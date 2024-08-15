@@ -84,7 +84,7 @@ const Boardpage = () => {
         <div className="BoardSearch">
           <div>
             <form onSubmit={onClickSearch}>
-              <input type="text" ref={text} placeholder="검색" />
+              <input type="text" ref={text} style={{ width: '80%'}} placeholder="검색" />
             </form>
             <div onClick={onClickSearch} style={{ cursor: "pointer" }}>
               <svg
