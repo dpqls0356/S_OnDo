@@ -5,12 +5,9 @@ import useBoardStore from "../../../store/app/useBoardStore";
 import useCommentStore from "../../../store/app/CommentStore";
 import useAuthStore from "../../../store/app/authStore";
 import CommentList from "../../../components/app/Comment/CommentList";
-import Button from "../../../components/app/Button";
 import axios from "axios";
-import calendar from "./../../../assets/images/calendar.png";
 import commentbtn from "./../../../assets/images/send.png";
 import LoadingSpinner from "../../../components/app/Spinner";
-import back from "./../../../assets/images/back.png";
 import styled from "styled-components";
 
 const Header = styled.div`
@@ -82,7 +79,7 @@ const BoardDetailPage = () => {
 
     if (success) {
       comment.current.value = "";
-      await getComments(articleId);
+      await getComments(articleId,0);
     }
     setSpinnerLoading(false);
   };
@@ -135,7 +132,7 @@ const BoardDetailPage = () => {
   const formatDate = (dateString) => {
     if (!dateString) return "";
     return new Date(dateString).toLocaleString("ko-KR", {
-      year: "numeric",
+      year: "2-digit",
       month: "2-digit",
       day: "2-digit",
       // hour: '2-digit',
@@ -174,13 +171,13 @@ const BoardDetailPage = () => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
-              class="size-6"
+              className="size-6"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M15.75 19.5 8.25 12l7.5-7.5"
               />
             </svg>
@@ -212,16 +209,9 @@ const BoardDetailPage = () => {
                 <p>{currentViewArticle.member_name}</p>
               </div>
               <div className="DetailCreate">
-                {/* <div style={{width:"25px",height:"2px",marginRight:"5px"}}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-            </svg>
-          </div> */}
-                <div>
-                  <p style={{ font: "16px" }}>
+                  <p>
                     {formatDate(currentViewArticle.created_at)}
                   </p>
-                </div>
               </div>
             </div>
 

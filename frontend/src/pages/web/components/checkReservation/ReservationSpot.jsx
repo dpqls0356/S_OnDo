@@ -31,11 +31,19 @@ const Search = styled.div`
     padding: 0px 20px;
   } :: placeholder {
     color: #C2C2C2; 
+  } :focus{
+    outline:none; 
   }
   & > button {
     width: 80px;
     color: white;
     background-color: #ffa79d;
+  } :hover{
+     outline:none; 
+  }
+     
+  & > button: hover{
+    background-color: #FD8679;
   }
 `;
 

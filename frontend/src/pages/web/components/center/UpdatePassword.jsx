@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import {styled, keyframes} from "styled-components";
 import useAuthStore from "../../../../store/app/authStore";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -54,6 +54,19 @@ const Form = styled.div`
   }
 `;
 
+// 빛나는 효과
+const shine = keyframes`
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    left: 125%;
+    opacity: 0;
+  }
+`;
 const Save = styled.div`
   display: inline-block;
   & > button {
@@ -62,6 +75,24 @@ const Save = styled.div`
     color: white;
     background-color: #121481;
     border-radius: 30px;
+
+    position: relative;
+    overflow: hidden; /* 내부의 넘치는 효과가 잘리는 것을 방지 */
+  }::before {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    z-index: 2;
+    display: block;
+    content: '';
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+    transform: skewX(-25deg);
+    opacity: 0;
+  }:hover::before {
+    opacity: 1;
+    animation: ${shine} .75s;
   }
 `;
 

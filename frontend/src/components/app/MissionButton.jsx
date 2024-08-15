@@ -8,9 +8,11 @@ function MissionButton({ mission, onComplete, isCompleted, missionType }) {
     const baseStyle =
       "mission-button rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_#3D3D3D] cursor-pointer";
     if (missionType === "daily") {
-      return `${baseStyle} ${isCompleted ? "bg-[#BEF0CD]" : "bg-white"}`;
+      // return `${baseStyle} ${isCompleted ? "bg-[#BEF0CD]" : "bg-white"}`;
+      return `${baseStyle} ${isCompleted ? "bg-[#FFFAD2]" : "bg-white"}`;
     }
-    return `${baseStyle} ${isCompleted ? "bg-[#FFB1B1]" : "bg-white"}`;
+    // return `${baseStyle} ${isCompleted ? "bg-[#FFB1B1]" : "bg-white"}`;
+    return `${baseStyle} ${isCompleted ? "bg-[#E0E5FF]" : "bg-white"}`;
   };
 
   const handleClick = () => {

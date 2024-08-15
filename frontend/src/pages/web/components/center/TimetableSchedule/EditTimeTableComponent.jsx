@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import styled from 'styled-components';
+import {styled, keyframes} from 'styled-components';
 import './EditTimeTableComponent.css';
 
 const View = styled.div`
@@ -15,6 +15,24 @@ const View = styled.div`
 const Table = styled.div`
   border: 2px #E6E6E6 solid;
   border-radius: 10px;
+  & > table > tbody > tr > td
+  {
+    cursor: pointer
+  }
+`;
+
+// 빛나는 효과
+const shine = keyframes`
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    left: 125%;
+    opacity: 0;
+  }
 `;
 
 const Save = styled.div`
@@ -25,8 +43,34 @@ const Save = styled.div`
     color: white;
     background-color: #121481;
     border-radius: 30px;
+
+    position: relative;
+    overflow: hidden; /* 내부의 넘치는 효과가 잘리는 것을 방지 */
+  }::before {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    z-index: 2;
+    display: block;
+    content: '';
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+    transform: skewX(-25deg);
+    opacity: 0;
+  }:hover::before {
+    opacity: 1;
+    animation: ${shine} .75s;
   }
 `;
+
+const Test = styled.div`
+  & > td{
+  }:hover{
+    backgroun-color: blue;
+  }
+`
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const EditTimeTableComponent = ({ handleEditState, SaveDataState }) => {
