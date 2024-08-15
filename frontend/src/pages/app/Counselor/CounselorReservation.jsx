@@ -29,7 +29,6 @@ const Reservation = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [note, setNote] = useState("");
-  const [unavailableTimes, setUnavailableTimes] = useState({});
 
   useEffect(() => {
     if (counselorId) {
@@ -38,19 +37,7 @@ const Reservation = () => {
     }
   }, [counselorId, fetchCounselorDetails, fetchCounselorSchedule]);
 
-  useEffect(() => {
-    if (counselorSchedule) {
-      const times = {};
-      counselorSchedule.forEach((dateTimeStr) => {
-        const [date, time] = dateTimeStr.split("T");
-        if (!times[date]) {
-          times[date] = [];
-        }
-        times[date].push(time.substring(0, 5));
-      });
-      setUnavailableTimes(times);
-    }
-  }, [counselorSchedule]);
+  // console.log(counselorSchedule)
 
   const handleReservation = async () => {
     if (!counselorId || !selectedDate || !selectedTime) {
@@ -123,17 +110,12 @@ const Reservation = () => {
             <Calendar
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-              unavailableTimes={unavailableTimes}
             />
             <TimeSlots
               selectedDate={selectedDate}
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
-              unavailableTimes={
-                selectedDate && unavailableTimes[selectedDate]
-                  ? unavailableTimes[selectedDate]
-                  : []
-              }
+              unavailableTimes={counselorSchedule}
             />
           </div>
           <img src={BorderImg} alt="" className="w-full" />

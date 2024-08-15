@@ -232,7 +232,10 @@ public class ChatbotServiceImpl implements ChatbotService{
 		ChatCompletion responseChatCompletion = responseBody.getBody();
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-		ChatbotChatting responseChatting = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now().plusHours(9).toString(), memberId);
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime futureTime = now.plusHours(9);
+
+		ChatbotChatting responseChatting = new ChatbotChatting(null, responseString, "bot", futureTime.toString(), memberId);
 		chatbotRepository.upsertByMemberId(memberId, responseChatting);
 		//System.out.println(responseString);
 
