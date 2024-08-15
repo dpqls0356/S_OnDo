@@ -47,6 +47,9 @@ public class ScheduledAlarmService {
 
 	@Transactional
 	public void deleteToken(Long memberId, FCMToken fcmToken) throws Exception {
+		if(fcmToken.getFcmtoken().isEmpty() || fcmToken.getFcmtoken() == null || fcmToken.getFcmtoken() == "") {
+			return;
+		}
 		String key = "memberId:" + Long.toString(memberId);
 
 		Long removedCount = redisTemplate.opsForList().remove(key, 1, fcmToken.getFcmtoken());
