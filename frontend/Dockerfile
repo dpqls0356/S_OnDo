@@ -21,6 +21,9 @@ FROM nginx:alpine
 # Nginx 기본 설정 파일을 삭제하고, 빌드된 파일을 복사
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Nginx의 설정파일을 변경합니다.
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # 포트 80을 노출
 EXPOSE 80
 
