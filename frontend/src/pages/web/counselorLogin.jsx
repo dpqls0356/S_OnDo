@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import IncorrectAccessModal from "./components/incorrectAccessModal";
 import LogoImg from "./../../assets/images/onDo로고_그림자.png";
+import Swal from "sweetalert2";
 
 const View = styled.div`
   display: flex;
@@ -79,12 +80,13 @@ const InputArea = styled.div`
 const CounselorLogin = () => {
   const [credentials, setCredentials] = useState({ id: "", password: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
-   const { role, user, counselorLogin } = useAuthStore((state) => ({
+  const { role, user, counselorLogin } = useAuthStore((state) => ({
     role: state.role,
     user: state.user,
     counselorLogin: state.counselorLogin,
     checkAuth: state.checkAuth,
-  }));  const navigate = useNavigate();
+  }));
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials({
@@ -100,7 +102,10 @@ const CounselorLogin = () => {
       });
       navigate("/counselor");
     } catch (error) {
-      alert("Login failed");
+      Swal.fire({
+        icon: "warning",
+        title: "로그인에 실패했습니다.",
+      });
     }
   };
 
@@ -108,21 +113,21 @@ const CounselorLogin = () => {
     setIsModalOpen(false);
     if (role === "USER") {
       navigate("/member/home");
-    }else if (role === "COUNSELOR") {
-        navigate("/counselor");
-      }
+    } else if (role === "COUNSELOR") {
+      navigate("/counselor");
+    }
   };
 
-    const checkAuthentication = () => {
-      console.log("counselorLogin - "+ role)
-      //유저가 로그인 페이지에 들어온 경우
-      console.log(isModalOpen)
-      if (role === "USER"||role==="COUNSELOR") {
-        setIsModalOpen(true);
-        //상담사가 로그인 페이지에  들어온 경우
-      }
-      //그 외엔 로그인 하러 들어온 사람...
-    };
+  const checkAuthentication = () => {
+    console.log("counselorLogin - " + role);
+    //유저가 로그인 페이지에 들어온 경우
+    console.log(isModalOpen);
+    if (role === "USER" || role === "COUNSELOR") {
+      setIsModalOpen(true);
+      //상담사가 로그인 페이지에  들어온 경우
+    }
+    //그 외엔 로그인 하러 들어온 사람...
+  };
   useEffect(() => {
     checkAuthentication();
   }, []);

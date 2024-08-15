@@ -3,6 +3,7 @@ import vector from "./../../../assets/images/Vector.png";
 import "./CardCarousel.css";
 import useCounselorStore from "../../../store/app/CounselorStore";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
@@ -16,7 +17,6 @@ const CardCarousel = ({
   reservId,
   profileUrl,
   counselingUrl,
-
 }) => {
   const nav = useNavigate();
   const { calculateDday, displayGender } = useCounselorStore();
@@ -35,7 +35,11 @@ const CardCarousel = ({
         },
       });
     } else {
-      alert("아직 상담 시간이 되지 않았습니다. 상담 시간에 다시 시도해주세요.");
+      Swal.fire({
+        icon: "warning",
+        title: "아직 상담 시간이 되지 않았습니다.",
+        text: "상담 시간에 다시 시도해주세요",
+      });
     }
   };
 
@@ -47,22 +51,26 @@ const CardCarousel = ({
     <>
       <div style={{ padding: "3% 5%" }}>
         {reservationDate && (
-          <div style={{display:"flex", alignItems:"center"}}>
-            <p className="CS-Date">{new Date(reservationDate).toLocaleDateString().slice(0, -1)}</p>
-            <p style={{margin:"0px 10px"}}>|</p>
-            <p className="CS-Date">{reservationDate.split('T')[1].slice(0, 5)}</p>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <p className="CS-Date">
+              {new Date(reservationDate).toLocaleDateString().slice(0, -1)}
+            </p>
+            <p style={{ margin: "0px 10px" }}>|</p>
+            <p className="CS-Date">
+              {reservationDate.split("T")[1].slice(0, 5)}
+            </p>
           </div>
         )}
         <div className="ConSelorCardIn">
           <div>
-          <img 
-            src={profileUrl || mainProfileUrl} 
-            alt={`${name} 상담사 프로필`} 
-            onError={(e) => {
-              e.target.onerror = null; 
-              e.target.src = mainProfileUrl;
-            }}
-          />
+            <img
+              src={profileUrl || mainProfileUrl}
+              alt={`${name} 상담사 프로필`}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = mainProfileUrl;
+              }}
+            />
           </div>
           <div className="CounselorInfo">
             <p id="MP-CounselorName">

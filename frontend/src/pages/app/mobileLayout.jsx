@@ -75,29 +75,35 @@ export default function MobileLayout() {
 
   useEffect(() => {
     const checkAuthentication = () => {
-      // 유저가 아닌데 유저만 입장 가능한 URI에 접근하는 경우
-      if (
-        !location.pathname.startsWith("/member/main") &&
-        !location.pathname.startsWith("/member/login") &&
-        !location.pathname.startsWith("/member/join") &&
-        role !== "USER"
-      ) {
-        console.log("1");
-        setIsModalOpen(true);
+      if(!role&&!location.pathname.startsWith("/member/login") &&!location.pathname.startsWith("/member/join")){
+        navigate("/member/main")
       }
-      // 유저가 맞는데 로그인/조인 화면에 들어가는 경우
-      else if (
-        (location.pathname.startsWith("/member/main") ||
-          location.pathname.startsWith("/member/join") ||
-          location.pathname.startsWith("/member/login")) &&
-        role === "USER"
-      ) {
-        console.log(role);
-        console.log("2");
-        setIsModalOpen(true);
-      } else {
-        setIsModalOpen(false);
+      else if(role=="COUNSELOR"){
+        navigate("/counselor");
       }
+      // // 유저가 아닌데 유저만 입장 가능한 URI에 접근하는 경우
+      // if (
+      //   !location.pathname.startsWith("/member/main") &&
+      //   !location.pathname.startsWith("/member/login") &&
+      //   !location.pathname.startsWith("/member/join") &&
+      //   role !== "USER"
+      // ) {
+      //   console.log("1");
+      //   setIsModalOpen(true);
+      // }
+      // // 유저가 맞는데 로그인/조인 화면에 들어가는 경우
+      // else if (
+      //   (location.pathname.startsWith("/member/main") ||
+      //     location.pathname.startsWith("/member/join") ||
+      //     location.pathname.startsWith("/member/login")) &&
+      //   role === "USER"
+      // ) {
+      //   console.log(role);
+      //   console.log("2");
+      //   setIsModalOpen(true);
+      // } else {
+      //   setIsModalOpen(false);
+      // }
     };
 
     checkAuthentication();
