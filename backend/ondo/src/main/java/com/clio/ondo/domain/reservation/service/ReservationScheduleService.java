@@ -25,7 +25,7 @@ public class ReservationScheduleService {
 
     private LocalDateTime lastRun = LocalDateTime.MIN;
 
-    @Scheduled(cron = "0 0 6 * * MON")
+    @Scheduled(cron = "0 0 21 * * SUN")
     public void setReservationBySchedule(){
         try{
             LocalDateTime now = LocalDateTime.now();
