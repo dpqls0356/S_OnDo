@@ -33,7 +33,7 @@ const DayListCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2 }) =>
     setSelectedDate(date);
     console.log('선택된 날짜 확인용', selectedDate)
     // setSelectedTime([]);
-    const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+    const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date); // 선택된 날짜 한국 시간
     // Local time to UTC
     const formattedDate = new Date(Date.UTC(fullDate.getFullYear(), fullDate.getMonth(), fullDate.getDate()));
     const inputdate = formattedDate.toISOString().split('T')[0].replace(/-/g, '');
