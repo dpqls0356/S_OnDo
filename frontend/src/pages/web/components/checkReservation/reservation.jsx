@@ -128,21 +128,16 @@ function Reservation({ reservation }) {
   };
 
   const changeDateFormat = () => {
-    // UTC 시간을 파싱
-    let utcDate = new Date(reservation.reservationDate + "Z");
 
-    // UTC 시간을 한국 시간으로 변환
-    let krDate = new Date(
-      utcDate.toLocaleString("en-US", { timeZone: "Asia/Seoul" })
-    );
+let date = new Date(reservation.reservationDate);
 
-    let year = krDate.getFullYear();
-    let month = String(krDate.getMonth() + 1).padStart(2, "0");
-    let day = String(krDate.getDate()).padStart(2, "0");
-    let hours = String(krDate.getHours()).padStart(2, "0");
-    let minutes = String(krDate.getMinutes()).padStart(2, "0");
+let year = date.getFullYear();
+let month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+let day = String(date.getDate()).padStart(2, '0');
+let hours = String(date.getHours()).padStart(2, '0');
+let minutes = String(date.getMinutes()).padStart(2, '0');
 
-    let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
 
     setReservationFormattedDate(formattedDate);
   };
