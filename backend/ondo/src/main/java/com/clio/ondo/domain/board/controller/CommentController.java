@@ -1,6 +1,7 @@
 package com.clio.ondo.domain.board.controller;
 
 import com.clio.ondo.domain.board.model.Comment;
+import com.clio.ondo.domain.board.model.CommentGetDto;
 import com.clio.ondo.domain.board.service.CommentServiceImpl;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
@@ -32,12 +33,12 @@ public class CommentController {
       댓글 불러오기
    */
   @GetMapping("/{articleId}")
-  public ResponseEntity<ResponseVO<Page<Comment>>> getComments(
+  public ResponseEntity<ResponseVO<Page<?>>> getComments(
       @RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "10") int size,
       @PathVariable String articleId) {
     Pageable pageable = PageRequest.of(page, size);
-    Page<Comment> comments = commentServiceImpl.getComments(pageable, articleId);
+    Page<CommentGetDto> comments = commentServiceImpl.getComments(pageable, articleId);
     return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("comments", comments));
   }
 

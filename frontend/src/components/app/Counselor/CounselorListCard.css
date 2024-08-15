@@ -40,7 +40,8 @@
 .ConSelorCardIn > img {
   border-radius: 100%;
   border: 1px black solid;
-  width: 35%;
+  width: 50px;
+  height: 50px;
   background-color: white;
 }
 
