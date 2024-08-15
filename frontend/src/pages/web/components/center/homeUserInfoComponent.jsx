@@ -93,6 +93,12 @@ const CounselingMemo = styled.div`
         padding: 0px;
       }
     }
+    & textarea{
+      height: 90px;
+      resize: none;
+    }: focus{
+      outline: none;
+    }
   }
 `;
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -295,6 +301,7 @@ const HomeUserInfoComponent = () => {
                         history.reservationId
                       )}
                       value={formData[index]?.counsellingDetail}
+                      placeholder="상담 내용을 기록하세요."
                     />
                   </div>
                   <div>
@@ -318,11 +325,12 @@ const HomeUserInfoComponent = () => {
                         history.reservationId
                       )}
                       value={formData[index]?.counsellingDetail}
+                      placeholder="상담 내용을 기록하세요."
                     />
                   </div>
                   <div>
                     <button onClick={updateDetail(history.reservationId)}>
-                      수정
+                      저장
                     </button>
                   </div>
                 </div>
