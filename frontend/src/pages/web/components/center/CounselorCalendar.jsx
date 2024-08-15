@@ -35,11 +35,11 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
     setSaveTimeState([])
     setSelectedDate(date); // 선택한 날짜 selectDate에 저장
     setSelectedTime([]); // 선택한 날짜에 대한 선택한 시간 리스트 초기화
-    const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+    const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date); // 선택된 날짜 한국 시간
 
     const inputdate = fullDate.getFullYear().toString() +
     String(fullDate.getMonth() + 1).padStart(2, '0') +
-    String(fullDate.getDate()).padStart(2, '0');
+    String(fullDate.getDate()).padStart(2, '0'); // 선택된 날짜 YYYYMMDD(한국 시간 기준)
 
     console.log('url 확인용:', inputdate);
 
@@ -48,7 +48,7 @@ const CounselorCalendar = ({ selectedDate, setSelectedDate, setSelectedDate2, se
 // fullDate를 YYYY-MM-DD 형식의 문자열로 변환하여 다시 저장
     const formattedDate = fullDate.getFullYear().toString() +
     '-' + String(fullDate.getMonth() + 1).padStart(2, '0') +
-    '-' + String(fullDate.getDate()).padStart(2, '0');
+    '-' + String(fullDate.getDate()).padStart(2, '0'); // 선택된 날짜 YYYY-MM-DD
     setSelectedDate2(formattedDate)
 
     try {
