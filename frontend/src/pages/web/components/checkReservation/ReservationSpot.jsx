@@ -4,6 +4,8 @@ import styled, { ServerStyleSheet } from "styled-components";
 import Reservation from "./reservation";
 import useAuthStore from "../../../../store/app/authStore";
 
+import EmptySchedule from "./../../../../assets/images/counselor_Calendar.png" 
+
 const View = styled.div`
   padding: 50px 50px;
   width: 45%;

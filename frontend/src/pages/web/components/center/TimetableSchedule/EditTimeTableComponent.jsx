@@ -73,8 +73,25 @@ const Test = styled.div`
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-const EditTimeTableComponent = ({ handleEditState, SaveDataState }) => {
+const EditTimeTableComponent = ({ handleEditState, SaveDataState, saveData }) => {
   console.log('-----------------렌더링 확인용----------------')
+    // 첫 렌더링 때 조회된 데이터를 기반으로 색칠할 셀 목록(selectedCells)에 셀 데이터 담기
+    useEffect(() => {
+      daysOfWeek.forEach((day, index) => {
+        if (daysOfWeekList.includes(day)&&saveData) {
+          // const dayStr = testSD[day]; // 각 요일에 해당하는 문자열 저장(현재는 테스트용 데이터를 넘기는 중)
+          const dayStr = saveData[day]; // 각 요일에 해당하는 문자열 저장(현재는 테스트용 데이터를 넘기는 중)
+          for (let i = 0; i < 10; i++) {
+            if (dayStr[i] === '1') {
+              setSelectedCells(prevSelectedCells => [
+                ...prevSelectedCells,
+                `${i}-${index + 1}`
+              ]); // 상태 업데이트 함수의 콜백을 사용하여 안전하게 상태 업데이트
+            }
+          }
+        }
+      });
+    }, []); // 빈 의존성 배열을 사용하여 컴포넌트가 처음 마운트될 때만 실행
   const [selectedCells, setSelectedCells] = useState([]);
   const [schedule, setSchedule] = useState([
     ['0', '0', '0', '0', '0', '0', '0', '0'], 
