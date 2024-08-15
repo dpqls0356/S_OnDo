@@ -8,82 +8,74 @@ const View = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: rgba(173, 216, 230, 1);
-  background: -moz-linear-gradient(
-    45deg,
-    rgba(173, 216, 230, 1) 0%,
-    rgba(135, 206, 250, 1) 100%
-  );
-  background: -webkit-gradient(
-    left bottom,
-    right top,
-    color-stop(0%, rgba(173, 216, 230, 1)),
-    color-stop(100%, rgba(135, 206, 250, 1))
-  );
-  background: -webkit-linear-gradient(
-    45deg,
-    rgba(173, 216, 230, 1) 0%,
-    #4c87ab 100%
-  );
-  background: -o-linear-gradient(
-    45deg,
-    rgba(173, 216, 230, 1) 0%,
-    #4c87ab 100%
-  );
-  background: -ms-linear-gradient(
-    45deg,
-    rgba(173, 216, 230, 1) 0%,
-    #4c87ab 100%
-  );
-  background: linear-gradient(45deg, rgba(173, 216, 230, 1) 0%, #4c87ab 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#add8e6', endColorstr='#87cefa', GradientType=1 );
-  font-family: "Montserrat", sans-serif;
+  background: #3b3a83;
+  font-family: "Jua", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+
   div {
     min-width: 500px;
-    background: rgba(255, 255, 255, 0.85);
     padding: 40px 60px;
     border-radius: 10px;
-    box-shadow: -2px 19px 59px 0px rgb(71, 110, 157);
+
     h1 {
       z-index: 1;
       line-height: normal;
       font-size: 8em;
-      color: #4c87ab 100%;
+      color: white;
       position: relative;
       margin: 0px;
-      &:after {
-        z-index: 0;
-        content: attr(data-back);
-        width: 0%;
-        height: 100%;
-        background: #4c87ab 100%;
-        -webkit-text-fill-color: transparent;
-        -webkit-background-clip: text;
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        animation: backMasking 1s infinite;
+      display: flex;
+      justify-content: center;
+
+      span {
+        display: inline-block;
+        animation: wave 1s infinite;
+      }
+
+      span:nth-of-type(1) {
+        animation-delay: 0s;
+      }
+      span:nth-of-type(2) {
+        animation-delay: 0.1s;
+      }
+      span:nth-of-type(3) {
+        animation-delay: 0.2s;
+      }
+      span:nth-of-type(4) {
+        animation-delay: 0.3s;
+      }
+      span:nth-of-type(5) {
+        animation-delay: 0.4s;
+      }
+      span:nth-of-type(6) {
+        animation-delay: 0.5s;
+      }
+      span:nth-of-type(7) {
+        animation-delay: 0.6s;
+      }
+      span:nth-of-type(8) {
+        animation-delay: 0.7s;
+      }
+      span:nth-of-type(9) {
+        animation-delay: 0.8s;
+      }
+      span:nth-of-type(10) {
+        animation-delay: 0.9s;
       }
     }
   }
 
-  @keyframes backMasking {
-    0% {
-      width: 0%;
-    }
+  @keyframes wave {
+    0%,
     100% {
-      width: 100%;
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
     }
   }
 
-  @-webkit-keyframes backMasking {
-    0% {
-      width: 0%;
-    }
-    100% {
-      width: 100%;
-    }
-  }
   @media (max-width: 360px) {
     & {
       width: 360px; /* 화면 너비가 360px 이하일 때 width 값 */
@@ -92,6 +84,7 @@ const View = styled.div`
       align-items: center;
       justify-content: center;
     }
+
     & div {
       display: flex;
       align-items: center;
@@ -100,32 +93,80 @@ const View = styled.div`
       background: rgba(255, 255, 255, 0.85);
       padding: 40px 60px;
       border-radius: 10px;
-      box-shadow: -2px 19px 59px 0px rgb(71, 110, 157);
+
       h1 {
         width: fit-content;
         height: fit-content;
         font-size: 30px;
-        color: #4c87ab 100%;
+        color: white;
         position: relative;
         margin: 0px;
-        &:after {
-          content: attr(data-back);
-          background: #4c87ab 100%;
-          -webkit-text-fill-color: transparent;
-          -webkit-background-clip: text;
-          position: absolute;
-          animation: backMasking 1s infinite;
+
+        span {
+          display: inline-block;
+          animation: wave 1s infinite;
+        }
+
+        span:nth-of-type(1) {
+          animation-delay: 0s;
+        }
+        span:nth-of-type(2) {
+          animation-delay: 0.3s;
+        }
+        span:nth-of-type(3) {
+          animation-delay: 0.6s;
+        }
+        span:nth-of-type(4) {
+          animation-delay: 0.9s;
+        }
+        span:nth-of-type(5) {
+          animation-delay: 0.12s;
+        }
+        span:nth-of-type(6) {
+          animation-delay: 0.5s;
+        }
+        span:nth-of-type(7) {
+          animation-delay: 0.6s;
+        }
+        span:nth-of-type(8) {
+          animation-delay: 0.7s;
+        }
+        span:nth-of-type(9) {
+          animation-delay: 0.8s;
+        }
+        span:nth-of-type(10) {
+          animation-delay: 0.9s;
         }
       }
     }
   }
 `;
 
+const Ment = styled.div`
+  color: #AFB5CE;
+  font-size: 19px;
+  padding: 0px;
+`
+
 const LoadingComponent = () => {
   return (
     <View>
       <div>
-        <h1 data-back="Loading">Loading</h1>
+        <h1>
+          <span>L</span>
+          <span>o</span>
+          <span>a</span>
+          <span>d</span>
+          <span>i</span>
+          <span>n</span>
+          <span>g</span>
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </h1>
+        <br />
+        <hr />
+        <Ment>* 화상 상담 접속을 기다리는 중입니다. *</Ment>
       </div>
     </View>
   );
