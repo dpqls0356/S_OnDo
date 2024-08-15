@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.web.reactive.function.client.WebClient;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class MissionAlarmService {
 	@Autowired
@@ -26,10 +28,23 @@ public class MissionAlarmService {
 	@Autowired
 	private CharacterService characterService;
 
+	private String url;
+	private String accessToken;
+	private WebClient webClient;
+
+	@PostConstruct
+	public void initSetting(){
+		try{
+			webClient = WebClient.builder().build();
+			url = "https://fcm.googleapis.com/v1/projects/ondo-ffd48/messages:send";
+			accessToken = fcmService.getAccessToken();
+		}catch(Exception e){
+
+		}
+	}
+
+
 	public List<FCMResultDto> sendFcmAlarm(Long memberId, String message) throws Exception {
-		WebClient webClient = WebClient.builder().build();
-		String url = "https://fcm.googleapis.com/v1/projects/ondo-ffd48/messages:send";
-		String accessToken = fcmService.getAccessToken();
 		String key = "memberId:" + Long.toString(memberId);
 
 		List<String> tokens = redisTemplate.opsForList().range(key, 0, -1);
