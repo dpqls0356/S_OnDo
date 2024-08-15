@@ -1,12 +1,14 @@
 package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Comment;
+import com.clio.ondo.domain.board.model.CommentGetDto;
 import com.clio.ondo.domain.board.repository.CommentRepository;
 import com.clio.ondo.domain.board.repository.CustomCommentRepositoryImpl;
 
 import java.util.List;
 import java.util.Optional;
 
+import com.clio.ondo.domain.member.service.MemberService;
 import com.clio.ondo.domain.moderation.model.FilteringResponse;
 import com.clio.ondo.domain.moderation.service.ModerationService;
 import com.clio.ondo.global.exception.board.ModerationException;
@@ -27,6 +29,8 @@ public class CommentServiceImpl implements CommentService {
   CustomCommentRepositoryImpl customCommentRepositoryImpl;
   @Autowired
   ModerationService moderationService;
+  @Autowired
+  MemberService memberService;
 
   @Override
   public void saveComment(Comment comment) {
@@ -83,7 +87,12 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public Page<Comment> getComments(Pageable pageable, String articleId) {
-    return commentRepository.findByArticleId(articleId, pageable);
+  public Page<CommentGetDto> getComments(Pageable pageable, String articleId) {
+    Page<Comment> comments = commentRepository.findByArticleId(articleId, pageable);
+    Page<CommentGetDto> commentGetDtos = comments.map(comment -> new CommentGetDto(comment));
+    for(CommentGetDto commentGetDto : commentGetDtos){
+      commentGetDto.setMember_url(memberService.findOne(Long.parseLong(commentGetDto.getMemberId())).getProfileUrl());
+    }
+    return commentGetDtos;
   }
 }
