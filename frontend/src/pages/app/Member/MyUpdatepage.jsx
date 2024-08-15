@@ -10,6 +10,7 @@ import DeleteAccountModal from "../../../components/app/DeleteAccountModal.jsx";
 import camera from "./../../../assets/images/camera.png";
 
 import "./MyUpdatepage.css";
+import Swal from "sweetalert2";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
@@ -55,8 +56,17 @@ const MyUpdateForm = () => {
   };
 
   const handleImageDelete = async () => {
-    if (confirm("이미지를 삭제하시겠습니까?")) {
-      setPreviewUrl(mainProfileUrl);
+    const result = await Swal.fire({
+      title: "이미지를 삭제하시겠습니까?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    });
+
+    if (result.isConfirmed) {
+      setPreviewUrl(mainProfileUrl); // '네'를 클릭 시 기본 이미지로 설정
       setSelectedFile(null);
     }
   };
@@ -111,7 +121,10 @@ const MyUpdateForm = () => {
   const updateMypage = async (event) => {
     event.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "비밀번호가 일치하지 않습니다.",
+      });
       return;
     }
 
@@ -148,17 +161,23 @@ const MyUpdateForm = () => {
           if (imageRespose.data.success) {
             console.log("이미지수정");
           } else {
-            alert(response.data.message || "이미지 수정에 실패했습니다.");
+            Swal.fire({
+              icon: "error",
+              title: "이미지 수정에 실패했습니다.",
+            });
           }
         } catch {}
-        alert("회원 정보 수정이 완료되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "수정이 완료되었습니다.",
+        });
         nav("/member/profile");
       }
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "마이페이지 수정 중 오류가 발생했습니다."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "수정 중 오류가 발생했습니다.",
+      });
     }
   };
 

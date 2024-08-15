@@ -38,7 +38,6 @@ const alertModeration = async (text) => {
     icon: "warning",
     title: "부적절한 표현이 감지되었습니다.",
     text: `${alertMessage}`,
-    width: "70%",
   });
 };
 
@@ -149,10 +148,16 @@ const BoardCreatepage = () => {
           );
 
           if (!imageResponse.data.success) {
-            alert(response.data.message || "이미지 등록에 실패했습니다.");
+            Swal.fire({
+              icon: "warning",
+              title: "이미지 등록에서 오류가 발생했습니다.",
+            });
           }
         } catch {
-          alert("게시글 업로드가 실패했습니다.");
+          Swal.fire({
+            icon: "warning",
+            title: "게시글 업로드가 실패했습니다.",
+          });
         }
         console.log("게시글이 성공적으로 생성되었습니다.");
         console.log("서버 응답:", response.data);
