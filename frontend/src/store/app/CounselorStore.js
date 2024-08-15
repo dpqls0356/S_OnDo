@@ -1,11 +1,15 @@
 import { create } from "zustand";
 import axios from "axios";
+import { formatLocalDateToISO } from '../../utils/dateUtils'
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
   baseURL: baseUrl,
   withCredentials: true,
 });
+
+// const formattedDate = formatLocalDateToISO(date);
+// const dateString = formattedDate.split("T")[0];
 
 // 성별 매핑 추가
 const GENDER_MAP = {
@@ -18,37 +22,6 @@ const GENDER_REVERSE_MAP = {
   여: "FEMALE",
 };
 
-// dday 계산
-const calculateDday = (reservationDate) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const reservDate = new Date(reservationDate);
-  reservDate.setHours(0, 0, 0, 0);
-  const timeDiff = reservDate.getTime() - today.getTime();
-  const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-  if (dayDiff > 0) return `D-${dayDiff}`;
-  if (dayDiff === 0) return "D-day";
-  if (dayDiff === -1) return "상담완료";
-  return null; // D-day가 지난 경우 null을 반환
-};
-
-// 시간 계산용
-const calculateExactDateTime = (reservationDate) => {
-  const now = new Date();
-  const reservDate = new Date(reservationDate);
-  const timeDiff = reservDate.getTime() - now.getTime();
-  const hoursPassed = (now.getTime() - reservDate.getTime()) / (1000 * 60 * 60);
-
-  return {
-    exactDateTime: reservDate.toISOString(),
-    millisUntilReservation: timeDiff,
-    isBeforeReservation: timeDiff > 0,
-    isDuringReservation: timeDiff <= 0 && timeDiff > -60 * 60 * 1000, // 상담 시작부터 1시간 동안
-    isAfterReservation: timeDiff <= -60 * 60 * 1000,
-    hoursPassed: hoursPassed,
-  };
-};
 
 const useCounselorStore = create((set, get) => ({
   counselors: [], // 모든 상담사 목록
@@ -96,12 +69,7 @@ const useCounselorStore = create((set, get) => ({
       const response = await api.get(
         `/member/reservation/counselor/${counselorId}`
       );
-      const schedule = response.data.data.counselorSchedule.map((dateStr) => {
-        const date = new Date(dateStr);
-        // UTC 시간을 한국 시간(UTC+9)으로 변환
-        const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-        return koreaDate.toISOString();
-      });
+      const schedule = response.data.data.counselorSchedule
       set({ counselorSchedule: schedule, isLoading: false });
     } catch (error) {
       set({ error: error.message, isLoading: false });
@@ -112,20 +80,21 @@ const useCounselorStore = create((set, get) => ({
   makeReservation: async (counselorId, reservationDate, detail) => {
     set({ isLoading: true });
     try {
-      const dateString = reservationDate.toISOString();
+      const reservationDateString = formatLocalDateToISO(new Date(reservationDate));
+
       const response = await api.post("/member/reservation/make", {
         counselorId,
-        reservationDate: dateString,
+        reservationDate: reservationDateString,
         detail,
       });
 
       if (response.data.success) {
         const newReservation = {
           counselorId: counselorId,
-          reservationDate: dateString,
+          reservationDate: reservationDateString,
           detail: detail,
           counselor: get().selectedCounselor,
-          dday: calculateDday(dateString),
+          dday: get().calculateDday(reservationDateString),
         };
 
         set((state) => ({
@@ -167,14 +136,14 @@ const useCounselorStore = create((set, get) => ({
 
             return {
               ...reservation,
-              dday: calculateDday(reservation.reservationDate),
+              dday: get().calculateDday(reservation.reservationDate),
               counselor: counselorResponse.data.data.counselor,
             };
           } catch (counselorError) {
             console.error("Error fetching counselor data:", counselorError);
             return {
               ...reservation,
-              dday: calculateDday(reservation.reservationDate),
+              dday: get().calculateDday(reservation.reservationDate),
               counselor: null,
             };
           }
@@ -218,8 +187,38 @@ const useCounselorStore = create((set, get) => ({
       throw error;
     }
   },
-  calculateDday,
-  calculateExactDateTime,
+
+  // dday 계산
+  calculateDday: (reservationDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const reservDate = new Date(reservationDate);
+    reservDate.setHours(0, 0, 0, 0);
+    const timeDiff = reservDate.getTime() - today.getTime();
+    const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    if (dayDiff > 0) return `D-${dayDiff}`;
+    if (dayDiff === 0) return "D-day";
+    if (dayDiff === -1) return "상담완료";
+    return null; // D-day가 지난 경우 null을 반환
+  },
+
+  // 시간계산용
+  calculateExactDateTime: (reservationDate) => {
+    const now = new Date();
+    const reservDate = new Date(reservationDate);
+    const timeDiff = reservDate.getTime() - now.getTime();
+    const hoursPassed = (now.getTime() - reservDate.getTime()) / (1000 * 60 * 60);
+
+    return {
+      exactDateTime: reservDate,
+      millisUntilReservation: timeDiff,
+      isBeforeReservation: timeDiff > 0,
+      isDuringReservation: timeDiff <= 0 && timeDiff > -60 * 60 * 1000, // 상담 시작부터 1시간 동안
+      isAfterReservation: timeDiff <= -60 * 60 * 1000,
+      hoursPassed: hoursPassed,
+    };
+  },
 }));
 
 export default useCounselorStore;
