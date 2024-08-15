@@ -31,11 +31,19 @@ const Search = styled.div`
     padding: 0px 20px;
   } :: placeholder {
     color: #C2C2C2; 
+  } :focus{
+    outline:none; 
   }
   & > button {
     width: 80px;
     color: white;
     background-color: #ffa79d;
+  } :hover{
+     outline:none; 
+  }
+     
+  & > button: hover{
+    background-color: #FD8679;
   }
 `;
 
@@ -191,17 +199,22 @@ function ReservationSpot() {
         <button onClick={searchByName}>검색</button>
       </Search>
       <ReservationList>
-        {(isSearching ? searchResults : reservationList).length > 0 ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        (isSearching ? searchResults : reservationList).length > 0 ? (
           (isSearching ? searchResults : reservationList).map(
             (reservation, index) => (
-              <Reservation on key={index} reservation={reservation} />
+              <div key={index} >
+                <Reservation key={index} reservation={reservation} />
+                <div ref={observerTarget} style={{ height: "10px" }}></div>
+              </div>
             )
           )
         ) : (
           <div>예약된 상담 일정이 없습니다.</div>
+            )
         )}
-        {isLoading && <p>Loading...</p>}
-        <div ref={observerTarget} style={{ height: "10px" }}></div>
       </ReservationList>
     </View>
   );

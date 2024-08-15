@@ -17,3 +17,26 @@ const aFilesToCache = [
 // self.addEventListener('fetch', pEvent => {
 //     console.log("데이터 요청(fetch)!", pEvent.request)
 // });
+
+// 알림 클릭 시 이벤트 리스너
+// self.addEventListener("notificationclick", function (event) {
+//   event.notification.close(); // 알림 닫기
+
+//   // 원하는 페이지로 이동
+//   event.waitUntil(
+//     clients
+//       .matchAll({ type: "window", includeUncontrolled: true })
+//       .then(function (clientList) {
+//         // 이미 열린 창이 있다면 해당 창을 포커스하고, 없다면 새 창을 열어 이동
+//         for (let i = 0; i < clientList.length; i++) {
+//           const client = clientList[i];
+//           if (client.url === "/" && "focus" in client) {
+//             return client.focus();
+//           }
+//         }
+//         if (clients.openWindow) {
+//           return clients.openWindow("/member/chat"); // 이동할 페이지 URL
+//         }
+//       })
+//   );
+// });

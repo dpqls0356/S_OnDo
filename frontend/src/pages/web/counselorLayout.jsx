@@ -2,7 +2,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import axios from "axios";
-import { styled } from "styled-components";
+import { styled, keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import ReservationSpot from "./components/checkReservation/ReservationSpot";
 import useAuthStore from "../../store/app/authStore";
@@ -120,6 +120,11 @@ const StyledLink = styled(Link)`
   &:hover {
     color: ${({ isActive }) => (isActive ? "#3b3a83" : "#f5f5fa")};
   }
+
+  &: hover{
+    color: #AFB5CE;
+    background-color: #f5f5fa;
+  }
 `;
 
 const Nav = styled.ul`
@@ -129,11 +134,57 @@ const Nav = styled.ul`
   text-align: center;
   width: 100%;
 `;
+
+const wave = keyframes`
+  0%, 40%, 100% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-15px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+`;
+
+
 const LogoutBtn = styled.button`
   display: flex;
   color: white;
   background-color: rgba(0, 0, 0, 0);
   margin-bottom: 10px;
+  padding-left: 25%;
+  padding-right: 25%;
+  & > span{
+    font-size: 17px;
+  }
+  &:hover > span {
+    font-weight: 1000;
+    animation: ${wave} 1.5s ease-in-out;
+    // ease-in-out: 처음에는 느리게, 중간에는 빠르게, 마지막에는 다시 느리게 애니메이션이 실행
+    animation-iteration-count: 1;
+
+    &:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    &:nth-child(2) {
+      animation-delay: 0.13s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.16s;
+    }
+    &:nth-child(4) {
+      animation-delay: 0.19s;
+    }
+    &:nth-child(5) {
+      animation-delay: 0.22s;
+    }
+    &:nth-child(6) {
+      animation-delay: 0.25s;
+    }
+    &:nth-child(7) {
+      animation-delay: 0.28s;
+    }
 `;
 
 const ChangeSpot = styled.div`
@@ -302,7 +353,7 @@ function CounselorLayout() {
           </StyledLink>
         </Nav>
         <LogoutBtn onClick={logout}>
-          <div>
+          <span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -317,8 +368,14 @@ function CounselorLayout() {
                 d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
               />
             </svg>
-          </div>
-          <div>LogOut</div>
+          </span>
+          {/* <div>LogOut</div> */}
+          <span>L</span>
+          <span>o</span>
+          <span>g</span>
+          <span>O</span>
+          <span>u</span>
+          <span>t</span>
         </LogoutBtn>
       </HomeLeft>
       <HomeRight>

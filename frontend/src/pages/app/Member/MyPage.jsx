@@ -6,6 +6,7 @@ import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
 import notice from "./../../../assets/images/notice.png";
 import "./Mypage.css";
+import useFcmStore from "../../../store/app/FcmStore.js";
 
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
@@ -20,6 +21,7 @@ const MyPage = () => {
   const nav = useNavigate();
   const { logout, checkAuth, user } = useAuthStore();
   const [loading, setLoading] = useState(true);
+  const { fcmtoken } = useFcmStore();
 
   useEffect(() => {
     const init = async () => {
@@ -40,7 +42,7 @@ const MyPage = () => {
   };
 
   const onClickLogout = async () => {
-    const success = await logout();
+    const success = await logout(fcmtoken);
     if (success) {
       nav("/member/main");
     } else {
@@ -49,8 +51,8 @@ const MyPage = () => {
   };
 
   const onClickCounseling = () => {
-    nav('/member/counseling/list')
-  }
+    nav("/member/counseling/list");
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -65,9 +67,19 @@ const MyPage = () => {
       <div className="UserCardBack">
         <div id="My-notice">
           <p>My Page</p>
-          <div style={{width:"30px",height:"30px"}}>
-            <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+          <div style={{ width: "30px", height: "30px" }}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+              />
             </svg>
           </div>
         </div>
@@ -92,7 +104,7 @@ const MyPage = () => {
         </div>
       </div>
 
-      <div className="MypageCenter" >
+      <div className="MypageCenter">
         <Button onClick={onClickCounseling} text="내 상담리스트" />
         <Button onClick={onClickInfoEdit} text="내 정보 수정" />
         <Button onClick={onClickLogout} text="로그아웃" />
