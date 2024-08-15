@@ -124,7 +124,16 @@ const BoardDetailPage = () => {
 
     if (user.id.toString() === currentViewArticle?.member_id) {
       try {
-        if (confirm("정말 삭제하시겠습니까?")) {
+        const result = await Swal.fire({
+          title: "정말로 이 글을 삭제하시겠습니까?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        });
+
+        if (result.isConfirmed) {
           await api.delete("/board/" + articleId, {
             headers: {
               "Content-Type": "application/json",
