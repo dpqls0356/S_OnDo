@@ -5,6 +5,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import axios from "axios";
 import { faAppStoreIos } from "@fortawesome/free-brands-svg-icons";
+import {formatLocalDateToISO } from '../../../../utils/dateUtils'
 
 const View = styled.div`
   padding: 0px 20px 0px 20px;
@@ -152,8 +153,12 @@ const HomeUserInfoComponent = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split("T")[0]; // '2024-08-13' 형식으로 변환
+    console.log('예약',date)
+    console.log('새함수 예약',formatLocalDateToISO(date))
+    // 새로운 함수
+    return formatLocalDateToISO(date).split("T")[0];
   };
+  
 
   const getMemberInfo = async () => {
     try {
