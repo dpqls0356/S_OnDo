@@ -20,11 +20,13 @@ const Table = styled.div`
 `;
 
 const EditBtn = styled.div`
-  margin-left: 85%;
+
+  // margin-left: 85%;
   & > div{
     display: flex;
     align-items: center;
     cursor: pointer;
+    float: right;
   }
 `
 
@@ -139,7 +141,7 @@ const CompletedTimeTable = ({ handleEditState, saveData }) => {
         <EditBtn onClick={EditSchedule}>
           <div>
             <img style={{height: '25px', width: '25px'}} src={EditImg} alt="" />
-            <p style={{float: 'right', color: '#757575'}}>수정하기</p>
+            <p style={{color: '#757575'}}>수정하기</p>
           </div>
         </EditBtn>
       <Table>
