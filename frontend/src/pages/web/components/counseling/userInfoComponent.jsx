@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const View = styled.div`
   padding: 0px 20px 20px 20px;
@@ -120,7 +121,10 @@ const UserInfoComponent = ({ memberInfo }) => {
 
         if (response.data.success) {
           console.log("수정이 완료되었습니다. ");
-          alert("상담 내역 저장 완료");
+          Swal.fire({
+            icon: "success",
+            title: "저장이 완료되었습니다.",
+          });
         }
       } catch (error) {
         console.log("상담내역 수정 시 오류가 발생했습니다.");

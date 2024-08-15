@@ -5,7 +5,8 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import axios from "axios";
 import { faAppStoreIos } from "@fortawesome/free-brands-svg-icons";
-import {formatLocalDateToISO } from '../../../../utils/dateUtils'
+import { formatLocalDateToISO } from "../../../../utils/dateUtils";
+import Swal from "sweetalert2";
 
 const View = styled.div`
   padding: 0px 20px 0px 20px;
@@ -93,10 +94,11 @@ const CounselingMemo = styled.div`
         padding: 0px;
       }
     }
-    & textarea{
+    & textarea {
       height: 90px;
       resize: none;
-    }: focus{
+    }
+    :focus {
       outline: none;
     }
   }
@@ -142,7 +144,10 @@ const HomeUserInfoComponent = () => {
 
         if (response.data.success) {
           console.log("수정이 완료되었습니다. ");
-          alert("상담 내역 저장 완료");
+          Swal.fire({
+            icon: "success",
+            title: "상담내역 저장 완료.",
+          });
         }
       } catch (error) {
         console.log("상담내역 수정 시 오류가 발생했습니다.");
@@ -159,12 +164,11 @@ const HomeUserInfoComponent = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    console.log('예약',date)
-    console.log('새함수 예약',formatLocalDateToISO(date))
+    console.log("예약", date);
+    console.log("새함수 예약", formatLocalDateToISO(date));
     // 새로운 함수
     return formatLocalDateToISO(date).split("T")[0];
   };
-  
 
   const getMemberInfo = async () => {
     try {

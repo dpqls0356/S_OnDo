@@ -1,7 +1,7 @@
 import "./CLCard.css";
 import { useNavigate, Link } from "react-router-dom";
 import useCounselorStore from "../../../store/app/CounselorStore";
-
+import Swal from "sweetalert2";
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const CLCard = ({
@@ -35,18 +35,37 @@ const CLCard = ({
         },
       });
     } else {
-      alert("아직 상담 시간이 되지 않았습니다. 상담 시간에 다시 시도해주세요.");
+      Swal.fire({
+        icon: "warning",
+        title: "아직 상담 시간이 되지 않았습니다.",
+        text: "상담 시간에 다시 시도해주세요",
+      });
     }
   };
 
   const handleCancelClick = async () => {
-    if (window.confirm("정말 취소하시겠습니까?")) {
+    const result = await Swal.fire({
+      title: "정말 취소하시겠습니까?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    });
+
+    if (result.isConfirmed) {
       try {
         await cancelReservation(reservId);
-        alert("상담 예약이 취소되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "상담 예약이 취소되었습니다.",
+        });
         window.location.reload();
       } catch (error) {
-        alert(error.message || "상담 예약 취소 중 오류가 발생했습니다.");
+        Swal.fire({
+          icon: "warning",
+          title: "오류가 발생했습니다.",
+        });
       }
     }
   };
