@@ -4,6 +4,7 @@ import {
   Route,
   useLocation,
   Navigate,
+  useNavigate,
 } from "react-router-dom";
 import { useEffect } from "react";
 import useAuthStore from "./store/app/authStore";
@@ -70,6 +71,35 @@ function App() {
   const messaging = getMessaging(app);
   const { setFcmToken } = useFcmStore();
 
+  onMessage(messaging, (payload) => {
+    console.log("Message received. ", payload);
+
+    const notificationTitle = payload.data.title;
+    const notificationOptions = {
+      body: payload.data.body,
+      icon: "/assets/icons/character_icon.png",
+      badge: "/assets/icons/favicon76.png",
+      data: {
+        url: "/member/chat", // 클릭 시 이동할 경로
+      },
+    };
+
+    //포그라운드에서 알림을 표시하는 코드
+    if (Notification.permission === "granted") {
+      const notification = new Notification(
+        notificationTitle,
+        notificationOptions
+      );
+
+      // 알림 클릭 이벤트 처리
+      notification.onclick = (event) => {
+        console.log("클릭함!!");
+        event.preventDefault(); // 기본 동작 방지
+        window.location.href = notificationOptions.data.url; // 경로 이동
+      };
+    }
+  });
+
   useEffect(() => {
     navigator.serviceWorker
       .register("/firebase-messaging-sw.js")
@@ -104,6 +134,7 @@ function App() {
   return (
     <Router>
       <Routes>
+         <Route path="" element={<Navigate to="/member/main" />} />
         <Route path="/" element={<Navigate to="/member/main" />} />
         {/* 상담사 */}
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
