@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {formatLocalDateToISO} from "../../../../utils/dateUtils"
+import { keyframes } from 'styled-components';
 const View = styled.div`
   padding: 20px 20px;
   width: 100%;
@@ -42,22 +43,66 @@ const Col = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: flex-end;
+    align-items: center;
     height: 100%;
   }
 `;
 
+const shine = keyframes`
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    left: 125%;
+    opacity: 0;
+  }
+`;
 const CreateCounselingRoomBtn = styled.button`
   background-color: #ffa79d;
   height: 50%;
-  /* width: 80%; */
   width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   border-radius: 20px;
+  position: relative;
+  overflow: hidden; /* 내부의 넘치는 효과가 잘리는 것을 방지 */
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    z-index: 2;
+    display: block;
+    content: '';
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+    transform: skewX(-25deg);
+    opacity: 0;
+  }
+
+  &:hover::before {
+    opacity: 1;
+    animation: ${shine} .75s;
+  }
 `;
+
+// const CreateCounselingRoomBtn = styled.button`
+//   background-color: #ffa79d;
+//   height: 50%;
+//   /* width: 80%; */
+//   width: fit-content;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   color: white;
+//   border-radius: 20px;
+// `;
 
 const MemberImg = styled.div`
   padding-right: 20px;
@@ -76,6 +121,7 @@ const CancelReservationBtn = styled.button`
   height: 30px;
   top: 5px;
   right: 0;
+  background-color: white;
   /* left: 100%; */
   /* bottom: 5%; */
   color: #ffa79d;
@@ -254,7 +300,7 @@ let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
       <Col>
         {timeRemaining > 0 ? (
           <CancelReservationBtn onClick={handleCancelClick}>
-            <FontAwesomeIcon icon={faX} />
+            <FontAwesomeIcon icon={faX}/>
           </CancelReservationBtn>
         ) : null}
         <CreateCounselingRoomBtn onClick={createCounselingRoom}>

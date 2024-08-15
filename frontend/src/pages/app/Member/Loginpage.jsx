@@ -35,13 +35,11 @@ const Loginpage = () => {
     }
   };
   const onClickKakao = () => {
-    nav("/member/kakaologin");
     window.location.href =
       "http://i11c110.p.ssafy.io:8081/oauth2/authorization/kakao";
   };
 
   const onClickNaver = () => {
-    nav("/member/naverlogin");
     window.location.href =
       "http://i11c110.p.ssafy.io:8081/oauth2/authorization/naver";
   };
@@ -54,12 +52,12 @@ const Loginpage = () => {
       <p id="Title">로그인</p>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="login-id">로그인</label>
+          <label htmlFor="login-id">이메일</label>
           <br />
           <input
             id="login-id"
             type="text"
-            placeholder="로그인"
+            placeholder="이메일"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
