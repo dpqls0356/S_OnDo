@@ -10,6 +10,7 @@ import Chat from "./chat";
 import useAuthStore from "../../../../store/app/authStore";
 import axios from "axios";
 import { Client } from "@stomp/stompjs";
+import Swal from "sweetalert2";
 
 const Tag = styled.div`
   position: absolute;
@@ -28,8 +29,8 @@ const Tag = styled.div`
 `;
 
 const View = styled.div`
-  width: ${({ hidden }) => (hidden ? "0" : "35%")};
-  height: 100vh;
+  width: ${({ hidden, isUser }) => (hidden ? "0" : isUser ? "100%" : "35%")};
+  height: ${({ isUser }) => (isUser ? "100vh" : "100vh")};
   background-color: #fae6e6;
   display: flex;
   flex-direction: column;
@@ -68,6 +69,7 @@ const Row = styled.div`
   flex: 1;
   overflow-y: hidden;
 `;
+
 let stompClient = null;
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const SideBar = ({ memberInfo }) => {
@@ -119,13 +121,18 @@ const SideBar = ({ memberInfo }) => {
 
   const connect = () => {
     if (!sessionId) {
-      alert("Please enter a Session ID.");
+      Swal.fire({
+        icon: "warning",
+        title: "세션 아이디를 입력해주세요",
+      });
       return;
     }
 
     //서버로 올릴 때 wss로 변경해야함
     stompClient = new Client({
-      brokerURL: "wss://i11c110.p.ssafy.io/gs-guide-websocket",
+      // brokerURL: "wss://i11c110.p.ssafy.io/gs-guide-websocket",
+        brokerURL: 'ws://localhost:8080/gs-guide-websocket',
+
     });
 
     stompClient.onConnect = (frame) => {
@@ -189,7 +196,7 @@ const SideBar = ({ memberInfo }) => {
 
   return (
     <>
-      <View hidden={hidden}>
+      <View hidden={hidden} isUser={role === "USER"}>
         <Header>
           <div>
             <Col onClick={() => toggleChat(true)} active={isChat}>
