@@ -51,14 +51,14 @@ const Comment = ({ comment }) => {
       <div className="CommentWriter">
         <div style={{ width: "50%" }}>
           <img
-            src={user.profileUrl || mainProfileUrl}
-            alt={`${comment.member_name} 프로필`}
+            src={comment.member_url || mainProfileUrl}
+            alt={`${comment.memberName} 프로필`}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = mainProfileUrl;
             }}
           />
-          <p>{comment.member_name}</p>
+          <p>{comment.memberName}</p>
         </div>
         {/* 수정 및 삭제 버튼을 작성자에게만 보이도록 */}
         {isAuthor && (
