@@ -76,6 +76,7 @@ const CancelReservationBtn = styled.button`
   height: 30px;
   top: 5px;
   right: 0;
+  background-color: white;
   /* left: 100%; */
   /* bottom: 5%; */
   color: #ffa79d;
@@ -254,7 +255,7 @@ let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
       <Col>
         {timeRemaining > 0 ? (
           <CancelReservationBtn onClick={handleCancelClick}>
-            <FontAwesomeIcon icon={faX} />
+            <FontAwesomeIcon icon={faX}/>
           </CancelReservationBtn>
         ) : null}
         <CreateCounselingRoomBtn onClick={createCounselingRoom}>
