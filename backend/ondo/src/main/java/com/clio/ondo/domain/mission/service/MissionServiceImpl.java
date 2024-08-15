@@ -186,7 +186,7 @@ public class MissionServiceImpl implements MissionService{
 		for (Mission mission : missionList) {
 			if (mission.getTitle().equals(title)) {
 				mission.setCompleteFlag(true);
-				mission.setCompleteTime(now());
+				mission.setCompleteTime(now().plusHours(9));
 				newExp=mission.getExp();
 			}
 		}
