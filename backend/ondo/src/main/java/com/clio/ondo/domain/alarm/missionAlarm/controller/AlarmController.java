@@ -27,11 +27,11 @@ public class AlarmController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/api/v1/alarm/fcmtoken")
-    public ResponseEntity<?> setToken(HttpServletRequest request, @RequestBody FCMToken fcmToken) {
+    public ResponseEntity<?> setToken(HttpServletRequest request, @RequestBody FCMToken fcmtoken) {
         try{
             String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
             Long id = jwtTokenProvider.getIdFromToken(token);
-            scheduledAlarmService.saveToken(id, fcmToken);
+            scheduledAlarmService.saveToken(id, fcmtoken);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseVO<>(true, "토큰 저장 성공", null));
