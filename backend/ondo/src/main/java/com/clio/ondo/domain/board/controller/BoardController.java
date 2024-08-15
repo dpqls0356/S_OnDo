@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,7 @@ import com.clio.ondo.domain.board.model.BoardGetDto;
 import com.clio.ondo.domain.board.model.BoardUpdateDto;
 import com.clio.ondo.domain.board.service.BoardService;
 import com.clio.ondo.domain.member.model.dto.JoinRequestDto;
+import com.clio.ondo.domain.member.service.MemberService;
 import com.clio.ondo.global.ResponseVO;
 import com.clio.ondo.global.auth.jwtUtil.JwtTokenProvider;
 import com.clio.ondo.global.exception.board.ModerationException;
@@ -48,6 +50,8 @@ public class BoardController {
   private BoardService boardService;
   @Autowired
   private JwtTokenProvider jwtTokenProvider;
+  @Autowired
+  private MemberService memberService;
 
   /*
   모든 게시글 가져오기 - 무한 스크롤 구현
@@ -163,9 +167,13 @@ public class BoardController {
   게시글 검색
    */
   @GetMapping("/search") //search가 없으면 searchWord에 list라는 단어가 들어갔을때 문제 발생
-  public  ResponseEntity<ResponseVO<List<Board>>> searchArticles( @RequestParam(name = "searchWord")String searchWord){
+  public  ResponseEntity<ResponseVO<List<?>>> searchArticles( @RequestParam(name = "searchWord")String searchWord){
     List<Board> list = boardService.searchArticles(searchWord);
-    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("boardList", list));
+    List<BoardGetDto> getList = list.stream().map(board -> new BoardGetDto(board)).toList();
+    for(BoardGetDto getDto : getList){
+      getDto.setMember_url(memberService.findOne(Long.parseLong(getDto.getMember_id())).getProfileUrl());
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("boardList", getList));
   }
   /*
   게시글 상세조회
