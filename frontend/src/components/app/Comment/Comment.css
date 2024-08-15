@@ -1,14 +1,14 @@
-.CommentCard{
+.CommentCard {
   margin: 0 auto;
   margin-bottom: 15px;
   margin-left: 20px;
   /* width: 250px; */
   background-color: white;
-  border: 1px #6ABFB4 solid;
+  border: 1px #6abfb4 solid;
   border-radius: 10px;
 }
 
-.CommentWriter{
+.CommentWriter {
   padding: 10px 17px;
   display: flex;
   align-items: center;
@@ -20,22 +20,22 @@
   align-items: center;
   margin-right: 7px;
 }
-.CommentWriter img{
+.CommentWriter img {
   border-radius: 100%;
   width: 18%;
 }
 
-.CommentContent{
-  border-top: 1px #6ABFB4 solid;
+.CommentContent {
+  border-top: 1px #6abfb4 solid;
   padding: 10px 17px;
 }
 
-#CommentCreateDate{
+#CommentCreateDate {
   font-size: 80%;
   color: gray;
   margin: 10px 0px;
 }
 
-#CommentContent{
-  word-break:break-all;
+#CommentContent {
+  word-break: break-all;
 }

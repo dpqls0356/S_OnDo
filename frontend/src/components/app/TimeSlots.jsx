@@ -14,7 +14,6 @@ const TimeSlots = ({
   // console.log(setSelectedTime);
   // console.log("==============unavailableTimes==========");
   // console.log(unavailableTimes);
-
   const handleTimeClick = (time) => {
     if (selectedDate) {
       setSelectedTime(time);
