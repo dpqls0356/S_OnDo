@@ -62,11 +62,11 @@ export const useAuthStore = create(
           return false;
         }
       },
-      logout: async () => {
+      logout: async (fcmtoken) => {
         try {
           const response = await api.post(
             "/member/logout",
-            {},
+            { fcmtoken },
             { withCredentials: true }
           );
           if (response.data.success) {
