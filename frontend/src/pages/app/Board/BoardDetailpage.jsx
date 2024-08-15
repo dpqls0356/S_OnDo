@@ -72,7 +72,7 @@ const BoardDetailPage = () => {
       content: comment.current.value,
       article_id: articleId,
       member_id: user.id.toString(),
-      member_name: user.nickname,
+      // member_name: user.nickname,
     };
 
     const success = await addComment(commentData);
@@ -199,8 +199,8 @@ const BoardDetailPage = () => {
             <div className="DetailDate">
               <div className="DetailUserInfo">
                 <img
-                  src={user.profileUrl || mainProfileUrl}
-                  alt={`${user.name} 프로필`}
+                  src={currentViewArticle.member_url || mainProfileUrl}
+                  alt={`${currentViewArticle.member_name} 프로필`}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = mainProfileUrl;

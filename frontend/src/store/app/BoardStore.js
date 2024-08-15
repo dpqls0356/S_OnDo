@@ -25,6 +25,7 @@ const useBoardStore = create((set, get) => ({
     content: "",
     member_name: "",
     imageUrl: null,
+    member_url: null,
   },
 
   // 상태 추가
@@ -74,6 +75,7 @@ const useBoardStore = create((set, get) => ({
         content: "",
         member_name: "",
         imageUrl: null,
+        member_url: null,
       },
     });
   },
@@ -93,6 +95,7 @@ const useBoardStore = create((set, get) => ({
         content: "",
         member_name: "",
         imageUrl: null,
+        member_url: null,
       },
     });
   },
@@ -121,6 +124,7 @@ const useBoardStore = create((set, get) => ({
         content: "",
         member_name: "",
         imageUrl: null,
+        member_url: null,
       },
     }),
 
