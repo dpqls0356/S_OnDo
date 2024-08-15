@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FCMMessage {
 	private String token;
-	private FCMNotification notification;
+	private FCMNotification data;
 }

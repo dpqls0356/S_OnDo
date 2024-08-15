@@ -6,6 +6,7 @@ import Button from "../../../components/app/Button.jsx";
 import Input from "../../../components/app/Input";
 import camera from "./../../../assets/images/camera.png";
 import useAuthStore from "../../../store/app/authStore.js";
+import useFcmStore from "../../../store/app/FcmStore.js";
 import "./Join.css";
 // import { faTrophy } from "@fortawesome/free-solid-svg-icons";
 import Error from "./inputError.jsx";
@@ -21,6 +22,7 @@ const JoinForm = () => {
   const nav = useNavigate();
   const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
   const { error, success } = useJoinStore();
+  const { fcmtoken } = useFcmStore();
 
   const login = useAuthStore((state) => state.login);
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -189,7 +191,7 @@ const JoinForm = () => {
           alert("오류가 발생했습니다.");
         }
         alert("회원가입이 완료되었습니다.");
-        await login(formData.email, formData.password);
+        await login(formData.email, formData.password, fcmtoken);
         await checkAuth();
         nav("/member/story");
       }
