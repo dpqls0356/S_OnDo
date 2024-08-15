@@ -42,7 +42,14 @@ public class Character {
 	}
 
 	public void increaseExp(int additionalExp) {
-		this.exp += additionalExp;
+		int exp = this.exp + additionalExp;
+		if(exp >= 100) {
+			this.exp = exp - 100;
+			this.level = this.level + 1;
+		}
+		else{
+			this.exp = exp;
+		}
 	}
 
 	public void setMember(Member member) {
