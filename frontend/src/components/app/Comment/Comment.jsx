@@ -128,7 +128,7 @@ const Comment = ({ comment }) => {
         <p id="CommentCreateDate">
           {/* UTC 세팅 - toLocaleString() 단지 표시 목적으로만 시간대를 변환할 뿐, 실제 저장된 시간 값은 변경X */}
           {new Date(comment.createdAt).toLocaleString("ko-KR", {
-            year: "numeric",
+            // year: "numeric",
             month: "2-digit",
             day: "2-digit",
             hour: "2-digit",

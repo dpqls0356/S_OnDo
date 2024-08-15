@@ -26,25 +26,12 @@ function CompletedMissionsPage() {
         }
       } catch (error) {
         console.error('완료된 미션 가져오기 실패:', error);
-        setError(`완료된 미션을 불러오는 데 실패했습니다.`); 
+        setError('완료된 미션을 불러오는 데 실패했습니다.');
       }
     }
 
     fetchCompletedMissions();
   }, []);
-
-  const renderCompletedMissions = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {completedMissions.map((mission, index) => (
-        <MissionButton
-          key={mission.id}
-          mission={mission}
-          isCompleted={true}
-          missionType={mission.type}
-        />
-      ))}
-    </div>
-  );
 
   return (
     <div className='scroll'>
@@ -54,7 +41,21 @@ function CompletedMissionsPage() {
         </button>
         <h1 className="text-2xl font-bold mb-4">완료한 미션</h1>
         {error && <div className="text-center text-red-500 mb-4">{error}</div>}
-        {renderCompletedMissions()}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {completedMissions.map((mission, index) => (
+            <MissionButton
+              key={index}
+              mission={{
+                title: mission.title,
+                exp: mission.exp,
+                endDate: mission.completeTime,
+                content: mission.content
+              }}
+              isCompleted={mission.completeFlag}
+              missionType={mission.type}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
