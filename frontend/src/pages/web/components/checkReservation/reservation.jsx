@@ -42,7 +42,7 @@ const Col = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: flex-end;
+    align-items: center;
     height: 100%;
   }
 `;

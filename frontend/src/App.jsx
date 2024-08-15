@@ -134,6 +134,7 @@ function App() {
   return (
     <Router>
       <Routes>
+         <Route path="" element={<Navigate to="/member/main" />} />
         <Route path="/" element={<Navigate to="/member/main" />} />
         {/* 상담사 */}
         <Route path="/counselor/login" element={<CounselorLogin />}></Route>
