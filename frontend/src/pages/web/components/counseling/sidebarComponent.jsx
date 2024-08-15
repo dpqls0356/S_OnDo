@@ -71,13 +71,14 @@ const Row = styled.div`
 
 let stompClient = null;
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const SideBar = ({ memberInfo }) => {
+
+const SideBar = ({ memberInfo, hideChatView, hidden, setHidden }) => {
   const { role } = useAuthStore((state) => ({
     role: state.role,
   }));
 
   const [isChat, setIsChat] = useState(true);
-  const [hidden, setHidden] = useState(true);
+  // const [hidden, setHidden] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
@@ -93,7 +94,12 @@ const SideBar = ({ memberInfo }) => {
   }, []);
 
   const hiddenSidebar = () => {
-    setHidden(true);
+    if (role === "COUNSELOR") {
+      setHidden(true);
+    } else {
+      setHidden(true);
+      hideChatView(); // 사이드바를 숨길 때 ChatView도 숨기도록 설정
+    }
   };
 
   const showSideBar = () => {
@@ -126,9 +132,7 @@ const SideBar = ({ memberInfo }) => {
 
     //서버로 올릴 때 wss로 변경해야함
     stompClient = new Client({
-      // brokerURL: "wss://i11c110.p.ssafy.io/gs-guide-websocket",
-        brokerURL: 'ws://localhost:8080/gs-guide-websocket',
-
+      brokerURL: "wss://i11c110.p.ssafy.io/gs-guide-websocket",
     });
 
     stompClient.onConnect = (frame) => {
