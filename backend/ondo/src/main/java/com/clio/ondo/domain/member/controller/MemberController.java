@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.clio.ondo.domain.alarm.missionAlarm.model.FCMToken;
 import com.clio.ondo.domain.alarm.missionAlarm.service.ScheduledAlarmService;
 import com.clio.ondo.domain.counselor.model.dto.CounselorResponseDto;
 import com.clio.ondo.domain.counselor.service.CounselorService;
@@ -60,8 +61,9 @@ public class MemberController {
 	private final CounselorService counselorService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final ScheduledAlarmService scheduledAlarmService;
 
-    @PostMapping("/login")
+	@PostMapping("/login")
 	public ResponseEntity<ResponseVO<TokenDto>> login(@RequestBody LoginRequestDto loginRequestdto, HttpServletResponse response) {
 		try {
 			TokenDto token = memberService.login(loginRequestdto);
@@ -93,9 +95,11 @@ public class MemberController {
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request,HttpServletResponse response) {
+	public ResponseEntity<ResponseVO<Void>> logout(HttpServletRequest request,HttpServletResponse response, @RequestBody
+		FCMToken fcmToken) {
 		try {
 			String token = jwtTokenProvider.getJwtTokenFromCookies(request, "accessToken");
+			Long id = jwtTokenProvider.getIdFromToken(token);
 			memberService.logout(token);
 
 			Cookie accessTokenCookie = new Cookie("accessToken", null);
@@ -113,8 +117,10 @@ public class MemberController {
 			// refreshToken 쿠키를 응답에 추가 (현재 주석 처리됨)
 			response.addCookie(refreshTokenCookie);
 
+			scheduledAlarmService.deleteToken(id, fcmToken);
+
 			return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("logout"));
-		} catch (AuthenticationException e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseVO.failure("로그아웃 실패"));
 		}
 	}
