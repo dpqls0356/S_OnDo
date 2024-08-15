@@ -39,7 +39,7 @@ public class SecurityConfig {
 
 	@Bean
 	public AuthenticationManager authenticationManager(
-		AuthenticationConfiguration authenticationConfiguration
+			AuthenticationConfiguration authenticationConfiguration
 	) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
@@ -76,24 +76,24 @@ public class SecurityConfig {
 		@Bean
 		public SecurityFilterChain memberFilterChain(HttpSecurity http) throws Exception {
 			http
-				.httpBasic(AbstractHttpConfigurer::disable)
-				.authenticationProvider(memberAuthenticationProvider())
-				.csrf(AbstractHttpConfigurer::disable)
-				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.cors(Customizer.withDefaults())
-				.formLogin(AbstractHttpConfigurer::disable)
-				.logout(AbstractHttpConfigurer::disable)
-				.authorizeRequests((authorize) -> authorize
-					.requestMatchers(AUTH_WHITELIST).permitAll()
-					.anyRequest().authenticated())
-				.oauth2Login(oauth ->
-					oauth.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-						.successHandler(oAuth2SuccessHandler)
-				)
-				.exceptionHandling((exceptionHandling) -> exceptionHandling
-					.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-					.accessDeniedHandler(jwtAccessDeniedHandler))
-				.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+					.httpBasic(AbstractHttpConfigurer::disable)
+					.authenticationProvider(memberAuthenticationProvider())
+					.csrf(AbstractHttpConfigurer::disable)
+					.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+					.cors(Customizer.withDefaults())
+					.formLogin(AbstractHttpConfigurer::disable)
+					.logout(AbstractHttpConfigurer::disable)
+					.authorizeRequests((authorize) -> authorize
+							.requestMatchers(AUTH_WHITELIST).permitAll()
+							.anyRequest().authenticated())
+					.oauth2Login(oauth ->
+							oauth.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+									.successHandler(oAuth2SuccessHandler)
+					)
+					.exceptionHandling((exceptionHandling) -> exceptionHandling
+							.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+							.accessDeniedHandler(jwtAccessDeniedHandler))
+					.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 			return http.build();
 		}
 	}
@@ -125,25 +125,25 @@ public class SecurityConfig {
 		@Bean
 		public SecurityFilterChain counselorFilterChain(HttpSecurity http) throws Exception {
 			http
-				.httpBasic(AbstractHttpConfigurer::disable)
-				.authenticationProvider(counselorAuthenticationProvider())
-				.csrf(AbstractHttpConfigurer::disable)
-				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.cors(Customizer.withDefaults())
-				.formLogin(AbstractHttpConfigurer::disable)
-				.logout(AbstractHttpConfigurer::disable)
-				.authorizeRequests((authorize) -> authorize
-					.requestMatchers(WHITELIST).permitAll()
-					.requestMatchers("/api/v1/counselor/**").hasRole("COUNSELOR")
-					.anyRequest().authenticated())
-				.oauth2Login(oauth ->
-					oauth.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-						.successHandler(oAuth2SuccessHandler)
-				)
-				.exceptionHandling((exceptionHandling) -> exceptionHandling
-					.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-					.accessDeniedHandler(jwtAccessDeniedHandler))
-				.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+					.httpBasic(AbstractHttpConfigurer::disable)
+					.authenticationProvider(counselorAuthenticationProvider())
+					.csrf(AbstractHttpConfigurer::disable)
+					.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+					.cors(Customizer.withDefaults())
+					.formLogin(AbstractHttpConfigurer::disable)
+					.logout(AbstractHttpConfigurer::disable)
+					.authorizeRequests((authorize) -> authorize
+							.requestMatchers(WHITELIST).permitAll()
+							.requestMatchers("/api/v1/counselor/**").hasRole("COUNSELOR")
+							.anyRequest().authenticated())
+					.oauth2Login(oauth ->
+							oauth.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+									.successHandler(oAuth2SuccessHandler)
+					)
+					.exceptionHandling((exceptionHandling) -> exceptionHandling
+							.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+							.accessDeniedHandler(jwtAccessDeniedHandler))
+					.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 			return http.build();
 		}
 	}

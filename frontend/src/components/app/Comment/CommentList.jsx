@@ -5,11 +5,12 @@ import useCommentStore from "../../../store/app/CommentStore";
 
 const CommentList = ({ articleId }) => {
   const { comments, getComments } = useCommentStore();
-  const [page, setPage] = useState(1); // 현재 페이지를 추적하는 상태
+  const [page, setPage] = useState(0); // 현재 페이지를 추적하는 상태
   const observer = useRef(); // IntersectionObserver를 참조하는 변수
 
   useEffect(() => {
     if (articleId) {
+      console.log("he")
       getComments(articleId, page); // 초기 페이지에 대한 댓글을 가져옴
     }
   }, [getComments, articleId, page]);
