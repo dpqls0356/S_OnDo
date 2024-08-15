@@ -82,7 +82,7 @@ const BoardDetailPage = () => {
 
     if (success) {
       comment.current.value = "";
-      await getComments(articleId);
+      await getComments(articleId,0);
     }
     setSpinnerLoading(false);
   };
