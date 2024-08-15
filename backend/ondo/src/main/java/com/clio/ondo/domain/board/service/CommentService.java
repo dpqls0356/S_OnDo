@@ -1,6 +1,8 @@
 package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Comment;
+import com.clio.ondo.domain.board.model.CommentGetDto;
+
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -13,5 +15,5 @@ public interface CommentService {
 
   void updateComment(ObjectId commentId, Comment modifiedComment,Long memberId);
 
-  public Page<Comment> getComments(Pageable pageble,String articleId);
+  public Page<CommentGetDto> getComments(Pageable pageble,String articleId);
 }

@@ -1,6 +1,7 @@
 package com.clio.ondo.domain.board.service;
 
 import com.clio.ondo.domain.board.model.Board;
+import com.clio.ondo.domain.board.model.BoardGetDto;
 import com.clio.ondo.domain.board.model.BoardUpdateDto;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public interface BoardService {
 
   //    public List<Board> getAricles();
 
-  Page<Board> getArticles(Pageable pageble);
+  Page<BoardGetDto> getArticles(Pageable pageble);
 
   //Board saveArticle(Board board);
   Board saveArticle(Board board) throws IOException;

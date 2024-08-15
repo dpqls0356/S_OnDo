@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Button from "../../../components/app/Button";
 import Footer from "../../../components/app/Footer";
-import useBoardStore from "../../../store/app/BoardStore";
+import useBoardStore from "../../../store/app/useBoardStore";
 import useAuthStore from "../../../store/app/authStore";
 import LoadingSpinner from "../../../components/app/Spinner";
 import Swal from "sweetalert2";

@@ -8,9 +8,27 @@ const PreJoinView = styled.div`
   justify-content: center;
   height: 100vh;
   background-color: #f2f2f2;
+  font-family: "Jua", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 25px;
+  background-color: #3b3a83;
+`;
+
+const Box = styled.div`
+  width: 33%;
+  padding: 50px 0px;
+  background-color: white;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
   @media (max-width: 360px) {
     & {
-      width: 360px; /* 화면 너비가 360px 이하일 때 width 값 */
+      width: 360px; 
       height: 100vh;
       display: flex;
       align-items: center;
@@ -27,13 +45,21 @@ const PreJoinView = styled.div`
 `;
 
 const Button = styled.button`
+  width: 100%;
   margin: 10px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+
+  /* 마이크가 켜져 있는 상태일 때만 hover 시 빨간색 배경 적용 */
+  &:hover {
+    background-color: ${(props) => (props.isMicOn ? "red" : "initial")};
+    color: ${(props) => (props.isMicOn ? "white" : "initial")};
+  }
+
   @media (max-width: 360px) {
     & {
-      width: 80%; /* 화면 너비가 360px 이하일 때 width 값 */
+      width: 80%; 
     }
   }
 `;
@@ -48,16 +74,18 @@ const PreJoinComponent = ({ onJoin }) => {
 
   return (
     <PreJoinView>
-      <h2>마이크 및 카메라 설정</h2>
-      <div>
-        <Button onClick={() => setMicStatus(!micStatus)}>
-          {micStatus ? "마이크 끄기" : "마이크 켜기"}
-        </Button>
-        <Button onClick={() => setCameraStatus(!cameraStatus)}>
-          {cameraStatus ? "카메라 끄기" : "카메라 켜기"}
-        </Button>
-        <Button onClick={handleJoin}>상담 입장하기</Button>
-      </div>
+      <Box>
+        <h2>마이크 및 카메라 설정</h2>
+        <div>
+          <Button isMicOn={micStatus} onClick={() => setMicStatus(!micStatus)}>
+            {micStatus ? "마이크 끄기" : "마이크 켜기"}
+          </Button>
+          <Button onClick={() => setCameraStatus(!cameraStatus)}>
+            {cameraStatus ? "카메라 끄기" : "카메라 켜기"}
+          </Button>
+          <Button onClick={handleJoin}>상담 입장하기</Button>
+        </div>
+      </Box>
     </PreJoinView>
   );
 };
