@@ -58,25 +58,15 @@ function MissionPage() {
 
   const handleComplete = async () => {
     try {
-      const response = await api.post("/mission/complete", {
-        title: selectedMission.title,
-      });
-
-      if (response.data.success) {
-        completeMission(selectedMissionType, selectedMission.index);
-        console.log(response.data.message);
-        setIsModalOpen(false); // 모달 닫기
-      } else {
-        throw new Error("서버에서 미션 완료 처리에 실패했습니다.");
-      }
+      await completeMission(selectedMissionType, selectedMission.title);
+      setIsModalOpen(false);
     } catch (error) {
-      console.error("미션 완료 처리 실패:", error);
       setError("미션 완료 처리에 실패했습니다. 다시 시도해 주세요.");
     }
   };
-
-  const handleOpenModal = (type, mission, index) => {
-    setSelectedMission({ ...mission, index });
+  
+  const handleOpenModal = (type, mission) => {
+    setSelectedMission(mission);
     setSelectedMissionType(type);
     setIsModalOpen(true);
   };
@@ -91,11 +81,11 @@ function MissionPage() {
 
     return (
       <div className="space-y-4">
-        {sortedMissions.map((mission, index) => (
+        {sortedMissions.map((mission) => (
           <MissionButton
-            key={mission.id}
+            key={mission.title}
             mission={mission}
-            onComplete={() => handleOpenModal(type, mission, index)}
+            onComplete={() => handleOpenModal(type, mission)}
             isCompleted={mission.completeFlag}
             missionType={type}
           />
