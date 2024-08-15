@@ -124,13 +124,13 @@ public class ChatbotServiceImpl implements ChatbotService{
 
 			List<ChattingReadDto> chattingReadDtos = new ArrayList<>();
 
-			ChatbotChatting requestChatting = new ChatbotChatting(null, text,"user", LocalDateTime.now().toString(), memberId);
+			ChatbotChatting requestChatting = new ChatbotChatting(null, text,"user", LocalDateTime.now().plusHours(9).toString(), memberId);
 			ChattingReadDto input = new ChattingReadDto(requestChatting.getContent(), requestChatting.getSender(), LocalDateTime.parse(requestChatting.getCreatedAt()));
 			chattingReadDtos.add(input);
 			chatbotRepository.upsertByMemberId(memberId, requestChatting);
 
 //			List<String> parsedStrings = stringParsingService.parseLine(responseString);
-			ChatbotChatting response = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now().toString(), memberId);
+			ChatbotChatting response = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now().plusHours(9).toString(), memberId);
 			ChattingReadDto responseReadDto = new ChattingReadDto(response.getContent(), response.getSender(), LocalDateTime.parse(response.getCreatedAt()));
 			chattingReadDtos.add(responseReadDto);
 			chatbotRepository.upsertByMemberId(memberId, response);
@@ -232,7 +232,7 @@ public class ChatbotServiceImpl implements ChatbotService{
 		ChatCompletion responseChatCompletion = responseBody.getBody();
 		String responseString = responseChatCompletion.getChoices().get(0).getMessage().getContent();
 
-		ChatbotChatting responseChatting = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now().toString(), memberId);
+		ChatbotChatting responseChatting = new ChatbotChatting(null, responseString, "bot", LocalDateTime.now().plusHours(9).toString(), memberId);
 		chatbotRepository.upsertByMemberId(memberId, responseChatting);
 		//System.out.println(responseString);
 
