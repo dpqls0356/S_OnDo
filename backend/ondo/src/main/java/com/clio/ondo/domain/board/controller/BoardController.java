@@ -179,9 +179,11 @@ public class BoardController {
   게시글 상세조회
    */
   @GetMapping("/{articleId}")
-  public ResponseEntity<ResponseVO<Optional<Board>>> getArticle(@PathVariable ObjectId articleId){
+  public ResponseEntity<ResponseVO<?>> getArticle(@PathVariable ObjectId articleId){
     Optional<Board> article = boardService.getArticle(articleId);
-    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("board", article));
+    BoardGetDto getDto = new BoardGetDto(article.get());
+    getDto.setMember_url(memberService.findOne(Long.parseLong(getDto.getMember_id())).getProfileUrl());
+    return ResponseEntity.status(HttpStatus.OK).body(ResponseVO.success("board", getDto));
   }
 
 
