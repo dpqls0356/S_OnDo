@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public void saveComment(Comment comment) {
     List<FilteringResponse> contentResponse = moderationService.inspectBadWord(comment.getContent());
-    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.5){
       throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
     }
 
@@ -71,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
       Comment existingComment = existingCommentOpt.get();
       if (existingComment.getMemberId().equals(memberId.toString())) {
         List<FilteringResponse> contentResponse = moderationService.inspectBadWord(modifiedComment.getContent());
-        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.8){
+        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.5){
           throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
         }
 

@@ -65,12 +65,12 @@ public class BoardServiceImpl implements BoardService {
   @Override
   public Board saveArticle(Board board) throws IOException {
     List<FilteringResponse> titleResponse = moderationService.inspectBadWord(board.getTitle());
-    if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.6){
+    if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.5){
       throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
     }
 
     List<FilteringResponse> contentResponse = moderationService.inspectBadWord(board.getContent());
-    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.6){
+    if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.5){
       throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
     }
 
@@ -144,12 +144,12 @@ public class BoardServiceImpl implements BoardService {
       Board existingArticle = existingArticleOpt.get();
       if(existingArticle.getMember_id().equals(memberId.toString())){
         List<FilteringResponse> titleResponse = moderationService.inspectBadWord(modifiedArticle.getTitle());
-        if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.6){
+        if(!titleResponse.isEmpty() && titleResponse.get(0).getScore() > 0.5){
           throw new ModerationException(titleResponse.get(0).getAttributeName() + ": " + titleResponse.get(0).getScore());
         }
 
         List<FilteringResponse> contentResponse = moderationService.inspectBadWord(modifiedArticle.getContent());
-        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.6){
+        if(!contentResponse.isEmpty() && contentResponse.get(0).getScore() > 0.5){
           throw new ModerationException(contentResponse.get(0).getAttributeName() + ": " + contentResponse.get(0).getScore());
         }
         customBoardRepositoryImpl.updateArticle(objectArtilceId,modifiedArticle);
