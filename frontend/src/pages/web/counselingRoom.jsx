@@ -20,11 +20,12 @@ const View = styled.div`
   display: flex;
   @media (max-width: 360px) {
     & {
-      width: 360px; /* 화면 너비가 360px 이하일 때 width 값 */
+      width: 360px;
       height: 100vh;
     }
   }
 `;
+
 const WebCamView = styled.div`
   flex: 1;
   width: 100%;
@@ -32,24 +33,27 @@ const WebCamView = styled.div`
   position: relative;
   background-color: #000000;
 `;
+
 const VideoView = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 
   #main-video {
     padding: 10px;
     border-radius: 50px;
     border: 5px solid yellow;
-          @media (min-width: 381px) {
-        margin-right: 20px;
-      }
-      @media (max-width: 380px) {
-        margin-bottom: 20px;
-      }
+    @media (min-width: 381px) {
+      margin-right: 20px;
+    }
+    @media (max-width: 380px) {
+      margin-bottom: 20px;
+    }
   }
+
   video,
   canvas {
     border-radius: 50px;
@@ -58,13 +62,14 @@ const VideoView = styled.div`
   @media (max-width: 360px) {
     padding: 0px 10px;
     & {
-      width: 360px; /* 화면 너비가 360px 이하일 때 width 값 */
+      width: 360px;
       height: 90vh;
       display: flex;
       flex-direction: column;
     }
   }
 `;
+
 const Nav = styled.div`
   display: flex;
   justify-content: center;
@@ -90,11 +95,12 @@ const Nav = styled.div`
     }
   }
 `;
+
 const SmallViewChatBtn = styled.button`
-  display: none; /* 기본적으로 버튼을 숨깁니다 */
+  display: none;
 
   @media (max-width: 380px) {
-    display: block; /* 화면 폭이 360px 이하일 때 버튼을 표시합니다 */
+    display: block;
   }
 `;
 
@@ -120,7 +126,7 @@ const CounselingRoom = () => {
 
   const [session, setSession] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
-  const [subscriber, setSubscriber] = useState(undefined);
+  const [subscribers, setSubscribers] = useState([]);
   const [currentVideoDevice, setCurrentVideoDevice] = useState(undefined);
   const [micStatus, setMicStatus] = useState(true);
   const [cameraStatus, setCameraStatus] = useState(true);
@@ -130,30 +136,30 @@ const CounselingRoom = () => {
       const OV = new OpenVidu();
       const mySession = OV.initSession();
 
+      // Listen for other participants' streams
       mySession.on("streamCreated", (event) => {
-        const subscriber = mySession.subscribe(event.stream, undefined);
-        setSubscriber(subscriber);
+        if (event.stream.connection.connectionId !== mySession.connection.connectionId) {
+          const subscriber = mySession.subscribe(event.stream, undefined);
+          setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+        }
       });
 
       mySession.on("streamDestroyed", (event) => {
-        if (subscriber === event.stream.streamManager) {
-          setSubscriber(undefined);
-        }
+        setSubscribers((prevSubscribers) =>
+          prevSubscribers.filter(
+            (subscriber) => subscriber !== event.stream.streamManager
+          )
+        );
       });
 
       mySession.on("exception", (exception) => {
         console.warn(exception);
       });
+
       const token = await getToken(sessionId);
 
       try {
         await mySession.connect(token);
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-        stream.getTracks().forEach((track) => track.stop());
 
         const publisher = await OV.initPublisherAsync(undefined, {
           audioSource: undefined,
@@ -211,31 +217,33 @@ const CounselingRoom = () => {
   };
 
   const leaveSession = useCallback(async () => {
-    const response = await axios
-      .post(
+    try {
+      await axios.post(
         `${baseUrl}/counseling/sessions/${sessionId}/leave`,
         { reservationId: reservationId },
         {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true, // 쿠키를 포함하여 요청
+          withCredentials: true,
         }
-      )
-      .catch((error) => {
-        console.error("Error notifying server about leaving session:", error);
-      });
+      );
+    } catch (error) {
+      console.error("Error notifying server about leaving session:", error);
+    }
+
     localStorage.removeItem("sessionId");
     setSession(undefined);
-    setSubscriber(undefined);
     setPublisher(undefined);
+    setSubscribers([]);
+    if (session) {
+      session.disconnect();
+    }
+
     if (role === "USER") {
       navigate("/counseling/list");
     } else {
       navigate("/counselor");
-    }
-    if (session) {
-      session.disconnect();
     }
   }, [session, sessionId]);
 
@@ -247,7 +255,7 @@ const CounselingRoom = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true, // 쿠키를 포함하여 요청
+        withCredentials: true,
       }
     );
     return response.data.data.token;
@@ -261,11 +269,9 @@ const CounselingRoom = () => {
   };
 
   const leaveCounseling = () => {
-    //상담사인지 아닌지에 따라 이동해야할 url이 달라짐
-    if(role==="COUNSELOR"){
+    if (role === "COUNSELOR") {
       navigate("/counselor");
-    }
-    else {
+    } else {
       navigate("/member/counseling/main");
     }
   };
@@ -311,22 +317,22 @@ const CounselingRoom = () => {
         <View>
           <WebCamView>
             <VideoView>
-              {publisher !== undefined ? (
+              {publisher !== undefined && (
                 <div id="main-video" className="col-md-6">
                   <UserVideoComponent
                     streamManager={publisher}
                     filterEnabled={filterEnabled}
                   />
                 </div>
-              ) : null}
-              {subscriber !== undefined ? (
-                <div id="sub-video" className="col-md-6">
+              )}
+              {subscribers.map((subscriber, index) => (
+                <div key={index} id={`sub-video-${index}`} className="col-md-6">
                   <UserVideoComponent
                     streamManager={subscriber}
                     filterEnabled={filterEnabled}
                   />
                 </div>
-              ) : null}
+              ))}
             </VideoView>
             <Nav>
               <button onClick={() => setMicStatus(!micStatus)}>
@@ -395,7 +401,7 @@ const CounselingRoom = () => {
                   </svg>
                 </div>
               </button>
-              {role === "COUNSELOR" ? (
+              {role === "COUNSELOR" && (
                 <button
                   id="buttonLeaveSession"
                   onClick={() => {
@@ -404,7 +410,7 @@ const CounselingRoom = () => {
                 >
                   <div>상담종료</div>
                 </button>
-              ) : null}
+              )}
               <button onClick={toggleFilter}>
                 <div>필터</div>
               </button>
