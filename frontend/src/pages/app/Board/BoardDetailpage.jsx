@@ -58,7 +58,10 @@ const BoardDetailPage = () => {
 
   const onClickCreateComment = async () => {
     if (!user) {
-      alert("로그인이 필요합니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "로그인이 필요합니다.",
+      });
       return;
     }
 
@@ -79,7 +82,7 @@ const BoardDetailPage = () => {
 
     if (success) {
       comment.current.value = "";
-      await getComments(articleId,0);
+      await getComments(articleId, 0);
     }
     setSpinnerLoading(false);
   };
@@ -93,20 +96,29 @@ const BoardDetailPage = () => {
 
   const onClickUpdate = () => {
     if (!user) {
-      alert("로그인이 필요합니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "로그인이 필요합니다.",
+      });
       return;
     }
 
     if (user.id.toString() === currentViewArticle?.member_id) {
       nav(`/member/board/${articleId}/update`);
     } else {
-      alert("글 작성자만 수정할 수 있습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "글 작성자만 수정할 수 있습니다..",
+      });
     }
   };
 
   const onClickDelete = async () => {
     if (!user) {
-      alert("로그인이 필요합니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "로그인이 필요합니다.",
+      });
       return;
     }
 
@@ -122,10 +134,16 @@ const BoardDetailPage = () => {
           nav(`/member/board`);
         }
       } catch {
-        alert("글 삭제에 실패했습니다.");
+        Swal.fire({
+          icon: "error",
+          title: "글 작성에 실패했습니다.",
+        });
       }
     } else {
-      alert("글 작성자만 삭제할 수 있습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "글 작성자만 삭제할 수 있습니다.",
+      });
     }
   };
 
@@ -209,9 +227,7 @@ const BoardDetailPage = () => {
                 <p>{currentViewArticle.member_name}</p>
               </div>
               <div className="DetailCreate">
-                  <p>
-                    {formatDate(currentViewArticle.created_at)}
-                  </p>
+                <p>{formatDate(currentViewArticle.created_at)}</p>
               </div>
             </div>
 

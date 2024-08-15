@@ -5,7 +5,7 @@ import kakaologin from "./../../../assets/images/kakaologin.png";
 import naverlogin from "./../../../assets/images/naverlogin.png";
 import useAuthStore from "../../../store/app/authStore";
 import useFcmStore from "../../../store/app/FcmStore";
-
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 const Loginpage = () => {
@@ -25,7 +25,10 @@ const Loginpage = () => {
       if (success) {
         await checkAuth();
         nav("/member/home");
-        alert("로그인 성공!");
+        await Swal.fire({
+          icon: "success",
+          title: "로그인에 성공했습니다.",
+        });
       } else {
         setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
       }
