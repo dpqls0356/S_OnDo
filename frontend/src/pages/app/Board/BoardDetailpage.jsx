@@ -146,7 +146,7 @@ const BoardDetailPage = () => {
       } catch {
         Swal.fire({
           icon: "error",
-          title: "글 작성에 실패했습니다.",
+          title: "글 삭제에 실패했습니다.",
         });
       }
     } else {
