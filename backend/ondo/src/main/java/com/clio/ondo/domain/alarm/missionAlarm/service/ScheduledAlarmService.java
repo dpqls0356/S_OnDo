@@ -45,7 +45,14 @@ public class ScheduledAlarmService {
 		redisTemplate.expire(key, 3600, TimeUnit.SECONDS);
 	}
 
-	@Scheduled(cron = "0 32 12 * * *")
+	@Transactional
+	public void deleteToken(Long memberId, FCMToken fcmToken) throws Exception {
+		String key = "memberId:" + Long.toString(memberId);
+
+		Long removedCount = redisTemplate.opsForList().remove(key, 1, fcmToken.getFcmtoken());
+	}
+
+	@Scheduled(cron = "0 45 06 * * *")
 	//@Scheduled(fixedDelay = 60000)
 	public void createSpecialMission(){
 		try{
