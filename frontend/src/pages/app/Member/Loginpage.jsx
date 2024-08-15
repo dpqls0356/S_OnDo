@@ -54,12 +54,12 @@ const Loginpage = () => {
       <p id="Title">로그인</p>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="login-id">로그인</label>
+          <label htmlFor="login-id">아이디</label>
           <br />
           <input
             id="login-id"
             type="text"
-            placeholder="로그인"
+            placeholder="아이디"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
