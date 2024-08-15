@@ -59,7 +59,7 @@ const TimeTableComponent = () => {
   return (
     <View>
       {Edit ? (
-        <EditTimeTableComponent handleEditState={handleEditState} SaveDataState={SaveDataState} />
+        <EditTimeTableComponent saveData={saveData} handleEditState={handleEditState} SaveDataState={SaveDataState} />
       ) : saveData ? (
         <CompletedTimeTable handleEditState={handleEditState} saveData={saveData} />
       ) : (
