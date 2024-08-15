@@ -231,10 +231,10 @@ function CounselorLayout() {
       if (!role) {
         navigate("/counselor/login");
       }
-      //로그인이 안된 경우 또는 로그인이 되어있긴한데 유저가 해당 페이지로 와버린 경우
+      /* //로그인이 안된 경우 또는 로그인이 되어있긴한데 유저가 해당 페이지로 와버린 경우
       else if (role !== "COUNSELOR") {
         setIsModalOpen(true);
-      }
+      } */
     };
 
     checkAuthentication();
