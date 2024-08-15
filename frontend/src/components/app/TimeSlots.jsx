@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { formatLocalDateToISO } from "../../utils/dateUtils";
 
 const TimeSlots = ({
@@ -6,25 +7,29 @@ const TimeSlots = ({
   setSelectedTime,
   unavailableTimes,
 }) => {
-  // console.log("==============selectedDate==========");
-  // console.log(selectedDate);
-  // console.log("==============selectedTime==========");
-  // console.log(selectedTime);
-  // console.log("==============setSelectedTime==========");
-  // console.log(setSelectedTime);
-  // console.log("==============unavailableTimes==========");
-  // console.log(unavailableTimes);
-  const handleTimeClick = (time) => {
+  const [disabledTimes, setDisabledTimes] = useState([]);
+
+  useEffect(() => {
     if (selectedDate) {
+      const formattedDate = formatLocalDateToISO(selectedDate).split('T')[0];
+      const unavailable = unavailableTimes[formattedDate] || [];
+      setDisabledTimes(unavailable);
+
+      // 날짜가 변경될 때 선택된 시간이 불가능한 시간이면 선택 해제
+      if (unavailable.includes(selectedTime)) {
+        setSelectedTime(null);
+      }
+    }
+  }, [selectedDate, unavailableTimes, selectedTime, setSelectedTime]);
+
+  const handleTimeClick = (time) => {
+    if (selectedDate && !disabledTimes.includes(time)) {
       setSelectedTime(time);
     }
   };
 
   const renderTimeButton = (time) => {
-    if (!selectedDate) return null;
-
-    const formattedDate = formatLocalDateToISO(selectedDate).split('T')[0];
-    const isUnavailable = unavailableTimes[formattedDate]?.includes(time);
+    const isUnavailable = disabledTimes.includes(time);
 
     return (
       <button
@@ -36,7 +41,7 @@ const TimeSlots = ({
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
               : "bg-white"
         } rounded`}
-        onClick={() => !isUnavailable && handleTimeClick(time)}
+        onClick={() => handleTimeClick(time)}
         disabled={isUnavailable}
       >
         {time}
@@ -45,15 +50,8 @@ const TimeSlots = ({
   };
 
   const allTimes = [
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
+    "09:00", "10:00", "11:00", "12:00", "13:00", 
+    "14:00", "15:00", "16:00", "17:00"
   ];
 
   return (
