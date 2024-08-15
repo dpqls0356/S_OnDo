@@ -41,6 +41,7 @@
 #CreateTitle{
   font-size: 140%;
   height: 50px;
+  width:80%;
 }
 
 #CreateTitle:focus{
