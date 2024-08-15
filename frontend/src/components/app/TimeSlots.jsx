@@ -4,14 +4,14 @@ const TimeSlots = ({
   setSelectedTime,
   unavailableTimes,
 }) => {
-  console.log("==============selectedDate==========");
-  console.log(selectedDate);
-  console.log("==============selectedTime==========");
-  console.log(selectedTime);
-  console.log("==============setSelectedTime==========");
-  console.log(setSelectedTime);
-  console.log("==============unavailableTimes==========");
-  console.log(unavailableTimes);
+  // console.log("==============selectedDate==========");
+  // console.log(selectedDate);
+  // console.log("==============selectedTime==========");
+  // console.log(selectedTime);
+  // console.log("==============setSelectedTime==========");
+  // console.log(setSelectedTime);
+  // console.log("==============unavailableTimes==========");
+  // console.log(unavailableTimes);
   const handleTimeClick = (time) => {
     if (selectedDate) {
       setSelectedTime(time);
