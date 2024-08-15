@@ -42,7 +42,6 @@ const BoardUpdatepage = () => {
       icon: "warning",
       title: "부적절한 표현이 감지되었습니다.",
       text: `${alertMessage}`,
-      width: "70%",
     });
   };
 
@@ -142,7 +141,10 @@ const BoardUpdatepage = () => {
 
         if (imageResponse.data.success) {
         } else {
-          alert(response.data.message || "이미지 등록에 실패했습니다.");
+          Swal.fire({
+            icon: "error",
+            title: "이미지 등록에 실패했습니다.",
+          });
         }
 
         console.log("게시글 수정 성공.");
