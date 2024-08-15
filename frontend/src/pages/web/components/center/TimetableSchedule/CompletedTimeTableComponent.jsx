@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import styled from 'styled-components';
+import {styled, keyframes} from 'styled-components';
 import './EditTimeTableComponent.css';
 
 import EditImg from './../../../../../assets/images/editPen.png'
@@ -19,12 +19,40 @@ const Table = styled.div`
   border-radius: 10px;
 `;
 
+// 흔들림 애니메이션 정의
+const shake = keyframes`
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  20%, 60% {
+    transform: rotate(-10deg);
+  }
+  40%, 80% {
+    transform: rotate(10deg);
+  }
+`;
+
 const EditBtn = styled.div`
-  margin-left: 85%;
+
+  // margin-left: 85%;
+  //   background-color: #ffa79d;
+  // height: fit-content;
+  // width: fit-content;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // border: none;
+  // border-radius: 5px;
+  // cursor: pointer;
+
+  & > div:hover img {
+    animation: ${shake} 0.5s;
+  }
   & > div{
     display: flex;
     align-items: center;
     cursor: pointer;
+    float: right;
   }
 `
 
@@ -139,7 +167,7 @@ const CompletedTimeTable = ({ handleEditState, saveData }) => {
         <EditBtn onClick={EditSchedule}>
           <div>
             <img style={{height: '25px', width: '25px'}} src={EditImg} alt="" />
-            <p style={{float: 'right', color: '#757575'}}>수정하기</p>
+            <p style={{color: '#757575'}}>수정하기</p>
           </div>
         </EditBtn>
       <Table>
