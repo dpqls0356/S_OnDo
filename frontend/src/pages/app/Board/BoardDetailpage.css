@@ -1,13 +1,13 @@
 .BoardDetail {
   /* height: 100%;
   width: 80%; */
-  border: 1px black solid;
+  border: 2px #6abfb4 solid;
   width: 85%;
   margin: 0 auto;
-  margin-top: 5%;
+  margin-top: 7%;
   border-radius: 20px;
   background-color: white;
-  box-shadow: -4px 6px 0px 0px #001429;
+  box-shadow: 4px -6px 0px 0px #6abfb4;
 }
 
 .DetailTitle .action-buttons {
@@ -21,7 +21,7 @@
 }
 
 #boardtitle {
-  width: 180%;
+  /* width: 180%; */
 }
 
 .DetailTitle {
@@ -50,8 +50,8 @@
 
 .DetailDate {
   padding: 10px 20px;
-  border-top: 1px black solid;
-  border-bottom: 1px black solid;
+  border-top: 1px #b0b0b0 solid;
+  border-bottom: 1px #b0b0b0 solid;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,7 +80,7 @@
 }
 
 #comment-line {
-  border-left: 4px dashed #6abfb4;
+  border-left: 3px dashed #6abfb4;
   height: auto;
   /* height: 500px; */
   /* left: 50%; */
@@ -95,7 +95,7 @@
   background-color: white;
   margin: 0 auto;
   padding: 10px 20px;
-  border: 4px #fda79a solid;
+  border: 2px #fda79a solid;
   border-radius: 20px;
   display: flex;
   align-items: center;

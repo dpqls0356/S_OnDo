@@ -17,7 +17,9 @@ const Header = styled.div`
   width: 100%;
   padding: 30px 0px 0px 20px;
 `;
-
+const Btn = styled.div`
+  font-size: 15px;
+`;
 const mainProfileUrl = "https://d1kbrt3q8264bl.cloudfront.net/profile.png";
 
 const BoardDetailPage = () => {
@@ -191,13 +193,8 @@ const BoardDetailPage = () => {
               <p id="boardtitle">{currentViewArticle.title}</p>
               {user && user.id.toString() === currentViewArticle.member_id && (
                 <div className="action-buttons">
-                  <Button
-                    type="round"
-                    style={{ border: "30px" }}
-                    onClick={onClickUpdate}
-                    text="수정"
-                  />
-                  <Button type="round" onClick={onClickDelete} text="삭제" />
+                  <Btn onClick={onClickUpdate}>수정</Btn>
+                  <Btn onClick={onClickDelete}>삭제</Btn>
                 </div>
               )}
             </div>
