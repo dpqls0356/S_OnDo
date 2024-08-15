@@ -9,6 +9,7 @@ import BorderImg from "../../../assets/images/구분선.png";
 import back from "../../../assets/images/back.png";
 import styled from "styled-components";
 import { formatLocalDateToISO } from "../../../utils/dateUtils";
+import Swal from "sweetalert2";
 
 const FullWidthCLCard = styled(CLCard)`
   width: 100% !important;
@@ -41,7 +42,10 @@ const Reservation = () => {
 
   const handleReservation = async () => {
     if (!counselorId || !selectedDate || !selectedTime) {
-      alert("상담사 ID, 날짜, 시간을 모두 선택해주세요.");
+      Swal.fire({
+        icon: "warning",
+        title: "상담사 ID, 날짜, 시간을 모두 선택해주세요.",
+      });
       return;
     }
 
@@ -58,16 +62,22 @@ const Reservation = () => {
         note
       );
       if (result.success) {
-        alert("예약이 확정되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "예약되었습니다.",
+        });
         nav("/member/counseling/main");
       } else {
-        alert("예약 실패: " + result.message);
+        Swal.fire({
+          icon: "error",
+          title: "예약에 실패했습니다.",
+        });
       }
     } catch (error) {
-      alert(
-        "예약 중 오류가 발생했습니다: " +
-          (error.response?.data?.message || error.message)
-      );
+      Swal.fire({
+        icon: "error",
+        title: "예약 중 오류가 발생했습니다.",
+      });
     }
   };
 

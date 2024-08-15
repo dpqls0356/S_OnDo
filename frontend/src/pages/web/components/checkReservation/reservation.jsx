@@ -5,8 +5,10 @@ import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {formatLocalDateToISO} from "../../../../utils/dateUtils"
-import { keyframes } from 'styled-components';
+import { formatLocalDateToISO } from "../../../../utils/dateUtils";
+import { keyframes } from "styled-components";
+import Swal from "sweetalert2";
+
 const View = styled.div`
   padding: 20px 20px;
   width: 100%;
@@ -78,17 +80,21 @@ const CreateCounselingRoomBtn = styled.button`
     left: -75%;
     z-index: 2;
     display: block;
-    content: '';
+    content: "";
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
     transform: skewX(-25deg);
     opacity: 0;
   }
 
   &:hover::before {
     opacity: 1;
-    animation: ${shine} .75s;
+    animation: ${shine} 0.75s;
   }
 `;
 
@@ -174,22 +180,30 @@ function Reservation({ reservation }) {
   };
 
   const changeDateFormat = () => {
+    let date = new Date(reservation.reservationDate);
 
-let date = new Date(reservation.reservationDate);
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 필요
+    let day = String(date.getDate()).padStart(2, "0");
+    let hours = String(date.getHours()).padStart(2, "0");
+    let minutes = String(date.getMinutes()).padStart(2, "0");
 
-let year = date.getFullYear();
-let month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
-let day = String(date.getDate()).padStart(2, '0');
-let hours = String(date.getHours()).padStart(2, '0');
-let minutes = String(date.getMinutes()).padStart(2, '0');
-
-let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+    let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
 
     setReservationFormattedDate(formattedDate);
   };
 
-  const handleCancelClick = () => {
-    if (window.confirm("정말 예약을 취소하시겠습니까?")) {
+  const handleCancelClick = async () => {
+    const result = await Swal.fire({
+      title: "이미지를 삭제하시겠습니까?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    });
+
+    if (result.isConfirmed) {
       cancelRequest(reservation.reservationId);
     }
   };
@@ -197,7 +211,10 @@ let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
   const cancelRequest = async (reservId) => {
     console.log(reservId);
     if (!reservId) {
-      alert("예약 ID가 없습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "잘못된 입력입니다.",
+      });
       return;
     }
 
@@ -209,16 +226,22 @@ let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
       });
 
       if (response.data.success) {
-        alert("상담 예약이 취소되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "예약이 취소 되었습니다.",
+        });
         window.location.reload(); // 페이지 새로고침
       } else {
-        alert("예약 취소에 실패했습니다.");
+        Swal.fire({
+          icon: "error",
+          title: "예약 취소에 실패했습니다.",
+        });
       }
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "상담 예약 취소 중 오류가 발생했습니다."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "예약 취소 중 오류가 발생했습니다.",
+      });
     }
   };
 
@@ -300,7 +323,7 @@ let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
       <Col>
         {timeRemaining > 0 ? (
           <CancelReservationBtn onClick={handleCancelClick}>
-            <FontAwesomeIcon icon={faX}/>
+            <FontAwesomeIcon icon={faX} />
           </CancelReservationBtn>
         ) : null}
         <CreateCounselingRoomBtn onClick={createCounselingRoom}>

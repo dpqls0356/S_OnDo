@@ -5,6 +5,7 @@ import useAuthStore from "../../../../store/app/authStore";
 import camera from "../../../../assets/images/camera.png";
 // import { useNavigate } from "react-router-dom";
 // import { useRef } from "react";
+import Swal from "sweetalert2";
 
 const View = styled.div`
   position: relative;
@@ -20,15 +21,15 @@ const View = styled.div`
 `;
 
 const CameraIcon = styled.div`
- position: absolute;
- z-index: 100;
- left: 60%;
- top: 27%;
- & > img {
-  width: 47px;
-  height: 47px;
- }
-`
+  position: absolute;
+  z-index: 100;
+  left: 60%;
+  top: 27%;
+  & > img {
+    width: 47px;
+    height: 47px;
+  }
+`;
 
 // const InfoTag = styled.div`
 //   display: flex;
@@ -73,7 +74,7 @@ const Content = styled.div`
   gap: 30px;
   font-size: 20px;
   // align-items: center;
-`
+`;
 
 const IntroductionInput = styled.div`
   border: 2px black solid;
@@ -193,9 +194,18 @@ const CounselorMypage = () => {
   };
 
   //이미지 클릭시 삭제
-  const handleImageDelete = () => {
-    if (confirm("이미지를 삭제하시겠습니까?")) {
-      setPreviewUrl(mainProfileUrl);
+  const handleImageDelete = async () => {
+    const result = await Swal.fire({
+      title: "이미지를 삭제하시겠습니까?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    });
+
+    if (result.isConfirmed) {
+      setPreviewUrl(mainProfileUrl); // '네'를 클릭 시 기본 이미지로 설정
       setSelectedFile(null);
     }
   };
@@ -227,12 +237,16 @@ const CounselorMypage = () => {
     }
 
     try {
-      const response = await axios.put(`${baseUrl}/counselor/updateMypage`, userData, {
-        header: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true, // 쿠키를 포함하여 요청
-      });
+      const response = await axios.put(
+        `${baseUrl}/counselor/updateMypage`,
+        userData,
+        {
+          header: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // 쿠키를 포함하여 요청
+        }
+      );
       if (response.data.success) {
         try {
           const imageResponse = await api.post(
@@ -246,11 +260,17 @@ const CounselorMypage = () => {
           );
           if (imageResponse.data.success) {
           } else {
-            alert(response.data.message || "이미지 등록에 실패했습니다.");
+            Swal.fire({
+              icon: "warning",
+              title: "이미지 등록에 실패했습니다.",
+            });
           }
         } catch {}
         console.log("마이페이지 수정 완료");
-        alert("수정이 완료되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "수정이 완료되었습니다.",
+        });
         InfoState(""); // 입력창 초기화
         EditState(!edit); // 수정모드 비활성화
 
@@ -335,67 +355,73 @@ const CounselorMypage = () => {
         />
       )}
       <Name>
-        {MyInfo.name} ({MyInfo.gender === "FEMALE" ? "여" : MyInfo.gender === "MALE" ? "남" : ""})
+        {MyInfo.name} (
+        {MyInfo.gender === "FEMALE"
+          ? "여"
+          : MyInfo.gender === "MALE"
+            ? "남"
+            : ""}
+        )
       </Name>
       <Content>
-      <p>
-        <Bold>분야:</Bold> {MyInfo.field}
-      </p>
-      {MyInfo.career.length > 0 ? (
-        <ul>
-          <Bold>경력:</Bold>
-          {MyInfo.career.map((career, index) => (
-            <LiTag key={index}>◾ {career}</LiTag>
-          ))}
-        </ul>
-      ) : (
-        <div></div>
-      )}
-      <hr />
-      <div>
-        <IntroTitle>
-          <p>
-            <Bold>소개</Bold>
-          </p>
-          {edit ? (
-            <p
-              onClick={putMyInfo}
-              style={{
-                cursor: "pointer",
-                textDecoration: "underline",
-                color: "gray",
-              }}
-            >
-              저장
-            </p>
-          ) : (
-            <p
-              onClick={onClickEdit}
-              style={{
-                cursor: "pointer",
-                textDecoration: "underline",
-                color: "gray",
-              }}
-            >
-              수정
-            </p>
-          )}
-        </IntroTitle>
-      </div>
-      <div>
-        {edit ? (
-          <IntroductionInput>
-            <textarea
-              type="text"
-              value={formData.selfIntroduction}
-              onChange={handleInputChange("selfIntroduction")}
-            />
-          </IntroductionInput>
+        <p>
+          <Bold>분야:</Bold> {MyInfo.field}
+        </p>
+        {MyInfo.career.length > 0 ? (
+          <ul>
+            <Bold>경력:</Bold>
+            {MyInfo.career.map((career, index) => (
+              <LiTag key={index}>◾ {career}</LiTag>
+            ))}
+          </ul>
         ) : (
-          <div>{MyInfo.selfIntroduction}</div>
+          <div></div>
         )}
-      </div>
-      <br />
+        <hr />
+        <div>
+          <IntroTitle>
+            <p>
+              <Bold>소개</Bold>
+            </p>
+            {edit ? (
+              <p
+                onClick={putMyInfo}
+                style={{
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  color: "gray",
+                }}
+              >
+                저장
+              </p>
+            ) : (
+              <p
+                onClick={onClickEdit}
+                style={{
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  color: "gray",
+                }}
+              >
+                수정
+              </p>
+            )}
+          </IntroTitle>
+        </div>
+        <div>
+          {edit ? (
+            <IntroductionInput>
+              <textarea
+                type="text"
+                value={formData.selfIntroduction}
+                onChange={handleInputChange("selfIntroduction")}
+              />
+            </IntroductionInput>
+          ) : (
+            <div>{MyInfo.selfIntroduction}</div>
+          )}
+        </div>
+        <br />
       </Content>
     </View>
   );

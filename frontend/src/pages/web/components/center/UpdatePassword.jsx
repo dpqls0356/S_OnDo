@@ -1,7 +1,8 @@
-import {styled, keyframes} from "styled-components";
+import { styled, keyframes } from "styled-components";
 import useAuthStore from "../../../../store/app/authStore";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const View = styled.div`
   margin: 0 auto;
@@ -41,16 +42,17 @@ const Form = styled.div`
   & > input {
     height: 45px;
     // border: 1px black solid;
-    background-color: #E3E6EC;
+    background-color: #e3e6ec;
     border-radius: 7px;
     padding: 0px 10px;
-  } :: placeholder{
+  }
+  :: placeholder {
     font-family: "Jua", sans-serif;
     font-weight: 400;
-    font-style: normal; 
-    color: #A8AAB2;
+    font-style: normal;
+    color: #a8aab2;
     font-size: 16px;
-    padding: 5px
+    padding: 5px;
   }
 `;
 
@@ -78,21 +80,27 @@ const Save = styled.div`
 
     position: relative;
     overflow: hidden; /* 내부의 넘치는 효과가 잘리는 것을 방지 */
-  }::before {
+  }
+  ::before {
     position: absolute;
     top: 0;
     left: -75%;
     z-index: 2;
     display: block;
-    content: '';
+    content: "";
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
     transform: skewX(-25deg);
     opacity: 0;
-  }:hover::before {
+  }
+  :hover::before {
     opacity: 1;
-    animation: ${shine} .75s;
+    animation: ${shine} 0.75s;
   }
 `;
 
@@ -113,7 +121,10 @@ const UpdatePassword = () => {
     if (user.password === PW.password) {
       setAuthenticated(true);
     } else {
-      alert("입력하신 정보와 일치하지 않습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "입력하신 정보와 일치하지 않습니다.",
+      });
       e.target.value = "";
       return;
     }
@@ -151,7 +162,10 @@ const UpdatePassword = () => {
 
   const handleSaveClick = async () => {
     if (PW.newPassword !== PW.checkNewPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "비밀번호가 불일치 합니다..",
+      });
       return;
     }
 
@@ -169,15 +183,22 @@ const UpdatePassword = () => {
     // 프로필 이미지 변경 X 이므로 무조건 기존 프로필 유지
 
     try {
-      const response = await axios.put(`${baseUrl}/counselor/updateMypage`, userData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
+      const response = await axios.put(
+        `${baseUrl}/counselor/updateMypage`,
+        userData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
       if (response.data.success) {
-        alert("비밀번호가 변경되었습니다.");
+        Swal.fire({
+          icon: "warning",
+          title: "비밀번호가 변경되었습니다..",
+        });
         setMyInfo((prev) => ({
           ...prev,
           password: PW.newPassword,
@@ -185,7 +206,10 @@ const UpdatePassword = () => {
         await getMyInfo();
       }
     } catch (err) {
-      alert("비밀번호 수정 중 오류가 발생했습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "수정 중 오류가 필요없는다. 필요합니다.",
+      });
     }
   };
 
