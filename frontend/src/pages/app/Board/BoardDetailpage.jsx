@@ -9,6 +9,7 @@ import axios from "axios";
 import commentbtn from "./../../../assets/images/send.png";
 import LoadingSpinner from "../../../components/app/Spinner";
 import styled from "styled-components";
+import Swal from "sweetalert2";
 
 const Header = styled.div`
   width: 100%;

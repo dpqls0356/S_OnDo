@@ -9,6 +9,8 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -55,8 +57,8 @@ public class ScheduledAlarmService {
 		Long removedCount = redisTemplate.opsForList().remove(key, 1, fcmToken.getFcmtoken());
 	}
 
-	@Scheduled(cron = "0 14 23 * * *")
-	//@Scheduled(fixedDelay = 60000)
+	//@Scheduled(cron = "0 14 23 * * *")
+	@Scheduled(fixedDelay = 10800000)
 	public void createSpecialMission(){
 		try{
 			JobParameters jobParameters = new JobParametersBuilder()
@@ -71,9 +73,9 @@ public class ScheduledAlarmService {
 	}
 
 //	 애플리케이션 시작 시 한 번만 실행되는 메서드 (테스트 시에 사용)
-    // @EventListener(ApplicationReadyEvent.class)
-    // public void runOnceAtStartup() {
-    //     // 실제 작업 호출
-	//  	createSpecialMission();
-    // }
+    @EventListener(ApplicationReadyEvent.class)
+    public void runOnceAtStartup() {
+        // 실제 작업 호출
+	 	createSpecialMission();
+    }
 }
