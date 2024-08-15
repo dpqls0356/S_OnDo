@@ -15,7 +15,7 @@ const Thermometer = ({ character }) => {
   });
 
   const setConfigInfo = () => {
-    const calMaxExp = ((character.level - 1) / 10 + 1) * 100;
+    const calMaxExp = 100;
     setConfig({
       unit: "Celcius",
       exp: character.exp,

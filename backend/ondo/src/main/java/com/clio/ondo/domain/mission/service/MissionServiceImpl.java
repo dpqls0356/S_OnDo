@@ -196,7 +196,7 @@ public class MissionServiceImpl implements MissionService{
 
 		int currentExp=characterService.getCharacters(memberId).getExp();
 		//exp 확인 후 레벨 업데이트
-		characterService.checkLevel(memberId,currentExp);
+		//characterService.checkLevel(memberId,currentExp);
 		
 		//todayMission 업데이트
 		todayMissionRepository.save(todayMission);
