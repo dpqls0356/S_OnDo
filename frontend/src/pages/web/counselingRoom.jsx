@@ -329,7 +329,6 @@ const CounselingRoom = () => {
                 <div key={index} id={`sub-video-${index}`} className="col-md-6">
                   <UserVideoComponent
                     streamManager={subscriber}
-                    filterEnabled={filterEnabled}
                   />
                 </div>
               ))}
@@ -414,7 +413,9 @@ const CounselingRoom = () => {
               <button onClick={toggleFilter}>
                 <div>필터</div>
               </button>
-              <SmallViewChatBtn>채팅</SmallViewChatBtn>
+              {
+                role === "COUNSELOR"?null:<SmallViewChatBtn>채팅</SmallViewChatBtn>
+              }
             </Nav>
           </WebCamView>
           <SideBar memberInfo={memberInfo} />

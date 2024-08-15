@@ -169,23 +169,27 @@ const JoinForm = () => {
 
       if (response.data.success) {
         try {
+          const imgFormData = new FormData();
           if (selectedFile) {
-            const imgFormData = new FormData();
             imgFormData.append("data", selectedFile);
-
-            const imageRespose = await api.post(
-              `/image/upload/MemberProfile/${response.data.data.id}`,
-              imgFormData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-
-            if (!imageRespose.data.success) {
-              alert("이미지 업로드를 실패하였습니다.");
+          } else if (previewUrl === mainProfileUrl) {
+            const emptyFile = new Blob([""], { type: "image/jpeg" });
+            imgFormData.append("data", emptyFile, "default.jpg");
+          } else {
+            const emptyFile = new Blob([""], { type: "image/jpeg" });
+            imgFormData.append("data", emptyFile, "empty.jpg");
+          }
+          const imageRespose = await api.post(
+            `/image/upload/MemberProfile/${response.data.data.id}`,
+            imgFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
             }
+          );
+          if (!imageRespose.data.success) {
+            alert("이미지 업로드를 실패하였습니다.");
           }
         } catch (error) {
           alert("오류가 발생했습니다.");
