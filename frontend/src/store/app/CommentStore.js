@@ -69,9 +69,9 @@ const useCommentStore = create((set) => ({
     }
     return false;
   },
-  getComments: async (articleId) => {
+  getComments: async (articleId,page) => {
     try {
-      const response = await api.get(`/board/comment/${articleId}?page=1`);
+      const response = await api.get(`/board/comment/${articleId}?page=${page}`);
       set({
         comments: response.data.data.comments.content,
         currentPage: 1,
