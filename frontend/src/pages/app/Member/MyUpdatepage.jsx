@@ -287,7 +287,7 @@ const MyUpdateForm = () => {
         </form>
 
         {/* 회원 탈퇴 섹션 */}
-        <div style={{ textAlign: "center", padding: "10px" }}>
+        {/* <div style={{ textAlign: "center", padding: "10px" }}>
           <p
             style={{ cursor: "pointer", color: "gray" }}
             onClick={handleOpenModal}
@@ -299,7 +299,7 @@ const MyUpdateForm = () => {
             onClose={handleCloseModal}
             baseUrl={baseUrl}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
