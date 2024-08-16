@@ -9,8 +9,6 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -57,7 +55,7 @@ public class ScheduledAlarmService {
 		Long removedCount = redisTemplate.opsForList().remove(key, 1, fcmToken.getFcmtoken());
 	}
 
-	@Scheduled(cron = "0 28 0 * * *")
+	@Scheduled(cron = "0 46 0 * * *")
 	//@Scheduled(fixedDelay = 10800000)
 	public void createSpecialMission(){
 		try{
