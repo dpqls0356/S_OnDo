@@ -193,7 +193,7 @@
 ### ERD
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="assets/erd_bank.png" alt="ERD" style="width: 48%;">
+    <img src="./ONDO_ERD.png" alt="ERD" style="width: 48%;">
 </div>
 
 ### 명세서
