@@ -26,7 +26,7 @@
 <tbody>
 <tr>
 <td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
-<td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
+<td align="center"><a href="https://github.com/KSE0514"><img src="https://avatars.githubusercontent.com/u/156265560?s=400&v=4" height="150" width="150" style="max-width: 100%;"> <br> @KSE0514</a></td>
 <td align="center"><a href="https://github.com/ybk1"><img src="https://avatars.githubusercontent.com/u/97382736?v=4" height="150" width="150" style="max-width: 100%;"> <br> @ybk1</a></td>
 <td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
 <td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> @???</a></td>
@@ -200,11 +200,11 @@
 
 - **요구사항, 기능 명세서**
 
-  [https://cyan-crabapple-8b0.notion.site/922db08d09724288b2f8ac562a70bd59?pvs=4](https://www.notion.so/922db08d09724288b2f8ac562a70bd59?pvs=21)
+  [https://www.notion.so/b7da75e62bba4010bb199bb8d6f3d63c?pvs=4](https://www.notion.so/b7da75e62bba4010bb199bb8d6f3d63c?pvs=4)
 
 - **API 명세서**
 
-  [https://documenter.getpostman.com/view/23655032/2s9YC8wWWE](https://documenter.getpostman.com/view/23655032/2s9YC8wWWE)
+  [https://www.notion.so/API-Reference-e67a43dfcf5c49e084a72192bebda2c6?pvs=4](https://www.notion.so/API-Reference-e67a43dfcf5c49e084a72192bebda2c6?pvs=4)
 
 </details>
 
