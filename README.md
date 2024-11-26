@@ -1,11 +1,13 @@
 # Ondo
 
-<div align="center">
-  <img src="./frontend/src/assets/images/readMe/OnDo_로고.png" width="350px" align="center">
+<div style="text-align: center;">
+  <img src="./frontend/src/assets/images/readMe/OnDo_로고.png" width="350px">
 </div>
 
 ## 삼성 청년 SW아카데미(SSAFY) 11th 공통프로젝트
-  <img src="./frontend/src/assets/images/readMe/OnDo.png" width="700px" align="center">
+<div style="text-align: center;">
+  <img src="./frontend/src/assets/images/readMe/OnDo.png" width="700px">
+</div>
 
 ## ✅ 프로젝트 진행 기간
 
