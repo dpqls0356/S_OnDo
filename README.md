@@ -138,7 +138,7 @@
     </tr>
     <tr align="center"> 
         <td> <img src="./frontend/src/assets/images/readMe/애니메이션.gif" height="450"> </td>
-        <td> <img src="./frontend//src/assets//images/readMe/홈화면.gif" height="450"> </td>
+        <td> <img src="./frontend//src/assets/images/readMe/홈화면.gif" height="450"> </td>
             <td> <img src="./frontend/src/assets/images/readMe/게시판.jpg" height="450"> </td>
     </tr>
     <tr> 
