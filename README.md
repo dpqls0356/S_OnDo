@@ -87,43 +87,39 @@
 
 ## ✅ 기능 소개
 
-### 로그인, 회원 가입
-
 <table>    
     <tr align="center"> 
-        <td><strong> 초기 화면 </strong></td>
-        <td><strong> 회원 가입</strong></td>
+        <td><strong> 게시판 </strong></td>
+        <td><strong> 챗봇</strong></td>
     </tr>
     <tr align="center"> 
-        <td> <img src="assets/gif/mobile/01_opening.gif" height="450"> </td>
-        <td> <img src="assets/gif/mobile/02_signin.gif" height="450"> </td>
+        <td> <img src="./게시판.jpg" height="450"> </td>
+        <td> <img src="./챗봇.jpg" height="450"> </td>
     </tr>
     <tr> 
         <td>
-            1. 111111111111111111111111111111111 <br>
+            1. 마음의 이야기를 털어놓을 수 있는 게시판 <br>
         </td>
         <td>
-            1. 111111111111111111111111111111111<br>
-            2. 222222222222222222222222222222222
+            1. 매일 일정 시간에 오는 챗봇을 통해 미션 알림<br>
+            2. 평소에도 언제든 다람이와 채팅
         </td>
     </tr>
     <tr align="center"> 
-        <td><strong>간편 비밀번호</strong></td>
-        <td><strong>지문 등록</strong></td>
+        <td><strong>미션</strong></td>
+        <td><strong>미션 완료</strong></td>
     </tr>
     <tr align="center"> 
-        <td> <img src="assets/gif/mobile/03_password.gif" height="450"> </td>
-        <td> <img src="assets/gif/mobile/04_fingerprint.gif" height="450"> </td>
+        <td> <img src="./미션.jpg" height="450"> </td>
+        <td> <img src="./미션 완료.jpg" height="450"> </td>
     </tr>
     <tr> 
         <td >
-            1. 11111111111111111111111111111111<br>
-            2. 22222222222222222222222222222222
+            1. 매일 다람이가 주는 특별 미션(챗봇으로 알림)<br>
+            2. 매일 간단한 일상 회복을 돕는 데일리 미션
         </td>
         <td>
-            1. 11111111111111111111111111111111<br>
-            2. 22222222222222222222222222222222 <br>
-            3. 33333333333333333333333333333333
+            1. 미션 완료를 통해 포인트를 얻고, 다람이의 온도를 높일 수 있음
         </td>
     </tr>
 </table>
@@ -195,7 +191,7 @@
 ### ERD
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="./ONDO_ERD.png" alt="ERD" style="width: 48%;">
+    <img src="./ONDO_ERD.png" alt="ERD" style="width: 100%;">
 </div>
 
 ### 명세서
@@ -224,29 +220,6 @@
 
 정유진:
 
-## ✅ 추억들~.~(우리사진)
+## ✅ ❤온도팀 사진❤
 
-<table>
-    <tr>
-        <td>
-            <a href="assets/첫날.jpg">
-                <img src="assets/첫날.jpg" width="300">
-            </a>
-        </td>
-        <td>
-            <a href="assets/그라운드룰적는중.jpg">
-                <img src="assets/그라운드룰적는중.jpg" width="300">
-            </a>
-        </td>
-        <td>
-            <a href="assets/인증샷.jpg">
-                <img src="assets/인증샷.jpg" width="300">
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td align="center">부트캠프 첫날!</td>
-        <td align="center">그라운드 룰 적는 중~!</td>
-        <td align="center">그라운드 룰 앞에서 인증 샷!</td>
-    </tr>   
-</table>
+![alt text](image-1.png)
