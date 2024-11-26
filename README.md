@@ -198,20 +198,29 @@
 <table>    
     <tr align="center"> 
         <td><strong> 상담사 일정관리</strong></td>
-        <td><strong> 상담사 상담 내역 확인/수정</strong></td>
     </tr>
     <tr align="center"> 
         <td> <img src="./frontend/src/assets/images/readMe/상담사_일정관리.png" height="450"> </td>
-        <td> <img src="./frontend/src/assets/images/readMe/상담사_상담내역확인.png" height="450"> </td>
     </tr>
     <tr> 
         <td>
           - 요일별로 상담이 가능한 시간 조정 가능 <br>
         </td>
+    </tr>
+    <tr>
+        <tr align="center"> 
+        <td><strong> 상담사 상담 내역 확인/수정</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./frontend/src/assets/images/readMe/상담사_상담내역확인.png" height="450"> </td>
+    </tr>
+    <tr> 
         <td>
           - 내담자의 상담 내역을 확인하고 수정 <br>
         </td>
     </tr>
+
+
     
 </table>
 
