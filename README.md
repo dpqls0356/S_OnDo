@@ -34,7 +34,7 @@
 <td align="center"><a href="https://github.com/ybk1"><img src="https://avatars.githubusercontent.com/u/97382736?v=4" height="150" width="150" style="max-width: 100%;"> <br> @ybk1</a></td>
 <td align="center"><a href="https://github.com/leedhfsd"><img src="https://avatars.githubusercontent.com/u/89757700?v=4" height="150" width="150" style="max-width: 100%;"> <br> @leedhfsd</a></td>
 <td align="center"><a href="https://github.com/Sophia0705"><img src="https://avatars.githubusercontent.com/u/156265319?v=4" height="150" width="150" style="max-width: 100%;"> <br> @Sophia0705</a></td>
-<td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
+<td align="center"><a href="https://github.com/???"><img src="https://avatars.githubusercontent.com/u/69388421?s=400&v=4" height="150" width="150" style="max-width: 100%;"> <br> @ellka02</a></td>
 </tr>
 <tr>
 <td align="center"><b>팀장 | BE | FE</td>
@@ -289,7 +289,7 @@
 
 이예지: 일정관리와 기획의 중요성에 대해 많이 느꼈고, 다음 프로젝트를 하면서 일정 관리에 조금 더 신경쓰고 있습니다. 그래도 처음이라 모든 게 어려울 때, 팀원들이 다 같이 도와줘서 기술적으로도 팀 프로젝트라는 관점에서도 배우는 게 많았습니다.
 
-정유진:
+정유진: JPA, MongoDB 등 처음 배우는 기술들이 많아서 힘들었지만, 그만큼 많은 것을 배웠고 의미 있는 시간이었습니다. 팀원 모두가 더 나은 기능을 위해 회의를 거듭했던 것이 기억에 많이 남는데, 남과 협력하고 부딪히며 최선의 결과를 내는 방법을 배울 수 있어 좋았습니다. 
 
 ## ✅ ❤온도팀 사진❤
 
