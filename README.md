@@ -1,10 +1,11 @@
 # Ondo
 
 <div align="center">
-  <img src="assets/cocopay.png" width="700px" align="center">
+  <img src="./frontend/src/assets/images/readMe/OnDo_로고.png" width="350px" align="center">
 </div>
 
 ## 삼성 청년 SW아카데미(SSAFY) 11th 공통프로젝트
+  <img src="./frontend/src/assets/images/readMe/OnDo.png" width="700px" align="center">
 
 ## ✅ 프로젝트 진행 기간
 
@@ -245,7 +246,7 @@
 
 </details>
 
-## ✅ 결과공유, 느낀점(모두작성)
+## ✅ 결과공유, 느낀점
 
 이예빈: 백엔드와 프론트 모두를 담당해 openvidu를 활용하여 화상채팅을 구현해보면서 전체적인 과정을 공부할 수 있던 계기가 되었다. 그리고 처음으로 제대로된 팀 프로젝트를 진행해보았는데 시간이 부족할 것 같다라는 이유로 개발을 진행하면서 세부적인 부분을 정하는 때가 많았다. 하지만 이렇게 되니 오히려 개발하다가 이야기를 하는데 많은 시간을 할애하는 상황이 와서 개발 전 기획과 계획을 탄탄하게 하는 것이 좀 더 낫지않을까? 라는 생각이 들었다.
 
