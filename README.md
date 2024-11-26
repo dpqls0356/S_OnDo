@@ -29,7 +29,7 @@
 <td align="center"><a href="https://github.com/KSE0514"><img src="https://avatars.githubusercontent.com/u/156265560?s=400&v=4" height="150" width="150" style="max-width: 100%;"> <br> @KSE0514</a></td>
 <td align="center"><a href="https://github.com/ybk1"><img src="https://avatars.githubusercontent.com/u/97382736?v=4" height="150" width="150" style="max-width: 100%;"> <br> @ybk1</a></td>
 <td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
-<td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> @???</a></td>
+<td align="center"><a href="https://github.com/Sophia0705"><img src="https://avatars.githubusercontent.com/u/156265319?v=4" height="150" width="150" style="max-width: 100%;"> <br> @Sophia0705</a></td>
 <td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
 </tr>
 <tr>
@@ -37,8 +37,8 @@
 <td align="center"><b>FE | DESIGN</td>
 <td align="center"><b>BE</td>
 <td align="center"><b>BE | INFRA</td>
-<td align="center"><b>BE</td>
-<td align="center"><b>FE | DESIGN </td>
+<td align="center"><b>FE | DESIGN</td>
+<td align="center"><b>BE </td>
 </tr>
 </tbody>
 </table>
@@ -54,7 +54,9 @@
     <tr>
     <td><b>Front-end</b></td>
     <td>
-<img src="https://img.shields.io/badge/Vite_5.3.1-646CFF?style=for-the-badge&logo=Vite&logoColor=white"> <img src="https://img.shields.io/badge/React_18.3.1-61DAFB?style=for-the-badge&logo=React&logoColor=white"> <img src="https://img.shields.io/badge/Typescript_5.2.2-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"> <br> <img src="https://img.shields.io/badge/Tailwind CSS_3.4.4-06B6D4?style=for-the-badge&logo=Tailwind CSS&logoColor=white"> <img src="https://img.shields.io/badge/zustand-000000?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/Vite_5.3.1-646CFF?style=for-the-badge&logo=Vite&logoColor=white"> <img src="https://img.shields.io/badge/React_18.3.1-61DAFB?style=for-the-badge&logo=React&logoColor=white"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> <br>
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+ <img src="https://img.shields.io/badge/Tailwind CSS_3.4.4-06B6D4?style=for-the-badge&logo=Tailwind CSS&logoColor=white"> <img src="https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white"><img src="https://img.shields.io/badge/zustand-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB">
 
   </td>
     </tr>
@@ -218,13 +220,9 @@
 
 이대현:
 
-이예지:
+이예지: 일정관리와 기획의 중요성에 대해 많이 느꼈고, 다음 프로젝트를 하면서 일정 관리에 조금 더 신경쓰고 있습니다. 그래도 처음이라 모든 게 어려울 때, 팀원들이 다 같이 도와줘서 기술적으로도 팀 프로젝트라는 관점에서도 배우는 게 많았습니다.
 
 정유진:
-
-## ✅ UCC링크
-
-[Ondo](https://youtu.be/W53HnyE2SZE)
 
 ## ✅ 추억들~.~(우리사진)
 
