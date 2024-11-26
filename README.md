@@ -1,10 +1,11 @@
 # Ondo
 
 <div align="center">
-  <img src="assets/cocopay.png" width="700px" align="center">
+  <img src="./frontend/src/assets/images/readMe/OnDo_로고.png" width="350px" align="center">
 </div>
 
-## 🏆삼성 청년 SW아카데미(SSAFY) 11th 공통프로젝트🏆
+## 삼성 청년 SW아카데미(SSAFY) 11th 공통프로젝트
+  <img src="./frontend/src/assets/images/readMe/OnDo.png" width="700px" align="center">
 
 ## ✅ 프로젝트 진행 기간
 
@@ -206,7 +207,7 @@
 
 </details>
 
-## ✅ 결과공유, 느낀점(모두작성)
+## ✅ 결과공유, 느낀점
 
 이예빈:
 
