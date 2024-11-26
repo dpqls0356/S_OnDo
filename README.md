@@ -75,7 +75,7 @@
 
 ## ✅ 시스템 아키텍쳐
 
-![alt text](image-2.png)
+![아키텍쳐](./frontend/src/assets/images/readMe/ondo아키텍처_격자X.png)
 
 ## ✅ 프로젝트 소개
 
@@ -93,16 +93,16 @@
         <td><strong> 챗봇</strong></td>
     </tr>
     <tr align="center"> 
-        <td> <img src="./게시판.jpg" height="450"> </td>
-        <td> <img src="./챗봇.jpg" height="450"> </td>
+        <td> <img src="./frontend/src/assets/images/readMe/게시판.jpg" height="450"> </td>
+        <td> <img src="./frontend/src/assets/images/readMe/챗봇.jpg" height="450"> </td>
     </tr>
     <tr> 
         <td>
             1. 마음의 이야기를 털어놓을 수 있는 게시판 <br>
         </td>
         <td>
-            1. 매일 일정 시간에 오는 챗봇을 통해 미션 알림<br>
-            2. 평소에도 언제든 다람이와 채팅
+            2. 매일 일정 시간에 오는 챗봇을 통해 미션 알림<br>
+            3. 평소에도 언제든 다람이와 채팅
         </td>
     </tr>
     <tr align="center"> 
@@ -110,16 +110,16 @@
         <td><strong>미션 완료</strong></td>
     </tr>
     <tr align="center"> 
-        <td> <img src="./미션.jpg" height="450"> </td>
-        <td> <img src="./미션 완료.jpg" height="450"> </td>
+        <td> <img src="./frontend/src/assets/images/readMe/미션.jpg" height="450"> </td>
+        <td> <img src="./frontend/src/assets/images/readMe/미션 완료.jpg" height="450"> </td>
     </tr>
     <tr> 
         <td >
-            1. 매일 다람이가 주는 특별 미션(챗봇으로 알림)<br>
-            2. 매일 간단한 일상 회복을 돕는 데일리 미션
+            4. 매일 다람이가 주는 특별 미션(챗봇으로 알림)<br>
+            5. 매일 간단한 일상 회복을 돕는 데일리 미션
         </td>
         <td>
-            1. 미션 완료를 통해 포인트를 얻고, 다람이의 온도를 높일 수 있음
+            6. 미션 완료를 통해 포인트를 얻고, 다람이의 온도를 높일 수 있음
         </td>
     </tr>
 </table>
@@ -191,7 +191,7 @@
 ### ERD
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="./ONDO_ERD.png" alt="ERD" style="width: 100%;">
+    <img src="./frontend/src/assets/images/readMe/ONDO_ERD.png" alt="ERD" style="width: 100%;">
 </div>
 
 ### 명세서
@@ -221,5 +221,6 @@
 정유진:
 
 ## ✅ ❤온도팀 사진❤
-
-![alt text](image-1.png)
+| 첫 회식 | 마지막 회식 |
+| :--: | :--: |
+|![첫 회식](./frontend/src/assets/images/readMe/clio_1.JPG) | ![마지막 회식](./frontend/src/assets/images/readMe/clio_2.JPG)|
