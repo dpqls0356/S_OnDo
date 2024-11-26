@@ -28,7 +28,7 @@
 <td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
 <td align="center"><a href="https://github.com/KSE0514"><img src="https://avatars.githubusercontent.com/u/156265560?s=400&v=4" height="150" width="150" style="max-width: 100%;"> <br> @KSE0514</a></td>
 <td align="center"><a href="https://github.com/ybk1"><img src="https://avatars.githubusercontent.com/u/97382736?v=4" height="150" width="150" style="max-width: 100%;"> <br> @ybk1</a></td>
-<td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
+<td align="center"><a href="https://github.com/leedhfsd"><img src="https://avatars.githubusercontent.com/u/89757700?v=4" height="150" width="150" style="max-width: 100%;"> <br> @leedhfsd</a></td>
 <td align="center"><a href="https://github.com/Sophia0705"><img src="https://avatars.githubusercontent.com/u/156265319?v=4" height="150" width="150" style="max-width: 100%;"> <br> @Sophia0705</a></td>
 <td align="center"><a href="https://github.com/???"><img src="???" height="150" width="150" style="max-width: 100%;"> <br> ???</a></td>
 </tr>
@@ -214,7 +214,7 @@
 
 김영빈:
 
-이대현:
+이대현: 처음 해보는 것들 투성이라 힘들지만 배우는게 많았던 것 같습니다. 스프링 시큐리티와 AWS EC2 서버에 직접 수동 배포도 해보고, 발전해서 Jenkins를 이용한 CI / CD까지.. 다들 감사합니다.
 
 이예지: 일정관리와 기획의 중요성에 대해 많이 느꼈고, 다음 프로젝트를 하면서 일정 관리에 조금 더 신경쓰고 있습니다. 그래도 처음이라 모든 게 어려울 때, 팀원들이 다 같이 도와줘서 기술적으로도 팀 프로젝트라는 관점에서도 배우는 게 많았습니다.
 
